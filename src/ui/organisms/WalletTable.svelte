@@ -417,7 +417,7 @@
 			expandedContent,
 		}: {
 			content: Snippet
-			expandedContent: Snippet
+			expandedContent: Snippet<[{ isInTooltip?: boolean }]>
 		})}
 			<BlockTransition>
 				<details
@@ -437,13 +437,18 @@
 					<summary>
 						<Tooltip
 							isEnabled={!isExpanded}
+							style="
+								--popover-padding: 0;
+								--popover-backgroundColor: transparent;
+								--popover-borderColor: transparent;
+							"
 						>
 							{@render content()}
 
 							{#snippet tooltip()}
 								{#if !isExpanded}
 									<div class="expanded-tooltip-content">
-										{@render expandedContent()}
+										{@render expandedContent({ isInTooltip: true })}
 									</div>
 								{/if}
 							{/snippet}
@@ -455,7 +460,7 @@
 							class="expanded-content"
 							transition:fade={{ duration: 200, easing: expoOut }}
 						>
-							{@render expandedContent()}
+							{@render expandedContent({ isInTooltip: false })}
 						</div>
 					{/if}
 				</details>
@@ -831,7 +836,7 @@
 					</Pie>
 				{/snippet}
 
-				{#snippet expandedContent()}
+				{#snippet expandedContent({ isInTooltip }: { isInTooltip?: boolean })}
 					{@const displayedAttribute = (
 						activeEntityId?.walletId === wallet.metadata.id ?
 							activeEntityId.attributeId ?
@@ -861,11 +866,13 @@
 							{wallet}
 							attribute={displayedAttribute}
 							variant={selectedVariant}
+							{isInTooltip}
 						/>
 					{:else if displayedGroup}
 						<WalletAttributeGroupSummary
 							{wallet}
 							attributeGroup={displayedGroup}
+							{isInTooltip}
 						/>
 					{:else}
 						<strong>{wallet.metadata.displayName}</strong>
@@ -1020,7 +1027,7 @@
 					</Pie>
 				{/snippet}
 
-				{#snippet expandedContent()}
+				{#snippet expandedContent({ isInTooltip }: { isInTooltip?: boolean })}
 					{@const displayedAttribute = (
 						activeEntityId?.walletId === wallet.metadata.id && activeEntityId?.attributeGroupId === attrGroup.id ?
 							evalGroup[activeEntityId.attributeId]
@@ -1035,11 +1042,13 @@
 							{wallet}
 							attribute={displayedAttribute}
 							variant={selectedVariant}
+							{isInTooltip}
 						/>
 					{:else}
 						<WalletAttributeGroupSummary
 							{wallet}
 							attributeGroup={attrGroup}
+							{isInTooltip}
 						/>
 					{/if}
 				{/snippet}
@@ -1102,11 +1111,12 @@
 					/>
 				{/snippet}
 
-				{#snippet expandedContent()}
+				{#snippet expandedContent({ isInTooltip }: { isInTooltip?: boolean })}
 					<WalletAttributeSummary
 						{wallet}
 						attribute={attribute}
 						variant={selectedVariant}
+						{isInTooltip}
 					/>
 				{/snippet}
 
@@ -1316,6 +1326,8 @@
 		text-align: start;
 
 		.expanded-tooltip-content & {
+			background-color: var(--background-primary);
+			padding: 1em;
 			font-size: 0.75em;
 		}
 

@@ -66,7 +66,6 @@
 		}}
 		style:anchor-name={anchorName}
 		popovertarget={popoverId}
-		{...restProps}
 
 		onmouseenter={() => {
 			isTriggerHovered = true
@@ -154,6 +153,8 @@
 			style:position-area={placement}
 			style:position-anchor={anchorName}
 			style:--offset={`${offset}px`}
+
+			{...restProps}
 		>
 			{@render tooltip()}
 		</div>
@@ -173,6 +174,7 @@
 	}
 
 	[popover] {
+		--popover-padding: 1rem;
 		--popover-backgroundColor: light-dark(rgba(255, 255, 255, 0.95), rgba(0, 0, 0, 0.95));
 		--popover-borderColor: var(--border-color);
 		--popover-borderWidth: 1px;
@@ -188,7 +190,7 @@
 
 		background-color: var(--popover-backgroundColor);
 		border-radius: 0.5rem;
-		padding: 1rem;
+		padding: var(--popover-padding);
 		border: var(--popover-borderWidth) solid var(--popover-borderColor);
 		backdrop-filter: blur(10px);
 		box-shadow: var(--popover-boxShadow);

@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Types/constants
-	import { type EvaluatedAttribute, ratingIcons } from '@/schema/attributes'
+	import { type EvaluatedAttribute, ratingIcons, ratingToColor } from '@/schema/attributes'
 	import { attributeVariantSpecificity, VariantSpecificity, type RatedWallet } from '@/schema/wallet'
 	import type { Variant } from '@/schema/variants'
 
@@ -10,10 +10,12 @@
 		wallet,
 		attribute,
 		variant,
+		isInTooltip = false,
 	}: {
 		wallet: RatedWallet
 		attribute: EvaluatedAttribute<any>
 		variant?: Variant
+		isInTooltip?: boolean
 	} = $props()
 
 
@@ -28,7 +30,11 @@
 </script>
 
 
-<div>
+<div 
+	class="attribute-summary"
+	data-in-tooltip={isInTooltip ? '' : undefined}
+	style:--accent={ratingToColor(attribute.evaluation.value.rating)}
+>
 	<h4>
 		<span>{attribute.evaluation.value.icon ?? attribute.attribute.icon}</span>
 		{attribute.attribute.displayName}
@@ -69,11 +75,17 @@
 
 
 <style>
-	div {
+	.attribute-summary {
 		font-size: smaller;
-
 		display: grid;
 		gap: 1em;
 		line-height: 1.4;
+
+		&[data-in-tooltip] {
+			padding: 0.75rem;
+			border-radius: 0.5rem;
+			border: 2px solid var(--accent);
+			background-color: var(--background-primary);
+		}
 	}
 </style>
