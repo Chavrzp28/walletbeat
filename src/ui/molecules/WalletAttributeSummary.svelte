@@ -113,6 +113,10 @@
 				gap: 0.33em;
 			}
 		}
+
+		p :global(.markdown) {
+			display: inline;
+		}
 	}
 
 	.rating {
