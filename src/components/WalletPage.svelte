@@ -1179,6 +1179,14 @@
 			entry 0% exit 100%
 		;
 		animation-timeline: --AttributesViewTimeline;
+
+		> :global(*) {
+			transition-property: translate, scale, opacity;
+			transition-duration: 1s;
+			translate: var(--translate);
+			scale: var(--scale);
+			opacity: var(--opacity);
+		}
 	}
 
 	@keyframes AttributesPieAngleAnimation {
@@ -1195,23 +1203,23 @@
 
 	@keyframes AttributesPieTransformAnimation {
 		entry 40% {
-			translate: 0px 0px;
+			--translate: 0px 0px;
 		}
 		entry 55% {
-			translate: calc(-50% - 1rem) calc(50vh - 50%);
-		}
+			--translate: calc(-50% - 1rem) calc(50vh - 50%);
+		}	
 
 		exit 47.5% {
-			translate: calc(-50% - 1rem) calc(50vh - 50%);
-			scale: 1;
-			opacity: 1;
+			--translate: calc(-50% - 1rem) calc(50vh - 50%);
+			--scale: 1;
+			--opacity: 1;
 		}
 		exit 75% {
-			opacity: 0;
+			--opacity: 0;
 		}
 		exit 100% {
-			scale: 0;
-			translate: 0 0;
+			--scale: 0;
+			--translate: 0 0;
 		}
 	}
 
