@@ -747,7 +747,7 @@
 												.map(([attributeId, attribute]) => ({
 													id: `attrGroup_${attrGroup.id}__attr_${attributeId}`,
 													color: ratingToColor(attribute.evaluation.value.rating),
-													weight: 1,
+													weight: attrGroup.attributeWeights[attributeId],
 													arcLabel: attribute.evaluation.value.icon ?? attribute.attribute.icon,
 													tooltip: `${attribute.attribute.displayName}`,
 													tooltipValue: ratingIcons[attribute.evaluation.value.rating],
@@ -957,7 +957,7 @@
 									return {
 										id: `attrGroup_${attrGroup.id}__attr_${attributeId.toString()}`,
 										color: ratingToColor(attribute.evaluation.value.rating),
-										weight: 1,
+										weight: attrGroup.attributeWeights[attributeId],
 										arcLabel: icon,
 										tooltip: `${icon} ${attribute.evaluation.value.displayName}${tooltipSuffix}`,
 										tooltipValue: ratingIcons[attribute.evaluation.value.rating],

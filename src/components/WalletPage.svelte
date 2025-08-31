@@ -355,7 +355,7 @@
 									.map(({ attribute, evalAttr }) => ({
 										id: attribute.id,
 										color: ratingToColor(evalAttr.evaluation.value.rating),
-										weight: 1,
+										weight: attrGroup.attributeWeights[attribute.id],
 										arcLabel: evalAttr.evaluation.value.icon ?? evalAttr.attribute.icon,
 										tooltip: attribute.displayName,
 										tooltipValue: evalAttr.evaluation.value.rating,
