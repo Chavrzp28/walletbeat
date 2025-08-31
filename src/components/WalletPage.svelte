@@ -301,21 +301,31 @@
 			aria-label={attrGroup.displayName}
 			data-score={scoreLevel}
 			data-icon={attrGroup.icon}
-			style:--accent={score ? scoreToColor(score.score) : 'transparent'}
+			style:--accent={scoreToColor(score?.score)}
 		>
 			<header data-sticky>
 				<h2>{attrGroup.displayName}</h2>
-				<div class="section-controls">
-					{#if score?.score}
-						<div class="section-score">
-							{Math.round(score.score * 100)}%
 
-							{#if score.hasUnratedComponent}
-								<span class="unrated-hint" title="This section contains unrated components">ⓘ</span>
-							{/if}
-						</div>
-					{/if}
-				</div>
+				{#if score?.score !== undefined}
+					<data
+						class="score"
+						value={score.score}
+						title={score.hasUnratedComponent ? '*contains unrated components' : undefined}
+					>
+						<strong>
+							{`${Math.round(score.score * 100)}%`}
+						</strong
+						>{#if score.hasUnratedComponent}*{/if}
+					</data>
+				{:else}
+					<data
+						class="score"
+						value="UNRATED"
+						title="*contains unrated components"
+					>
+						<small>UNRATED</small>
+					</data>
+				{/if}
 			</header>
 
 			{#if attrGroup.perWalletQuestion}
@@ -363,8 +373,14 @@
 							{#snippet centerContentSnippet()}
 								<circle
 									r="8"
-									fill={score?.score ? scoreToColor(score.score) : 'var(--rating-unrated)'}
-								/>
+									fill={scoreToColor(score?.score)}
+								>
+									{#if score?.hasUnratedComponent}
+										<title>
+											*contains unrated components
+										</title>
+									{/if}
+								</circle>
 							{/snippet}
 						</Pie>
 					</div>
@@ -1161,12 +1177,17 @@
 		}
 	}
 
+	.score,
 	.rating {
-		font-size: 0.75rem;
+		font-size: 0.75em;
 		font-weight: 500;
-		padding: 0.25rem 0.5rem;
+		padding: 0.25em 0.5em;
 		border-radius: var(--border-radius-sm);
-		background-color: color-mix(in srgb, var(--accent) 25%, transparent);
+		background-color: color-mix(in srgb, var(--accent) 33%, transparent);
+	}
+
+	.score {
+		font-size: 1em;
 	}
 
 	.attributes-pie {

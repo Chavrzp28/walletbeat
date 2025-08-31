@@ -830,7 +830,13 @@
 								<circle
 									r="4"
 									fill={scoreToColor(score)}
-								/>
+								>
+									{#if score?.hasUnratedComponent}
+										<title>
+											*contains unrated components
+										</title>
+									{/if}
+								</circle>
 							{/if}
 						{/snippet}
 					</Pie>
@@ -1022,7 +1028,13 @@
 								<circle
 									r="4"
 									fill={scoreToColor(groupScore?.score)}
-								/>
+								>
+									{#if groupScore?.hasUnratedComponent}
+										<title>
+											*contains unrated components
+										</title>
+									{/if}
+								</circle>
 							{/if}
 						{/snippet}
 					</Pie>
