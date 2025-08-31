@@ -50,7 +50,7 @@ export const ratingIcons = {
 	[Rating.PASS]: '✅',
 	[Rating.PARTIAL]: '⚠️',
 	[Rating.FAIL]: '❌',
-	[Rating.UNRATED]: 'ℹ️',
+	[Rating.UNRATED]: '❔',
 	[Rating.EXEMPT]: '🆗',
 }
 
