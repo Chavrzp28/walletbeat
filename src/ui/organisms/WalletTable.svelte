@@ -721,14 +721,14 @@
 									id: `attrGroup_${attrGroup.id}`,
 									arcLabel: `${attrGroup.icon}${groupScore?.hasUnratedComponent ? '*' : ''}`,
 									color: (
-										groupScore ?
+										groupScore?.score !== undefined ?
 											scoreToColor(groupScore.score)
 										:
 											'var(--rating-unrated)'
 									),
 									tooltip: attrGroup.displayName,
 									tooltipValue: (
-										groupScore ?
+										groupScore?.score !== undefined ?
 											`${
 												(groupScore.score * 100).toFixed(0)
 											}%${
@@ -1004,7 +1004,7 @@
 							{#if summaryVisualization === SummaryVisualization.Score}
 								<text>
 									{
-										groupScore ?
+										groupScore?.score !== undefined ?
 											`${
 												groupScore.score === 0 ?
 													'\u{1f480}'
@@ -1020,7 +1020,7 @@
 							{:else if summaryVisualization === SummaryVisualization.Dot}
 								<circle
 									r="4"
-									fill={scoreToColor(groupScore?.score ?? 0)}
+									fill={scoreToColor(groupScore?.score)}
 								/>
 							{/if}
 						{/snippet}

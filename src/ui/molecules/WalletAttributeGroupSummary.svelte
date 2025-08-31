@@ -32,7 +32,7 @@
 <div 
 	class="attribute-group-summary"
 	data-in-tooltip={isInTooltip ? '' : undefined}
-	style:--accent={groupScore ? scoreToColor(groupScore.score) : 'var(--rating-unrated)'}
+	style:--accent={groupScore?.score !== undefined ? scoreToColor(groupScore.score) : 'var(--rating-unrated)'}
 >
 	<h3>
 		<span>{attributeGroup.icon}</span> {attributeGroup.displayName}

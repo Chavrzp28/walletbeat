@@ -291,7 +291,7 @@
 
 	{#if attributes.length > 0}
 		{@const score = evalGroup ? calculateAttributeGroupScore(attrGroup.attributeWeights, evalGroup) : null}
-		{@const scoreLevel = score ? score.score >= 0.7 ? 'high' : score.score >= 0.4 ? 'medium' : 'low' : undefined}
+		{@const scoreLevel = score?.score ? score.score >= 0.7 ? 'high' : score.score >= 0.4 ? 'medium' : 'low' : undefined}
 
 		<hr />
 
@@ -306,7 +306,7 @@
 			<header data-sticky>
 				<h2>{attrGroup.displayName}</h2>
 				<div class="section-controls">
-					{#if score}
+					{#if score?.score}
 						<div class="section-score">
 							{Math.round(score.score * 100)}%
 
