@@ -138,6 +138,7 @@
 	// Components
 	import EipDetails from '@/ui/molecules/EipDetails.svelte'
 	import Filters from '@/ui/molecules/Filters.svelte'
+	import WalletOverallSummary from '@/ui/molecules/WalletOverallSummary.svelte'
 	import WalletAttributeGroupSummary from '@/ui/molecules/WalletAttributeGroupSummary.svelte'
 	import WalletAttributeSummary from '@/ui/molecules/WalletAttributeSummary.svelte'
 
@@ -882,8 +883,11 @@
 							{isInTooltip}
 						/>
 					{:else}
-						<strong>{wallet.metadata.displayName}</strong>
-						<div>Overall Rating: {score ? (score * 100).toFixed(0) + '%' : 'N/A'}</div>
+						<WalletOverallSummary
+							{wallet}
+							{score}
+							{isInTooltip}
+						/>
 					{/if}
 				{/snippet}
 
