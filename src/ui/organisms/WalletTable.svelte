@@ -721,14 +721,14 @@
 									id: `attrGroup_${attrGroup.id}`,
 									arcLabel: `${attrGroup.icon}${groupScore?.hasUnratedComponent ? '*' : ''}`,
 									color: (
-										groupScore?.score !== undefined ?
+										groupScore ?
 											scoreToColor(groupScore.score)
 										:
 											'var(--rating-unrated)'
 									),
 									tooltip: attrGroup.displayName,
 									tooltipValue: (
-										groupScore?.score !== undefined ?
+										groupScore ?
 											`${
 												(groupScore.score * 100).toFixed(0)
 											}%${
@@ -866,6 +866,7 @@
 							{wallet}
 							attribute={displayedAttribute}
 							variant={selectedVariant}
+							showRating={true}
 							{isInTooltip}
 						/>
 					{:else if displayedGroup}
@@ -1042,6 +1043,7 @@
 							{wallet}
 							attribute={displayedAttribute}
 							variant={selectedVariant}
+							showRating={true}
 							{isInTooltip}
 						/>
 					{:else}
@@ -1116,6 +1118,7 @@
 						{wallet}
 						attribute={attribute}
 						variant={selectedVariant}
+						showRating={false}
 						{isInTooltip}
 					/>
 				{/snippet}
@@ -1168,7 +1171,7 @@
 		}
 
 		.expanded-tooltip-content {
-			max-width: 13rem;
+			max-width: 16em;
 		}
 	}
 

@@ -32,11 +32,42 @@
 <div 
 	class="attribute-group-summary"
 	data-in-tooltip={isInTooltip ? '' : undefined}
-	style:--accent={groupScore?.score !== undefined ? scoreToColor(groupScore.score) : 'var(--rating-unrated)'}
+	style:--accent={
+		groupScore?.score !== undefined ?
+			groupScore.hasUnratedComponent ?
+				`color-mix(in srgb, ${scoreToColor(groupScore.score)} 33%, var(--rating-unrated))`
+			:
+				scoreToColor(groupScore.score)
+		:
+			'var(--rating-unrated)'
+	}
 >
-	<h3>
-		<span>{attributeGroup.icon}</span> {attributeGroup.displayName}
-	</h3>
+	<header>
+		<h3>
+			<span>{attributeGroup.icon}</span> {attributeGroup.displayName}
+		</h3>
+
+		{#if groupScore?.score !== undefined}
+			<data
+				class="score"
+				value={groupScore.score}
+				title={groupScore.hasUnratedComponent ? '*contains unrated components' : undefined}
+			>
+				<strong>
+					{`${Math.round(groupScore.score * 100)}%`}
+				</strong
+				>{#if groupScore.hasUnratedComponent}*{/if}
+			</data>
+		{:else}
+			<data
+				class="score"
+				value="UNRATED"
+				title="*contains unrated components"
+			>
+				<small>UNRATED</small>
+			</data>
+		{/if}
+	</header>
 
 	<p>
 		<Typography
@@ -60,8 +91,30 @@
 		&[data-in-tooltip] {
 			padding: 0.75rem;
 			border-radius: 0.5rem;
-			border: 2px solid var(--accent);
+			border: 2px solid color-mix(in srgb, var(--accent) 80%, transparent);
 			background-color: var(--background-primary);
 		}
+
+		header {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-wrap: wrap;
+			gap: 0.5em 0.75em;
+
+			h3 {
+				font-weight: 600;
+				display: flex;
+				align-items: center;
+				gap: 0.5em;
+			}
+		}
+	}
+
+	.score {
+		font-size: 0.9em;
+		padding: 0.25em 0.5em;
+		border-radius: 0.25em;
+		background-color: color-mix(in srgb, var(--accent) 33%, transparent);
 	}
 </style>

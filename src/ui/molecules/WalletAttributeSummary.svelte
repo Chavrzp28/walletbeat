@@ -10,11 +10,13 @@
 		wallet,
 		attribute,
 		variant,
+		showRating = false,
 		isInTooltip = false,
 	}: {
 		wallet: RatedWallet
 		attribute: EvaluatedAttribute<any>
 		variant?: Variant
+		showRating?: boolean
 		isInTooltip?: boolean
 	} = $props()
 
@@ -35,10 +37,19 @@
 	data-in-tooltip={isInTooltip ? '' : undefined}
 	style:--accent={ratingToColor(attribute.evaluation.value.rating)}
 >
-	<h4>
-		<span>{attribute.evaluation.value.icon ?? attribute.attribute.icon}</span>
-		{attribute.attribute.displayName}
-	</h4>
+	<header>
+		<h4>
+			<span>{attribute.evaluation.value.icon ?? attribute.attribute.icon}</span>
+			{attribute.attribute.displayName}
+		</h4>
+
+		{#if showRating}
+			<data
+				class="rating"
+				value={attribute.evaluation.value.rating}
+			>{attribute.evaluation.value.rating}</data>
+		{/if}
+	</header>
 
 	<p>
 		{ratingIcons[attribute.evaluation.value.rating]}
@@ -87,5 +98,28 @@
 			border: 2px solid var(--accent);
 			background-color: var(--background-primary);
 		}
+
+		header {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-wrap: wrap;
+			gap: 0.5em 0.75em;
+
+			h4 {
+				font-weight: 600;
+				display: flex;
+				align-items: center;
+				gap: 0.33em;
+			}
+		}
+	}
+
+	.rating {
+		font-size: 0.75em;
+		font-weight: 500;
+		padding: 0.25em 0.5em;
+		border-radius: 0.25em;
+		background-color: color-mix(in srgb, var(--accent) 33%, transparent);
 	}
 </style>
