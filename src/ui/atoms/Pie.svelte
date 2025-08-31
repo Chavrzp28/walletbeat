@@ -32,6 +32,7 @@
 			midAngle: number
 			outerRadius: number
 			innerRadius: number
+			labelRadius: number
 			gap: number
 			level: number
 			offset: number
@@ -170,7 +171,7 @@
 		const innerAngleStart = startAngle + Math.asin((gap / 2) / innerRadius) * 180 / Math.PI * orientation
 		const innerStart = polarToCartesian(cx, cy, innerRadius, innerAngleStart)
 
-		const largeArcFlag = angleDiff > 180 ? 0 : 0
+		const largeArcFlag = angleDiff > 180 ? 1 : 0
 		const sweepFlag = orientation === 1 ? 1 : 0
 
 		// For equiangular pie slices with n slices (each with angle θ = 360°/n),
