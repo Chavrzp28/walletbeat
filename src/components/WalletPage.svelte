@@ -1170,6 +1170,8 @@
 	}
 
 	.attributes-pie {
+		background-image: radial-gradient(circle closest-side, var(--background-secondary) 90%, transparent 90%);
+
 		animation:
 			AttributesPieAngleAnimation steps(var(--attributesCount), jump-end) forwards,
 			AttributesPieTransformAnimation var(--transition-easeOutExpo) both
