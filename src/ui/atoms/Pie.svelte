@@ -32,7 +32,6 @@
 			midAngle: number
 			outerRadius: number
 			innerRadius: number
-			labelRadius: number
 			gap: number
 			level: number
 			offset: number
@@ -251,7 +250,6 @@
 					outerRadius,
 					innerRadius,
 					level,
-					labelRadius: (radius * levelConfig.outerRadiusFraction + radius * levelConfig.innerRadiusFraction) / 2,
 					offset: levelConfig.offset,
 					gap: levelConfig.gap,
 				},
@@ -324,7 +322,8 @@
 		style:--slice-midAngle={slice.computed.midAngle}
 		style:--slice-offset={slice.computed.offset}
 		style:--slice-gap={slice.computed.gap}
-		style:--slice-labelRadius={slice.computed.labelRadius}
+		style:--slice-outerRadius={slice.computed.outerRadius}
+		style:--slice-innerRadius={slice.computed.innerRadius}
 		style:--slice-path={`path("${slice.computed.path}")`}
 		style:--slice-fill={slice.color}
 		class:highlighted={highlightedSliceId === slice.id}
@@ -438,6 +437,16 @@
 				--slice-scale: 1;
 				--slice-offset: 0;
 
+				/* Weighted average: 1/3 centroid distance + 2/3 midpoint radius for better visual balance */
+				--slice-labelRadius: calc(
+					1/3 * (
+						2/3 * (pow(var(--slice-outerRadius), 3) - pow(var(--slice-innerRadius), 3)) / (pow(var(--slice-outerRadius), 2) - pow(var(--slice-innerRadius), 2))
+					)
+					+ 2/3 * (
+						(var(--slice-outerRadius) + var(--slice-innerRadius)) / 2
+					)
+				);
+
 				transform-origin: 0 0;
 				cursor: pointer;
 				will-change: transform;
@@ -489,7 +498,7 @@
 					stroke: none;
 					font-size: 0.725em;
 					pointer-events: none;
-					translate: 0 calc(var(--slice-labelRadius) * 1.075 * -1px);
+					translate: 0 calc(var(--slice-labelRadius) * -1px);
 					rotate: calc(-1 * (var(--pie-rotate) + var(--slice-midAngle) * 1deg));
 					transition-property: translate, rotate, filter;
 				}
