@@ -79,6 +79,7 @@ export const mtpelerin: SoftwareWallet = {
 				transparentConvenienceFees: null,
 				ventureCapital: null,
 			},
+			ref: 'https://developers.mtpelerin.com/service-information/revenue-sharing',
 		},
 		multiAddress: featureSupported,
 		privacy: {
