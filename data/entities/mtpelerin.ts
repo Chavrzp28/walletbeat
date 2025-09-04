@@ -23,6 +23,6 @@ export const mtpelerin: CorporateEntity & WalletDeveloper = {
 	privacyPolicy: 'https://www.mtpelerin.com/privacy-policy',
 	repoUrl: 'https://github.com/mtpelerin',
 	linkedin: 'https://www.linkedin.com/company/mt-pelerin/',
-	twitter: 'https://x.com/intent/user?screen_name=mtpelerin',
+	twitter: 'https://x.com/mtpelerin',
 	url: 'https://www.mtpelerin.com/',
 }

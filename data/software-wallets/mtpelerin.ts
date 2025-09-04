@@ -2,7 +2,11 @@ import { sigri } from '@/data/contributors/sigri'
 import { AccountType } from '@/schema/features/account-support'
 import { PrivateTransferTechnology } from '@/schema/features/privacy/transaction-privacy'
 import { WalletProfile } from '@/schema/features/profile'
+import { BugBountyProgramType } from '@/schema/features/security/bug-bounty-program'
+import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
 import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
+import { FeeTransparencyLevel } from '@/schema/features/transparency/fee-transparency'
+import { featureSupported, notSupported, supported } from '@/schema/features/support'
 import { License } from '@/schema/features/transparency/license'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
@@ -13,7 +17,6 @@ export const mtpelerin: SoftwareWallet = {
 		id: 'mtpelerin',
 		displayName: 'Bridge Wallet',
 		tableName: 'Bridge Wallet',
-		legalName: { name: 'Mt Pelerin Group SA', soundsDifferent: false },
 		blurb: paragraph('Buy, swap and sell crypto with the lowest fees, zero hidden costs and full control over your cryptoassets.'),
 		contributors: [sigri],
 		iconExtension: 'svg',
@@ -60,9 +63,10 @@ export const mtpelerin: SoftwareWallet = {
 			},
 			walletCall: null,
 		},
-		license: License.PROPRIETARY,
+		license: {
+			license: License.PROPRIETARY,
+		},
 		monetization: {
-			ref: true,
 			revenueBreakdownIsPublic: false,
 			strategies: {
 				donations: null,
@@ -76,7 +80,7 @@ export const mtpelerin: SoftwareWallet = {
 				ventureCapital: null,
 			},
 		},
-		multiAddress: true,
+		multiAddress: featureSupported,
 		privacy: {
 			dataCollection: null,
 			privacyPolicy: 'https://www.mtpelerin.com/privacy-policy',
@@ -88,7 +92,12 @@ export const mtpelerin: SoftwareWallet = {
 		},
 		profile: WalletProfile.GENERIC,
 		security: {
-			bugBountyProgram: true,
+			bugBountyProgram: {
+				type: BugBountyProgramType.COMPREHENSIVE,
+				url: 'https://immunefi.com/bug-bounty/mtpelerin/',
+				details: 'The wallet implements a comprehensive bug bounty program through Immunefi.',
+				upgradePathAvailable: true,
+			},
 			hardwareWalletSupport: {
 				ref: null,
 				supportedWallets: {},
@@ -116,12 +125,16 @@ export const mtpelerin: SoftwareWallet = {
 			},
 		},
 		transparency: {
-			feeTransparency: true,
+			feeTransparency: {
+				level: FeeTransparencyLevel.COMPREHENSIVE,
+				disclosesWalletFees: true,
+				showsTransactionPurpose: true,
+				details: 'The wallet provides detailed information about transaction fees.',
+			},
 		},
 	},
 	variants: {
 		[Variant.MOBILE]: true,
 		[Variant.BROWSER]: true,
-		[Variant.DESKTOP]: false,
 	},
 }
