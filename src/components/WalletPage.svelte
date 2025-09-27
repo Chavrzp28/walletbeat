@@ -190,7 +190,10 @@
 
 <div class="container">
 	<article>
-		<div class="nav-title">
+		<div
+			data-sticky
+			class="nav-title"
+		>
 			Table of contents
 		</div>
 
@@ -863,6 +866,7 @@
 		z-index: 1;
 
 		position: absolute;
+		left: auto;
 		right: 0;
 
 		@media (max-width: 1024px) {
@@ -1045,12 +1049,9 @@
 
 			padding-block: 1rem;
 
-			&::before {
+			&[data-sticky]::before {
 				content: '';
-				position: absolute;
-				inset: -0.5rem -2rem;
-				backdrop-filter: blur(2rem);
-				z-index: -1;
+				inset: -0.5rem -6rem;
 				mask-image: linear-gradient(to top, transparent, white 0.5rem);
 			}
 

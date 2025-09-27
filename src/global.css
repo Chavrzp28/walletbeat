@@ -507,6 +507,13 @@ span svg {
 		inset-inline-end: var(--sticky-insetInlineEnd);
 	}
 
-	background-color: var(--sticky-backgroundColor);
-	backdrop-filter: var(--sticky-backdropFilter);
+	&::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background-color: var(--sticky-backgroundColor);
+		backdrop-filter: var(--sticky-backdropFilter);
+		border-radius: inherit;
+		z-index: -1;
+	}
 }
