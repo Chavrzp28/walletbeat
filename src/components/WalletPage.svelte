@@ -1041,13 +1041,12 @@
 			justify-content: space-between;
 
 			padding-block: 1rem;
-			background-color: color-mix(var(--background-secondary), transparent);
 
 			&::before {
 				content: '';
 				position: absolute;
 				inset: -0.5rem -2rem;
-				backdrop-filter: blur(0.5rem);
+				backdrop-filter: blur(2rem);
 				z-index: -1;
 				mask-image: linear-gradient(to top, transparent, white 0.5rem);
 			}

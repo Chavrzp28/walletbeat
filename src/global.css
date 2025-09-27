@@ -486,8 +486,8 @@ span svg {
 
 [data-sticky] {
 	/* Inputs */
-	--sticky-backgroundColor: light-dark(#efefefcc, #141414cc);
-	--sticky-backdropFilter: blur(8px);
+	--sticky-backgroundColor: light-dark(#efefef66, #14141488);
+	--sticky-backdropFilter: blur(20px);
 	--sticky-backdropMaskImage: none;
 
 	/* Rules */
