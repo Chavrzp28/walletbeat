@@ -834,7 +834,7 @@
 					0 calc(2.5rem + 1rem) / 100% calc(100% - calc(2.5rem + 1rem) - 1rem) no-repeat,
 					var(--background-secondary)
 				;
-				border-right: 1px solid var(--border-color);
+				border-inline: 1px solid var(--border-color);
 			}
 
 			> :is(header, section, footer) {
@@ -1071,14 +1071,6 @@
 		}
 	}
 
-	.attributes-overview-container {
-		@supports (container-type: scroll-state) {
-			container-type: scroll-state;
-			position: sticky;
-			top: -1rem;
-		}
-	}
-
 	.attributes-overview {
 		background-color: var(--background-primary);
 		border-radius: var(--border-radius-lg);
@@ -1190,59 +1182,69 @@
 		font-size: 1em;
 	}
 
-	.attributes-pie {
-		background-image: radial-gradient(circle closest-side, var(--background-secondary) 90%, transparent 90%);
+	@media (min-width: 1800px) {
+		.attributes-overview-container {
+			@supports (container-type: scroll-state) {
+				container-type: scroll-state;
+				position: sticky;
+				top: -1rem;
+			}
+		}
 
-		animation:
-			AttributesPieAngleAnimation steps(var(--attributesCount), jump-end) forwards,
-			AttributesPieTransformAnimation var(--transition-easeOutExpo) both
-		;
-		animation-range:
-			entry 50% exit 50%,
-			entry 0% exit 100%
-		;
-		animation-timeline: --AttributesViewTimeline;
+		.attributes-pie {
+			background-image: radial-gradient(circle closest-side, var(--background-secondary) 90%, transparent 90%);
 
-		> :global(*) {
-			transition-property: translate, scale, opacity;
-			transition-duration: 0.5s;
-			translate: var(--translate);
-			scale: var(--scale);
-			opacity: var(--opacity);
-		}
-	}
+			animation:
+				AttributesPieAngleAnimation steps(var(--attributesCount), jump-end) forwards,
+				AttributesPieTransformAnimation var(--transition-easeOutExpo) both
+			;
+			animation-range:
+				entry 50% exit 50%,
+				entry 0% exit 100%
+			;
+			animation-timeline: --AttributesViewTimeline;
 
-	@keyframes AttributesPieAngleAnimation {
-		from {
-			--pie-rotate: calc(-0.25turn + 0.5turn / var(--attributesCount));
+			> :global(*) {
+				transition-property: translate, scale, opacity;
+				transition-duration: 0.5s;
+				translate: var(--translate);
+				scale: var(--scale);
+				opacity: var(--opacity);
+			}
 		}
-		to {
-			--pie-rotate: calc(-0.25turn + 0.5turn / var(--attributesCount) + 1turn);
-		}
-		exit 100% {
-			--pie-rotate: 1turn;
-		}
-	}
 
-	@keyframes AttributesPieTransformAnimation {
-		entry 40% {
-			--translate: 0px 0px;
+		@keyframes AttributesPieAngleAnimation {
+			from {
+				--pie-rotate: calc(-0.25turn + 0.5turn / var(--attributesCount));
+			}
+			to {
+				--pie-rotate: calc(-0.25turn + 0.5turn / var(--attributesCount) + 1turn);
+			}
+			exit 100% {
+				--pie-rotate: 1turn;
+			}
 		}
-		entry 55% {
-			--translate: calc(-50% - 1rem) calc(50vh - 50%);
-		}	
 
-		exit 47.5% {
-			--translate: calc(-50% - 1rem) calc(50vh - 50%);
-			--scale: 1;
-			--opacity: 1;
-		}
-		exit 75% {
-			--opacity: 0;
-		}
-		exit 100% {
-			--scale: 0;
-			--translate: 0 0;
+		@keyframes AttributesPieTransformAnimation {
+			entry 40% {
+				--translate: 0px 0px;
+			}
+			entry 55% {
+				--translate: calc(-50% - 1rem) calc(50vh - 50%);
+			}	
+
+			exit 47.5% {
+				--translate: calc(-50% - 1rem) calc(50vh - 50%);
+				--scale: 1;
+				--opacity: 1;
+			}
+			exit 75% {
+				--opacity: 0;
+			}
+			exit 100% {
+				--scale: 0;
+				--translate: 0 0;
+			}
 		}
 	}
 
