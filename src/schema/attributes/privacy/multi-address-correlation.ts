@@ -260,9 +260,12 @@ export const multiAddressCorrelation: Attribute<MultiAddressCorrelationValue> = 
 		midSentenceName: 'multi-address privacy',
 	},
 	question: sentence('Can the wallet correlate your different wallet addresses with each other?'),
-	why: paragraph(
-		'You probably have more than one wallet address configured in your wallet, which you use for different purposes and perhaps as different identities. These wallet addresses all belong to you, but you would rather keep that fact private. It is therefore important to use a wallet that does not reveal that fact.',
-	),
+	why: paragraph(`
+		You probably have more than one wallet address configured in your wallet,
+		which you use for different purposes and perhaps as different identities.
+		These wallet addresses all belong to you, but you would rather keep that
+		fact private. It is therefore important to use a wallet that does not reveal that fact.
+	`),
 	methodology: markdown(`
 		Wallets are assessed based on whether a third-party can learn that
 		two or more of the user's wallet addresses belong to the same user.
