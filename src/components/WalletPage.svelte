@@ -812,6 +812,9 @@
 			max-height: 100dvh;
 			overflow-y: auto;
 
+			scroll-padding-block-start: 5rem;
+			scroll-padding-block-end: 1rem;
+
 			scroll-marker-group: before;
 
 			display: grid;
