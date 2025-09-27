@@ -190,7 +190,9 @@
 
 <div class="container">
 	<article>
-		<div class="nav-title">Navigation</div>
+		<div class="nav-title">
+			Table of contents
+		</div>
 
 		<header id="top" class="page-header">
 			{#if wallet}
@@ -781,8 +783,16 @@
 
 		display: grid;
 		grid-template:
-			'Nav Content'
-			/ auto 1fr;
+			'Content Nav'
+			/ 1fr auto
+		;
+		@media (max-width: 1024px) {
+			grid-template:
+				'Nav Content'
+				/ auto 1fr
+			;
+		}
+
 		gap: 1rem;
 
 		line-height: 1.6;
@@ -850,7 +860,13 @@
 		z-index: 1;
 
 		position: absolute;
-		inset: 0;
+		right: 0;
+
+		@media (max-width: 1024px) {
+			right: auto;
+			left: 0;
+		}
+
 		bottom: auto;
 		padding: 1rem;
 		width: calc(var(--nav-width) - 1px);
