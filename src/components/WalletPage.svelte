@@ -1205,7 +1205,7 @@
 
 		> :global(*) {
 			transition-property: translate, scale, opacity;
-			transition-duration: 1s;
+			transition-duration: 0.5s;
 			translate: var(--translate);
 			scale: var(--scale);
 			opacity: var(--opacity);
