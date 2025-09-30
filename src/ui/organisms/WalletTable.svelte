@@ -559,7 +559,7 @@
 											class="tag"
 											role="button"
 											tabindex="0"
-											data-tag-type={tag.type}
+											data-variant={tag.type}
 											aria-label="Filter by {tag.label}"
 											onclick={e => {
 												e.stopPropagation()
@@ -586,7 +586,7 @@
 								{:else}
 									<button
 										class="tag"
-										data-tag-type={tag.type}
+										data-variant={tag.type}
 										aria-label="Filter by {tag.label}"
 										onclick={(e) => {
 											e.stopPropagation()
@@ -1252,44 +1252,6 @@
 				display: flex;
 				flex-wrap: wrap;
 				gap: 0.25em;
-
-				.tag {
-					&[data-tag-type='wallet-type'] {
-						--tag-backgroundColor: light-dark(oklch(0.95 0.00 0), oklch(0.25 0.00 0));
-						--tag-textColor: light-dark(oklch(0.65 0.00 0), oklch(0.80 0.00 0));
-						--tag-borderColor: light-dark(oklch(0.90 0.00 0), oklch(0.40 0.00 0));
-						--tag-hover-backgroundColor: light-dark(oklch(0.92 0.00 0), oklch(0.30 0.00 0));
-						--tag-hover-textColor: light-dark(oklch(0.60 0.00 0), oklch(0.85 0.00 0));
-						--tag-hover-borderColor: light-dark(oklch(0.85 0.00 0), oklch(0.50 0.00 0));
-					}
-
-					&[data-tag-type='account-type'] {
-						--tag-backgroundColor: light-dark(oklch(0.95 0.03 145), oklch(0.25 0.05 145));
-						--tag-textColor: light-dark(oklch(0.65 0.15 145), oklch(0.70 0.25 145));
-						--tag-borderColor: light-dark(oklch(0.90 0.06 145), oklch(0.40 0.08 145));
-						--tag-hover-backgroundColor: light-dark(oklch(0.92 0.05 145), oklch(0.30 0.07 145));
-						--tag-hover-textColor: light-dark(oklch(0.60 0.18 145), oklch(0.85 0.15 145));
-						--tag-hover-borderColor: light-dark(oklch(0.85 0.08 145), oklch(0.50 0.10 145));
-					}
-
-					&[data-tag-type='eip'] {
-						--tag-backgroundColor: light-dark(oklch(0.95 0.03 300), oklch(0.25 0.05 300));
-						--tag-textColor: light-dark(oklch(0.65 0.15 300), oklch(0.70 0.25 300));
-						--tag-borderColor: light-dark(oklch(0.90 0.06 300), oklch(0.40 0.08 300));
-						--tag-hover-backgroundColor: light-dark(oklch(0.92 0.05 300), oklch(0.30 0.07 300));
-						--tag-hover-textColor: light-dark(oklch(0.60 0.18 300), oklch(0.85 0.15 300));
-						--tag-hover-borderColor: light-dark(oklch(0.85 0.08 300), oklch(0.50 0.10 300));
-					}
-
-					&[data-tag-type='manufacture-type'] {
-						--tag-backgroundColor: light-dark(oklch(0.95 0.03 290), oklch(0.25 0.05 290));
-						--tag-textColor: light-dark(oklch(0.65 0.15 290), oklch(0.70 0.25 290));
-						--tag-borderColor: light-dark(oklch(0.90 0.06 290), oklch(0.40 0.08 290));
-						--tag-hover-backgroundColor: light-dark(oklch(0.92 0.05 290), oklch(0.30 0.07 290));
-						--tag-hover-textColor: light-dark(oklch(0.60 0.18 290), oklch(0.85 0.15 290));
-						--tag-hover-borderColor: light-dark(oklch(0.85 0.08 290), oklch(0.50 0.10 290));
-					}
-				}
 			}
 		}
 
