@@ -175,7 +175,7 @@ export function sentence<Strings extends _Strings, _Text extends string = string
 ) {
 	if (text.length > sentenceMaxLength) {
 		throw new Error(
-			`Sentence text is too long (${text.length} characters is over the maximum length of ${sentenceMaxLength} characters).`,
+			`Sentence text is too long (${text.length} characters is over the maximum length of ${sentenceMaxLength} characters): ${text}`,
 		)
 	}
 
