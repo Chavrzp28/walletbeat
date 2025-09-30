@@ -162,7 +162,7 @@ export const zerion: SoftwareWallet = {
 			},
 		},
 		transparency: {
-			feeTransparency: null,
+			operationFees: null,
 		},
 	},
 	variants: {

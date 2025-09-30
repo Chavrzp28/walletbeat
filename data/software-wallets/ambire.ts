@@ -20,7 +20,7 @@ import type { SecurityAudit } from '@/schema/features/security/security-audits'
 import { RpcEndpointConfiguration } from '@/schema/features/self-sovereignty/chain-configurability'
 import { TransactionSubmissionL2Support } from '@/schema/features/self-sovereignty/transaction-submission'
 import { featureSupported, notSupported, supported } from '@/schema/features/support'
-import { FeeTransparencyLevel } from '@/schema/features/transparency/fee-transparency'
+import { comprehensiveFeesShownByDefault } from '@/schema/features/transparency/fee-display'
 import { License } from '@/schema/features/transparency/license'
 import type { References } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
@@ -193,7 +193,7 @@ export const ambire: SoftwareWallet = {
 			bridging: {
 				/** Does the wallet have a built-in bridging feature? */
 				builtInBridging: supported({
-					feesLargerThan1bps: 'VISIBLE_BY_DEFAULT',
+					feesLargerThan1bps: comprehensiveFeesShownByDefault,
 					ref: {
 						explanation: 'All fees are displayed when agreeing to the bridge',
 						url: 'https://www.ambire.com/',
@@ -457,10 +457,11 @@ Payouts are handled by the Ambire team directly and are denominated in USD. Howe
 			},
 		},
 		transparency: {
-			feeTransparency: {
-				disclosesWalletFees: true,
-				level: FeeTransparencyLevel.COMPREHENSIVE,
-				showsTransactionPurpose: true,
+			operationFees: {
+				builtInErc20Swap: supported(comprehensiveFeesShownByDefault),
+				erc20L1Transfer: supported(comprehensiveFeesShownByDefault),
+				ethL1Transfer: supported(comprehensiveFeesShownByDefault),
+				uniswapUSDCToEtherSwap: supported(comprehensiveFeesShownByDefault),
 			},
 		},
 	},

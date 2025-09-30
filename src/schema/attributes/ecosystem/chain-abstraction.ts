@@ -11,6 +11,10 @@ import type {
 	CrossChainBalanceDisplay,
 } from '@/schema/features/ecosystem/chain-abstraction'
 import { featureSupported, isSupported, notSupported, supported } from '@/schema/features/support'
+import {
+	comprehensiveFeesShownByDefault,
+	FeeDisplayLevel,
+} from '@/schema/features/transparency/fee-display'
 import { mergeRefs, refs } from '@/schema/reference'
 import { WalletType } from '@/schema/wallet-types'
 import { markdown, sentence } from '@/types/content'
@@ -160,11 +164,9 @@ function evaluateChainAbstraction(
 		}
 	}
 
-	if (
-		bridging.builtInBridging.feesLargerThan1bps === 'NOT_IN_UI' ||
-		bridging.builtInBridging.feesLargerThan1bps === 'HIDDEN_BY_DEFAULT'
-	) {
-		const feesHidden = bridging.builtInBridging.feesLargerThan1bps === 'NOT_IN_UI'
+	if (bridging.builtInBridging.feesLargerThan1bps.byDefault === FeeDisplayLevel.NONE) {
+		const feesHidden =
+			bridging.builtInBridging.feesLargerThan1bps.afterSingleAction === FeeDisplayLevel.NONE
 
 		return {
 			value: {
@@ -177,9 +179,8 @@ function evaluateChainAbstraction(
 				rating: Rating.PARTIAL,
 				shortExplanation: sentence(`
 					{{WALLET_NAME}} implements cross-chain bridging,
-					but does not
-					${feesHidden ? 'straightforwardly display' : 'display'}
-					the fees involved in doing so.
+					but does not display the fees involved in doing
+					so${feesHidden ? '' : ' by default'}.
 				`),
 				__brand: brand,
 			},
@@ -338,7 +339,7 @@ const fullySupportedCrossChainBalances: ChainAbstraction['crossChainBalances'] =
 const fullySupportedBridging: ChainAbstraction['bridging'] = {
 	builtInBridging: supported({
 		risksExplained: 'VISIBLE_BY_DEFAULT',
-		feesLargerThan1bps: 'VISIBLE_BY_DEFAULT',
+		feesLargerThan1bps: comprehensiveFeesShownByDefault,
 	}),
 	suggestedBridging: featureSupported,
 }
@@ -458,7 +459,11 @@ export const chainAbstraction: Attribute<ChainAbstractionValue> = {
 					crossChainBalances: fullySupportedCrossChainBalances,
 					bridging: {
 						builtInBridging: supported({
-							feesLargerThan1bps: 'NOT_IN_UI',
+							feesLargerThan1bps: {
+								byDefault: FeeDisplayLevel.NONE,
+								afterSingleAction: FeeDisplayLevel.NONE,
+								fullySponsored: false,
+							},
 							risksExplained: 'VISIBLE_BY_DEFAULT',
 						}),
 						suggestedBridging: notSupported,
@@ -473,7 +478,7 @@ export const chainAbstraction: Attribute<ChainAbstractionValue> = {
 					crossChainBalances: fullySupportedCrossChainBalances,
 					bridging: {
 						builtInBridging: supported({
-							feesLargerThan1bps: 'VISIBLE_BY_DEFAULT',
+							feesLargerThan1bps: comprehensiveFeesShownByDefault,
 							risksExplained: 'HIDDEN_BY_DEFAULT',
 						}),
 						suggestedBridging: notSupported,

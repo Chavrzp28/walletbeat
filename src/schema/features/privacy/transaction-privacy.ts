@@ -2,6 +2,7 @@ import type { Entity } from '@/schema/entity'
 import type { WithRef } from '@/schema/reference'
 
 import type { Support, Supported } from '../support'
+import type { FeeDisplay } from '../transparency/fee-display'
 import type { MultiAddressHandling, MultiAddressPolicy } from './data-collection'
 
 export enum PrivateTransferTechnology {
@@ -195,6 +196,9 @@ export interface StealthAddressSupport {
 			unlabeledBehavior: StealthAddressUnlabeledBehavior
 		}>
 	>
+
+	/** When sending transactions, how are fees displayed? */
+	fees: FeeDisplay
 }
 
 /**
@@ -237,7 +241,7 @@ export type TornadoCashNovaSupport = WithRef<
 		/**
 		 * Is the fee taken by the relayer displayed in the UI?
 		 */
-		relayerFee: 'SHOWN_BY_DEFAULT' | 'HIDDEN_BY_DEFAULT' | 'NOT_IN_UI'
+		relayerFee: FeeDisplay
 	} & (
 		| {
 				/**

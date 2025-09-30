@@ -217,7 +217,7 @@ export const metamask: SoftwareWallet = {
 			},
 		},
 		transparency: {
-			feeTransparency: null,
+			operationFees: null,
 		},
 	},
 	variants: {

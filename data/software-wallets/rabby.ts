@@ -27,6 +27,10 @@ import {
 	notSupportedWithRef,
 	supported,
 } from '@/schema/features/support'
+import {
+	comprehensiveFeesShownByDefault,
+	FeeDisplayLevel,
+} from '@/schema/features/transparency/fee-display'
 import { License } from '@/schema/features/transparency/license'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
@@ -87,7 +91,11 @@ export const rabby: SoftwareWallet = {
 		chainAbstraction: {
 			bridging: {
 				builtInBridging: supported({
-					feesLargerThan1bps: 'HIDDEN_BY_DEFAULT',
+					feesLargerThan1bps: {
+						afterSingleAction: FeeDisplayLevel.COMPREHENSIVE,
+						byDefault: FeeDisplayLevel.NONE,
+						fullySponsored: false,
+					},
 					risksExplained: 'NOT_IN_UI',
 				}),
 				suggestedBridging: notSupported,
@@ -484,7 +492,24 @@ export const rabby: SoftwareWallet = {
 			},
 		},
 		transparency: {
-			feeTransparency: null,
+			operationFees: {
+				builtInErc20Swap: supported({
+					afterSingleAction: FeeDisplayLevel.COMPREHENSIVE,
+					byDefault: FeeDisplayLevel.NONE,
+					fullySponsored: false,
+				}),
+				erc20L1Transfer: supported({
+					afterSingleAction: FeeDisplayLevel.COMPREHENSIVE,
+					byDefault: FeeDisplayLevel.NONE,
+					fullySponsored: false,
+				}),
+				ethL1Transfer: supported({
+					afterSingleAction: FeeDisplayLevel.COMPREHENSIVE,
+					byDefault: FeeDisplayLevel.NONE,
+					fullySponsored: false,
+				}),
+				uniswapUSDCToEtherSwap: supported(comprehensiveFeesShownByDefault),
+			},
 		},
 	},
 	variants: {

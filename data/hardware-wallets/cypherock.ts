@@ -142,8 +142,8 @@ export const cypherockWallet: HardwareWallet = {
 			interoperability: null,
 		},
 		transparency: {
-			feeTransparency: null,
 			maintenance: null,
+			operationFees: null,
 			reputation: null,
 		},
 	},

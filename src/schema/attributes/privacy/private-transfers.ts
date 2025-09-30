@@ -23,6 +23,7 @@ import {
 	type Supported,
 	supported,
 } from '@/schema/features/support'
+import { fullySponsoredFees } from '@/schema/features/transparency/fee-display'
 import {
 	markdown,
 	mdParagraph,
@@ -741,21 +742,6 @@ function rateTornadoCashNovaSupport(
 			break
 	}
 
-	switch (tornadoCashNova.relayerFee) {
-		case 'NOT_IN_UI':
-			extraNotes.push(paragraph('The Tornado Cash Nova relayer fee is not displayed in the UI.'))
-			sendingImprovements.push('display the Tornado Cash Nova relayer fee in the UI')
-			break
-		case 'HIDDEN_BY_DEFAULT':
-			extraNotes.push(
-				paragraph('The Tornado Cash Nova relayer fee is not displayed by default in the UI.'),
-			)
-			sendingImprovements.push('display the Tornado Cash Nova relayer fee in the UI by default')
-			break
-		case 'SHOWN_BY_DEFAULT':
-			break
-	}
-
 	const walletShould = sendingImprovements
 		.concat(receivingImprovements)
 		.concat(spendingImprovements)
@@ -960,6 +946,7 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 							type: 'LOCALLY',
 						},
 						userLabeling: notSupported,
+						fees: fullySponsoredFees,
 					}),
 				).value,
 			),
@@ -996,6 +983,7 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 						userLabeling: supported({
 							unlabeledBehavior: StealthAddressUnlabeledBehavior.MUST_LABEL_BEFORE_SPENDING,
 						}),
+						fees: fullySponsoredFees,
 					}),
 				).value,
 			),
@@ -1031,6 +1019,7 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 						userLabeling: supported({
 							unlabeledBehavior: StealthAddressUnlabeledBehavior.MUST_LABEL_BEFORE_SPENDING,
 						}),
+						fees: fullySponsoredFees,
 					}),
 				).value,
 			),
@@ -1067,6 +1056,7 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 						userLabeling: supported({
 							unlabeledBehavior: StealthAddressUnlabeledBehavior.MUST_LABEL_BEFORE_SPENDING,
 						}),
+						fees: fullySponsoredFees,
 					}),
 				).value,
 			),
@@ -1108,6 +1098,7 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 						userLabeling: supported({
 							unlabeledBehavior: StealthAddressUnlabeledBehavior.MUST_LABEL_BEFORE_SPENDING,
 						}),
+						fees: fullySponsoredFees,
 					}),
 				).value,
 			),
