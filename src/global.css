@@ -308,6 +308,25 @@ span svg {
 	padding: 16px;
 }
 
+.badge {
+	padding: 0.25em 0.5em;
+	border-radius: 0.25em;
+	background-color: color-mix(in srgb, var(--accent) 33%, transparent);
+
+	&[data-size='small'] {
+		font-size: 0.75em;
+		font-weight: 500;
+	}
+
+	&[data-size='medium'] {
+		font-size: 0.9em;
+	}
+
+	&[data-size='large'] {
+		font-size: 1.25em;
+	}
+}
+
 .tag {
 	--tag-backgroundColor: light-dark(rgba(108, 36, 224, 0.08), rgba(108, 36, 224, 0.12));
 	--tag-textColor: light-dark(var(--accent), rgb(187, 147, 255));

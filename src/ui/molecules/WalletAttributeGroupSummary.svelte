@@ -49,7 +49,8 @@
 
 		{#if groupScore?.score !== undefined}
 			<data
-				class="score"
+				class="badge"
+				data-size="medium"
 				value={groupScore.score}
 				title={groupScore.hasUnratedComponent ? '*contains unrated components' : undefined}
 			>
@@ -60,7 +61,8 @@
 			</data>
 		{:else}
 			<data
-				class="score"
+				class="badge"
+				data-size="medium"
 				value="UNRATED"
 				title="*contains unrated components"
 			>
@@ -109,12 +111,5 @@
 				gap: 0.5em;
 			}
 		}
-	}
-
-	.score {
-		font-size: 0.9em;
-		padding: 0.25em 0.5em;
-		border-radius: 0.25em;
-		background-color: color-mix(in srgb, var(--accent) 33%, transparent);
 	}
 </style>

@@ -45,7 +45,8 @@
 
 		{#if showRating}
 			<data
-				class="rating"
+				class="badge"
+				data-size="small"
 				value={attribute.evaluation.value.rating}
 			>{attribute.evaluation.value.rating}</data>
 		{/if}
@@ -117,13 +118,5 @@
 		p :global(.markdown) {
 			display: inline;
 		}
-	}
-
-	.rating {
-		font-size: 0.75em;
-		font-weight: 500;
-		padding: 0.25em 0.5em;
-		border-radius: 0.25em;
-		background-color: color-mix(in srgb, var(--accent) 33%, transparent);
 	}
 </style>
