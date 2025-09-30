@@ -13,15 +13,75 @@
 	} = $props()
 
 
+	// State
+	let searchValue = $state(
+		''
+	)
+
+
 	// Functions
 	const hasCurrentPage = (item: NavigationItem) => (
 		currentPathname === item.href
 		|| (item.children?.some(hasCurrentPage) ?? false)
 	)
+
+	const fuzzyMatch = (text: string, query: string): number[] | null => {
+		if (query === '') return null
+
+		const textLower = text.toLowerCase()
+		const queryLower = query.toLowerCase()
+		const matches: number[] = []
+		let textIndex = 0
+
+		for (const char of queryLower) {
+			textIndex = textLower.indexOf(char, textIndex)
+			if (textIndex === -1) return null
+			matches.push(textIndex)
+			textIndex++
+		}
+
+		return matches
+	}
+
+	const matchesSearch = (item: NavigationItem, query: string): boolean => (
+		query === ''
+		|| fuzzyMatch(item.title, query) !== null
+		|| (item.children?.some((child) => matchesSearch(child, query)) ?? false)
+	)
+
+	const highlightText = (text: string, query: string) => {
+		const matches = fuzzyMatch(text, query)
+		if (!matches) return text
+
+		const parts: string[] = []
+		let lastIndex = 0
+
+		for (const index of matches) {
+			if (index > lastIndex) {
+				parts.push(text.slice(lastIndex, index))
+			}
+			parts.push(`<mark>${text[index]}</mark>`)
+			lastIndex = index + 1
+		}
+
+		if (lastIndex < text.length) {
+			parts.push(text.slice(lastIndex))
+		}
+
+		return parts.join('')
+	}
 </script>
 
 
-{@render navigationItems(items)}
+<search>
+	<input
+		type="search"
+		placeholder="Search..."
+		bind:value={searchValue}
+	/>
+
+	{@render navigationItems(items)}
+</search>
 
 
 {#snippet navigationItems(items: NavigationItem[])}
@@ -36,11 +96,18 @@
 
 
 {#snippet navigationItem(item: NavigationItem)}
-	{#if !item.children?.length}
+	{#if !matchesSearch(item, searchValue)}
+		<!-- Skip items that don't match search -->
+	{:else if !item.children?.length}
 		{@render linkable(item)}
 	{:else}
 		<details
-			open={hasCurrentPage(item)}
+			open={
+				searchValue ?
+					matchesSearch(item, searchValue)
+				:
+					hasCurrentPage(item)
+			}
 			data-sticky-container
 		>
 			<summary data-sticky>
@@ -64,22 +131,27 @@
 			}}
 		>
 			{#if item.icon}
-				<span>{@html item.icon}</span>
+				<span class="icon">{@html item.icon}</span>
 			{/if}
 
-			{item.title}
+			<span>{@html searchValue ? highlightText(item.title, searchValue) : item.title}</span>
 		</a>
 	{:else}
 		{#if item.icon}
-			<span>{@html item.icon}</span>
+			<span class="icon">{@html item.icon}</span>
 		{/if}
 
-		{item.title}
+		<span>{@html searchValue ? highlightText(item.title, searchValue) : item.title}</span>
 	{/if}
 {/snippet}
 
 
 <style>
+	search {
+		display: grid;
+		gap: 0.75rem;
+	}
+
 	menu {
 		display: grid;
 		gap: 2px;
@@ -112,7 +184,7 @@
 		align-items: center;
 		gap: 0.5rem;
 
-		> span {
+		> .icon {
 			display: flex;
 			font-size: 1.25em;
 			width: 1em;
@@ -127,6 +199,13 @@
 				width: 100%;
 				height: 100%;
 			}
+		}
+
+		:global(mark) {
+			font-weight: 600;
+			text-decoration: underline;
+			background-color: transparent;
+			color: inherit;
 		}
 	}
 
