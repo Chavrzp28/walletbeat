@@ -72,10 +72,11 @@ const currentPathname = Astro.url.pathname
 		id="nav-menu"
 		data-sticky-container
 	>
-    <NavigationItems 
-			items={navigationItems} 
+		<NavigationItems
+			client:load
+			transition:persist
+			items={navigationItems}
 			currentPathname={currentPathname}
-			client:load 
 		/>
 	</div>
 
