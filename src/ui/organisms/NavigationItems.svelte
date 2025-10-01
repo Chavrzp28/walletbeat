@@ -125,7 +125,12 @@
 
 {#snippet navigationItems(items: NavigationItem[])}
 	<menu>
-		{#each items as item (item.id)}
+		{#each (
+			searchValue ?
+				items.filter(item => matchesSearch(item, searchValue))
+			:
+				items
+		) as item (item.id)}
 			<li>
 				{@render navigationItem(item)}
 			</li>
@@ -135,9 +140,7 @@
 
 
 {#snippet navigationItem(item: NavigationItem)}
-	{#if !matchesSearch(item, searchValue)}
-		<!-- Skip items that don't match search -->
-	{:else if !item.children?.length}
+	{#if !item.children?.length}
 		{@render linkable(item)}
 	{:else}
 		<details
