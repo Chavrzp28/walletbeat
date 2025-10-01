@@ -79,12 +79,39 @@
 		bind:value={searchValue}
 		placeholder="Search (⌘+K)"
 		{@attach element => {
-			globalThis.addEventListener('keydown', event => {
-				if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-					event.preventDefault()
-					element.focus()
-				}
-			})
+			const abortController = new AbortController()
+
+			let lastFocusedElement: HTMLElement | undefined = $state()
+
+			globalThis.addEventListener(
+				'keydown',
+				event => {
+					if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+						event.preventDefault()
+
+						if(document.activeElement instanceof HTMLElement)
+							lastFocusedElement = document.activeElement
+
+						element.focus()
+					}
+				},
+				{ signal: abortController.signal }
+			)
+
+			element.addEventListener(
+				'blur',
+				() => {
+					lastFocusedElement?.focus()
+					lastFocusedElement = undefined
+				},
+				{ signal: abortController.signal }
+			)
+
+			return () => {
+				abortController.abort()
+				lastFocusedElement?.focus()
+				lastFocusedElement = undefined
+			}
 		}}
 		onkeyup={event => {
 			if (event.key === 'Escape')
