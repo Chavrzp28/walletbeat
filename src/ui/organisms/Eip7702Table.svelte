@@ -206,7 +206,9 @@
 			{@const typeFor7702 = getWalletTypeFor7702(wallet)}
 
 			{#if typeFor7702 === WalletTypeFor7702.EIP7702}
-				<Tooltip placement="block-start">
+				<Tooltip
+					placement="inline-end"
+				>
 					<button
 						class="tag"
 						data-tag-variant="eip"
@@ -225,7 +227,9 @@
 				</Tooltip>
 			{:else}
 				{#if typeFor7702 === WalletTypeFor7702.EIP4337}
-					<Tooltip placement="block-start">
+					<Tooltip
+						placement="inline-end"
+					>
 						<button
 							class="tag"
 							data-tag-variant="eip"
