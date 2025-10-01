@@ -46,7 +46,7 @@
 		{#if score?.score !== undefined}
 			<data
 				class="badge"
-				data-size="large"
+				data-badge-size="large"
 				value={score.score}
 				title={score.hasUnratedComponent ? '*contains unrated components' : undefined}
 			>
@@ -58,7 +58,7 @@
 		{:else}
 			<data
 				class="badge"
-				data-size="large"
+				data-badge-size="large"
 				value="UNRATED"
 				title="*contains unrated components"
 			>

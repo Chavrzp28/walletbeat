@@ -557,9 +557,9 @@
 									>
 										<div
 											class="tag"
+											data-tag-variant={tag.type}
 											role="button"
 											tabindex="0"
-											data-variant={tag.type}
 											aria-label="Filter by {tag.label}"
 											onclick={e => {
 												e.stopPropagation()
@@ -586,7 +586,7 @@
 								{:else}
 									<button
 										class="tag"
-										data-variant={tag.type}
+										data-tag-variant={tag.type}
 										aria-label="Filter by {tag.label}"
 										onclick={(e) => {
 											e.stopPropagation()

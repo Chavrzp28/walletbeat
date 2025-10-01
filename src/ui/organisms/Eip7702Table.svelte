@@ -209,7 +209,7 @@
 				<Tooltip placement="block-start">
 					<button
 						class="tag"
-						data-variant="eip"
+						data-tag-variant="eip"
 						aria-label="Filter by EIP-7702"
 						onclick={e => {
 							e.stopPropagation()
@@ -228,7 +228,7 @@
 					<Tooltip placement="block-start">
 						<button
 							class="tag"
-							data-variant="eip"
+							data-tag-variant="eip"
 							aria-label="Filter by ERC-4337"
 							onclick={e => {
 								e.stopPropagation()
@@ -246,7 +246,7 @@
 					{#if typeFor7702 === WalletTypeFor7702.NON_7702_EOA}
 						<button
 							class="tag"
-							data-variant="eoa"
+							data-tag-variant="eoa"
 							aria-label="Filter by EOA"
 							onclick={e => {
 								e.stopPropagation()

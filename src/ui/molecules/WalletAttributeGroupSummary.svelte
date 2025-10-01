@@ -50,7 +50,7 @@
 		{#if groupScore?.score !== undefined}
 			<data
 				class="badge"
-				data-size="medium"
+				data-badge-size="medium"
 				value={groupScore.score}
 				title={groupScore.hasUnratedComponent ? '*contains unrated components' : undefined}
 			>
@@ -62,7 +62,7 @@
 		{:else}
 			<data
 				class="badge"
-				data-size="medium"
+				data-badge-size="medium"
 				value="UNRATED"
 				title="*contains unrated components"
 			>
