@@ -8,8 +8,8 @@ import {
 	worstPrivateTransfersPrivacyLevel,
 } from '@/schema/attributes/privacy/private-transfers'
 import {
-	isPrivateTransferTechnology,
 	PrivateTransferTechnology,
+	privateTransferTechnology,
 } from '@/schema/features/privacy/transaction-privacy'
 import type { PrivateTransfersDetailsProps } from '@/types/content/private-transfers-details'
 import { assertNonEmptyArray } from '@/types/utils/non-empty'
@@ -25,11 +25,15 @@ function privateTransferTechnologyName(tech: PrivateTransferTechnology): string 
 			return 'stealth addresses'
 		case PrivateTransferTechnology.TORNADO_CASH_NOVA:
 			return 'Tornado Cash Nova'
+		case PrivateTransferTechnology.PRIVACY_POOLS:
+			return 'Privacy Pools'
 	}
 }
 
 function privateTransferLevelToIcon(level: PrivateTransfersPrivacyLevel): string {
 	switch (level) {
+		case PrivateTransfersPrivacyLevel.NOT_FULLY_IMPLEMENTED:
+			return ratingToIcon(Rating.FAIL)
 		case PrivateTransfersPrivacyLevel.NOT_PRIVATE:
 			return ratingToIcon(Rating.FAIL)
 		case PrivateTransfersPrivacyLevel.CHAIN_DATA_PRIVATE:
@@ -83,10 +87,10 @@ export function PrivateTransfersDetails({
 					)}
 					{value.defaultFungibleTokenTransferMode === 'EXPLICIT_CHOICE' &&
 						' Users must explicitly select private token transfers in order to transact privately.'}
-					{isPrivateTransferTechnology(value.defaultFungibleTokenTransferMode) &&
+					{privateTransferTechnology.is(value.defaultFungibleTokenTransferMode) &&
 						value.perTechnology.size === 1 &&
 						' Token transfers are private by default.'}
-					{isPrivateTransferTechnology(value.defaultFungibleTokenTransferMode) &&
+					{privateTransferTechnology.is(value.defaultFungibleTokenTransferMode) &&
 						value.perTechnology.size > 1 &&
 						` Token transfers use ${privateTransferTechnologyName(value.defaultFungibleTokenTransferMode)} by default.`}
 					{worstLevel !== PrivateTransfersPrivacyLevel.FULLY_PRIVATE && (

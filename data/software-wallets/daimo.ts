@@ -306,6 +306,7 @@ export const daimo: SoftwareWallet = {
 				defaultFungibleTokenTransferMode: 'PUBLIC',
 				[PrivateTransferTechnology.STEALTH_ADDRESSES]: notSupported,
 				[PrivateTransferTechnology.TORNADO_CASH_NOVA]: notSupported,
+				[PrivateTransferTechnology.PRIVACY_POOLS]: notSupported,
 			},
 		},
 		profile: WalletProfile.PAYMENTS,

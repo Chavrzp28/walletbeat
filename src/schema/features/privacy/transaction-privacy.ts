@@ -1,5 +1,6 @@
 import type { Entity } from '@/schema/entity'
 import type { WithRef } from '@/schema/reference'
+import { Enum } from '@/utils/enum'
 
 import type { Support, Supported } from '../support'
 import type { FeeDisplay } from '../transparency/fee-display'
@@ -8,25 +9,14 @@ import type { MultiAddressHandling, MultiAddressPolicy } from './data-collection
 export enum PrivateTransferTechnology {
 	STEALTH_ADDRESSES = 'stealthAddresses',
 	TORNADO_CASH_NOVA = 'tornadoCashNova',
+	PRIVACY_POOLS = 'privacyPools',
 }
 
-/** Type predicate for `PrivateTransferTechnology`. */
-export function isPrivateTransferTechnology(obj: unknown): obj is PrivateTransferTechnology {
-	if (typeof obj !== 'string') {
-		return false
-	}
-
-	switch (obj) {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Safe because this is exactly what we are trying to establish
-		case PrivateTransferTechnology.STEALTH_ADDRESSES:
-			return true
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison -- Safe because this is exactly what we are trying to establish
-		case PrivateTransferTechnology.TORNADO_CASH_NOVA:
-			return true
-		default:
-			return false
-	}
-}
+export const privateTransferTechnology = new Enum<PrivateTransferTechnology>({
+	[PrivateTransferTechnology.STEALTH_ADDRESSES]: true,
+	[PrivateTransferTechnology.TORNADO_CASH_NOVA]: true,
+	[PrivateTransferTechnology.PRIVACY_POOLS]: true,
+})
 
 export type FungibleTokenTransferMode =
 	/**
@@ -71,8 +61,11 @@ export type TransactionPrivacy = {
 	/** Support for Tornado Cash Nova. */
 	[PrivateTransferTechnology.TORNADO_CASH_NOVA]: Support<TornadoCashNovaSupport>
 
+	/** Support for Privacy Pools. */
+	[PrivateTransferTechnology.PRIVACY_POOLS]: Support<PrivacyPoolsSupport>
+
 	// TODO: Add other forms of transaction privacy here,
-	// e.g. Privacy Pools, Railgun, etc.
+	// e.g. Railgun, etc.
 } & IfDefaultTransferMode<
 	PrivateTransferTechnology.STEALTH_ADDRESSES,
 	{
@@ -83,6 +76,12 @@ export type TransactionPrivacy = {
 		PrivateTransferTechnology.TORNADO_CASH_NOVA,
 		{
 			[PrivateTransferTechnology.TORNADO_CASH_NOVA]: Supported<TornadoCashNovaSupport>
+		}
+	> &
+	IfDefaultTransferMode<
+		PrivateTransferTechnology.PRIVACY_POOLS,
+		{
+			[PrivateTransferTechnology.PRIVACY_POOLS]: Supported<PrivacyPoolsSupport>
 		}
 	>
 
@@ -284,3 +283,126 @@ export type TornadoCashNovaSupport = WithRef<
 		  }
 	)
 >
+
+type PrivacyPoolsWithdrawalWithRelayer = {
+	/** Who is the default relayer? */
+	defaultRelayer: Entity | 'NO_DEFAULT_RELAYER'
+
+	/**
+	 * Can the relayer endpoint be customized?
+	 */
+	customizableRelayer: Support
+
+	/**
+	 * Can the relayer learn the user's IP address?
+	 */
+	relayerLearnsUserIpAddress: boolean
+} & ( // Either there is a default relayer...
+	| { defaultRelayer: Entity }
+	// Or customizable relayers must be supported.
+	| { customizableRelayer: Supported }
+)
+
+interface PrivacyPoolsCapabilitiesBase {
+	/**
+	 * Does the wallet support the Ethereum mainnet pool for Ether?
+	 */
+	etherL1Pool: Support
+
+	/**
+	 * Does the wallet support the Ethereum mainnet pool for USDC?
+	 */
+	usdcL1Pool: Support
+
+	/**
+	 * Does the wallet support ragequitting?
+	 * https://docs.privacypools.com/protocol/ragequit
+	 */
+	ragequit: Support
+
+	/**
+	 * Does the wallet support the ability to import deposit data
+	 * that has been exported from other wallets?
+	 */
+	importDeposits: Support
+
+	/**
+	 * Does the wallet support withdrawals without a relayer?
+	 */
+	withdrawalWithRelayer: Support<PrivacyPoolsWithdrawalWithRelayer>
+
+	/**
+	 * Does the wallet support withdrawals without a relayer?
+	 */
+	withdrawalWithoutRelayer: Support
+
+	/**
+	 * Does the wallet warn when doing multiple Privacy Pools operations
+	 * in quick succession, potentially leading to time-based correlation?
+	 */
+	warnAboutSuccessiveOperations: Support
+}
+
+type PrivacyPoolsCapabilities = PrivacyPoolsCapabilitiesBase &
+	// At least Ether or USDC must be supported.
+	({ etherL1Pool: Supported } | { usdcL1Pool: Supported }) &
+	// At least one form of withdrawal must be supported.
+	(| { withdrawalWithRelayer: Supported<PrivacyPoolsWithdrawalWithRelayer> }
+		| { withdrawalWithoutRelayer: Supported }
+	)
+
+interface PrivacyPoolsDepositsDataCustodian {
+	/** Who is the custodian? */
+	custodian: Entity
+
+	/**
+	 * If stored with a custodian. is there any user flow where this
+	 * custodian can learn the raw (decrypted) deposit data?
+	 */
+	custodianCanLearnDepositData: boolean
+
+	/**
+	 * If stored with a custodian, does the custodian learn the
+	 * user's IP address?
+	 */
+	custodianCanLearnUserIpAddress: boolean
+}
+
+type PrivacyPoolsDepositData = {
+	/** Can you export unencrypted deposit data out of the wallet? */
+	exportable: Support
+} & (
+	| { type: 'LOCAL_ONLY' }
+	| ({ type: 'CUSTODIAN_ONLY' } & PrivacyPoolsDepositsDataCustodian)
+	| ({
+			type: 'CUSTODIAN_OR_LOCAL'
+
+			/**
+			 * Does the user have to explicitly choose to use a custodian,
+			 * or is a custodian used by default?
+			 */
+			useOfCustodian: 'BY_DEFAULT' | 'OPT_IN'
+
+			/** Can you export unencrypted deposit data out of the wallet? */
+			exportable: Support<{
+				/**
+				 * When exporting deposit data, does the wallet require
+				 * information from the custodian before the export can be done?
+				 */
+				exportFunctionDependsOnCustodian: boolean
+			}>
+	  } & PrivacyPoolsDepositsDataCustodian)
+)
+
+/**
+ * Support data for Privacy Pools.
+ */
+export type PrivacyPoolsSupport = WithRef<{
+	/** What subset of the protocol does the wallet support? */
+	capabilities: PrivacyPoolsCapabilities
+
+	/**
+	 * How is deposit data handled?
+	 */
+	depositData: PrivacyPoolsDepositData
+}>
