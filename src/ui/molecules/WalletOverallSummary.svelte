@@ -15,6 +15,10 @@
 		score: MaybeUnratedScore
 		isInTooltip?: boolean
 	} = $props()
+
+
+	// Components
+	import ScoreBadge from '../atoms/ScoreBadge.svelte'
 </script>
 
 
@@ -43,28 +47,7 @@
 	<div>
 		Walletbeat score:
 
-		{#if score?.score !== undefined}
-			<data
-				class="badge"
-				data-badge-size="large"
-				value={score.score}
-				title={score.hasUnratedComponent ? '*contains unrated components' : undefined}
-			>
-				<strong>
-					{`${Math.round(score.score * 100)}%`}
-				</strong
-				>{#if score.hasUnratedComponent}*{/if}
-			</data>
-		{:else}
-			<data
-				class="badge"
-				data-badge-size="large"
-				value="UNRATED"
-				title="*contains unrated components"
-			>
-				<small>UNRATED</small>
-			</data>
-		{/if}
+		<ScoreBadge {score} size="large" />
 
 		<!-- <p></p> -->
 	

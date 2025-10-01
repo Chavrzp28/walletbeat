@@ -26,6 +26,7 @@
 
 	// Components
 	import Typography from '../atoms/Typography.svelte'
+	import ScoreBadge from '../atoms/ScoreBadge.svelte'
 </script>
 
 
@@ -47,28 +48,7 @@
 			<span>{attributeGroup.icon}</span> {attributeGroup.displayName}
 		</h3>
 
-		{#if groupScore?.score !== undefined}
-			<data
-				class="badge"
-				data-badge-size="medium"
-				value={groupScore.score}
-				title={groupScore.hasUnratedComponent ? '*contains unrated components' : undefined}
-			>
-				<strong>
-					{`${Math.round(groupScore.score * 100)}%`}
-				</strong
-				>{#if groupScore.hasUnratedComponent}*{/if}
-			</data>
-		{:else}
-			<data
-				class="badge"
-				data-badge-size="medium"
-				value="UNRATED"
-				title="*contains unrated components"
-			>
-				<small>UNRATED</small>
-			</data>
-		{/if}
+		<ScoreBadge score={groupScore} />
 	</header>
 
 	<p>

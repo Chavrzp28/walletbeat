@@ -40,6 +40,7 @@
 	import Pie, { PieLayout } from '@/ui/atoms/Pie.svelte'
 	import RenderCustomContent from '@/ui/atoms/RenderCustomContent.svelte'
 	import ReferenceLinks from '@/ui/atoms/ReferenceLinks.svelte'
+	import ScoreBadge from '@/ui/atoms/ScoreBadge.svelte'
 
 
 	// Props
@@ -311,26 +312,9 @@
 			<header data-sticky>
 				<h2>{attrGroup.displayName}</h2>
 
-				{#if score?.score !== undefined}
-					<data
-						class="score"
-						value={score.score}
-						title={score.hasUnratedComponent ? '*contains unrated components' : undefined}
-					>
-						<strong>
-							{`${Math.round(score.score * 100)}%`}
-						</strong
-						>{#if score.hasUnratedComponent}*{/if}
-					</data>
-				{:else}
-					<data
-						class="score"
-						value="UNRATED"
-						title="*contains unrated components"
-					>
-						<small>UNRATED</small>
-					</data>
-				{/if}
+				<ScoreBadge
+					{score}
+				/>
 			</header>
 
 			{#if attrGroup.perWalletQuestion}
