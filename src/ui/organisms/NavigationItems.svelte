@@ -14,6 +14,12 @@
 
 
 	// State
+	import { SvelteMap } from 'svelte/reactivity'
+
+	let isOpen = $state(
+		new SvelteMap<NavigationItem, boolean>()
+	)
+
 	let searchValue = $state(
 		''
 	)
@@ -144,11 +150,17 @@
 		{@render linkable(item)}
 	{:else}
 		<details
-			open={
-				searchValue ?
-					matchesSearch(item, searchValue)
-				:
-					hasCurrentPage(item)
+			bind:open={
+				() => (
+					searchValue ?
+						matchesSearch(item, searchValue)
+					:
+						isOpen.get(item) ?? isOpen.set(item, hasCurrentPage(item)).get(item)
+				),
+				_ => {
+					if (!searchValue)
+						isOpen.set(item, _)
+				}
 			}
 			data-sticky-container
 		>
