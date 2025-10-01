@@ -206,14 +206,16 @@
 
 		<header id="top">
 			<div>
-				<h1>
-					<img
-						class="wallet-icon"
-						alt={wallet.metadata.displayName}
-						src={`/images/wallets/${wallet.metadata.id}.${wallet.metadata.iconExtension}`}
-					/>
-					<span>{wallet.metadata.displayName}</span>
-				</h1>
+				<a href="#top">
+					<h1>
+						<img
+							class="wallet-icon"
+							alt={wallet.metadata.displayName}
+							src={`/images/wallets/${wallet.metadata.id}.${wallet.metadata.iconExtension}`}
+						/>
+						<span>{wallet.metadata.displayName}</span>
+					</h1>
+				</a>
 
 				<div>
 					<span>Walletbeat score: </span>
@@ -319,7 +321,11 @@
 			style:--accent={scoreToColor(score?.score)}
 		>
 			<header data-sticky>
-				<h2>{attrGroup.displayName}</h2>
+				<a href={`#${slugifyCamelCase(attrGroup.id)}`}>
+					<h2>
+						{attrGroup.displayName}
+					</h2>
+				</a>
 
 				<ScoreBadge
 					{score}
@@ -472,7 +478,11 @@
 			<summary>
 				<header>
 					<div>
-						<h3 data-icon={attribute.icon}>{attribute.displayName}</h3>
+						<a href={`#${slugifyCamelCase(attribute.id)}`}>
+							<h3 data-icon={attribute.icon}>
+								{attribute.displayName}
+							</h3>
+						</a>
 
 						{#if attribute.question}
 							<div class="subsection-caption">
@@ -878,6 +888,36 @@
 		}
 	}
 
+	a:has(> :is(h1, h2, h3)) {
+		display: flex;
+		align-items: center;
+
+		color: inherit;
+		text-decoration: none;
+
+		&:hover {
+			color: var(--accent);
+		}
+
+		&::before {
+			content: '# ';
+			display: inline-flex;
+			justify-content: end;
+			text-align: end;
+			width: 0;
+			padding-inline-end: 0.66rem;
+			margin-inline-start: -0.66rem;
+			opacity: 0;
+			font-size: 1.25rem;
+			line-height: calc(1 / 0.7);
+			transition: opacity 0.2s;
+		}
+
+		&:hover::before {
+			opacity: 1;
+		}
+	}
+
 	.nav-title {
 		z-index: 3;
 
@@ -924,7 +964,7 @@
 			gap: 1rem;
 			justify-content: space-between;
 
-			> h1 {
+			> a > h1 {
 				display: grid;
 				grid-template-columns: auto 1fr;
 				align-items: center;
