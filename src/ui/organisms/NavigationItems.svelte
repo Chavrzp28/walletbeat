@@ -76,8 +76,20 @@
 <search>
 	<input
 		type="search"
-		placeholder="Search..."
 		bind:value={searchValue}
+		placeholder="Search (⌘+K)"
+		{@attach element => {
+			globalThis.addEventListener('keydown', event => {
+				if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+					event.preventDefault()
+					element.focus()
+				}
+			})
+		}}
+		onkeyup={event => {
+			if (event.key === 'Escape')
+				event.currentTarget.blur()
+		}}
 	/>
 
 	{@render navigationItems(items)}
