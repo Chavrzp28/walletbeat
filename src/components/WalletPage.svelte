@@ -27,6 +27,7 @@
 	import {
 		attributeTree,
 		calculateAttributeGroupScore,
+		calculateOverallScore,
 	} from '@/schema/attribute-groups'
 	import { nonEmptyEntries } from '@/types/utils/non-empty'
 	import { renderStrings, slugifyCamelCase } from '@/types/utils/text'
@@ -41,6 +42,7 @@
 	import RenderCustomContent from '@/ui/atoms/RenderCustomContent.svelte'
 	import ReferenceLinks from '@/ui/atoms/ReferenceLinks.svelte'
 	import ScoreBadge from '@/ui/atoms/ScoreBadge.svelte'
+	import WalletAttributeGroupSummary from '@/ui/molecules/WalletAttributeGroupSummary.svelte'
 
 
 	// Props
@@ -102,6 +104,10 @@
 
 		return map
 	})
+
+	const overallScore = $derived(
+		calculateOverallScore(wallet.overall)
+	)
 
 
 	// Actions
@@ -198,8 +204,8 @@
 			Table of contents
 		</div>
 
-		<header id="top" class="page-header">
-			{#if wallet}
+		<header id="top">
+			<div>
 				<h1>
 					<img
 						class="wallet-icon"
@@ -208,59 +214,62 @@
 					/>
 					<span>{wallet.metadata.displayName}</span>
 				</h1>
-			{/if}
 
-			{#if wallet}
-				<section class="wallet-overview">
-					<nav class="wallet-links">
+				<div>
+					<span>Walletbeat score: </span>
+					<ScoreBadge score={overallScore} size="large" />
+				</div>
+			</div>
+
+			<section class="wallet-overview">
+				<nav class="wallet-links">
+					<a
+						href={typeof wallet.metadata.url === 'string' ? wallet.metadata.url : wallet.metadata.url?.url ?? '#'}
+						class="wallet-link website"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						Website
+					</a>
+
+					{#if wallet.metadata.repoUrl}
 						<a
-							href={typeof wallet.metadata.url === 'string' ? wallet.metadata.url : wallet.metadata.url?.url ?? '#'}
-							class="wallet-link website"
+							href={typeof wallet.metadata.repoUrl === 'string' ? wallet.metadata.repoUrl : wallet.metadata.repoUrl?.url ?? '#'}
+							class="wallet-link repo"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Website
+							GitHub Repository
 						</a>
+					{/if}
+				</nav>
 
-						{#if wallet.metadata.repoUrl}
-							<a
-								href={typeof wallet.metadata.repoUrl === 'string' ? wallet.metadata.repoUrl : wallet.metadata.repoUrl?.url ?? '#'}
-								class="wallet-link repo"
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								GitHub Repository
-							</a>
-						{/if}
-					</nav>
+				<div class="wallet-blurb">
+					<Typography
+						content={wallet.metadata.blurb}
+						strings={{ WALLET_NAME: wallet.metadata.displayName }}
+					/>
+				</div>
 
-					<div class="wallet-blurb">
-						<Typography
-							content={wallet.metadata.blurb}
-							strings={{ WALLET_NAME: wallet.metadata.displayName }}
-						/>
-					</div>
+				<footer class="wallet-platforms">
+					<span class="platforms-label">Platforms: </span>
+					{#each Object.keys(wallet.variants) as variant, i}
+						{i > 0 ? ', ' : ''}<strong>{variantToRunsOn(variant as Variant)}</strong>
+					{/each}.
 
-					<footer class="wallet-platforms">
-						<span class="platforms-label">Platforms: </span>
-						{#each Object.keys(wallet.variants) as variant, i}
-							{i > 0 ? ', ' : ''}<strong>{variantToRunsOn(variant as Variant)}</strong>
-						{/each}.
-
-						{#if singleVariant === null}
-							<span class="variant-disclaimer">
-								The ratings below vary depending on the version.
-								{#if pickedVariant === null}
-									Select a version to see version-specific ratings.
-								{:else}
-									You are currently viewing the ratings for the
-									<strong>{variantToName(pickedVariant, false)}</strong> version.
-								{/if}
-							</span>
-						{/if}
-					</footer>
-				</section>
-			{/if}
+					{#if singleVariant === null}
+						<span class="variant-disclaimer">
+							The ratings below vary depending on the version.
+							{#if pickedVariant === null}
+								Select a version to see version-specific ratings.
+							{:else}
+								You are currently viewing the ratings for the
+								<strong>{variantToName(pickedVariant, false)}</strong> version.
+							{/if}
+						</span>
+					{/if}
+				</footer>
+			</section>
 		</header>
 
 		{#each evalTree ? objectEntries(attributeTree) : [] as [attrGroupId, attrGroup]}
@@ -906,18 +915,29 @@
 		}
 	}
 
-	.page-header {
-		display: grid;
-		padding: 3rem 1rem;
+	header {
 		gap: 1.5rem;
 
-		h1 {
-			display: grid;
-			grid-template-columns: auto 1fr;
+		> div {
+			display: flex;
 			align-items: center;
-			gap: 0.5rem;
-			font-size: 2.25rem;
-			color: var(--text-primary);
+			gap: 1rem;
+			justify-content: space-between;
+
+			> h1 {
+				display: grid;
+				grid-template-columns: auto 1fr;
+				align-items: center;
+				gap: 0.5rem;
+				font-size: 2.25rem;
+				color: var(--text-primary);
+			}
+
+			> div {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+			}
 		}
 	}
 
