@@ -113,7 +113,7 @@
 	import { variantUrlQuery, variantToName } from '@/components/variants'
 	import { hasVariant } from '@/schema/variants'
 	import { walletSupportedAccountTypes, attributeVariantSpecificity, VariantSpecificity } from '@/schema/wallet'
-	import { calculateAttributeGroupScore } from '@/schema/attribute-groups'
+	import { calculateAttributeGroupScore, calculateOverallScore, filterEvaluationTree } from '@/schema/attribute-groups'
 	import { isLabeledUrl } from '@/schema/url'
 	import { evaluatedAttributesEntries, ratingToColor } from '@/schema/attributes'
 	import { isNonEmptyArray, nonEmptyMap } from '@/types/utils/non-empty'
@@ -368,18 +368,15 @@
 						{
 							id: 'overall',
 							name: 'Rating',
-							getValue(wallet) {
-								// Calculate aggregate score across all attribute groups
-								const scores = (
-									this.children!
-										.map(column => column.getValue(wallet))
-										.filter(score => score !== undefined)
+							getValue: wallet => (
+								calculateOverallScore(
+									filterEvaluationTree(
+										wallet.overall,
+										displayedAttributeGroups
+									)
 								)
-
-								if (!scores.length) return undefined
-
-								return scores.reduce((sum, score) => sum + score, 0) / scores.length
-							},
+									?.score
+							),
 							defaultSortDirection: 'desc',
 							defaultIsExpanded: true,
 							children: (
@@ -709,7 +706,14 @@
 			{@const highlightedSliceId = selectedSliceId ?? activeSliceId}
 			<!-- Overall rating -->
 			{#if column.id === 'overall'}
-				{@const score = value}
+				{@const score = (
+					calculateOverallScore(
+						filterEvaluationTree(
+							wallet.overall,
+							displayedAttributeGroups
+						)
+					)
+				)}
 
 				{#snippet content()}
 					<Pie
@@ -803,22 +807,16 @@
 							{#if summaryVisualization === SummaryVisualization.Score}
 								<text>
 									{
-										score ?
+										score?.score !== undefined ?
 											`${
-												score === 0 ?
+												score.score === 0 ?
 													'\u{1f480}'
-												: score === 1 ?
+												: score.score === 1 ?
 													'\u{1f4af}'
 												:
-													(score * 100).toFixed(0)
+													(score.score * 100).toFixed(0)
 											}${
-												(
-													displayedAttributeGroups
-														.some(attrGroup => (
-															calculateAttributeGroupScore(attrGroup.attributeWeights, wallet.overall[attrGroup.id])
-																?.hasUnratedComponent
-														))
-												) ?
+												score?.hasUnratedComponent ?
 													'*'
 												:
 													''
@@ -830,7 +828,7 @@
 							{:else if summaryVisualization === SummaryVisualization.Dot}
 								<circle
 									r="4"
-									fill={scoreToColor(score)}
+									fill={scoreToColor(score?.score)}
 								>
 									{#if score?.hasUnratedComponent}
 										<title>
