@@ -24,6 +24,10 @@
 		''
 	)
 
+	let effectiveSearchValue = $derived(
+		searchValue.trim().toLowerCase()
+	)
+
 
 	// Functions
 	const hasCurrentPage = (item: NavigationItem) => (
@@ -31,50 +35,49 @@
 		|| (item.children?.some(hasCurrentPage) ?? false)
 	)
 
-	const fuzzyMatch = (text: string, query: string): number[] | null => {
-		if (query === '') return null
-
-		const textLower = text.toLowerCase()
-		const queryLower = query.toLowerCase()
-		const matches: number[] = []
+	const fuzzyMatch = (text: string, query: string): [number, number][] | undefined => {
+		const ranges: [number, number][] = []
 		let textIndex = 0
 
-		for (const char of queryLower) {
-			textIndex = textLower.indexOf(char, textIndex)
-			if (textIndex === -1) return null
-			matches.push(textIndex)
+		for (const char of query) {
+			textIndex = text.toLowerCase().indexOf(char, textIndex)
+			if (textIndex === -1) return
+
+			const lastRange = ranges.at(-1)
+			if (lastRange && lastRange[1] === textIndex) {
+				lastRange[1]++
+			} else {
+				ranges.push([textIndex, textIndex + 1])
+			}
+
 			textIndex++
 		}
 
-		return matches
+		return ranges
 	}
 
 	const matchesSearch = (item: NavigationItem, query: string): boolean => (
-		query === ''
-		|| fuzzyMatch(item.title, query) !== null
+		!query
+		|| !!fuzzyMatch(item.title, query)
 		|| (item.children?.some((child) => matchesSearch(child, query)) ?? false)
 	)
 
 	const highlightText = (text: string, query: string) => {
-		const matches = fuzzyMatch(text, query)
-		if (!matches) return text
+		const ranges = fuzzyMatch(text, query)
 
-		const parts: string[] = []
-		let lastIndex = 0
-
-		for (const index of matches) {
-			if (index > lastIndex) {
-				parts.push(text.slice(lastIndex, index))
-			}
-			parts.push(`<mark>${text[index]}</mark>`)
-			lastIndex = index + 1
-		}
-
-		if (lastIndex < text.length) {
-			parts.push(text.slice(lastIndex))
-		}
-
-		return parts.join('')
+		return (
+			ranges ?
+				[
+					...ranges.flatMap(([start, end], i, arr) => [
+						text.slice(arr[i - 1]?.[1] ?? 0, start),
+						`<mark>${text.slice(start, end)}</mark>`,
+					]),
+					text.slice(ranges.at(-1)?.[1] ?? 0),
+				]
+					.join('')
+			:
+				text
+		)
 	}
 </script>
 
@@ -132,8 +135,8 @@
 {#snippet navigationItems(items: NavigationItem[])}
 	<menu>
 		{#each (
-			searchValue ?
-				items.filter(item => matchesSearch(item, searchValue))
+			effectiveSearchValue ?
+				items.filter(item => matchesSearch(item, effectiveSearchValue))
 			:
 				items
 		) as item (item.id)}
@@ -152,13 +155,13 @@
 		<details
 			bind:open={
 				() => (
-					searchValue ?
-						matchesSearch(item, searchValue)
+					effectiveSearchValue ?
+						matchesSearch(item, effectiveSearchValue)
 					:
 						isOpen.get(item) ?? isOpen.set(item, hasCurrentPage(item)).get(item)
 				),
 				_ => {
-					if (!searchValue)
+					if (!effectiveSearchValue && _ !== undefined)
 						isOpen.set(item, _)
 				}
 			}
@@ -188,14 +191,14 @@
 				<span class="icon">{@html item.icon}</span>
 			{/if}
 
-			<span>{@html searchValue ? highlightText(item.title, searchValue) : item.title}</span>
+			<span>{@html effectiveSearchValue ? highlightText(item.title, effectiveSearchValue) : item.title}</span>
 		</a>
 	{:else}
 		{#if item.icon}
 			<span class="icon">{@html item.icon}</span>
 		{/if}
 
-		<span>{@html searchValue ? highlightText(item.title, searchValue) : item.title}</span>
+		<span>{@html effectiveSearchValue ? highlightText(item.title, effectiveSearchValue) : item.title}</span>
 	{/if}
 {/snippet}
 
