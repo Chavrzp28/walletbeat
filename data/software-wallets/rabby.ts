@@ -2,11 +2,13 @@ import { nconsigny } from '@/data/contributors/nconsigny'
 import { polymutex } from '@/data/contributors/polymutex'
 import { AccountType } from '@/schema/features/account-support'
 import {
-	Leak,
-	LeakedPersonalInfo,
-	LeakedWalletInfo,
+	CollectionPolicy,
+	DataCollectionPurpose,
 	MultiAddressPolicy,
+	PersonalInfo,
 	RegularEndpoint,
+	UserFlow,
+	WalletInfo,
 } from '@/schema/features/privacy/data-collection'
 import { PrivateTransferTechnology } from '@/schema/features/privacy/transaction-privacy'
 import { WalletProfile } from '@/schema/features/profile'
@@ -180,46 +182,86 @@ export const rabby: SoftwareWallet = {
 		privacy: {
 			dataCollection: {
 				[Variant.BROWSER]: {
-					collectedByEntities: [
-						{
-							// The code refers to this by `api.rabby.io`, but Rabby is wholly owned by DeBank.
-							entity: deBank,
-							leaks: {
-								[LeakedPersonalInfo.CEX_ACCOUNT]: Leak.NEVER, // There appears to be code to link to a Coinbase account but no way to reach it from the UI?
-								[LeakedPersonalInfo.IP_ADDRESS]: Leak.ALWAYS,
-								[LeakedWalletInfo.MEMPOOL_TRANSACTIONS]: Leak.ALWAYS,
-								[LeakedWalletInfo.WALLET_ACTIONS]: Leak.ALWAYS, // Matomo analytics
-								[LeakedWalletInfo.WALLET_ADDRESS]: Leak.ALWAYS,
-								[LeakedWalletInfo.WALLET_CONNECTED_DOMAINS]: Leak.ALWAYS, // Scam prevention dialog queries online service and sends domain name
-								endpoint: RegularEndpoint,
-								multiAddress: {
-									type: MultiAddressPolicy.ACTIVE_ADDRESS_ONLY,
+					[UserFlow.NATIVE_SWAP]: {
+						collected: [],
+					},
+					[UserFlow.SEND]: {
+						collected: [],
+					},
+					[UserFlow.ONBOARDING]: {
+						collected: [],
+						publishedOnchain: 'NO_DATA_PUBLISHED_ONCHAIN',
+					},
+					[UserFlow.TRANSACTION]: {
+						collected: [],
+					},
+					[UserFlow.DAPP_CONNECTION]: {
+						collected: [
+							{
+								// The code refers to this by `api.rabby.io`, but Rabby is wholly owned by DeBank.
+								byEntity: deBank,
+								dataCollection: {
+									[PersonalInfo.IP_ADDRESS]: CollectionPolicy.ALWAYS,
+									[WalletInfo.ACCOUNT_ADDRESS]: CollectionPolicy.ALWAYS,
+									[WalletInfo.WALLET_CONNECTED_DOMAINS]: CollectionPolicy.ALWAYS, // Scam prevention dialog queries online service and sends domain name
+									endpoint: RegularEndpoint,
+									multiAddress: {
+										type: MultiAddressPolicy.ACTIVE_ADDRESS_ONLY,
+									},
 								},
+								purposes: [DataCollectionPurpose.SCAM_DETECTION],
 								ref: [
-									{
-										explanation: 'All wallet traffic goes through api.rabby.io without proxying.',
-										url: 'https://github.com/RabbyHub/Rabby/blob/356ed60957d61d508a89d71c63a33b7474d6b311/src/constant/index.ts#L468',
-									},
-									{
-										explanation:
-											'Rabby uses self-hosted Matomo Analytics to track user actions within the wallet interface. While this tracking data does not contain wallet addresses, it goes to DeBank-owned servers much like Ethereum RPC requests do. This puts DeBank in a position to link user actions with wallet addresses through IP address correlation.',
-										url: 'https://github.com/search?q=repo%3ARabbyHub%2FRabby%20matomoRequestEvent&type=code',
-									},
 									{
 										explanation:
 											'Rabby checks whether the domain you are connecting your wallet to is on a scam list. It sends the domain along with Ethereum address in non-proxied HTTP requests for API methods `getOriginIsScam`, `getOriginPopularityLevel`, `getRecommendChains`, and others.',
 										label: 'Rabby API code on npmjs.com',
 										url: 'https://www.npmjs.com/package/@rabby-wallet/rabby-api?activeTab=code',
 									},
+								],
+							},
+						],
+					},
+					[UserFlow.UNCLASSIFIED]: {
+						collected: [
+							{
+								// The code refers to this by `api.rabby.io`, but Rabby is wholly owned by DeBank.
+								byEntity: deBank,
+								dataCollection: {
+									[PersonalInfo.CEX_ACCOUNT]: CollectionPolicy.NEVER, // There appears to be code to link to a Coinbase account but no way to reach it from the UI?
+									[PersonalInfo.IP_ADDRESS]: CollectionPolicy.ALWAYS,
+									[WalletInfo.MEMPOOL_TRANSACTIONS]: CollectionPolicy.ALWAYS,
+									[WalletInfo.USER_ACTIONS]: CollectionPolicy.ALWAYS, // Matomo analytics
+									[WalletInfo.ACCOUNT_ADDRESS]: CollectionPolicy.ALWAYS,
+									endpoint: RegularEndpoint,
+									multiAddress: {
+										type: MultiAddressPolicy.ACTIVE_ADDRESS_ONLY,
+									},
+								},
+								purposes: [
+									DataCollectionPurpose.CHAIN_DATA_LOOKUP,
+									DataCollectionPurpose.ANALYTICS,
+									DataCollectionPurpose.SWAP_QUOTE,
+									DataCollectionPurpose.TRANSACTION_BROADCAST,
+									DataCollectionPurpose.TRANSACTION_SIMULATION,
+								],
+								ref: [
+									{
+										explanation: 'All wallet traffic goes through api.rabby.io without proxying.',
+										url: 'https://github.com/RabbyHub/Rabby/blob/356ed60957d61d508a89d71c63a33b7474d6b311/src/constant/index.ts#L468',
+									},
 									{
 										explanation: 'Balance refresh requests are made about the active address only.',
 										url: 'https://github.com/RabbyHub/Rabby/blob/356ed60957d61d508a89d71c63a33b7474d6b311/src/background/controller/wallet.ts#L1622',
 									},
+									{
+										explanation:
+											'Rabby uses self-hosted Matomo Analytics to track user actions within the wallet interface. While this tracking data does not contain wallet addresses, it goes to DeBank-owned servers much like Ethereum RPC requests do. This puts DeBank in a position to link user actions with wallet addresses through IP address correlation.',
+										url: 'https://github.com/search?q=repo%3ARabbyHub%2FRabby%20matomoRequestEvent&type=code',
+									},
 								],
 							},
-						},
-					],
-					onchain: {},
+						],
+					},
 				},
 				[Variant.DESKTOP]: null,
 				[Variant.MOBILE]: null,

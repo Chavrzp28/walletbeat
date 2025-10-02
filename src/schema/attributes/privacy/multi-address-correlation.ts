@@ -8,12 +8,14 @@ import {
 } from '@/schema/attributes'
 import type { ResolvedFeatures } from '@/schema/features'
 import {
+	collectedByDefault,
+	type DataCollectionByEntity,
+	dataCollectionForAllSupportedFlows,
 	type Endpoint,
-	type EntityData,
-	inferEndpointLeaks,
-	leaksByDefault,
 	type MultiAddressHandling,
 	MultiAddressPolicy,
+	qualifiedDataCollectionWithEndpoint,
+	WalletInfo,
 } from '@/schema/features/privacy/data-collection'
 import { isSupported } from '@/schema/features/support'
 import { type ReferenceArray, refs } from '@/schema/reference'
@@ -367,18 +369,20 @@ export const multiAddressCorrelation: Attribute<MultiAddressCorrelationValue> = 
 			return unsupported()
 		}
 
-		if (features.privacy.dataCollection === null) {
+		const dataCollection = dataCollectionForAllSupportedFlows(features.privacy.dataCollection)
+
+		if (dataCollection === null) {
 			return unrated(multiAddressCorrelation, brand, null)
 		}
 
-		let worstHandling: EntityData | null = null
+		let worstHandling: DataCollectionByEntity | null = null
 		let worstHandlingScore = -1
 		const allRefs: ReferenceArray = []
 
-		for (const collected of features.privacy.dataCollection.collectedByEntities) {
-			const leaks = inferEndpointLeaks(collected.leaks)
+		for (const collected of dataCollection) {
+			const leaks = qualifiedDataCollectionWithEndpoint(collected.dataCollection)
 
-			if (!leaksByDefault(leaks.walletAddress)) {
+			if (!collectedByDefault(leaks[WalletInfo.ACCOUNT_ADDRESS])) {
 				continue
 			}
 
@@ -386,7 +390,7 @@ export const multiAddressCorrelation: Attribute<MultiAddressCorrelationValue> = 
 				return unrated(multiAddressCorrelation, brand, null)
 			}
 
-			allRefs.push(...refs(collected.leaks))
+			allRefs.push(...refs(collected))
 			const score = rateHandling(leaks.multiAddress, leaks.endpoint)
 
 			if (worstHandling === null || score < worstHandlingScore) {
@@ -399,7 +403,7 @@ export const multiAddressCorrelation: Attribute<MultiAddressCorrelationValue> = 
 			return unrated(multiAddressCorrelation, brand, null)
 		}
 
-		const handling = worstHandling.leaks.multiAddress
+		const handling = worstHandling.dataCollection.multiAddress
 
 		if (handling === undefined) {
 			return unrated(multiAddressCorrelation, brand, null)

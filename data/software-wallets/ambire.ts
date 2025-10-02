@@ -2,11 +2,13 @@ import { jiojosbg } from '@/data/contributors/jiojosbg'
 import { AccountType, TransactionGenerationCapability } from '@/schema/features/account-support'
 import type { AddressResolutionData } from '@/schema/features/privacy/address-resolution'
 import {
-	Leak,
-	LeakedPersonalInfo,
-	LeakedWalletInfo,
+	CollectionPolicy,
+	DataCollectionPurpose,
 	MultiAddressPolicy,
+	PersonalInfo,
 	RegularEndpoint,
+	UserFlow,
+	WalletInfo,
 } from '@/schema/features/privacy/data-collection'
 import { PrivateTransferTechnology } from '@/schema/features/privacy/transaction-privacy'
 import { WalletProfile } from '@/schema/features/profile'
@@ -105,7 +107,7 @@ const dataLeakReferences: Record<string, References> = {
 	],
 	biconomy: [
 		{
-			explanation: 'Pimlico is used as a Bundler and gas estimation helper.',
+			explanation: 'Biconomy is used as a Bundler.',
 			url: 'https://bundler.biconomy.io',
 		},
 	],
@@ -295,64 +297,94 @@ export const ambire: SoftwareWallet = {
 		multiAddress: featureSupported,
 		privacy: {
 			dataCollection: {
-				collectedByEntities: [
-					{
-						entity: ambireEntity,
-						leaks: {
-							[LeakedPersonalInfo.IP_ADDRESS]: Leak.ALWAYS,
-							[LeakedWalletInfo.MEMPOOL_TRANSACTIONS]: Leak.ALWAYS,
-							[LeakedWalletInfo.WALLET_ADDRESS]: Leak.ALWAYS,
-							endpoint: RegularEndpoint,
-							multiAddress: {
-								type: MultiAddressPolicy.ACTIVE_ADDRESS_ONLY,
+				[UserFlow.NATIVE_SWAP]: {
+					collected: [
+						{
+							byEntity: lifi,
+							dataCollection: {
+								[PersonalInfo.IP_ADDRESS]: CollectionPolicy.ALWAYS,
+								endpoint: RegularEndpoint,
 							},
-							ref: dataLeakReferences.ambire,
-						},
-					},
-					{
-						entity: pimlico,
-						leaks: {
-							[LeakedPersonalInfo.IP_ADDRESS]: Leak.ALWAYS,
-							[LeakedWalletInfo.MEMPOOL_TRANSACTIONS]: Leak.ALWAYS,
-							[LeakedWalletInfo.WALLET_ADDRESS]: Leak.ALWAYS,
-							endpoint: RegularEndpoint,
-							multiAddress: {
-								type: MultiAddressPolicy.ACTIVE_ADDRESS_ONLY,
-							},
-							ref: dataLeakReferences.pimlico,
-						},
-					},
-					{
-						entity: biconomy,
-						leaks: {
-							[LeakedPersonalInfo.IP_ADDRESS]: Leak.ALWAYS,
-							[LeakedWalletInfo.MEMPOOL_TRANSACTIONS]: Leak.ALWAYS,
-							[LeakedWalletInfo.WALLET_ADDRESS]: Leak.ALWAYS,
-							endpoint: RegularEndpoint,
-							multiAddress: {
-								type: MultiAddressPolicy.ACTIVE_ADDRESS_ONLY,
-							},
-							ref: dataLeakReferences.biconomy,
-						},
-					},
-					{
-						entity: lifi,
-						leaks: {
-							[LeakedPersonalInfo.IP_ADDRESS]: Leak.ALWAYS,
-							endpoint: RegularEndpoint,
+							purposes: [DataCollectionPurpose.ASSET_METADATA],
 							ref: dataLeakReferences.lifi,
 						},
-					},
-					{
-						entity: github,
-						leaks: {
-							[LeakedPersonalInfo.IP_ADDRESS]: Leak.ALWAYS,
-							endpoint: RegularEndpoint,
+					],
+				},
+				[UserFlow.ONBOARDING]: {
+					collected: [],
+					publishedOnchain: 'NO_DATA_PUBLISHED_ONCHAIN',
+				},
+				[UserFlow.SEND]: {
+					collected: [],
+				},
+				[UserFlow.DAPP_CONNECTION]: {
+					collected: [],
+				},
+				[UserFlow.TRANSACTION]: {
+					collected: [
+						{
+							byEntity: ambireEntity,
+							dataCollection: {
+								[PersonalInfo.IP_ADDRESS]: CollectionPolicy.ALWAYS,
+								[WalletInfo.MEMPOOL_TRANSACTIONS]: CollectionPolicy.ALWAYS,
+								[WalletInfo.ACCOUNT_ADDRESS]: CollectionPolicy.ALWAYS,
+								endpoint: RegularEndpoint,
+								multiAddress: {
+									type: MultiAddressPolicy.ACTIVE_ADDRESS_ONLY,
+								},
+							},
+							purposes: [
+								DataCollectionPurpose.CHAIN_DATA_LOOKUP,
+								DataCollectionPurpose.TRANSACTION_BROADCAST,
+							],
+							ref: dataLeakReferences.ambire,
+						},
+						{
+							byEntity: pimlico,
+							dataCollection: {
+								[PersonalInfo.IP_ADDRESS]: CollectionPolicy.ALWAYS,
+								[WalletInfo.MEMPOOL_TRANSACTIONS]: CollectionPolicy.ALWAYS,
+								[WalletInfo.ACCOUNT_ADDRESS]: CollectionPolicy.ALWAYS,
+								endpoint: RegularEndpoint,
+								multiAddress: {
+									type: MultiAddressPolicy.ACTIVE_ADDRESS_ONLY,
+								},
+							},
+							purposes: [DataCollectionPurpose.TRANSACTION_BROADCAST],
+							ref: dataLeakReferences.pimlico,
+						},
+						{
+							byEntity: biconomy,
+							dataCollection: {
+								[PersonalInfo.IP_ADDRESS]: CollectionPolicy.ALWAYS,
+								[WalletInfo.MEMPOOL_TRANSACTIONS]: CollectionPolicy.ALWAYS,
+								[WalletInfo.ACCOUNT_ADDRESS]: CollectionPolicy.ALWAYS,
+								endpoint: RegularEndpoint,
+								multiAddress: {
+									type: MultiAddressPolicy.ACTIVE_ADDRESS_ONLY,
+								},
+							},
+							purposes: [DataCollectionPurpose.TRANSACTION_BROADCAST],
+							ref: dataLeakReferences.biconomy,
+						},
+					],
+				},
+				[UserFlow.UNCLASSIFIED]: {
+					collected: [
+						{
+							byEntity: github,
+							dataCollection: {
+								[PersonalInfo.IP_ADDRESS]: CollectionPolicy.ALWAYS,
+								endpoint: RegularEndpoint,
+							},
+							purposes: [
+								DataCollectionPurpose.UPDATE_CHECKING,
+								DataCollectionPurpose.STATIC_ASSETS,
+							],
 							ref: dataLeakReferences.github,
 						},
-					},
-				],
-				onchain: {},
+					],
+				},
 			},
 			privacyPolicy: 'https://www.ambire.com/Ambire%20ToS%20and%20PP%20(26%20November%202021).pdf',
 			transactionPrivacy: {

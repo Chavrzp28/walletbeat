@@ -3,7 +3,7 @@ import type React from 'react'
 
 import { subsectionWeight } from '@/components/constants'
 import type { WalletAddressLinkableBy } from '@/schema/attributes/privacy/address-correlation'
-import { compareLeakedInfo, leakedInfoName } from '@/schema/features/privacy/data-collection'
+import { compareUserInfo, userInfoName } from '@/schema/features/privacy/data-collection'
 import { mergeRefs } from '@/schema/reference'
 import { isUrl } from '@/schema/url'
 import type { AddressCorrelationDetailsProps } from '@/types/content/address-correlation-details'
@@ -33,7 +33,7 @@ export function AddressCorrelationDetails({
 				return -1
 			}
 
-			return compareLeakedInfo(linkableA.info, linkableB.info)
+			return compareUserInfo(linkableA.info, linkableB.info)
 		},
 		true,
 	)) {
@@ -53,7 +53,7 @@ export function AddressCorrelationDetails({
 			<JoinedList
 				data={linkables.map(linkable => ({
 					key: linkable.info,
-					value: <strong>{leakedInfoName(linkable.info).long}</strong>,
+					value: <strong>{userInfoName(linkable.info).long}</strong>,
 				}))}
 			/>
 		)

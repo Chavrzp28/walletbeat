@@ -2,10 +2,12 @@ import { patrickalphac } from '@/data/contributors'
 import { bitbox } from '@/data/entities/bitbox'
 import { etherscan } from '@/data/entities/etherscan'
 import {
-	Leak,
-	LeakedPersonalInfo,
-	LeakedWalletInfo,
+	CollectionPolicy,
+	DataCollectionPurpose,
+	PersonalInfo,
 	RegularEndpoint,
+	UserFlow,
+	WalletInfo,
 } from '@/schema/features/privacy/data-collection'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
 import { BugBountyProgramType } from '@/schema/features/security/bug-bounty-program'
@@ -71,14 +73,17 @@ export const bitboxWallet: HardwareWallet = {
 		multiAddress: null,
 		privacy: {
 			dataCollection: {
-				collectedByEntities: [
-					{
-						entity: bitbox,
-						leaks: {
-							[LeakedPersonalInfo.IP_ADDRESS]: Leak.BY_DEFAULT,
-							[LeakedWalletInfo.WALLET_ADDRESS]: Leak.BY_DEFAULT,
-							[LeakedWalletInfo.WALLET_ACTIONS]: Leak.BY_DEFAULT,
-							endpoint: RegularEndpoint,
+				[UserFlow.UNCLASSIFIED]: {
+					collected: [
+						{
+							byEntity: bitbox,
+							dataCollection: {
+								[PersonalInfo.IP_ADDRESS]: CollectionPolicy.BY_DEFAULT,
+								[WalletInfo.ACCOUNT_ADDRESS]: CollectionPolicy.BY_DEFAULT,
+								[WalletInfo.USER_ACTIONS]: CollectionPolicy.BY_DEFAULT,
+								endpoint: RegularEndpoint,
+							},
+							purposes: [DataCollectionPurpose.ANALYTICS],
 							ref: [
 								{
 									explanation:
@@ -87,14 +92,18 @@ export const bitboxWallet: HardwareWallet = {
 								},
 							],
 						},
-					},
-					{
-						entity: etherscan,
-						leaks: {
-							[LeakedPersonalInfo.IP_ADDRESS]: Leak.BY_DEFAULT,
-							[LeakedWalletInfo.WALLET_ADDRESS]: Leak.BY_DEFAULT,
-							[LeakedWalletInfo.WALLET_BALANCE]: Leak.BY_DEFAULT,
-							endpoint: RegularEndpoint,
+						{
+							byEntity: etherscan,
+							dataCollection: {
+								[PersonalInfo.IP_ADDRESS]: CollectionPolicy.BY_DEFAULT,
+								[WalletInfo.ACCOUNT_ADDRESS]: CollectionPolicy.BY_DEFAULT,
+								[WalletInfo.BALANCE]: CollectionPolicy.BY_DEFAULT,
+								endpoint: RegularEndpoint,
+							},
+							purposes: [
+								DataCollectionPurpose.CHAIN_DATA_LOOKUP,
+								DataCollectionPurpose.ASSET_METADATA,
+							],
 							ref: [
 								{
 									explanation:
@@ -103,15 +112,19 @@ export const bitboxWallet: HardwareWallet = {
 								},
 							],
 						},
-					},
-				],
-				onchain: {
-					ref: [
-						{
-							explanation: 'BitBox does not put personal data onchain',
-							url: 'https://bitbox.swiss/policies/privacy-policy/',
-						},
 					],
+				},
+				[UserFlow.ONBOARDING]: {
+					collected: [],
+					publishedOnchain: 'NO_DATA_PUBLISHED_ONCHAIN',
+				},
+				[UserFlow.DAPP_CONNECTION]: 'FLOW_NOT_SUPPORTED',
+				[UserFlow.NATIVE_SWAP]: 'FLOW_NOT_SUPPORTED',
+				[UserFlow.SEND]: {
+					collected: [],
+				},
+				[UserFlow.TRANSACTION]: {
+					collected: [],
 				},
 			},
 			hardwarePrivacy: null,

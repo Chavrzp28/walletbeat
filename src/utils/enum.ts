@@ -4,6 +4,8 @@ import {
 	type NonEmptySet,
 	nonEmptySetFromArray,
 	setContains,
+	setItems,
+	setUnion,
 } from '@/types/utils/non-empty'
 
 /**
@@ -33,4 +35,26 @@ export class Enum<E extends string> {
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Safe because this is exactly what we are trying to establish
 		return setContains(this.set, obj as E)
 	}
+}
+
+/**
+ * Merge two enum classes together into a larger enum class.
+ */
+export function mergeEnums<E1 extends string, E2 extends string>(
+	e1: Enum<E1>,
+	e2: Enum<E2>,
+): Enum<E1 | E2> {
+	const mergedSet = setUnion<E1 | E2>([
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Safe because E1|E2 is a superset of E1.
+		e1.set as NonEmptySet<E1 | E2>,
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Safe because E1|E2 is a superset of E2.
+		e2.set as NonEmptySet<E1 | E2>,
+	])
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Safe because the mergedSet is guaranteed to contain all elements of E1 and E2.
+	const mergedRecord = Object.fromEntries(setItems(mergedSet).map(e => [e, true])) as Record<
+		E1 | E2,
+		true
+	>
+
+	return new Enum<E1 | E2>(mergedRecord)
 }

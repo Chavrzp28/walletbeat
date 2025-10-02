@@ -1,14 +1,15 @@
 import type { MustRef, WithRef } from '@/schema/reference'
-import type { Dict } from '@/types/utils/dict'
+import type { NonEmptyArray, NonEmptyRecord } from '@/types/utils/non-empty'
+import { Enum, mergeEnums } from '@/utils/enum'
 
 import type { Entity } from '../../entity'
 
 /**
- * An enum representing when data collection or leak occurs.
+ * An enum representing when data collection occurs.
  *
  * Values are comparable as integers; the closest to zero, the more privacy.
  */
-export enum Leak {
+export enum CollectionPolicy {
 	/** The data is never collected. */
 	NEVER = 0,
 
@@ -260,8 +261,8 @@ export type Endpoint =
 				  }
 	  }
 
-/** Returns whether */
-export function endpointLeaksIpAddress(endpoint: Endpoint): 'YES' | 'NO' | 'UNVERIFIABLE' {
+/** Returns whether an endpoint gets to learn the user's IP address */
+export function endpointLearnsUserIpAddress(endpoint: Endpoint): 'YES' | 'NO' | 'UNVERIFIABLE' {
 	switch (endpoint.type) {
 		case 'REGULAR':
 			return 'YES'
@@ -300,15 +301,14 @@ export function endpointLeaksIpAddress(endpoint: Endpoint): 'YES' | 'NO' | 'UNVE
 }
 
 /**
- * @param leak Some leak level.
- * @returns If the data collection happens by default.
+ * @returns If the data collection happens by default for the given collection policy.
  */
-export function leaksByDefault(leak: Leak): boolean {
-	return leak >= Leak.BY_DEFAULT
+export function collectedByDefault(collectionPolicy: CollectionPolicy): boolean {
+	return collectionPolicy >= CollectionPolicy.BY_DEFAULT
 }
 
 /** Personal information types. */
-export enum LeakedPersonalInfo {
+export enum PersonalInfo {
 	/** The user's IP address. */
 	IP_ADDRESS = 'ipAddress',
 
@@ -351,27 +351,43 @@ export enum LeakedPersonalInfo {
 	FARCASTER_ACCOUNT = 'farcasterAccount',
 }
 
-/** Wallet-related information types. */
-export enum LeakedWalletInfo {
-	/** The user's wallet activity. */
-	WALLET_ACTIONS = 'walletActions',
+export const personalInfo = new Enum<PersonalInfo>({
+	[PersonalInfo.IP_ADDRESS]: true,
+	[PersonalInfo.PSEUDONYM]: true,
+	[PersonalInfo.LEGAL_NAME]: true,
+	[PersonalInfo.EMAIL]: true,
+	[PersonalInfo.PHONE]: true,
+	[PersonalInfo.BROWSING_HISTORY_URLS]: true,
+	[PersonalInfo.CONTACTS]: true,
+	[PersonalInfo.PHYSICAL_ADDRESS]: true,
+	[PersonalInfo.FACE]: true,
+	[PersonalInfo.CEX_ACCOUNT]: true,
+	[PersonalInfo.GOVERNMENT_ID]: true,
+	[PersonalInfo.X_DOT_COM_ACCOUNT]: true,
+	[PersonalInfo.FARCASTER_ACCOUNT]: true,
+})
 
-	/** The user's wallet address. */
-	WALLET_ADDRESS = 'walletAddress',
+/** Wallet-related information types. */
+export enum WalletInfo {
+	/** The user's wallet actions (clicks etc). */
+	USER_ACTIONS = 'userActions',
+
+	/** The user's account address. */
+	ACCOUNT_ADDRESS = 'accountAddress',
 
 	/**
 	 * The user's wallet balance.
 	 * This can easily be turned back into an address, because most
 	 * addresses' balance amount is unique.
 	 */
-	WALLET_BALANCE = 'walletBalance',
+	BALANCE = 'balance',
 
 	/**
 	 * The set of assets that are in the wallet.
 	 * On wallets with many NFTs, this can be used to uniquely identify the
 	 * wallet.
 	 */
-	WALLET_ASSETS = 'walletAssets',
+	ASSETS = 'assets',
 
 	/**
 	 * The user's wallet transactions before they are included onchain.
@@ -383,65 +399,74 @@ export enum LeakedWalletInfo {
 	WALLET_CONNECTED_DOMAINS = 'walletConnectedDomains',
 }
 
-export type LeakedInfo = LeakedPersonalInfo | LeakedWalletInfo
+export const walletInfo = new Enum<WalletInfo>({
+	[WalletInfo.USER_ACTIONS]: true,
+	[WalletInfo.ACCOUNT_ADDRESS]: true,
+	[WalletInfo.BALANCE]: true,
+	[WalletInfo.ASSETS]: true,
+	[WalletInfo.MEMPOOL_TRANSACTIONS]: true,
+	[WalletInfo.WALLET_CONNECTED_DOMAINS]: true,
+})
 
-/** List of all LeakedInfos. */
-export const leakedInfos = (Object.values(LeakedPersonalInfo) as LeakedInfo[]).concat(
-	Object.values(LeakedWalletInfo),
+export type UserInfo = PersonalInfo | WalletInfo
+
+export const userInfoEnums: Enum<UserInfo> = mergeEnums<PersonalInfo, WalletInfo>(
+	personalInfo,
+	walletInfo,
 )
 
 /**
- * Rough ordering score for comparing LeakedInfo.
+ * Rough ordering score for comparing UserInfo.
  * Higher score means the data is more sensitive.
  */
-function leakedInfoScore(leakedInfo: LeakedInfo): number {
-	switch (leakedInfo) {
-		case LeakedPersonalInfo.IP_ADDRESS:
+function userInfoScore(userInfo: UserInfo): number {
+	switch (userInfo) {
+		case PersonalInfo.IP_ADDRESS:
 			return 0
-		case LeakedWalletInfo.WALLET_ACTIONS:
+		case WalletInfo.USER_ACTIONS:
 			return 1
-		case LeakedWalletInfo.WALLET_ASSETS:
+		case WalletInfo.ASSETS:
 			return 2
-		case LeakedWalletInfo.WALLET_BALANCE:
+		case WalletInfo.BALANCE:
 			return 3
-		case LeakedWalletInfo.WALLET_ADDRESS:
+		case WalletInfo.ACCOUNT_ADDRESS:
 			return 4
-		case LeakedWalletInfo.MEMPOOL_TRANSACTIONS:
+		case WalletInfo.MEMPOOL_TRANSACTIONS:
 			return 5
-		case LeakedWalletInfo.WALLET_CONNECTED_DOMAINS:
+		case WalletInfo.WALLET_CONNECTED_DOMAINS:
 			return 5
-		case LeakedPersonalInfo.PSEUDONYM:
+		case PersonalInfo.PSEUDONYM:
 			return 6
 
 		// All the social-media-y entries are roughly the same as email.
-		case LeakedPersonalInfo.FARCASTER_ACCOUNT:
+		case PersonalInfo.FARCASTER_ACCOUNT:
 			return 7
-		case LeakedPersonalInfo.X_DOT_COM_ACCOUNT:
+		case PersonalInfo.X_DOT_COM_ACCOUNT:
 			return 7
-		case LeakedPersonalInfo.EMAIL:
+		case PersonalInfo.EMAIL:
 			return 7
 
-		case LeakedPersonalInfo.BROWSING_HISTORY_URLS:
+		case PersonalInfo.BROWSING_HISTORY_URLS:
 			return 8
-		case LeakedPersonalInfo.LEGAL_NAME:
+		case PersonalInfo.LEGAL_NAME:
 			return 9
-		case LeakedPersonalInfo.PHONE:
+		case PersonalInfo.PHONE:
 			return 10
-		case LeakedPersonalInfo.CONTACTS:
+		case PersonalInfo.CONTACTS:
 			return 11
-		case LeakedPersonalInfo.PHYSICAL_ADDRESS:
+		case PersonalInfo.PHYSICAL_ADDRESS:
 			return 12
-		case LeakedPersonalInfo.CEX_ACCOUNT:
+		case PersonalInfo.CEX_ACCOUNT:
 			return 13
-		case LeakedPersonalInfo.FACE:
+		case PersonalInfo.FACE:
 			return 14
-		case LeakedPersonalInfo.GOVERNMENT_ID:
+		case PersonalInfo.GOVERNMENT_ID:
 			return 15
 	}
 }
 
-/** The type of information that a LeakedInfo is about. */
-export enum LeakedInfoType {
+/** The type of information that a UserInfo is about. */
+export enum UserInfoType {
 	/** Data related to the user's wallet. */
 	WALLET_RELATED = 'walletRelated',
 
@@ -449,119 +474,228 @@ export enum LeakedInfoType {
 	PERSONAL_DATA = 'personalData',
 }
 
-/** Get the type of information that a LeakedInfo is about. */
-export function leakedInfoType(leakedInfo: LeakedInfo): LeakedInfoType {
-	switch (leakedInfo) {
-		case LeakedPersonalInfo.IP_ADDRESS:
-			return LeakedInfoType.PERSONAL_DATA
-		case LeakedWalletInfo.WALLET_ACTIONS:
-			return LeakedInfoType.WALLET_RELATED
-		case LeakedWalletInfo.WALLET_ASSETS:
-			return LeakedInfoType.WALLET_RELATED
-		case LeakedWalletInfo.WALLET_BALANCE:
-			return LeakedInfoType.WALLET_RELATED
-		case LeakedWalletInfo.WALLET_ADDRESS:
-			return LeakedInfoType.WALLET_RELATED
-		case LeakedWalletInfo.MEMPOOL_TRANSACTIONS:
-			return LeakedInfoType.WALLET_RELATED
-		case LeakedWalletInfo.WALLET_CONNECTED_DOMAINS:
-			return LeakedInfoType.WALLET_RELATED
-		case LeakedPersonalInfo.PSEUDONYM:
-			return LeakedInfoType.PERSONAL_DATA
-		case LeakedPersonalInfo.FARCASTER_ACCOUNT:
-			return LeakedInfoType.PERSONAL_DATA
-		case LeakedPersonalInfo.X_DOT_COM_ACCOUNT:
-			return LeakedInfoType.PERSONAL_DATA
-		case LeakedPersonalInfo.EMAIL:
-			return LeakedInfoType.PERSONAL_DATA
-		case LeakedPersonalInfo.LEGAL_NAME:
-			return LeakedInfoType.PERSONAL_DATA
-		case LeakedPersonalInfo.PHONE:
-			return LeakedInfoType.PERSONAL_DATA
-		case LeakedPersonalInfo.BROWSING_HISTORY_URLS:
-			return LeakedInfoType.PERSONAL_DATA
-		case LeakedPersonalInfo.CONTACTS:
-			return LeakedInfoType.PERSONAL_DATA
-		case LeakedPersonalInfo.PHYSICAL_ADDRESS:
-			return LeakedInfoType.PERSONAL_DATA
-		case LeakedPersonalInfo.CEX_ACCOUNT:
-			return LeakedInfoType.PERSONAL_DATA
-		case LeakedPersonalInfo.FACE:
-			return LeakedInfoType.PERSONAL_DATA
-		case LeakedPersonalInfo.GOVERNMENT_ID:
-			return LeakedInfoType.PERSONAL_DATA
+/** Get the type of information that a UserInfo is about. */
+export function userInfoType(userInfo: UserInfo): UserInfoType {
+	switch (userInfo) {
+		case PersonalInfo.IP_ADDRESS:
+			return UserInfoType.PERSONAL_DATA
+		case WalletInfo.USER_ACTIONS:
+			return UserInfoType.WALLET_RELATED
+		case WalletInfo.ASSETS:
+			return UserInfoType.WALLET_RELATED
+		case WalletInfo.BALANCE:
+			return UserInfoType.WALLET_RELATED
+		case WalletInfo.ACCOUNT_ADDRESS:
+			return UserInfoType.WALLET_RELATED
+		case WalletInfo.MEMPOOL_TRANSACTIONS:
+			return UserInfoType.WALLET_RELATED
+		case WalletInfo.WALLET_CONNECTED_DOMAINS:
+			return UserInfoType.WALLET_RELATED
+		case PersonalInfo.PSEUDONYM:
+			return UserInfoType.PERSONAL_DATA
+		case PersonalInfo.FARCASTER_ACCOUNT:
+			return UserInfoType.PERSONAL_DATA
+		case PersonalInfo.X_DOT_COM_ACCOUNT:
+			return UserInfoType.PERSONAL_DATA
+		case PersonalInfo.EMAIL:
+			return UserInfoType.PERSONAL_DATA
+		case PersonalInfo.LEGAL_NAME:
+			return UserInfoType.PERSONAL_DATA
+		case PersonalInfo.PHONE:
+			return UserInfoType.PERSONAL_DATA
+		case PersonalInfo.BROWSING_HISTORY_URLS:
+			return UserInfoType.PERSONAL_DATA
+		case PersonalInfo.CONTACTS:
+			return UserInfoType.PERSONAL_DATA
+		case PersonalInfo.PHYSICAL_ADDRESS:
+			return UserInfoType.PERSONAL_DATA
+		case PersonalInfo.CEX_ACCOUNT:
+			return UserInfoType.PERSONAL_DATA
+		case PersonalInfo.FACE:
+			return UserInfoType.PERSONAL_DATA
+		case PersonalInfo.GOVERNMENT_ID:
+			return UserInfoType.PERSONAL_DATA
 	}
 }
 
-/** Compare two LeakedInfo scores (higher score is more sensitive). */
-export function compareLeakedInfo(a: LeakedInfo, b: LeakedInfo): number {
-	return leakedInfoScore(a) - leakedInfoScore(b)
+/** Compare two UserInfo scores (higher score is more sensitive). */
+export function compareUserInfo(a: UserInfo, b: UserInfo): number {
+	return userInfoScore(a) - userInfoScore(b)
 }
 
-/** Human-friendly names to refer to the type of info being leaked. */
-export function leakedInfoName(leakedInfo: LeakedInfo) {
-	switch (leakedInfo) {
-		case LeakedPersonalInfo.IP_ADDRESS:
+/** Human-friendly names to refer to the type of info being collection. */
+export function userInfoName(userInfo: UserInfo) {
+	switch (userInfo) {
+		case PersonalInfo.IP_ADDRESS:
 			return { short: 'IP', long: 'IP address' } as const
-		case LeakedWalletInfo.WALLET_ACTIONS:
+		case WalletInfo.USER_ACTIONS:
 			return { short: 'wallet actions', long: 'wallet actions' } as const
-		case LeakedWalletInfo.WALLET_ASSETS:
+		case WalletInfo.ASSETS:
 			return { short: 'wallet assets', long: 'wallet asset types' } as const
-		case LeakedWalletInfo.WALLET_BALANCE:
+		case WalletInfo.BALANCE:
 			return { short: 'wallet balance', long: 'wallet assets and balances' } as const
-		case LeakedWalletInfo.WALLET_ADDRESS:
+		case WalletInfo.ACCOUNT_ADDRESS:
 			return { short: 'wallet address', long: 'wallet address' } as const
-		case LeakedWalletInfo.MEMPOOL_TRANSACTIONS:
+		case WalletInfo.MEMPOOL_TRANSACTIONS:
 			return { short: 'outgoing transactions', long: 'outgoing wallet transactions' } as const
-		case LeakedWalletInfo.WALLET_CONNECTED_DOMAINS:
+		case WalletInfo.WALLET_CONNECTED_DOMAINS:
 			return { short: 'connected sites', long: 'wallet-connected domains' } as const
-		case LeakedPersonalInfo.PSEUDONYM:
+		case PersonalInfo.PSEUDONYM:
 			return {
 				short: '{{WALLET_PSEUDONYM_SINGULAR}}',
 				long: '{{WALLET_PSEUDONYM_SINGULAR}}',
 			} as const
-		case LeakedPersonalInfo.FARCASTER_ACCOUNT:
+		case PersonalInfo.FARCASTER_ACCOUNT:
 			return { short: 'Farcaster account', long: 'Farcaster account' } as const
-		case LeakedPersonalInfo.X_DOT_COM_ACCOUNT:
+		case PersonalInfo.X_DOT_COM_ACCOUNT:
 			return { short: 'X.com account', long: 'X.com account' } as const
-		case LeakedPersonalInfo.EMAIL:
+		case PersonalInfo.EMAIL:
 			return { short: 'email', long: 'email address' } as const
-		case LeakedPersonalInfo.LEGAL_NAME:
+		case PersonalInfo.LEGAL_NAME:
 			return { short: 'name', long: 'legal name' } as const
-		case LeakedPersonalInfo.PHONE:
+		case PersonalInfo.PHONE:
 			return { short: 'phone', long: 'phone number' } as const
-		case LeakedPersonalInfo.BROWSING_HISTORY_URLS:
+		case PersonalInfo.BROWSING_HISTORY_URLS:
 			return { short: 'Browsing history', long: 'Browsing history' } as const
-		case LeakedPersonalInfo.CONTACTS:
+		case PersonalInfo.CONTACTS:
 			return { short: 'contacts', long: 'personal contact list' } as const
-		case LeakedPersonalInfo.PHYSICAL_ADDRESS:
+		case PersonalInfo.PHYSICAL_ADDRESS:
 			return { short: 'physical address', long: 'geographical address' } as const
-		case LeakedPersonalInfo.CEX_ACCOUNT:
+		case PersonalInfo.CEX_ACCOUNT:
 			return { short: 'CEX account', long: 'centralized exchange account' } as const
-		case LeakedPersonalInfo.FACE:
+		case PersonalInfo.FACE:
 			return { short: 'face', long: 'facial recognition data' } as const
-		case LeakedPersonalInfo.GOVERNMENT_ID:
+		case PersonalInfo.GOVERNMENT_ID:
 			return { short: 'government ID', long: 'government-issued ID' } as const
 	}
 }
 
-/** What data is leaked from an entity; partial. */
-type PartialLeaks<T extends LeakedInfo> = Dict<
-	Partial<Record<T, Leak>> & {
-		/**
-		 * How multiple addresses are handled, if at all.
-		 */
-		multiAddress?: MultiAddressHandling
+/** The UX flow within a wallet. */
+export enum UserFlow {
+	/** Any flow that is unclassified or unclear. */
+	UNCLASSIFIED = 'unclassified',
+
+	/** Onboard onto the wallet, either as a new user or importing an existing account. */
+	ONBOARDING = 'onboarding',
+
+	/** Sending tokens to another address. */
+	SEND = 'send',
+
+	/** Swapping tokens through a wallet's built-in swap feature. */
+	NATIVE_SWAP = 'nativeSwap',
+
+	/** Review a transaction and signing it. */
+	TRANSACTION = 'transaction',
+
+	/** Connecting to a dapp. */
+	DAPP_CONNECTION = 'dappConnection',
+}
+
+export const userFlow = new Enum<UserFlow>({
+	[UserFlow.UNCLASSIFIED]: true,
+	[UserFlow.ONBOARDING]: true,
+	[UserFlow.DAPP_CONNECTION]: true,
+	[UserFlow.SEND]: true,
+	[UserFlow.NATIVE_SWAP]: true,
+	[UserFlow.TRANSACTION]: true,
+})
+
+/** Why is data being collected? */
+export enum DataCollectionPurpose {
+	/** Checking for updates to the wallet. */
+	UPDATE_CHECKING = 'UPDATE_CHECKING',
+
+	/** Looking up chain data (read only). */
+	CHAIN_DATA_LOOKUP = 'CHAIN_DATA_LOOKUP',
+
+	/** Broadcasting transactions for inclusion. */
+	TRANSACTION_BROADCAST = 'TRANSACTION_BROADCAST',
+
+	/** Simulating transaction outcome. */
+	TRANSACTION_SIMULATION = 'TRANSACTION_SIMULATION',
+
+	/** Getting a quote for a swap operation. */
+	SWAP_QUOTE = 'SWAP_QUOTE',
+
+	/** Checking for scams. */
+	SCAM_DETECTION = 'SCAM_DETECTION',
+
+	/** Signing up for a wallet-related account. */
+	ACCOUNT_SIGNUP = 'ACCOUNT_SIGNUP',
+
+	/** Linking to an external (non-wallet-related) account, e.g. CEX account. */
+	EXTERNAL_ACCOUNT_LINKING = 'EXTERNAL_ACCOUNT_LINKING',
+
+	/** Looking up asset metadata (price, icon, ticker, NFT data). */
+	ASSET_METADATA = 'ASSET_METADATA',
+
+	/** Verifying the wallet user's identity. */
+	IDENTITY_VERIFICATION = 'IDENTITY_VERIFICATION',
+
+	/** Downloading static assets (images, CSS). */
+	STATIC_ASSETS = 'STATIC_ASSETS',
+
+	/** Wallet user analytics. */
+	ANALYTICS = 'ANALYTICS',
+}
+
+export const dataCollectionPurpose = new Enum<DataCollectionPurpose>({
+	[DataCollectionPurpose.SWAP_QUOTE]: true,
+	[DataCollectionPurpose.EXTERNAL_ACCOUNT_LINKING]: true,
+	[DataCollectionPurpose.TRANSACTION_SIMULATION]: true,
+	[DataCollectionPurpose.CHAIN_DATA_LOOKUP]: true,
+	[DataCollectionPurpose.TRANSACTION_BROADCAST]: true,
+	[DataCollectionPurpose.SCAM_DETECTION]: true,
+	[DataCollectionPurpose.UPDATE_CHECKING]: true,
+	[DataCollectionPurpose.ACCOUNT_SIGNUP]: true,
+	[DataCollectionPurpose.ASSET_METADATA]: true,
+	[DataCollectionPurpose.IDENTITY_VERIFICATION]: true,
+	[DataCollectionPurpose.STATIC_ASSETS]: true,
+	[DataCollectionPurpose.ANALYTICS]: true,
+})
+
+/** Human-friendly name for a data collection purpose. */
+export function dataCollectionPurposeToText(dataCollectionPurpose: DataCollectionPurpose): string {
+	switch (dataCollectionPurpose) {
+		case DataCollectionPurpose.EXTERNAL_ACCOUNT_LINKING:
+			return 'External account linking'
+		case DataCollectionPurpose.ACCOUNT_SIGNUP:
+			return 'Signup'
+		case DataCollectionPurpose.ANALYTICS:
+			return 'Analytics'
+		case DataCollectionPurpose.ASSET_METADATA:
+			return 'Asset metadata'
+		case DataCollectionPurpose.CHAIN_DATA_LOOKUP:
+			return 'Chain data access'
+		case DataCollectionPurpose.IDENTITY_VERIFICATION:
+			return 'Identity verification'
+		case DataCollectionPurpose.SCAM_DETECTION:
+			return 'Scam detection'
+		case DataCollectionPurpose.STATIC_ASSETS:
+			return 'Static assets'
+		case DataCollectionPurpose.SWAP_QUOTE:
+			return 'Swap quote'
+		case DataCollectionPurpose.TRANSACTION_BROADCAST:
+			return 'Transaction broadcasting'
+		case DataCollectionPurpose.TRANSACTION_SIMULATION:
+			return 'Transaction simulation'
+		case DataCollectionPurpose.UPDATE_CHECKING:
+			return 'Checking for updates'
 	}
->
+}
 
-/** A partially-known set of leaks, with reference information. */
-export type Leaks<L extends LeakedInfo> = WithRef<PartialLeaks<L>>
+/** What data is collection by an entity; must have at least one piece of user information. */
+export type Collection<T extends UserInfo> = NonEmptyRecord<T, CollectionPolicy> & {
+	/**
+	 * How multiple addresses are handled, if at all.
+	 */
+	multiAddress?: MultiAddressHandling
+}
 
-/** A partially-known set of personal info leaks, with reference information. */
-export type PersonalInfoLeaks = Leaks<LeakedPersonalInfo>
+/** A partially-known set of personal info collected, with reference information. */
+export type PersonalInfoCollection = Collection<PersonalInfo>
 
-/** Adds endpoint information to a leaks type. */
+/** Adds endpoint information to a given type. */
 type WithEndpoint<L> = L & {
 	/**
 	 * Information about the endpoint that receives this data.
@@ -569,141 +703,203 @@ type WithEndpoint<L> = L & {
 	endpoint: Endpoint
 }
 
-/** A partially-known set of leaks, with reference information. */
-export type EndpointLeaks = WithEndpoint<Leaks<LeakedInfo>>
+/** A partially-known set of collected info, with reference information. */
+export type EndpointCollection = WithEndpoint<Collection<UserInfo>>
 
 /** Type predicate for WithEndpoint<L>. */
-export function isEndpointLeaks<L extends Leaks<LeakedInfo>>(
-	maybeEndpoint: L,
-): maybeEndpoint is WithEndpoint<L> {
+export function isWithEndpoint<T extends UserInfo>(
+	maybeEndpoint: Collection<T>,
+): maybeEndpoint is WithEndpoint<Collection<T>> {
 	return Object.hasOwn(maybeEndpoint, 'endpoint')
 }
 
-/** What data is leaked from an entity; fully qualified. */
-export type QualifiedLeaks = WithRef<
-	Dict<
-		Record<LeakedInfo, Leak> & {
-			/**
-			 * How multiple addresses are handled, if at all.
-			 */
-			multiAddress?: MultiAddressHandling
-		}
-	>
+/** What data is collected by an entity; fully qualified. */
+export type QualifiedDataCollection = WithRef<
+	Record<UserInfo, CollectionPolicy> & {
+		/**
+		 * How multiple addresses are handled, if at all.
+		 */
+		multiAddress?: MultiAddressHandling
+	}
 >
 
 /**
- * Infer what leaks from a given partial set of known leaks.
- * @param leaks Partial set of known leaks.
- * @returns A fully-qualified set of leaks.
+ * Infer what info is derivable from a given partial set of known collected information.
+ * @param userInfo Partial set of known info collected.
+ * @returns A fully-qualified set of info collected.
  */
-export function inferLeaks<T extends LeakedInfo, L extends Leaks<T>>(leaks: L): QualifiedLeaks {
-	const get = (leakedInfo: LeakedInfo): Leak | undefined => {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Safe because all possible `LeakedInfo` keys map to `Leak` values, or are unset (undefined).
-		return (leaks as Record<LeakedInfo, Leak>)[leakedInfo]
+export function qualifiedDataCollection<T extends UserInfo>(
+	userInfo: Collection<T>,
+): QualifiedDataCollection {
+	const get = (info: UserInfo): CollectionPolicy | undefined => {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Safe because L is guaranteed to be non-empty.
+		return (userInfo as NonEmptyRecord<UserInfo, CollectionPolicy>)[info]
 	}
-	const first = (...ls: Array<Leak | undefined>): Leak | undefined => ls.find(l => l !== undefined)
+	const first = (...ls: Array<CollectionPolicy | undefined>): CollectionPolicy | undefined =>
+		ls.find(l => l !== undefined)
 
-	let ipAddressLeak = get(LeakedPersonalInfo.IP_ADDRESS)
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Safe because we know userInfo extends Collection<T> and T extends UserInfo.
+	const userInfoAsCollection = userInfo as Collection<UserInfo>
+
+	let ipAddressCollection = get(PersonalInfo.IP_ADDRESS)
 
 	if (
-		ipAddressLeak !== Leak.ALWAYS &&
-		ipAddressLeak !== Leak.BY_DEFAULT &&
-		isEndpointLeaks<L>(leaks) &&
-		endpointLeaksIpAddress(leaks.endpoint) === 'YES'
+		ipAddressCollection !== CollectionPolicy.ALWAYS &&
+		ipAddressCollection !== CollectionPolicy.BY_DEFAULT &&
+		isWithEndpoint(userInfoAsCollection) &&
+		endpointLearnsUserIpAddress(userInfoAsCollection.endpoint) === 'YES'
 	) {
-		// If endpoint leaks IP address, and `leaks` doesn't specify this explicitly,
-		// then infer that the IP address does leak.
-		ipAddressLeak = Leak.BY_DEFAULT
+		// If endpoint learns IP address, and `userInfo` doesn't specify this explicitly,
+		// then infer that the entity does learn the user's IP address.
+		ipAddressCollection = CollectionPolicy.BY_DEFAULT
 	}
 
 	return {
-		[LeakedPersonalInfo.IP_ADDRESS]: ipAddressLeak ?? Leak.NEVER,
-		[LeakedWalletInfo.WALLET_ACTIONS]: get(LeakedWalletInfo.WALLET_ACTIONS) ?? Leak.NEVER,
-		[LeakedWalletInfo.WALLET_ADDRESS]:
+		[PersonalInfo.IP_ADDRESS]: ipAddressCollection ?? CollectionPolicy.NEVER,
+		[WalletInfo.USER_ACTIONS]: get(WalletInfo.USER_ACTIONS) ?? CollectionPolicy.NEVER,
+		[WalletInfo.ACCOUNT_ADDRESS]:
 			first(
-				get(LeakedWalletInfo.WALLET_ADDRESS),
-				get(LeakedWalletInfo.MEMPOOL_TRANSACTIONS),
-				get(LeakedWalletInfo.WALLET_BALANCE),
-			) ?? Leak.NEVER,
-		[LeakedWalletInfo.WALLET_BALANCE]:
+				get(WalletInfo.ACCOUNT_ADDRESS),
+				get(WalletInfo.MEMPOOL_TRANSACTIONS),
+				get(WalletInfo.BALANCE),
+			) ?? CollectionPolicy.NEVER,
+		[WalletInfo.BALANCE]:
 			first(
-				get(LeakedWalletInfo.WALLET_BALANCE),
-				get(LeakedWalletInfo.WALLET_ADDRESS),
-				get(LeakedWalletInfo.MEMPOOL_TRANSACTIONS),
-			) ?? Leak.NEVER,
-		[LeakedWalletInfo.WALLET_ASSETS]:
+				get(WalletInfo.BALANCE),
+				get(WalletInfo.ACCOUNT_ADDRESS),
+				get(WalletInfo.MEMPOOL_TRANSACTIONS),
+			) ?? CollectionPolicy.NEVER,
+		[WalletInfo.ASSETS]:
 			first(
-				get(LeakedWalletInfo.WALLET_ASSETS),
-				get(LeakedWalletInfo.WALLET_ADDRESS),
-				get(LeakedWalletInfo.WALLET_BALANCE),
-				get(LeakedWalletInfo.MEMPOOL_TRANSACTIONS),
-			) ?? Leak.NEVER,
-		[LeakedWalletInfo.MEMPOOL_TRANSACTIONS]:
-			get(LeakedWalletInfo.MEMPOOL_TRANSACTIONS) ?? Leak.NEVER,
-		[LeakedWalletInfo.WALLET_CONNECTED_DOMAINS]:
+				get(WalletInfo.ASSETS),
+				get(WalletInfo.ACCOUNT_ADDRESS),
+				get(WalletInfo.BALANCE),
+				get(WalletInfo.MEMPOOL_TRANSACTIONS),
+			) ?? CollectionPolicy.NEVER,
+		[WalletInfo.MEMPOOL_TRANSACTIONS]:
+			get(WalletInfo.MEMPOOL_TRANSACTIONS) ?? CollectionPolicy.NEVER,
+		[WalletInfo.WALLET_CONNECTED_DOMAINS]:
+			first(get(WalletInfo.WALLET_CONNECTED_DOMAINS), get(PersonalInfo.BROWSING_HISTORY_URLS)) ??
+			CollectionPolicy.NEVER,
+		[PersonalInfo.PSEUDONYM]:
 			first(
-				get(LeakedWalletInfo.WALLET_CONNECTED_DOMAINS),
-				get(LeakedPersonalInfo.BROWSING_HISTORY_URLS),
-			) ?? Leak.NEVER,
-		[LeakedPersonalInfo.PSEUDONYM]:
+				get(PersonalInfo.PSEUDONYM),
+				get(PersonalInfo.EMAIL),
+				get(PersonalInfo.FARCASTER_ACCOUNT),
+				get(PersonalInfo.X_DOT_COM_ACCOUNT),
+			) ?? CollectionPolicy.NEVER, // Email addresses and social media accounts usually contains at least pseudonym-level information.
+		[PersonalInfo.FARCASTER_ACCOUNT]: get(PersonalInfo.FARCASTER_ACCOUNT) ?? CollectionPolicy.NEVER,
+		[PersonalInfo.X_DOT_COM_ACCOUNT]: get(PersonalInfo.X_DOT_COM_ACCOUNT) ?? CollectionPolicy.NEVER,
+		[PersonalInfo.LEGAL_NAME]:
+			first(get(PersonalInfo.LEGAL_NAME), get(PersonalInfo.GOVERNMENT_ID)) ??
+			CollectionPolicy.NEVER,
+		[PersonalInfo.EMAIL]:
+			first(get(PersonalInfo.EMAIL), get(PersonalInfo.CEX_ACCOUNT)) ?? CollectionPolicy.NEVER,
+		[PersonalInfo.PHONE]:
+			first(get(PersonalInfo.PHONE), get(PersonalInfo.CEX_ACCOUNT)) ?? CollectionPolicy.NEVER,
+		[PersonalInfo.BROWSING_HISTORY_URLS]:
+			get(PersonalInfo.BROWSING_HISTORY_URLS) ?? CollectionPolicy.NEVER,
+		[PersonalInfo.CONTACTS]: get(PersonalInfo.CONTACTS) ?? CollectionPolicy.NEVER,
+		[PersonalInfo.PHYSICAL_ADDRESS]:
 			first(
-				get(LeakedPersonalInfo.PSEUDONYM),
-				get(LeakedPersonalInfo.EMAIL),
-				get(LeakedPersonalInfo.FARCASTER_ACCOUNT),
-				get(LeakedPersonalInfo.X_DOT_COM_ACCOUNT),
-			) ?? Leak.NEVER, // Email addresses and social media accounts usually contains at least pseudonym-level information.
-		[LeakedPersonalInfo.FARCASTER_ACCOUNT]: get(LeakedPersonalInfo.FARCASTER_ACCOUNT) ?? Leak.NEVER,
-		[LeakedPersonalInfo.X_DOT_COM_ACCOUNT]: get(LeakedPersonalInfo.X_DOT_COM_ACCOUNT) ?? Leak.NEVER,
-		[LeakedPersonalInfo.LEGAL_NAME]:
-			first(get(LeakedPersonalInfo.LEGAL_NAME), get(LeakedPersonalInfo.GOVERNMENT_ID)) ??
-			Leak.NEVER,
-		[LeakedPersonalInfo.EMAIL]:
-			first(get(LeakedPersonalInfo.EMAIL), get(LeakedPersonalInfo.CEX_ACCOUNT)) ?? Leak.NEVER,
-		[LeakedPersonalInfo.PHONE]:
-			first(get(LeakedPersonalInfo.PHONE), get(LeakedPersonalInfo.CEX_ACCOUNT)) ?? Leak.NEVER,
-		[LeakedPersonalInfo.BROWSING_HISTORY_URLS]:
-			get(LeakedPersonalInfo.BROWSING_HISTORY_URLS) ?? Leak.NEVER,
-		[LeakedPersonalInfo.CONTACTS]: get(LeakedPersonalInfo.CONTACTS) ?? Leak.NEVER,
-		[LeakedPersonalInfo.PHYSICAL_ADDRESS]:
-			first(
-				get(LeakedPersonalInfo.PHYSICAL_ADDRESS),
-				get(LeakedPersonalInfo.CEX_ACCOUNT),
-				get(LeakedPersonalInfo.GOVERNMENT_ID),
-			) ?? Leak.NEVER,
-		[LeakedPersonalInfo.FACE]:
-			first(get(LeakedPersonalInfo.FACE), get(LeakedPersonalInfo.GOVERNMENT_ID)) ?? Leak.NEVER,
-		[LeakedPersonalInfo.CEX_ACCOUNT]: get(LeakedPersonalInfo.CEX_ACCOUNT) ?? Leak.NEVER,
-		[LeakedPersonalInfo.GOVERNMENT_ID]: get(LeakedPersonalInfo.GOVERNMENT_ID) ?? Leak.NEVER,
-		multiAddress: leaks.multiAddress,
-		ref: leaks.ref,
+				get(PersonalInfo.PHYSICAL_ADDRESS),
+				get(PersonalInfo.CEX_ACCOUNT),
+				get(PersonalInfo.GOVERNMENT_ID),
+			) ?? CollectionPolicy.NEVER,
+		[PersonalInfo.FACE]:
+			first(get(PersonalInfo.FACE), get(PersonalInfo.GOVERNMENT_ID)) ?? CollectionPolicy.NEVER,
+		[PersonalInfo.CEX_ACCOUNT]: get(PersonalInfo.CEX_ACCOUNT) ?? CollectionPolicy.NEVER,
+		[PersonalInfo.GOVERNMENT_ID]: get(PersonalInfo.GOVERNMENT_ID) ?? CollectionPolicy.NEVER,
+		multiAddress: userInfo.multiAddress,
 	}
 }
 
-/** Infer leaks, preserving endpoint information. */
-export function inferEndpointLeaks<T extends LeakedInfo, L extends Leaks<T>>(
-	leaks: WithEndpoint<L>,
-): WithEndpoint<QualifiedLeaks> {
-	return { ...inferLeaks<T, L>(leaks), endpoint: leaks.endpoint }
+/** Infer data collection, preserving endpoint information. */
+export function qualifiedDataCollectionWithEndpoint<T extends UserInfo>(
+	userInfo: WithEndpoint<Collection<T>>,
+): WithEndpoint<QualifiedDataCollection> {
+	return { ...qualifiedDataCollection<T>(userInfo), endpoint: userInfo.endpoint }
 }
 
 /**
  * Describes the data that an entity may be sent.
  */
-export interface EntityData {
+export interface DataCollectionByEntity {
 	/** The entity to which the data may be sent. */
-	entity: Entity
+	byEntity: Entity
 
 	/** The type of data that an entity may be sent. */
-	leaks: EndpointLeaks
+	dataCollection: EndpointCollection
+
+	/** Why is the data collected? */
+	purposes: NonEmptyArray<DataCollectionPurpose>
+}
+
+export interface DataCollectionForFlow {
+	/** The data collected by entities. */
+	collected: WithRef<DataCollectionByEntity>[]
+}
+
+export type DataCollectionForFlowWithOnchainData = DataCollectionForFlow & {
+	/** Personal data published onchain in public view. */
+	publishedOnchain:
+		| 'NO_DATA_PUBLISHED_ONCHAIN'
+		| WithRef<
+				PersonalInfoCollection & {
+					/** Why is the onchain data published? */
+					purposes: NonEmptyArray<DataCollectionPurpose>
+				}
+		  >
 }
 
 /**
  * A collection of data that a wallet collects.
  */
 export interface DataCollection {
-	/** Personal data exported out onchain in public view. */
-	onchain: PersonalInfoLeaks
+	/** What data is collected during signup? */
+	[UserFlow.ONBOARDING]: DataCollectionForFlowWithOnchainData | null
 
-	/** The data collected by corporate entities. */
-	collectedByEntities: EntityData[]
+	/** What data is collected when sending tokens? */
+	[UserFlow.SEND]: DataCollectionForFlow | null | 'FLOW_NOT_SUPPORTED'
+
+	/** What data is collected when swapping tokens using the wallet's native swap feature? */
+	[UserFlow.NATIVE_SWAP]: DataCollectionForFlow | null | 'FLOW_NOT_SUPPORTED'
+
+	/** What data is collected during the transaction review/signing flow? */
+	[UserFlow.TRANSACTION]: DataCollectionForFlow | null | 'FLOW_NOT_SUPPORTED'
+
+	/** What data is collected when connecting to a dapp? */
+	[UserFlow.DAPP_CONNECTION]: DataCollectionForFlow | null | 'FLOW_NOT_SUPPORTED'
+
+	/** What other data is collected but not covered in the other flows, if any? */
+	[UserFlow.UNCLASSIFIED]?: DataCollectionForFlow
+}
+
+/**
+ * Aggregate data collection across all supported user flows.
+ */
+export function dataCollectionForAllSupportedFlows(
+	dataCollection: DataCollection | null,
+): WithRef<DataCollectionByEntity>[] | null {
+	if (dataCollection === null) {
+		return null
+	}
+
+	let allDataCollection: WithRef<DataCollectionByEntity>[] = []
+
+	for (const flow of userFlow.items) {
+		const forFlow = dataCollection[flow]
+
+		if (forFlow === null) {
+			return null
+		}
+
+		if (forFlow === undefined || forFlow === 'FLOW_NOT_SUPPORTED') {
+			continue
+		}
+
+		allDataCollection = allDataCollection.concat(forFlow.collected)
+	}
+
+	return allDataCollection
 }

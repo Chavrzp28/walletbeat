@@ -8,20 +8,21 @@ import {
 } from '@/schema/attributes'
 import type { ResolvedFeatures } from '@/schema/features'
 import {
-	compareLeakedInfo,
+	collectedByDefault,
+	type Collection,
+	CollectionPolicy,
+	compareUserInfo,
+	dataCollectionForAllSupportedFlows,
 	type Endpoint,
-	inferEndpointLeaks,
-	inferLeaks,
-	isEndpointLeaks,
-	Leak,
-	type LeakedInfo,
-	leakedInfoName,
-	leakedInfos,
-	LeakedInfoType,
-	leakedInfoType,
-	LeakedPersonalInfo,
-	type Leaks,
-	leaksByDefault,
+	isWithEndpoint,
+	PersonalInfo,
+	personalInfo,
+	qualifiedDataCollection,
+	qualifiedDataCollectionWithEndpoint,
+	UserFlow,
+	type UserInfo,
+	userInfoName,
+	WalletInfo,
 } from '@/schema/features/privacy/data-collection'
 import { markdown, paragraph, sentence } from '@/types/content'
 import { addressCorrelationDetailsContent } from '@/types/content/address-correlation-details'
@@ -49,8 +50,8 @@ const uncorrelated: AddressCorrelationValue = {
 }
 
 export interface WalletAddressLinkableTo {
-	info: LeakedInfo
-	leak: Leak
+	info: UserInfo
+	leak: CollectionPolicy
 	refs: FullyQualifiedReference[]
 }
 
@@ -65,18 +66,18 @@ function linkable(
 	const worstLeak = nonEmptyFirst(
 		linkables,
 		(linkableA: WalletAddressLinkableBy, linkableB: WalletAddressLinkableBy) =>
-			compareLeakedInfo(linkableA.info, linkableB.info),
+			compareUserInfo(linkableA.info, linkableB.info),
 		true,
 	)
 	const { rating, howToImprove } = ((): {
 		rating: Rating
 		howToImprove: string
 	} => {
-		const leakName = leakedInfoName(worstLeak.info).long
+		const leakName = userInfoName(worstLeak.info).long
 		const by = worstLeak.by
 
 		switch (worstLeak.info) {
-			case LeakedPersonalInfo.PSEUDONYM:
+			case PersonalInfo.PSEUDONYM:
 				if (by === 'onchain') {
 					return {
 						rating: Rating.PARTIAL,
@@ -89,7 +90,7 @@ function linkable(
 					rating: Rating.PARTIAL,
 					howToImprove: `{{WALLET_NAME}} should require user consent before allowing your {{WALLET_PSEUDONYM_SINGULAR}} to be linkable to your wallet address, and make it clear that this association will be known to ${by.name}.`,
 				}
-			case LeakedPersonalInfo.IP_ADDRESS:
+			case PersonalInfo.IP_ADDRESS:
 				return {
 					rating: Rating.PARTIAL,
 					howToImprove:
@@ -107,11 +108,11 @@ function linkable(
 		value: {
 			id: `address_and_${worstLeak.info}`,
 			rating,
-			displayName: `Wallet address linkable to ${leakedInfoName(worstLeak.info).short}`,
+			displayName: `Wallet address linkable to ${userInfoName(worstLeak.info).short}`,
 			shortExplanation: sentence(
 				worstLeak.by === 'onchain'
-					? `{{WALLET_NAME}} publishes your ${leakedInfoName(worstLeak.info).short} onchain.`
-					: `{{WALLET_NAME}} allows ${worstLeak.by.name} to link your wallet address with your ${leakedInfoName(worstLeak.info).short}.`,
+					? `{{WALLET_NAME}} publishes your ${userInfoName(worstLeak.info).short} onchain.`
+					: `{{WALLET_NAME}} allows ${worstLeak.by.name} to link your wallet address with your ${userInfoName(worstLeak.info).short}.`,
 			),
 			worstLeak,
 			__brand: brand,
@@ -164,32 +165,30 @@ function isSealedSecureEnclave(endpoint?: Endpoint): boolean {
 	return true
 }
 
-export function linkableToWalletAddress<T extends LeakedInfo>(
-	leaks: Leaks<T>,
+export function linkableToWalletAddress<T extends UserInfo>(
+	leaks: Collection<T>,
 ): WalletAddressLinkableTo[] {
-	const qualLeaks = isEndpointLeaks(leaks) ? inferEndpointLeaks(leaks) : inferLeaks(leaks)
+	const qualLeaks = isWithEndpoint<T>(leaks)
+		? qualifiedDataCollectionWithEndpoint(leaks)
+		: qualifiedDataCollection(leaks)
 
-	if (!leaksByDefault(qualLeaks.walletAddress)) {
+	if (!collectedByDefault(qualLeaks[WalletInfo.ACCOUNT_ADDRESS])) {
 		return []
 	}
 
 	const linkables: WalletAddressLinkableTo[] = []
 	const qualRefs = refs(leaks)
 
-	for (const info of leakedInfos) {
-		if (leakedInfoType(info) !== LeakedInfoType.PERSONAL_DATA) {
+	for (const info of personalInfo.items) {
+		if (!collectedByDefault(qualLeaks[info])) {
 			continue
 		}
 
-		if (!leaksByDefault(qualLeaks[info])) {
-			continue
-		}
-
-		if (info === LeakedPersonalInfo.IP_ADDRESS) {
+		if (info === PersonalInfo.IP_ADDRESS) {
 			// Check if the server is running in a secure enclave with all
 			// desirable properties to shield the IP address from being a
 			// privacy leak.
-			if (isEndpointLeaks(qualLeaks) && isSealedSecureEnclave(qualLeaks.endpoint)) {
+			if (isWithEndpoint(qualLeaks) && isSealedSecureEnclave(qualLeaks.endpoint)) {
 				continue
 			}
 		}
@@ -259,8 +258,7 @@ export const addressCorrelation: Attribute<AddressCorrelationValue> = {
 					wallet requests to be proxied on their own.
 				`),
 				(value: AddressCorrelationValue) =>
-					value.rating === Rating.PARTIAL &&
-					value.worstLeak?.info === LeakedPersonalInfo.IP_ADDRESS,
+					value.rating === Rating.PARTIAL && value.worstLeak?.info === PersonalInfo.IP_ADDRESS,
 			),
 			exampleRating(
 				paragraph(`
@@ -270,7 +268,7 @@ export const addressCorrelation: Attribute<AddressCorrelationValue> = {
 					each of their wallet address to mitigate this privacy issue.
 				`),
 				(value: AddressCorrelationValue) =>
-					value.rating === Rating.PARTIAL && value.worstLeak?.info === LeakedPersonalInfo.PSEUDONYM,
+					value.rating === Rating.PARTIAL && value.worstLeak?.info === PersonalInfo.PSEUDONYM,
 			),
 		],
 		pass: [
@@ -292,28 +290,35 @@ export const addressCorrelation: Attribute<AddressCorrelationValue> = {
 		],
 	},
 	evaluate: (features: ResolvedFeatures): Evaluation<AddressCorrelationValue> => {
-		if (features.privacy.dataCollection === null) {
+		const allDataCollection = dataCollectionForAllSupportedFlows(features.privacy.dataCollection)
+
+		if (features.privacy.dataCollection === null || allDataCollection === null) {
 			return unrated(addressCorrelation, brand, { worstLeak: null })
 		}
 
 		const linkables: WalletAddressLinkableBy[] = []
 		const allRefs: ReferenceArray = []
 
-		for (const collected of features.privacy.dataCollection.collectedByEntities) {
-			allRefs.push(...refs(collected.leaks))
+		for (const collected of allDataCollection) {
+			allRefs.push(...refs(collected))
 
-			for (const linkable of linkableToWalletAddress(collected.leaks)) {
-				linkables.push({ by: collected.entity, ...linkable })
+			for (const linkable of linkableToWalletAddress(collected.dataCollection)) {
+				linkables.push({ by: collected.byEntity, ...linkable })
 			}
 		}
 
-		allRefs.push(...refs(features.privacy.dataCollection.onchain))
+		const onboarding = features.privacy.dataCollection[UserFlow.ONBOARDING]
 
-		for (const linkable of linkableToWalletAddress({
-			...features.privacy.dataCollection.onchain,
-			walletAddress: Leak.ALWAYS,
-		})) {
-			linkables.push({ by: 'onchain', ...linkable })
+		if (onboarding !== null && onboarding.publishedOnchain !== 'NO_DATA_PUBLISHED_ONCHAIN') {
+			allRefs.push(...refs(onboarding.publishedOnchain))
+
+			for (const linkable of linkableToWalletAddress({
+				...onboarding.publishedOnchain,
+				// Account address is inherently published onchain.
+				[WalletInfo.ACCOUNT_ADDRESS]: CollectionPolicy.ALWAYS,
+			})) {
+				linkables.push({ by: 'onchain', ...linkable })
+			}
 		}
 
 		if (isNonEmptyArray(linkables)) {
