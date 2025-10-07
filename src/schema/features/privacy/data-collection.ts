@@ -36,7 +36,7 @@ export enum CollectionPolicy {
 	 * In order to qualify for this level, it must be possible for the
 	 * user to access this setting and turn off the collection *before*
 	 * the first time it happens. For example, a wallet that refreshes
-	 * crypto prices by default (using a third-party service) and does so
+	 * crypto prices by default (using an external service) and does so
 	 * before ever giving the user a chance to access the wallet settings
 	 * to turn off this feature does not qualify for this level.
 	 */
@@ -92,7 +92,7 @@ export enum MultiAddressPolicy {
  * once, or multiple requests (one per address).
  * Wallets typically need data about multiple addresses at once in the context
  * of refreshing balances, or handling a set of stealth addresses. In either
- * case, there is a risk of allowing third-parties to correlate these
+ * case, there is a risk of allowing external services to correlate these
  * addresses together if the requests are not done carefully.
  *
  * If sending multiple requests, the wallet has additional control over how to

@@ -120,7 +120,7 @@ const frequentlyAskedQuestions: NonEmptyArray<FAQEntry> = [
 			* **Objectively measurable**. It should be possible to determine
 				whether a rule is met or not without involving human judgement.
 				For example, a rule that looks at the user data exported to
-				third-party servers can be objectively measured by looking at the
+				external servers can be objectively measured by looking at the
 				wallet's source code or by analyzing the contents of wallet network
 				traffic.
 			* **Technology-neutral**. Rules should not prescribe the technology
@@ -180,11 +180,11 @@ const frequentlyAskedQuestions: NonEmptyArray<FAQEntry> = [
 				the wallet collects about you.
 			* \u{1f3f0} **Self-sovereignty** attributes determine the control and
 				ownership guarantees the wallet gives you over your account, as
-				opposed to being dependent on third-party providers to act in a
+				opposed to being dependent on external providers to act in a
 				trustworthy and reliable manner. This includes the potential for
-				your transactions being censored by third-parties, or your ability to
-				use DeFi protocols and to withdraw funds from Ethereum layer 2
-				solutions without relying on third-parties.
+				your transactions being censored by external providers, or your
+				ability to use DeFi protocols and to withdraw funds from Ethereum
+				layer 2 solutions without relying on external providers.
 			* \u{1f50d} **Transparency** attributes determine the degree of
 				public scrutiny and accountability that a wallet's software
 				development process is subject to, and whether that process is

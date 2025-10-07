@@ -218,11 +218,11 @@ export const addressCorrelation: Attribute<AddressCorrelationValue> = {
 	`),
 	methodology: markdown(`
 		In order to qualify for a perfect rating on wallet address privacy, a
-		wallet must not, *by default*, allow any third-party to link your wallet
-		address to any personal information.
+		wallet must not, *by default*, allow any external entity to link your
+		wallet address to any personal information.
 
 		As Walletbeat only considers the wallet's *default* behavior, wallets may
-		still choose to offer features that allow third-parties to link wallet
+		still choose to offer features that allow external providers to link wallet
 		addresses with personal information, so long as this is done with explicit
 		user opt-in.
 
@@ -243,8 +243,8 @@ export const addressCorrelation: Attribute<AddressCorrelationValue> = {
 			exampleRating(
 				paragraph(`
 					The wallet requires user information (other than IP address and
-					pseudonyms) by default, and uploads this data to a third-party
-					or records it onchain in a publicly-viewable manner.
+					pseudonyms) by default, and uploads this data to an external
+					provider or records it onchain in a publicly-viewable manner.
 				`),
 				Rating.FAIL,
 			),
@@ -252,10 +252,10 @@ export const addressCorrelation: Attribute<AddressCorrelationValue> = {
 		partial: [
 			exampleRating(
 				paragraph(`
-					The wallet allows a third party to learn the relationship between a
-					user's wallet address and their IP address by default. This is treated
-					as a partial rating because users may mitigate against this by forcing
-					wallet requests to be proxied on their own.
+					The wallet allows an external provider to learn the relationship
+					between a user's wallet address and their IP address by default.
+					This is treated as a partial rating because users may mitigate
+					against this by forcing wallet requests to be proxied on their own.
 				`),
 				(value: AddressCorrelationValue) =>
 					value.rating === Rating.PARTIAL && value.worstLeak?.info === PersonalInfo.IP_ADDRESS,
@@ -263,9 +263,10 @@ export const addressCorrelation: Attribute<AddressCorrelationValue> = {
 			exampleRating(
 				paragraph(`
 					The wallet requires the user to identify themselves via a pseudonym
-					which is sent to a third-party or recorded onchain. This is treated as
-					a partial rating because users may choose an arbitrary pseudonym for
-					each of their wallet address to mitigate this privacy issue.
+					which is sent to an external provider or recorded onchain. This is
+					treated as a partial rating because users may choose an arbitrary
+					pseudonym for each of their wallet address to mitigate this privacy
+					issue.
 				`),
 				(value: AddressCorrelationValue) =>
 					value.rating === Rating.PARTIAL && value.worstLeak?.info === PersonalInfo.PSEUDONYM,
@@ -283,7 +284,7 @@ export const addressCorrelation: Attribute<AddressCorrelationValue> = {
 			exampleRating(
 				paragraph(`
 					The wallet relies exclusively on a user's self-hosted node,
-					involving no third parties.
+					involving no external providers.
 				`),
 				exampleRatingUnimplemented,
 			),
@@ -328,7 +329,7 @@ export const addressCorrelation: Attribute<AddressCorrelationValue> = {
 		return {
 			value: uncorrelated,
 			details: paragraph(
-				'{{WALLET_NAME}} does not allow any third-party to link your wallet address to any personal information.',
+				'{{WALLET_NAME}} does not allow any external provider to link your wallet address to any personal information.',
 			),
 			references: allRefs,
 		}

@@ -10,7 +10,7 @@ export interface InteroperabilitySupport {
 	type: InteroperabilityType
 	url?: string
 	details?: string
-	thirdPartyCompatibility: InteroperabilityType
+	interoperability: InteroperabilityType
 	noSupplierLinkage: InteroperabilityType
 }
 

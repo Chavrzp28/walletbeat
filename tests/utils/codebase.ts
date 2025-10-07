@@ -12,6 +12,17 @@ export function getRepositoryRoot(): string {
 /** Predicate for a file path. */
 export type PathPredicate = RegExp | string | ((path: string) => boolean)
 
+export const commonExclusions: PathPredicate[] = [
+	// Exclude .git
+	'.git',
+
+	// Exclude entries from .gitignore.
+	await GitIgnoredFiles(),
+
+	// Exclude PNG and PDF files.
+	/\.(png|pdf)$/i,
+]
+
 /** PathPredicate that excludes entries listed in .gitignore. */
 export async function GitIgnoredFiles(): Promise<PathPredicate> {
 	const gitIgnorePath = path.join(getRepositoryRoot(), '.gitignore')
@@ -65,19 +76,22 @@ export async function GitIgnoredFiles(): Promise<PathPredicate> {
 	}
 }
 
-/**
- * Maps lowercase words to the set of filenames where they show up.
- */
-export interface WordIndex {
-	commonWords: Map<string, Set<string>>
-	properWords: Map<string, Set<string>>
-	lowercaseWords: Map<string, Set<string>>
+export type IndexedFileData = object
+
+export type IndexedFile<T extends IndexedFileData> = T & {
+	filePath: string
 }
 
 /** Options for `getCodebaseWordIndex`. */
-export interface CodebaseWordIndexOptions {
-	/** Root directory to traverse from. */
-	root: string
+export interface CodebaseIndexOptions<T extends IndexedFileData> {
+	/** Root directory to traverse from. If undefined, use repository root. */
+	root?: string
+
+	/** Function to run on each indexed file to index it. */
+	indexFn: (filePath: string, fileContents: string) => T
+
+	/** Function to run on successive indexed file data, serially. */
+	aggregateFn: (fileData: IndexedFile<T>) => void
 
 	/**
 	 * Ignore files matching any of these predicates.
@@ -90,7 +104,9 @@ export interface CodebaseWordIndexOptions {
 }
 
 /** Index the codebase. */
-export async function getCodebaseWordIndex(options: CodebaseWordIndexOptions): Promise<WordIndex> {
+export async function getCodebaseIndex<T extends IndexedFileData>(
+	options: CodebaseIndexOptions<T>,
+): Promise<void> {
 	const shouldIgnore = (filePath: string): boolean =>
 		options.ignore.some(predicate => {
 			if (typeof predicate === 'function') {
@@ -106,78 +122,15 @@ export async function getCodebaseWordIndex(options: CodebaseWordIndexOptions): P
 
 	const concurrencyLimit = pLimit(Math.max(1, options.concurrency ?? 256))
 
-	interface FileWords {
-		path: string
-		commonWords: Set<string>
-		properWords: Set<string>
-	}
-
-	const getFileWords = async (filePath: string): Promise<FileWords> => {
-		const contents = await concurrencyLimit(() => fs.readFile(filePath, { encoding: 'utf-8' }))
-
-		let matches: RegExpMatchArray | string[] | null = contents.match(
-			/(\b|(?<=[_]))[\p{Lu}\p{Ll}]([\p{Lu}\p{Ll}\p{Nd}]*[\p{Lu}\p{Ll}])?(\b|(?=[_\p{Nd}]))/gu,
-		)
-
-		if (matches === null) {
-			matches = []
-		}
-
-		const commonWords = new Set<string>()
-		const properWords = new Set<string>()
-
-		for (const match of matches) {
-			if (match.toLowerCase() === match) {
-				commonWords.add(match)
-				continue
-			}
-
-			if (match.toUpperCase() === match) {
-				properWords.add(match)
-				continue
-			}
-
-			const isCamelCase = match.match(/^[\p{Ll}]*([\p{Lu}\p{Nd}]+[\p{Ll}]+)+$/u)
-
-			if (isCamelCase) {
-				const camelCaseWords = match.match(
-					/((^|(?<=[\p{Ll}]))[\p{Lu}]+[\p{Ll}]+|^[\p{Ll}]+)($|(?=[\p{Lu}\p{Nd}]))/gu,
-				)
-
-				if (camelCaseWords !== null) {
-					for (const camelCaseWord of camelCaseWords) {
-						properWords.add(camelCaseWord)
-					}
-				}
-			}
-
-			properWords.add(match)
-		}
-
-		const numericalConstants = contents.match(
-			/(\b|(?<=[_]))([\p{Lu}]+|[\p{Ll}]+)[\p{Nd}]+(\b|(?=[_]))/gu,
-		)
-
-		if (numericalConstants !== null) {
-			for (const numericalConstant of numericalConstants) {
-				properWords.add(numericalConstant)
-			}
-		}
-
-		return {
-			path: filePath,
-			commonWords,
-			properWords,
-		}
-	}
+	const root = options.root ?? getRepositoryRoot()
 
 	/** Recursively walk one directory (async). */
-	const walk = async (dir: string): Promise<Promise<FileWords>[]> => {
+	const walk = async (dir: string): Promise<Promise<IndexedFile<T>>[]> => {
 		const dirEntries = await concurrencyLimit(() => fs.readdir(dir, { withFileTypes: true }))
 
-		const perEntryPromises = dirEntries.map(async (entry): Promise<Promise<FileWords>[]> => {
+		const perEntryPromises = dirEntries.map(async (entry): Promise<Promise<IndexedFile<T>>[]> => {
 			const fullPath = path.join(dir, entry.name)
-			const rootRelativePath = path.relative(options.root, fullPath)
+			const rootRelativePath = path.relative(root, fullPath)
 
 			if (shouldIgnore(rootRelativePath)) {
 				return []
@@ -188,7 +141,15 @@ export async function getCodebaseWordIndex(options: CodebaseWordIndexOptions): P
 			}
 
 			if (entry.isFile()) {
-				return [getFileWords(fullPath)]
+				const fileContents = await concurrencyLimit(() =>
+					fs.readFile(fullPath, { encoding: 'utf-8' }),
+				)
+				const fileIndex: IndexedFile<T> = {
+					filePath: rootRelativePath,
+					...options.indexFn(rootRelativePath, fileContents),
+				}
+
+				return [Promise.resolve(fileIndex)]
 			}
 
 			return []
@@ -197,34 +158,7 @@ export async function getCodebaseWordIndex(options: CodebaseWordIndexOptions): P
 		return (await Promise.all(perEntryPromises)).flat()
 	}
 
-	const index: WordIndex = {
-		commonWords: new Map<string, Set<string>>(),
-		properWords: new Map<string, Set<string>>(),
-		lowercaseWords: new Map<string, Set<string>>(),
+	for (const fileWords of await Promise.all(await walk(root))) {
+		options.aggregateFn(fileWords)
 	}
-
-	const addWord = (word: string, map: Map<string, Set<string>>, filePath: string) => {
-		let fileSet = map.get(word)
-
-		if (fileSet === undefined) {
-			fileSet = new Set<string>()
-			map.set(word, fileSet)
-		}
-
-		fileSet.add(filePath)
-	}
-
-	for (const fileWords of await Promise.all(await walk(options.root))) {
-		for (const word of fileWords.commonWords) {
-			addWord(word, index.commonWords, fileWords.path)
-			addWord(word, index.lowercaseWords, fileWords.path)
-		}
-
-		for (const word of fileWords.properWords) {
-			addWord(word, index.properWords, fileWords.path)
-			addWord(word.toLowerCase(), index.lowercaseWords, fileWords.path)
-		}
-	}
-
-	return index
 }

@@ -94,9 +94,9 @@ export const chainVerification: Attribute<ChainVerificationValue> = {
 		It refers to the ability for participants to verify that the chain data
 		is valid when they interact with it.
 
-		Without such verification, users rely on trusted third-parties to tell
+		Without such verification, users rely on trusted external providers to tell
 		them what the state of the blockchain is, similar to the web2 trust model.
-		This allows such third-parties to trick wallet users into signing
+		This allows such external providers to trick wallet users into signing
 		transactions that do not end up having the user's intended effect.
 
 		To avoid this, Ethereum was designed to be verifiable on commodity
@@ -125,7 +125,7 @@ export const chainVerification: Attribute<ChainVerificationValue> = {
 		),
 		fail: exampleRating(
 			paragraph(
-				'The wallet does not verify the integrity of the Ethereum L1 chain, relying on the honesty of third-party RPC providers instead.',
+				'The wallet does not verify the integrity of the Ethereum L1 chain, relying on the honesty of external RPC providers instead.',
 			),
 			noChainVerification(null).value,
 		),

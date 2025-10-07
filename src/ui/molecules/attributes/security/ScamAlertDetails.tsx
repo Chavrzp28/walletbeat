@@ -123,7 +123,7 @@ export function ScamAlertDetails({ wallet, value }: ScamAlertDetailsProps): Reac
 													? "the recipient's Ethereum address"
 													: null,
 											])}{' '}
-											to a third party which can correlate them.
+											to an external service which can correlate them.
 										</Typography>
 									)}
 									{toFullyQualified(value.scamAlerts.sendTransactionWarning.ref).length > 0 && (
@@ -179,7 +179,7 @@ export function ScamAlertDetails({ wallet, value }: ScamAlertDetailsProps): Reac
 													? 'the contract address'
 													: null,
 											])}{' '}
-											to a third party which can correlate them ahead of the transaction being
+											to an external service which can correlate them ahead of the transaction being
 											submitted.
 										</Typography>
 									)}
@@ -208,8 +208,8 @@ export function ScamAlertDetails({ wallet, value }: ScamAlertDetailsProps): Reac
 										{!value.scamUrlWarning.privacyPreserving && (
 											<>
 												{' '}
-												However, in doing so, it leaks {commaListFormat(scamUrlLeaks)} to a third
-												party{scamUrlLeaks.length > 1 && ' which can correlate them'}.
+												However, in doing so, it leaks {commaListFormat(scamUrlLeaks)} to an
+												external service{scamUrlLeaks.length > 1 && ' which can correlate them'}.
 											</>
 										)}
 									</Typography>

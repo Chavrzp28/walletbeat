@@ -46,12 +46,12 @@ function supportsSelfHostedNodeAfterRequests(
 			rating: Rating.PARTIAL,
 			displayName: 'Partially supports self-hosted nodes',
 			shortExplanation: sentence(
-				'{{WALLET_NAME}} contacts a third-party RPC endpoint before letting you configure a self-hosted node.',
+				'{{WALLET_NAME}} contacts an external RPC endpoint before letting you configure a self-hosted node.',
 			),
 			__brand: brand,
 		},
 		details: paragraph(
-			'{{WALLET_NAME}} lets you use a self-hosted Ethereum node, but you cannot configure this before a sensitive request is already made to a third-party RPC provider.',
+			'{{WALLET_NAME}} lets you use a self-hosted Ethereum node, but you cannot configure this before a sensitive request is already made to an external RPC provider.',
 		),
 		howToImprove: paragraph(
 			'{{WALLET_NAME}} should modify the wallet creation flow to allow the user to configure the RPC endpoint for L1 before making any requests, or should avoid making any such requests until the user can access the RPC endpoint configuration options.',
@@ -119,25 +119,25 @@ export const selfHostedNode: Attribute<SelfHostedNodeValue> = {
 
 		* **Privacy**: Because the wallet can work directly on your own hardware
 			with no outside dependencies, the wallet can query chain data without
-			revealing private details (wallet address, IP address, etc.) to a
-			third-party RPC provider.
-		* **Integrity**: Relying on a third-party RPC provider means that this
+			revealing private details (wallet address, IP address, etc.) to an
+			external RPC provider.
+		* **Integrity**: Relying on an external RPC provider means that this
 			provider may return incorrect data about the state of the chain,
 			tricking you into signing a transaction that ends up having a different
 			effect than intended. Your own L1 node will verify the integrity of the
 			chain, so such attacks cannot occur when using a self-hosted node.
 		* **Censorship resistance**: Because an L1 node may broadcast transactions
 			into a shared mempool directly to other nodes in the network, your
-			transactions are not censorable by a third-party RPC provider that would
+			transactions are not censorable by an external RPC provider that would
 			otherwise act as an intermediary.
 		* **No downtime**: Because the L1 node is running on your own hardware,
 			you are not at risk of losing funds or opportunities due to downtime
-			from a third-party RPC provider.
+			from an external RPC provider.
 	`),
 	methodology: markdown(`
 		Wallets are rated based on whether they allow the user to configure the
 		RPC endpoint used for Ethereum mainnet, and whether such configuration is
-		possible before any request is made to a third-party RPC endpoint by
+		possible before any request is made to an external RPC provider by
 		default.
 	`),
 	ratingScale: {
@@ -156,14 +156,14 @@ export const selfHostedNode: Attribute<SelfHostedNodeValue> = {
 			),
 			exampleRating(
 				paragraph(
-					'The wallet lets you configure the RPC endpoint used for Ethereum mainnet, but makes requests to a third-party RPC provider before the user has a chance to modify this RPC endpoint configuration.',
+					'The wallet lets you configure the RPC endpoint used for Ethereum mainnet, but makes requests to an external RPC provider before the user has a chance to modify this RPC endpoint configuration.',
 				),
 				supportsSelfHostedNodeAfterRequests([]).value,
 			),
 		],
 		fail: exampleRating(
 			paragraph(
-				'The wallet uses a third-party Ethereum node provider and does not let you change this setting.',
+				'The wallet uses an external Ethereum node provider and does not let you change this setting.',
 			),
 			noSelfHostedNode([]).value,
 		),

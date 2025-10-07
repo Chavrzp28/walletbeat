@@ -60,7 +60,7 @@ export const reputation: Attribute<ReputationValue> = {
 	methodology: markdown(
 		`Evaluated based on an aggregate of factors:
 
-- **Product Originality:** Degree of original design versus reliance on third-party components.
+- **Product Originality:** Degree of original design versus reliance on not-in-house components.
 
 - **Availability & Support:** History of product availability, risk of discontinuation, and perceived ability to honor warranty/support.
 

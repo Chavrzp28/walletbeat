@@ -102,14 +102,14 @@ export interface StealthAddressSupport {
 		  }
 		| {
 				/**
-				 * Resolution is done exclusively with a specific third-party provider.
+				 * Resolution is done exclusively with a specific external provider.
 				 */
-				type: 'THIRD_PARTY_RESOLVER'
+				type: 'EXTERNAL_RESOLVER'
 
-				/** The third party that does the resolution. */
-				thirdParty: Entity
+				/** The external resolver that does the resolution. */
+				externalResolver: Entity
 
-				/** What does this third party learn? */
+				/** What does this external resolver learn? */
 				learns: {
 					senderIpAddress: boolean
 					senderMetaAddress: boolean
@@ -142,12 +142,12 @@ export interface StealthAddressSupport {
 				>
 		  }
 		| {
-				type: 'THIRD_PARTY_SERVICE'
+				type: 'EXTERNAL_SERVICE'
 
-				/** The third party that does the balance lookup. */
-				thirdParty: Entity
+				/** The external service that does the balance lookup. */
+				externalService: Entity
 
-				/** What does this third party learn? */
+				/** What does this external service learn? */
 				learns: {
 					/** The user's stealth meta-address. */
 					userMetaAddress: boolean
@@ -169,11 +169,11 @@ export interface StealthAddressSupport {
 				type: 'DEFAULT_CHAIN_PROVIDER'
 		  }
 		| {
-				/** A third-party service provides private key data to the wallet. */
-				type: 'THIRD_PARTY_SERVICE'
+				/** An external service provides private key data to the wallet. */
+				type: 'EXTERNAL_SERVICE'
 
-				/** The third party that provides this. */
-				thirdParty: Entity
+				/** The external service that provides this. */
+				externalService: Entity
 		  }
 		| {
 				/** Private key derivation is done locally. */

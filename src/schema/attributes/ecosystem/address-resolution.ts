@@ -46,9 +46,9 @@ function getOffchainProviderInfo(
 		return {
 			rating: Rating.PARTIAL,
 			offchainInfo:
-				'It relies on an offchain third-party provider to do so. The wallet verifies that the address is correct, but the offchain provider may learn your IP address.',
+				'It relies on an offchain external provider to do so. The wallet verifies that the address is correct, but the offchain provider may learn your IP address.',
 			walletShould:
-				'contact the third-party provider using traffic anonymizing techniques, such as Tor or Oblivious HTTP.',
+				'contact the external provider using traffic anonymizing techniques, such as Tor or Oblivious HTTP.',
 		}
 	}
 
@@ -56,18 +56,18 @@ function getOffchainProviderInfo(
 		return {
 			rating: Rating.PARTIAL,
 			offchainInfo:
-				'It relies on an offchain third-party provider to do so. This offchain provider trick the wallet into sending funds to a different address than intended.',
+				'It relies on an offchain external provider to do so. This offchain provider trick the wallet into sending funds to a different address than intended.',
 			walletShould:
-				'ensure the response from the third-party provider is correct using onchain data verified by a light client.',
+				'ensure the response from the external provider is correct using onchain data verified by a light client.',
 		}
 	}
 
 	return {
 		rating: Rating.PARTIAL,
 		offchainInfo:
-			'It relies on an offchain third-party provider to do so. This offchain provider may trick the wallet into sending funds to a different address than intended, and may learn your IP address.',
+			'It relies on an offchain external provider to do so. This offchain provider may trick the wallet into sending funds to a different address than intended, and may learn your IP address.',
 		walletShould:
-			'contact the third-party provider using traffic anonymizing techniques (such as Tor or Oblivious HTTP), and ensure the response from the third-party provider is correct using onchain data verified by a light client.',
+			'contact the external provider using traffic anonymizing techniques (such as Tor or Oblivious HTTP), and ensure the response from the external provider is correct using onchain data verified by a light client.',
 	}
 }
 
@@ -271,8 +271,8 @@ export const addressResolution: Attribute<AddressResolutionValue> = {
 		* Be done using onchain data and reusing the wallet's common chain
 		  interaction client, inheriting its verifiability (via light client)
 		  and privacy properties.
-		* **OR** be done using an offchain third-party provider in such a way that
-		  the address returned by the third-party provider is verifiable, and
+		* **OR** be done using an offchain external provider in such a way that
+		  the address returned by the external provider is verifiable, and
 		  without revealing the user's IP address to the provider.
 			This ensures that:
 			- The wallet cannot be tricked into sending funds to an attacker
@@ -357,7 +357,7 @@ export const addressResolution: Attribute<AddressResolutionValue> = {
 			),
 			exampleRating(
 				mdSentence(
-					`The wallet resolves ${eipMarkdownLink(erc7828)} or ${eipMarkdownLink(erc7831)} addresses using an offchain third-party provider, without verifying the address.`,
+					`The wallet resolves ${eipMarkdownLink(erc7828)} or ${eipMarkdownLink(erc7831)} addresses using an offchain external provider, without verifying the address.`,
 				),
 				evaluateAddressResolution(
 					{
@@ -381,7 +381,7 @@ export const addressResolution: Attribute<AddressResolutionValue> = {
 			),
 			exampleRating(
 				mdSentence(
-					`The wallet resolves ${eipMarkdownLink(erc7828)} or ${eipMarkdownLink(erc7831)} addresses using an offchain third-party provider which may learn the user's IP address.`,
+					`The wallet resolves ${eipMarkdownLink(erc7828)} or ${eipMarkdownLink(erc7831)} addresses using an offchain external provider which may learn the user's IP address.`,
 				),
 				evaluateAddressResolution(
 					{

@@ -75,7 +75,7 @@ function bulkRequests(references: ReferenceArray): Evaluation<MultiAddressCorrel
 		value: {
 			id: 'bulkRequests',
 			rating: Rating.FAIL,
-			displayName: 'Multiple addresses are correlatable by a third party',
+			displayName: 'Multiple addresses are correlatable by an external provider',
 			shortExplanation: sentence(
 				'{{WALLET_NAME}} makes bulk requests containing multiple addresses to the same endpoint, which allows it to correlate your addresses.',
 			),
@@ -85,7 +85,7 @@ function bulkRequests(references: ReferenceArray): Evaluation<MultiAddressCorrel
 			'When configured with multiple addresses, {{WALLET_NAME}} makes requests that contain multiple addresses simultaneously.',
 		),
 		impact: paragraph(
-			'Using multiple addresses in {{WALLET_NAME}} will allow them to be correlated by a third-party. You should avoid configuring multiple addresses with {{WALLET_NAME}}.',
+			'Using multiple addresses in {{WALLET_NAME}} will allow them to be correlated by an external provider. You should avoid configuring multiple addresses with {{WALLET_NAME}}.',
 		),
 		howToImprove: paragraph(
 			'{{WALLET_NAME}} should first ensure that it never makes requests containing multiple addresses simultaneously. Next, it should ensure that these requests are staggered and are proxied through different proxies and RPC endpoints to prevent correlation. This can be done through the use of privacy solutions such as Oblivious HTTP, Tor, and others.',
@@ -101,7 +101,7 @@ function correlatableRequests(
 		value: {
 			id: 'correlatableRequests',
 			rating: Rating.FAIL,
-			displayName: 'Multiple addresses are correlatable by a third party',
+			displayName: 'Multiple addresses are correlatable by an external provider',
 			shortExplanation: sentence(
 				'{{WALLET_NAME}} makes requests about multiple addresses simultaneously to the same endpoint, which allows it to correlate your addresses.',
 			),
@@ -111,7 +111,7 @@ function correlatableRequests(
 			'When configured with multiple addresses, {{WALLET_NAME}} makes separate requests for each wallet address, but these requests are sent simultaneously and without proxying. This allows the RPC endpoint to correlate your addresses.',
 		),
 		impact: paragraph(
-			'Using multiple addresses in {{WALLET_NAME}} will allow them to be correlated by a third-party. You should avoid configuring multiple addresses with {{WALLET_NAME}}.',
+			'Using multiple addresses in {{WALLET_NAME}} will allow them to be correlated by an external provider. You should avoid configuring multiple addresses with {{WALLET_NAME}}.',
 		),
 		howToImprove: paragraph(
 			'{{WALLET_NAME}} should ensure that its requests are staggered and are proxied through different proxies and RPC endpoints to prevent correlation. This can be done through the use of privacy solutions such as Oblivious HTTP, Tor, and others.',
@@ -269,10 +269,10 @@ export const multiAddressCorrelation: Attribute<MultiAddressCorrelationValue> = 
 		fact private. It is therefore important to use a wallet that does not reveal that fact.
 	`),
 	methodology: markdown(`
-		Wallets are assessed based on whether a third-party can learn that
+		Wallets are assessed based on whether an external provider can learn that
 		two or more of the user's wallet addresses belong to the same user.
 
-		A third-party may learn of this correlation either through:
+		An external provider may learn of this correlation either through:
 
 		- The wallet software explicitly sending this data (e.g. through
 		  analytics)
@@ -354,7 +354,7 @@ export const multiAddressCorrelation: Attribute<MultiAddressCorrelationValue> = 
 			),
 			exampleRating(
 				paragraph(
-					"The wallet runs by default with a user's own self-hosted node, preventing any third-party from learning about any of the user's wallet addresses.",
+					"The wallet runs by default with a user's own self-hosted node, preventing any external provider from learning about any of the user's wallet addresses.",
 				),
 				exampleRatingUnimplemented,
 			),

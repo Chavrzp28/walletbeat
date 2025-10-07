@@ -111,13 +111,13 @@ export const userSafety: Attribute<UserSafetyValue> = {
 
 		- **Risk analysis support:** Is the HWW displaying a risk evaluation / threat warning to the user when signing transactions or messages? Describe how the evaluation works.
 
-		- **Risk analysis without phoning home possible:** Is it possible to run the risk analysis process without contacting the HWW manufacturer? Describe which third parties are involved and if the full TX/message data could be recovered by a party.
+		- **Risk analysis without phoning home possible:** Is it possible to run the risk analysis process without contacting the HWW manufacturer? Describe which external services are involved and if the full TX/message data could be recovered by any party.
 
 		- **Fully local risk analysis possible:** Is it possible to run the risk analysis evaluation locally? Describe the components provided by the HWW provider and the setup.
 
 		- **TX simulation support:** Is the HWW displaying high level simulation results (balance difference…) to the user when signing transactions or messages? Describe how the evaluation works.
 
-		- **TX simulation without phoning home possible:** Is it possible to run the simulation process without contacting the HWW manufacturer? Describe which third parties are involved and if the full TX/message data could be recovered by a party.
+		- **TX simulation without phoning home possible:** Is it possible to run the simulation process without contacting the HWW manufacturer? Describe which external services are involved and if the full TX/message data could be recovered by any party.
 
 		- **Fully local TX simulation possible:** Is it possible to run the simulation locally? Describe the components provided by the HWW provider and the setup.
 

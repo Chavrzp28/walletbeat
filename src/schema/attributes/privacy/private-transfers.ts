@@ -78,7 +78,7 @@ export enum PrivateTransfersPrivacyLevel {
 	/** No privacy at all. */
 	NOT_PRIVATE = 'NOT_PRIVATE',
 
-	/** Chain data reveals no private information, but third party providers may have it. */
+	/** Chain data reveals no private information, but external providers may have it. */
 	CHAIN_DATA_PRIVATE = 'CHAIN_DATA_PRIVATE',
 
 	/** Data is kept private from all but the wallet user. */
@@ -251,10 +251,10 @@ function rateStealthAddressSupport(
 		sendingImprovements: string[]
 	} => {
 		switch (stealthAddresses.recipientAddressResolution.type) {
-			case 'THIRD_PARTY_RESOLVER':
+			case 'EXTERNAL_RESOLVER':
 				return (() => {
-					const thirdPartyLink = entityMarkdownLink(
-						stealthAddresses.recipientAddressResolution.thirdParty,
+					const externalServiceLink = entityMarkdownLink(
+						stealthAddresses.recipientAddressResolution.externalResolver,
 					)
 					const learned = stealthAddresses.recipientAddressResolution.learns
 					const learnedElements = commaListFormat([
@@ -273,12 +273,12 @@ function rateStealthAddressSupport(
 						return {
 							sendingPrivacy: PrivateTransfersPrivacyLevel.CHAIN_DATA_PRIVATE,
 							sendingDetails: mdParagraph(`
-								Sending funds relies on ${thirdPartyLink} for address resolution, which learns ${learnedElements} in the process.
-								While the onchain transaction data does not reveal these details, ${thirdPartyLink} is in a position to learn
+								Sending funds relies on ${externalServiceLink} for address resolution, which learns ${learnedElements} in the process.
+								While the onchain transaction data does not reveal these details, ${externalServiceLink} is in a position to learn
 								a link between the sender and the recipient.
 							`),
 							sendingImprovements: [
-								`avoid sending sender and recipient information to ${thirdPartyLink}`,
+								`avoid sending sender and recipient information to ${externalServiceLink}`,
 							],
 						}
 					}
@@ -287,35 +287,37 @@ function rateStealthAddressSupport(
 						return {
 							sendingPrivacy: PrivateTransfersPrivacyLevel.CHAIN_DATA_PRIVATE,
 							sendingDetails: mdParagraph(`
-								Sending funds relies on ${thirdPartyLink} for address resolution, which learns ${learnedElements} in the process.
-								While the onchain transaction data does not reveal these details, ${thirdPartyLink} is in a position to learn
+								Sending funds relies on ${externalServiceLink} for address resolution, which learns ${learnedElements} in the process.
+								While the onchain transaction data does not reveal these details, ${externalServiceLink} is in a position to learn
 								who the intended recipient of the transaction is.
 							`),
-							sendingImprovements: [`avoid sending recipient information to ${thirdPartyLink}`],
+							sendingImprovements: [
+								`avoid sending recipient information to ${externalServiceLink}`,
+							],
 						}
 					}
 
 					if (
 						learned.recipientMetaAddress &&
-						stealthAddresses.balanceLookup.type === 'THIRD_PARTY_SERVICE' &&
-						stealthAddresses.recipientAddressResolution.thirdParty.id ===
-							stealthAddresses.balanceLookup.thirdParty.id &&
+						stealthAddresses.balanceLookup.type === 'EXTERNAL_SERVICE' &&
+						stealthAddresses.recipientAddressResolution.externalResolver.id ===
+							stealthAddresses.balanceLookup.externalService.id &&
 						stealthAddresses.balanceLookup.learns.userMetaAddress
 					) {
 						return {
 							sendingPrivacy: PrivateTransfersPrivacyLevel.CHAIN_DATA_PRIVATE,
 							sendingDetails: mdParagraph(`
-								Sending funds relies on ${thirdPartyLink} for address resolution, which learns ${learnedElements} in the process.
+								Sending funds relies on ${externalServiceLink} for address resolution, which learns ${learnedElements} in the process.
 								In addition, this same provider is used for performing balance lookups, and learns your stealth meta-address
 								in the process.
 								This means that while the onchain transaction data does not reveal these details,
-								${thirdPartyLink} is in a position to know that you (as a stealth address user)
+								${externalServiceLink} is in a position to know that you (as a stealth address user)
 								have recently refreshed your balance, and which recipient *some* stealth address user
 								may have recently sent funds to, allowing it to infer a link between you and your
 								intended recipient.
 							`),
 							sendingImprovements: [
-								`avoid relying on ${thirdPartyLink} for both recipient address resolution and balance lookups`,
+								`avoid relying on ${externalServiceLink} for both recipient address resolution and balance lookups`,
 							],
 						}
 					}
@@ -323,7 +325,7 @@ function rateStealthAddressSupport(
 					return {
 						sendingPrivacy: PrivateTransfersPrivacyLevel.FULLY_PRIVATE,
 						sendingDetails: mdParagraph(`
-							Sending funds relies on ${thirdPartyLink}, but it cannot learn any association between your IP address,
+							Sending funds relies on ${externalServiceLink}, but it cannot learn any association between your IP address,
 							stealth meta-address, recipient meta-address, or recipient generated stealth address.
 							Onchain transaction data is fully private as well.
 						`),
@@ -342,9 +344,11 @@ function rateStealthAddressSupport(
 		receivingImprovements: string[]
 	} => {
 		switch (stealthAddresses.balanceLookup.type) {
-			case 'THIRD_PARTY_SERVICE':
+			case 'EXTERNAL_SERVICE':
 				return (() => {
-					const thirdPartyLink = entityMarkdownLink(stealthAddresses.balanceLookup.thirdParty)
+					const externalServiceLink = entityMarkdownLink(
+						stealthAddresses.balanceLookup.externalService,
+					)
 					const learned = stealthAddresses.balanceLookup.learns
 
 					if (learned.userMetaAddress && learned.generatedStealthAddresses) {
@@ -352,10 +356,10 @@ function rateStealthAddressSupport(
 							receivingPrivacy: PrivateTransfersPrivacyLevel.CHAIN_DATA_PRIVATE,
 							receivingDetails: mdParagraph(`
 								Looking up your stealth address balance relies on
-								${thirdPartyLink}, which learns your stealth meta-address and
+								${externalServiceLink}, which learns your stealth meta-address and
 								generated stealth addresses.
 								This means that while onchain transaction data is still private,
-								${thirdPartyLink} is in a position to de-anonymize all your past
+								${externalServiceLink} is in a position to de-anonymize all your past
 								transactions.
 							`),
 							receivingImprovements: [
@@ -368,10 +372,10 @@ function rateStealthAddressSupport(
 						return {
 							receivingPrivacy: PrivateTransfersPrivacyLevel.CHAIN_DATA_PRIVATE,
 							receivingDetails: mdParagraph(`
-								Looking up your balance relies on ${thirdPartyLink}, which
+								Looking up your balance relies on ${externalServiceLink}, which
 								learns your generated stealth addresses.
 								This means that while onchain transaction data is still private,
-								${thirdPartyLink} is in a position to de-anonymize all your past
+								${externalServiceLink} is in a position to de-anonymize all your past
 								transactions.
 							`),
 							receivingImprovements: [
@@ -383,7 +387,7 @@ function rateStealthAddressSupport(
 					return {
 						receivingPrivacy: PrivateTransfersPrivacyLevel.FULLY_PRIVATE,
 						receivingDetails: mdParagraph(`
-							Looking up your balance relies on ${thirdPartyLink}, but does not
+							Looking up your balance relies on ${externalServiceLink}, but does not
 							leak sensitive information in the process.
 						`),
 						receivingImprovements: [],
@@ -476,12 +480,12 @@ function rateStealthAddressSupport(
 					`),
 					derivationImprovements: ['perform stealth address private key derivation locally'],
 				}
-			case 'THIRD_PARTY_SERVICE':
+			case 'EXTERNAL_SERVICE':
 				return {
 					derivationPrivacy: PrivateTransfersPrivacyLevel.CHAIN_DATA_PRIVATE,
 					derivationDetails: mdParagraph(`
 						Deriving the private key of your generated stealth addresses relies on
-						${entityMarkdownLink(stealthAddresses.privateKeyDerivation.thirdParty)},
+						${entityMarkdownLink(stealthAddresses.privateKeyDerivation.externalService)},
 						who is in a position to learn this private key and to spend your funds.
 					`),
 					derivationImprovements: ['perform stealth address private key derivation locally'],
@@ -566,7 +570,7 @@ function rateStealthAddressSupport(
 					rating: Rating.PARTIAL,
 					displayName: 'ERC-5564 stealth addresses reliant on trusted provider',
 					shortExplanation: mdSentence(
-						`{{WALLET_NAME}} implements ${eipMarkdownLink(erc5564)} stealth addresses but relies on a trusted third party.`,
+						`{{WALLET_NAME}} implements ${eipMarkdownLink(erc5564)} stealth addresses but relies on a trusted external provider.`,
 					),
 					defaultFungibleTokenTransferMode: PrivateTransferTechnology.STEALTH_ADDRESSES,
 					perTechnology,
@@ -665,7 +669,7 @@ function rateTornadoCashNovaSupport(
 					receivingPrivacy: PrivateTransfersPrivacyLevel.CHAIN_DATA_PRIVATE,
 					receivingDetails: mdParagraph(`
 						The user's private notes (UTXOs) are filtered externally,
-						allowing a third party to correlate the user's funds within
+						allowing an external provider to correlate the user's funds within
 						the pool.
 					`),
 					receivingImprovements: ['should perform UTXO filtering client-side'],
@@ -675,8 +679,8 @@ function rateTornadoCashNovaSupport(
 					receivingPrivacy: PrivateTransfersPrivacyLevel.FULLY_PRIVATE,
 					receivingDetails: mdParagraph(`
 						The user's private notes (UTXOs) are filtered by the wallet
-						itself, ensuring that no third party may correlate the user's
-						received funds in the pool.
+						itself, ensuring that no external provider may correlate the
+						user's received funds in the pool.
 					`),
 					receivingImprovements: [],
 				}
@@ -821,7 +825,7 @@ function rateTornadoCashNovaSupport(
 					rating: Rating.PARTIAL,
 					displayName: 'Tornado Cash Nova integration relying on external provider',
 					shortExplanation: mdSentence(
-						'{{WALLET_NAME}} integrates Tornado Cash Nova but relies on a third-party.',
+						'{{WALLET_NAME}} integrates Tornado Cash Nova but relies on an external provider.',
 					),
 					defaultFungibleTokenTransferMode: PrivateTransferTechnology.TORNADO_CASH_NOVA,
 					perTechnology,
@@ -1188,7 +1192,7 @@ function ratePrivacyPoolsSupport(
 					rating: Rating.PARTIAL,
 					displayName: 'Privacy Pools integration relying on external provider',
 					shortExplanation: mdSentence(
-						'{{WALLET_NAME}} integrates Privacy Pools but relies on a third-party.',
+						'{{WALLET_NAME}} integrates Privacy Pools but relies on an external provider.',
 					),
 					defaultFungibleTokenTransferMode: PrivateTransferTechnology.PRIVACY_POOLS,
 					perTechnology,
@@ -1267,7 +1271,7 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 		spend such tokens privately.
 
 		"Privately" here means that other than the wallet user, no single entity
-		(including any third-party provider) can infer or reconstruct the user's
+		(including any external provider) can infer or reconstruct the user's
 		transaction history.
 
 		Walletbeat currently recognizes the following privacy-preserving token
@@ -1303,16 +1307,16 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 				rateStealthAddressSupport(
 					supported({
 						balanceLookup: {
-							type: 'THIRD_PARTY_SERVICE',
-							thirdParty: exampleNodeCompany,
+							type: 'EXTERNAL_SERVICE',
+							externalService: exampleNodeCompany,
 							learns: {
 								generatedStealthAddresses: false,
 								userMetaAddress: false,
 							},
 						},
 						recipientAddressResolution: {
-							type: 'THIRD_PARTY_RESOLVER',
-							thirdParty: exampleNodeCompany,
+							type: 'EXTERNAL_RESOLVER',
+							externalResolver: exampleNodeCompany,
 							learns: {
 								recipientGeneratedStealthAddress: false,
 								recipientMetaAddress: false,
@@ -1333,21 +1337,21 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 			exampleRating(
 				mdParagraph(`
 					The wallet's token transfers are implemented using ${eipMarkdownLink(erc5564)} Stealth Addresses by default.
-					However, a third-party provider may learn of the correlation between the user's stealth addresses.
+					However, an external provider may learn of the correlation between the user's stealth addresses.
 				`),
 				rateStealthAddressSupport(
 					supported({
 						balanceLookup: {
-							type: 'THIRD_PARTY_SERVICE',
-							thirdParty: exampleNodeCompany,
+							type: 'EXTERNAL_SERVICE',
+							externalService: exampleNodeCompany,
 							learns: {
 								generatedStealthAddresses: true,
 								userMetaAddress: true,
 							},
 						},
 						recipientAddressResolution: {
-							type: 'THIRD_PARTY_RESOLVER',
-							thirdParty: exampleNodeCompany,
+							type: 'EXTERNAL_RESOLVER',
+							externalResolver: exampleNodeCompany,
 							learns: {
 								recipientGeneratedStealthAddress: false,
 								recipientMetaAddress: false,
@@ -1368,22 +1372,22 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 			exampleRating(
 				mdParagraph(`
 					The wallet's token transfers are implemented using ${eipMarkdownLink(erc5564)} Stealth Addresses by default.
-					However, when sending tokens, a third-party provider may learn of the correlation between the recipient's
+					However, when sending tokens, an external provider may learn of the correlation between the recipient's
 					meta-address and their newly-generated stealth address, thereby de-anonymizing the recipient.
 				`),
 				rateStealthAddressSupport(
 					supported({
 						balanceLookup: {
-							type: 'THIRD_PARTY_SERVICE',
-							thirdParty: exampleNodeCompany,
+							type: 'EXTERNAL_SERVICE',
+							externalService: exampleNodeCompany,
 							learns: {
 								generatedStealthAddresses: false,
 								userMetaAddress: false,
 							},
 						},
 						recipientAddressResolution: {
-							type: 'THIRD_PARTY_RESOLVER',
-							thirdParty: exampleNodeCompany,
+							type: 'EXTERNAL_RESOLVER',
+							externalResolver: exampleNodeCompany,
 							learns: {
 								recipientGeneratedStealthAddress: true,
 								recipientMetaAddress: true,
@@ -1404,23 +1408,23 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 			exampleRating(
 				mdParagraph(`
 					The wallet's token transfers are implemented using ${eipMarkdownLink(erc5564)} Stealth Addresses by default.
-					However, when sending tokens, a third-party provider may learn of the correlation between the sender's
+					However, when sending tokens, an external provider may learn of the correlation between the sender's
 					meta-address or IP, and the recipient's newly-generated stealth address, thereby de-anonymizing the
 					sender and recipient of the transfer.
 				`),
 				rateStealthAddressSupport(
 					supported({
 						balanceLookup: {
-							type: 'THIRD_PARTY_SERVICE',
-							thirdParty: exampleNodeCompany,
+							type: 'EXTERNAL_SERVICE',
+							externalService: exampleNodeCompany,
 							learns: {
 								generatedStealthAddresses: false,
 								userMetaAddress: false,
 							},
 						},
 						recipientAddressResolution: {
-							type: 'THIRD_PARTY_RESOLVER',
-							thirdParty: exampleNodeCompany,
+							type: 'EXTERNAL_RESOLVER',
+							externalResolver: exampleNodeCompany,
 							learns: {
 								recipientGeneratedStealthAddress: true,
 								recipientMetaAddress: false,
@@ -1443,26 +1447,26 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 			exampleRating(
 				mdParagraph(`
 					The wallet's token transfers are implemented using ${eipMarkdownLink(erc5564)} Stealth Addresses by default.
-					Each stealth address is refreshed in such a way that no third-party may learn about the
+					Each stealth address is refreshed in such a way that no external provider may learn about the
 					correlation between these stealth addresses.
 					When spending private balances, users control which stealth addresses are used.
-					When sending tokens to another user's stealth address, no third-party may learn of the correlation between
+					When sending tokens to another user's stealth address, no external provider may learn of the correlation between
 					the sender and the recipient, or of the correlation between the recipient's meta-address and their
 					newly-generated stealth address.
 				`),
 				rateStealthAddressSupport(
 					supported({
 						balanceLookup: {
-							type: 'THIRD_PARTY_SERVICE',
-							thirdParty: exampleNodeCompany,
+							type: 'EXTERNAL_SERVICE',
+							externalService: exampleNodeCompany,
 							learns: {
 								generatedStealthAddresses: false,
 								userMetaAddress: true,
 							},
 						},
 						recipientAddressResolution: {
-							type: 'THIRD_PARTY_RESOLVER',
-							thirdParty: exampleNodeCompany,
+							type: 'EXTERNAL_RESOLVER',
+							externalResolver: exampleNodeCompany,
 							learns: {
 								recipientGeneratedStealthAddress: false,
 								recipientMetaAddress: false,
