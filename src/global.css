@@ -485,6 +485,7 @@ span svg {
 		overflow-y: auto;
 	}
 	&[data-scroll-container~="inline"] {
+		container-type: scroll-state size;
 		container-type: scroll-state block-size;
 		overflow-x: auto;
 	}

@@ -24,7 +24,7 @@ import WalletTable from '@/ui/organisms/WalletTable.svelte'
 	<Navigation navigationItems={defaultNavigationItems} />
 
 	<main data-sticky-container>
-		<header>
+		<header data-sticky="inline">
 			<h1>Who watches the wallets?</h1>
 
 			<p>
@@ -37,7 +37,7 @@ import WalletTable from '@/ui/organisms/WalletTable.svelte'
 			</p>
 		</header>
 
-		<section>
+		<section data-sticky-container>
 			<WalletTable
 				client:load
 				title='Software Wallets'
@@ -46,7 +46,7 @@ import WalletTable from '@/ui/organisms/WalletTable.svelte'
 			/>
 		</section>
 
-		<section>
+		<section data-sticky-container>
 			<WalletTable
 				client:load
 				title='Hardware Wallets'
@@ -60,9 +60,12 @@ import WalletTable from '@/ui/organisms/WalletTable.svelte'
 <style>
 	main {
 		> header {
-			background:
-				linear-gradient(to right, var(--background-primary) 33cqi, transparent 125%),
-				url('./robot.png') 98% 1rem / clamp(12rem, 24cqi, 20rem) no-repeat;
+			&:before {
+				background:
+					linear-gradient(to right, var(--background-primary) 33cqi, transparent 125%),
+					url('./robot.png') 98% 1rem / clamp(12rem, 24cqi, 20rem) no-repeat
+				;
+			}
 
 			padding: clamp(1.5rem, 8cqi, 12rem) clamp(1.5rem, 6cqi, 2rem);
 

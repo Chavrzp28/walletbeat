@@ -24,27 +24,27 @@ import GitHubIcon from 'lucide-static/icons/github.svg?raw'
   />
 
 	<main data-sticky-container>
-		<section>
-			<header>
-				<Typography
-					content={
-						markdown(`
-							# EIP-7702 Adoption Tracker
+		<header data-sticky="inline">
+			<Typography
+				content={
+					markdown(`
+						# EIP-7702 Adoption Tracker
 
-							Which wallets implement [EIP-7702](https://eip.tools/eip/7702)? How compliant and standardized is their implementation? Which new 7702-enabled features does each wallet support?
+						Which wallets implement [EIP-7702](https://eip.tools/eip/7702)? How compliant and standardized is their implementation? Which new 7702-enabled features does each wallet support?
 
-							Inspired by [7702 Beat](https://swiss-knife.xyz/7702beat), from the great folks at [Swiss-Knife.xyz](https://swiss-knife.xyz). Also check out [BundleBear's EIP-7702 contract tracker](https://www.bundlebear.com/eip7702-authorized-contracts/all)!
-						`)
-					}
-				/>
-			</header>
+						Inspired by [7702 Beat](https://swiss-knife.xyz/7702beat), from the great folks at [Swiss-Knife.xyz](https://swiss-knife.xyz). Also check out [BundleBear's EIP-7702 contract tracker](https://www.bundlebear.com/eip7702-authorized-contracts/all)!
+					`)
+				}
+			/>
+		</header>
 
+		<section data-sticky-container>
 			<Eip7702Table
 				title="Software Wallets by EIP-7702 Support"
 				client:load
 			/>
 
-			<footer>
+			<footer data-sticky="inline">
 				<p>Incorrect data? Submit a PR: <a href={repositoryUrl} target="_blank" rel="noopener noreferrer" class="github-link"><span set:html={GitHubIcon}></span>GitHub Repository</a></p>
 			</footer>
 		</section>
@@ -54,6 +54,8 @@ import GitHubIcon from 'lucide-static/icons/github.svg?raw'
 
 <style>
 	header {
+		padding: clamp(1.5rem, 6cqi, 2rem);
+
 		h1 {
 			font-size: 2.5rem;
 			font-weight: 800;

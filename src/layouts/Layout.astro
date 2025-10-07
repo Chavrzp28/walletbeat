@@ -100,13 +100,17 @@ import Metadata from '@/components/Metadata.astro'
 
 		> main {
 			grid-area: Main;
-
-			--sticky-marginInlineStart: clamp(1.5rem, 6cqi, 2rem);
-			--sticky-marginInlineEnd: clamp(1.5rem, 6cqi, 2rem);
+			min-inline-size: fit-content;
 
 			> section {
 				display: grid;
 				padding: clamp(1.5rem, 6cqi, 2rem);
+
+				&[data-sticky-container] {
+					--sticky-paddingInlineStart: clamp(1.5rem, 6cqi, 2rem);
+					--sticky-paddingInlineEnd: clamp(1.5rem, 6cqi, 2rem);
+				}
+
 				gap: 1.5rem;
 				max-width: 80rem;
 				margin: 0 auto;
