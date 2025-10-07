@@ -553,8 +553,7 @@
 										placement="inline-end"
 									>
 										<div
-											class="tag"
-											data-tag-variant={tag.type}
+											data-tag={tag.type}
 											role="button"
 											tabindex="0"
 											aria-label="Filter by {tag.label}"
@@ -582,8 +581,7 @@
 									</Tooltip>
 								{:else}
 									<button
-										class="tag"
-										data-tag-variant={tag.type}
+										data-tag={tag.type}
 										aria-label="Filter by {tag.label}"
 										onclick={(e) => {
 											e.stopPropagation()

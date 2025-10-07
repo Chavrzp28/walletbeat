@@ -20,8 +20,7 @@
 
 {#if score?.score !== undefined}
 	<data
-		class="badge"
-		data-badge-size={size}
+		data-badge={size}
 		value={score.score}
 		title={score.hasUnratedComponent ? '*contains unrated components' : undefined}
 		style:--accent={scoreToColor(score.score)}
@@ -44,7 +43,7 @@
 
 
 <style>
-	.badge {
+	data {
 		&[value='UNRATED'] {
 			--accent: var(--rating-unrated);
 		}

@@ -332,26 +332,34 @@ span svg {
 	padding: 16px;
 }
 
-.badge {
+[data-badge] {
+	display: inline-flex;
+	align-items: center;
 	padding: 0.25em 0.5em;
-	border-radius: 0.25em;
-	background-color: color-mix(in srgb, var(--accent) 33%, transparent);
+	border-radius: 0.375em;
+	background-color: color-mix(in srgb, var(--accent) 20%, transparent);
+	border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+	font-weight: 600;
+	line-height: 1;
+	transition: all 0.2s ease;
 
-	&[data-badge-size='small'] {
+	&[data-badge~='small'] {
 		font-size: 0.75em;
-		font-weight: 500;
+		padding: 0.3em 0.5em;
 	}
 
-	&[data-badge-size='medium'] {
-		font-size: 0.9em;
+	&[data-badge~='medium'] {
+		font-size: 0.875em;
+		padding: 0.35em 0.6em;
 	}
 
-	&[data-badge-size='large'] {
-		font-size: 1.25em;
+	&[data-badge~='large'] {
+		font-size: 1em;
+		padding: 0.4em 0.7em;
 	}
 }
 
-.tag {
+[data-tag] {
 	--tag-backgroundColor: light-dark(rgba(108, 36, 224, 0.08), rgba(108, 36, 224, 0.12));
 	--tag-textColor: light-dark(var(--accent), rgb(187, 147, 255));
 	--tag-borderColor: light-dark(rgba(108, 36, 224, 0.2), rgba(108, 36, 224, 0.3));
@@ -391,58 +399,58 @@ span svg {
 		}
 	}
 
-	&[data-tag-variant='wallet-type'] {
-		--tag-backgroundColor: light-dark(oklch(0.95 0.00 0), oklch(0.25 0.00 0));
-		--tag-textColor: light-dark(oklch(0.65 0.00 0), oklch(0.80 0.00 0));
-		--tag-borderColor: light-dark(oklch(0.90 0.00 0), oklch(0.40 0.00 0));
-		--tag-hover-backgroundColor: light-dark(oklch(0.92 0.00 0), oklch(0.30 0.00 0));
-		--tag-hover-textColor: light-dark(oklch(0.60 0.00 0), oklch(0.85 0.00 0));
-		--tag-hover-borderColor: light-dark(oklch(0.85 0.00 0), oklch(0.50 0.00 0));
+	&[data-tag~='wallet-type'] {
+		--tag-backgroundColor: light-dark(oklch(0.95 0 0), oklch(0.25 0 0));
+		--tag-textColor: light-dark(oklch(0.65 0 0), oklch(0.8 0 0));
+		--tag-borderColor: light-dark(oklch(0.9 0 0), oklch(0.4 0 0));
+		--tag-hover-backgroundColor: light-dark(oklch(0.92 0 0), oklch(0.3 0 0));
+		--tag-hover-textColor: light-dark(oklch(0.6 0 0), oklch(0.85 0 0));
+		--tag-hover-borderColor: light-dark(oklch(0.85 0 0), oklch(0.5 0 0));
 	}
 
-	&[data-tag-variant='account-type'] {
+	&[data-tag~='account-type'] {
 		--tag-backgroundColor: light-dark(oklch(0.95 0.03 145), oklch(0.25 0.05 145));
-		--tag-textColor: light-dark(oklch(0.65 0.15 145), oklch(0.70 0.25 145));
-		--tag-borderColor: light-dark(oklch(0.90 0.06 145), oklch(0.40 0.08 145));
-		--tag-hover-backgroundColor: light-dark(oklch(0.92 0.05 145), oklch(0.30 0.07 145));
-		--tag-hover-textColor: light-dark(oklch(0.60 0.18 145), oklch(0.85 0.15 145));
-		--tag-hover-borderColor: light-dark(oklch(0.85 0.08 145), oklch(0.50 0.10 145));
+		--tag-textColor: light-dark(oklch(0.65 0.15 145), oklch(0.7 0.25 145));
+		--tag-borderColor: light-dark(oklch(0.9 0.06 145), oklch(0.4 0.08 145));
+		--tag-hover-backgroundColor: light-dark(oklch(0.92 0.05 145), oklch(0.3 0.07 145));
+		--tag-hover-textColor: light-dark(oklch(0.6 0.18 145), oklch(0.85 0.15 145));
+		--tag-hover-borderColor: light-dark(oklch(0.85 0.08 145), oklch(0.5 0.1 145));
 	}
 
-	&[data-tag-variant='eip'] {
+	&[data-tag~='eip'] {
 		--tag-backgroundColor: light-dark(oklch(0.95 0.03 300), oklch(0.25 0.05 300));
-		--tag-textColor: light-dark(oklch(0.65 0.15 300), oklch(0.70 0.25 300));
-		--tag-borderColor: light-dark(oklch(0.90 0.06 300), oklch(0.40 0.08 300));
-		--tag-hover-backgroundColor: light-dark(oklch(0.92 0.05 300), oklch(0.30 0.07 300));
-		--tag-hover-textColor: light-dark(oklch(0.60 0.18 300), oklch(0.85 0.15 300));
-		--tag-hover-borderColor: light-dark(oklch(0.85 0.08 300), oklch(0.50 0.10 300));
+		--tag-textColor: light-dark(oklch(0.65 0.15 300), oklch(0.7 0.25 300));
+		--tag-borderColor: light-dark(oklch(0.9 0.06 300), oklch(0.4 0.08 300));
+		--tag-hover-backgroundColor: light-dark(oklch(0.92 0.05 300), oklch(0.3 0.07 300));
+		--tag-hover-textColor: light-dark(oklch(0.6 0.18 300), oklch(0.85 0.15 300));
+		--tag-hover-borderColor: light-dark(oklch(0.85 0.08 300), oklch(0.5 0.1 300));
 	}
 
-	&[data-tag-variant='eip-status'] {
+	&[data-tag~='eip-status'] {
 		--tag-backgroundColor: light-dark(oklch(0.95 0.03 250), oklch(0.25 0.05 250));
-		--tag-textColor: light-dark(oklch(0.65 0.15 250), oklch(0.70 0.25 250));
-		--tag-borderColor: light-dark(oklch(0.90 0.06 250), oklch(0.40 0.08 250));
-		--tag-hover-backgroundColor: light-dark(oklch(0.92 0.05 250), oklch(0.30 0.07 250));
-		--tag-hover-textColor: light-dark(oklch(0.60 0.18 250), oklch(0.85 0.15 250));
-		--tag-hover-borderColor: light-dark(oklch(0.85 0.08 250), oklch(0.50 0.10 250));
+		--tag-textColor: light-dark(oklch(0.65 0.15 250), oklch(0.7 0.25 250));
+		--tag-borderColor: light-dark(oklch(0.9 0.06 250), oklch(0.4 0.08 250));
+		--tag-hover-backgroundColor: light-dark(oklch(0.92 0.05 250), oklch(0.3 0.07 250));
+		--tag-hover-textColor: light-dark(oklch(0.6 0.18 250), oklch(0.85 0.15 250));
+		--tag-hover-borderColor: light-dark(oklch(0.85 0.08 250), oklch(0.5 0.1 250));
 	}
 
-	&[data-tag-variant='manufacture-type'] {
+	&[data-tag~='manufacture-type'] {
 		--tag-backgroundColor: light-dark(oklch(0.95 0.03 290), oklch(0.25 0.05 290));
-		--tag-textColor: light-dark(oklch(0.65 0.15 290), oklch(0.70 0.25 290));
-		--tag-borderColor: light-dark(oklch(0.90 0.06 290), oklch(0.40 0.08 290));
-		--tag-hover-backgroundColor: light-dark(oklch(0.92 0.05 290), oklch(0.30 0.07 290));
-		--tag-hover-textColor: light-dark(oklch(0.60 0.18 290), oklch(0.85 0.15 290));
-		--tag-hover-borderColor: light-dark(oklch(0.85 0.08 290), oklch(0.50 0.10 290));
+		--tag-textColor: light-dark(oklch(0.65 0.15 290), oklch(0.7 0.25 290));
+		--tag-borderColor: light-dark(oklch(0.9 0.06 290), oklch(0.4 0.08 290));
+		--tag-hover-backgroundColor: light-dark(oklch(0.92 0.05 290), oklch(0.3 0.07 290));
+		--tag-hover-textColor: light-dark(oklch(0.6 0.18 290), oklch(0.85 0.15 290));
+		--tag-hover-borderColor: light-dark(oklch(0.85 0.08 290), oklch(0.5 0.1 290));
 	}
 
-	&[data-tag-variant='eoa'] {
+	&[data-tag~='eoa'] {
 		--tag-backgroundColor: light-dark(oklch(0.95 0.03 145), oklch(0.25 0.05 145));
-		--tag-textColor: light-dark(oklch(0.65 0.15 145), oklch(0.70 0.25 145));
-		--tag-borderColor: light-dark(oklch(0.90 0.06 145), oklch(0.40 0.08 145));
-		--tag-hover-backgroundColor: light-dark(oklch(0.92 0.05 145), oklch(0.30 0.07 145));
-		--tag-hover-textColor: light-dark(oklch(0.60 0.18 145), oklch(0.85 0.15 145));
-		--tag-hover-borderColor: light-dark(oklch(0.85 0.08 145), oklch(0.50 0.10 145));
+		--tag-textColor: light-dark(oklch(0.65 0.15 145), oklch(0.7 0.25 145));
+		--tag-borderColor: light-dark(oklch(0.9 0.06 145), oklch(0.4 0.08 145));
+		--tag-hover-backgroundColor: light-dark(oklch(0.92 0.05 145), oklch(0.3 0.07 145));
+		--tag-hover-textColor: light-dark(oklch(0.6 0.18 145), oklch(0.85 0.15 145));
+		--tag-hover-borderColor: light-dark(oklch(0.85 0.08 145), oklch(0.5 0.1 145));
 	}
 }
 

@@ -210,8 +210,7 @@
 					placement="inline-end"
 				>
 					<button
-						class="tag"
-						data-tag-variant="eip"
+						data-tag="eip"
 						aria-label="Filter by EIP-7702"
 						onclick={e => {
 							e.stopPropagation()
@@ -231,8 +230,7 @@
 						placement="inline-end"
 					>
 						<button
-							class="tag"
-							data-tag-variant="eip"
+							data-tag="eip"
 							aria-label="Filter by ERC-4337"
 							onclick={e => {
 								e.stopPropagation()
@@ -249,8 +247,7 @@
 				{:else}
 					{#if typeFor7702 === WalletTypeFor7702.NON_7702_EOA}
 						<button
-							class="tag"
-							data-tag-variant="eoa"
+							data-tag="eoa"
 							aria-label="Filter by EOA"
 							onclick={e => {
 								e.stopPropagation()
@@ -384,8 +381,8 @@
 		}
 	}
 
-	.tag {
-		:global(button:has(&)) {
+	[data-tag] {
+		&:is(button) {
 			display: inline-flex;
 		}
 	}

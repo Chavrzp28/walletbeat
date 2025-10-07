@@ -45,8 +45,7 @@
 
 		{#if showRating}
 			<data
-				class="badge"
-				data-badge-size="small"
+				data-badge="small"
 				value={attribute.evaluation.value.rating}
 			>{attribute.evaluation.value.rating}</data>
 		{/if}

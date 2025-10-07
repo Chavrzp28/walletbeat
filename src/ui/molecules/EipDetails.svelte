@@ -26,15 +26,13 @@
 	<header>
 		<div class="tags">
 			<div
-				class="tag"
-				data-tag-variant="eip"
+				data-tag="eip"
 			>
 				{eip.prefix}-{eip.number}
 			</div>
 
 			<div
-				class="tag"
-				data-tag-variant="eip-status"
+				data-tag="eip-status"
 			>
 				{eip.status}
 			</div>
