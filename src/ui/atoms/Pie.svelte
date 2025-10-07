@@ -410,6 +410,12 @@
 		initial-value: 0turn;
 	}
 
+	@property --pie-slice-highlightIndex {
+		syntax: "<number>";
+		inherits: true;
+		initial-value: 0;
+	}
+
 	.container {
 		--highlight-color: rgba(255, 255, 255, 1);
 		--highlight-stroke-width: 2;

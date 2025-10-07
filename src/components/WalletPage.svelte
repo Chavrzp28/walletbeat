@@ -1392,16 +1392,28 @@
 				scale: var(--scale);
 				opacity: var(--opacity);
 			}
+
+			:global {
+				.slice {
+					transition-property: transform, opacity !important;
+					opacity: calc(1 - clamp(0, abs(var(--pie-slice-highlightIndex) - var(--i)), 1) * 0.5 * var(--isTransformed));
+				}
+			}
 		}
 
 		@keyframes AttributesPieAngleAnimation {
 			from {
+				--isTransformed: 1;
+				--pie-slice-highlightIndex: 0;
 				--pie-rotate: calc(-0.25turn + 0.5turn / var(--attributesCount));
 			}
 			to {
+				--isTransformed: 1;
+				--pie-slice-highlightIndex: var(--attributesCount);
 				--pie-rotate: calc(-0.25turn + 0.5turn / var(--attributesCount) + 1turn);
 			}
 			exit 100% {
+				--isTransformed: 0;
 				--pie-rotate: 1turn;
 			}
 		}
