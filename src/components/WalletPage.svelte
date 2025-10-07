@@ -907,14 +907,103 @@
 			width: 0;
 			padding-inline-end: 0.66rem;
 			margin-inline-start: -0.66rem;
-			opacity: 0;
 			font-size: 1.25rem;
 			line-height: calc(1 / 0.7);
-			transition: opacity 0.2s;
+
+			transition-property: opacity;
 		}
 
-		&:hover::before {
-			opacity: 1;
+		&:not(:hover)::before {
+			opacity: 0;
+		}
+	}
+
+	@property --wallet-icon-size {
+		syntax: "<length>";
+		inherits: true;
+		initial-value: 0;
+	}
+
+	@supports (animation-timeline: scroll()) {
+		article {
+			> header#top {
+				view-timeline-name: --header-timeline;
+				view-timeline-axis: block;
+
+				> div {
+					> a {
+						h1 img {
+							position: sticky;
+							position: absolute;
+							top: 0;
+							z-index: 2;
+
+							transition-property: opacity;
+							opacity: 1;
+
+							animation: WalletIconAnimation var(--transition-easeOutExpo) both;
+							animation-timeline: --header-timeline;
+							animation-range: exit 0% exit 120%;
+						}
+
+						&:hover h1 img {
+							opacity: 0.75;
+						}
+					}
+				}
+			}
+
+			a:has(> h2) {
+				view-timeline-name: --heading-timeline;
+				view-timeline-axis: block;
+
+				animation: SectionHeadingAnimation var(--transition-easeInOutExpo) both;
+				animation-timeline: view();
+				animation-range: entry calc(100vh - 6rem) entry calc(100vh - 3rem);
+
+				&::before {
+					animation: SectionHeadingArrowAnimation var(--transition-easeInOutExpo) forwards;
+					animation-timeline: --heading-timeline;
+					animation-range: entry calc(100vh - 6rem) entry calc(100vh - 3rem);
+				}
+			}
+		}
+
+		@keyframes WalletIconAnimation {
+			from {
+				position: static;
+				--wallet-icon-size: 3rem;
+			}
+			79% {
+				opacity: 1;
+				position: static;
+				scale: 1;
+			}
+			80% {
+				position: absolute;
+				top: -5rem;
+				scale: 0.25;
+			}
+			to {
+				top: 1rem;
+				--wallet-icon-size: 2.25rem;
+			}
+		}
+
+		@keyframes SectionHeadingAnimation {
+			to {
+				margin-left: calc(var(--wallet-icon-size) + 1.25rem);
+			}
+		}
+
+		@keyframes SectionHeadingArrowAnimation {
+			from {
+				opacity: 0;
+			}
+			to {
+				content: '› ';
+				opacity: 1;
+			}
 		}
 	}
 
@@ -968,9 +1057,8 @@
 				display: grid;
 				grid-template-columns: auto 1fr;
 				align-items: center;
-				gap: 0.5rem;
+				gap: 1rem;
 				font-size: 2.25rem;
-				color: var(--text-primary);
 			}
 
 			> div {
