@@ -3,7 +3,9 @@
 @import '@fontsource/montserrat/latin.css';
 
 :root {
+	--transition-easeInExpo: cubic-bezier(0.7, 0, 0.84, 0);
 	--transition-easeOutExpo: cubic-bezier(0.16, 1, 0.3, 1);
+	--transition-easeInOutExpo: cubic-bezier(0.87, 0, 0.13, 1);
 
 	--active-transitionInDuration: 0.125s;
 	--active-transitionOutDuration: 0.2s;
