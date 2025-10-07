@@ -781,6 +781,7 @@
 
 <style>
 	.container {
+		--content-maxWidth: 54rem;
 		--wallet-icon-size: 3rem;
 		--border-radius-lg: 1rem;
 		--border-radius: 0.5rem;
@@ -820,6 +821,7 @@
 
 		article {
 			grid-area: Content;
+			container-type: inline-size;
 
 			max-height: 100dvh;
 			overflow: hidden auto;
@@ -881,7 +883,7 @@
 
 			> :is(header, section, footer) {
 				display: grid;
-				grid-template-columns: minmax(0, 54rem);
+				grid-template-columns: minmax(0, var(--content-maxWidth));
 				justify-content: center;
 				padding: 3rem 1.5rem;
 			}
@@ -1361,7 +1363,7 @@
 		font-size: 1em;
 	}
 
-	@media (min-width: 1800px) {
+	@container (min-width: 1140px) {
 		.attributes-overview-container {
 			@supports (container-type: scroll-state) {
 				container-type: scroll-state;
