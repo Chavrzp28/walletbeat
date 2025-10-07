@@ -31,6 +31,7 @@ export const mtpelerin: SoftwareWallet = {
 			// BIP support is not verified
 			eoa: supported({
 				canExportPrivateKey: true,
+				eip7702: notSupported,
 				keyDerivation: {
 					type: 'BIP32',
 					canExportSeedPhrase: true,
