@@ -171,7 +171,7 @@
 			{/each}
 		</colgroup>
 
-		<thead>
+		<thead data-sticky="block">
 			{@render headerRows(table.columns, 0)}
 
 			{#snippet headerRows(columns: (_Column | undefined)[], level: number)}
@@ -219,7 +219,7 @@
 					data-header-level={level}
 					data-sortable={isSortable ? '' : undefined}
 					data-sort={table.columnSort?.columnId === column.id ? table.columnSort?.direction : undefined}
-					data-is-sticky={column.isSticky ? '' : undefined}
+					data-sticky={column.isSticky ? 'inline' : undefined}
 					data-expandable={isExpandable ? '' : undefined}
 					data-expanded={isExpandable && isExpanded ? '' : undefined}
 				>
@@ -277,12 +277,12 @@
 				<tr
 					tabIndex={0}
 					onclick={e => {
-						e.stopPropagation()
+						// e.stopPropagation()
 						onRowClick?.(row, rowId)
 					}}
 					onkeypress={e => {
 						if(e.code === 'Enter' || e.code === 'Space'){
-							e.stopPropagation()
+							// e.stopPropagation()
 							onRowClick?.(row, rowId)
 						}
 					}}
@@ -316,7 +316,7 @@
 							data-row={rowId}
 							data-sortable={isSortable ? '' : undefined}
 							data-sort={table.columnSort?.columnId === column.id ? table.columnSort?.direction : undefined}
-							data-is-sticky={column.isSticky ? '' : undefined}
+							data-sticky={column.isSticky ? 'inline' : undefined}
 							style:--table-cell-verticalAlign={
 								getCellVerticalAlign?.({
 									row,
@@ -388,9 +388,9 @@
 
 			tr {
 				th {
-					&:not(:empty) {
+					/* &:not(:empty) {
 						backdrop-filter: blur(20px);
-					}
+					} */
 
 					&[data-header-level='0'] {
 						font-weight: 700;
@@ -606,7 +606,7 @@
 					counter-increment: TableColumnCount;
 
 					/* When sorting a non-sticky column, fade cells from other non-sticky columns */
-					tr:has(:not([data-is-sticky])[data-sort]) &[data-sortable]:not([data-sort], [data-is-sticky], :hover, :focus-within) {
+					tr:has(:not([data-sticky])[data-sort]) &[data-sortable]:not([data-sort], [data-sticky], :hover, :focus-within) {
 						opacity: 0.66;
 					}
 				}
@@ -644,15 +644,15 @@
 				transform-origin: right;
 			}
 
-			/* &[data-is-sticky],
-			&[data-sort]:not([data-is-sticky]) { */
-			&[data-is-sticky] {
+			/* &[data-sticky],
+			&[data-sort]:not([data-sticky]) { */
+			/* &[data-sticky] {
 				position: sticky;
 				backdrop-filter: blur(20px);
 				z-index: 1;
 				inset-inline-start: 0;
 				inset-inline-end: 0;
-			}
+			} */
 		}
 	}
 </style>

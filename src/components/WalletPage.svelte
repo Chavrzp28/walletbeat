@@ -195,10 +195,15 @@
 
 <a href="#top" class="return-to-top">↑</a>
 
-<div class="container">
-	<article>
+<div
+	class="container"
+	data-sticky-container
+>
+	<article
+		data-scroll-container="block"
+	>
 		<div
-			data-sticky
+			data-sticky="block"
 			class="nav-title"
 		>
 			Table of contents
@@ -812,6 +817,12 @@
 
 		position: relative;
 
+		@supports (scroll-marker-group: before) {
+			&[data-sticky-container] {
+				--sticky-paddingInlineEnd: var(--nav-width);
+			}
+		}
+
 		@supports not (scroll-marker-group: before) {
 			&::before {
 				content: '';
@@ -821,7 +832,6 @@
 
 		article {
 			grid-area: Content;
-			container-type: inline-size;
 
 			max-height: 100dvh;
 			overflow: hidden auto;

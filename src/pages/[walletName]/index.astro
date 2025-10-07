@@ -51,7 +51,7 @@ import WalletPage from '@/components/WalletPage.svelte'
 >
 	<Navigation navigationItems={defaultNavigationItems} />
 
-	<main>
+	<main data-sticky-container>
 		<WalletPage {walletName} client:load />
 	</main>
 </Layout>

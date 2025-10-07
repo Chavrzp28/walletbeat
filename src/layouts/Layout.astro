@@ -72,6 +72,7 @@ import Metadata from '@/components/Metadata.astro'
 			;
 
 			&[data-sticky-container] {
+				--sticky-marginInlineStart: var(--separator-width);
 				--sticky-paddingInlineStart: var(--navigation-desktop-inlineSize);
 			}
 		}
@@ -84,6 +85,7 @@ import Metadata from '@/components/Metadata.astro'
 			;
 
 			&[data-sticky-container] {
+				--sticky-marginBlockStart: var(--separator-width);
 				--sticky-paddingBlockStart: var(--navigation-mobile-blockSize);
 			}
 		}
@@ -98,6 +100,9 @@ import Metadata from '@/components/Metadata.astro'
 
 		> main {
 			grid-area: Main;
+
+			--sticky-marginInlineStart: clamp(1.5rem, 6cqi, 2rem);
+			--sticky-marginInlineEnd: clamp(1.5rem, 6cqi, 2rem);
 
 			> section {
 				display: grid;

@@ -85,6 +85,7 @@
 <search>
 	<input
 		type="search"
+		data-sticky
 		bind:value={searchValue}
 		placeholder="Search (⌘+K)"
 		{@attach element => {
@@ -217,6 +218,13 @@
 
 		li {
 			display: grid;
+		}
+	}
+
+	details {
+		&[data-sticky-container] {
+			--sticky-marginBlockStart: 1.75rem;
+			--sticky-paddingBlockStart: 0.5rem;
 		}
 	}
 
