@@ -133,6 +133,7 @@ html.dark {
 	outline-color: inherit;
 	margin: 0;
 	padding: 0;
+	transition-property: none;
 	transition-behavior: allow-discrete;
 	interpolate-size: allow-keywords;
 
