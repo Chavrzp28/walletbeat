@@ -38,10 +38,7 @@ export function IconLink({
 					color: linkColor,
 					...style,
 				}}
- 			className={cx(
- 				'inline-flex flex-row items-baseline underline',
- 				gapClass,
- 			)}
+				className={cx('inline-flex flex-row items-baseline underline', gapClass)}
 			>
 				<IconComponent className='inline-block' fontSize='inherit' />
 				<span className='inline-block'>{children}</span>

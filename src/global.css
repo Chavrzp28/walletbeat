@@ -46,7 +46,7 @@
 		--rating-neutral: #bdc3c7; /* Gray */
 
 		/* Link colors for light mode */
-		--link-color: #105C7E; /* Dark blue for good contrast on light background */
+		--link-color: #105c7e; /* Dark blue for good contrast on light background */
 	}
 }
 
@@ -89,7 +89,7 @@ html.dark {
 	--rating-neutral: #bdc3c7; /* Gray */
 
 	/* Link colors for dark mode */
-	--link-color: #CDEAF7; /* Light blue for good contrast on dark background */
+	--link-color: #cdeaf7; /* Light blue for good contrast on dark background */
 }
 
 html,

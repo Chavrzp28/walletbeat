@@ -1,6 +1,5 @@
 import { Link, type TypographyOwnProps } from '@mui/material'
 import type React from 'react'
-import { useState } from 'react'
 import { LuExternalLink } from 'react-icons/lu'
 
 import { labeledUrl, type Url } from '@/schema/url'
@@ -21,7 +20,6 @@ export function ExternalLink({
 	children?: React.ReactNode
 }): React.JSX.Element {
 	const labeled = labeledUrl(url, defaultLabel)
-	const [hovered, setHovered] = useState(false)
 
 	return (
 		<span className='inline-block'>
@@ -34,19 +32,10 @@ export function ExternalLink({
 					...style,
 				}}
 				className='flex flex-row gap-2 items-baseline'
-				onMouseEnter={() => {
-					setHovered(true)
-				}}
-				onMouseLeave={() => {
-					setHovered(false)
-				}}
 			>
- 			<span
- 				className='inline-block'
- 				style={{ textDecoration: 'underline' }}
- 			>
- 				{children ?? labeled.label}
- 			</span>{' '}
+				<span className='inline-block' style={{ textDecoration: 'underline' }}>
+					{children ?? labeled.label}
+				</span>{' '}
 				<LuExternalLink />
 			</Link>
 		</span>
