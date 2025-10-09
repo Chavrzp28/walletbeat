@@ -8,7 +8,7 @@ import { labeledUrl, type Url } from '@/schema/url'
 export function ExternalLink({
 	url,
 	defaultLabel = undefined,
-	color = 'primary.main',
+	color = undefined,
 	style = undefined,
 	rel = 'noopener noreferrer nofollow',
 	children = undefined,
@@ -30,6 +30,7 @@ export function ExternalLink({
 				target='_blank'
 				rel={rel}
 				style={{
+					color: color ?? 'var(--link-color)',
 					...style,
 				}}
 				className='flex flex-row gap-2 items-baseline'
@@ -39,16 +40,13 @@ export function ExternalLink({
 				onMouseLeave={() => {
 					setHovered(false)
 				}}
-				sx={{
-					color,
-				}}
 			>
-				<span
-					className='inline-block'
-					style={{ textDecoration: hovered ? 'underline' : 'inherit' }}
-				>
-					{children ?? labeled.label}
-				</span>{' '}
+ 			<span
+ 				className='inline-block'
+ 				style={{ textDecoration: 'underline' }}
+ 			>
+ 				{children ?? labeled.label}
+ 			</span>{' '}
 				<LuExternalLink />
 			</Link>
 		</span>

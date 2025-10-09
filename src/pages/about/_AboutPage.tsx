@@ -11,7 +11,7 @@ import {
 	navigationHome,
 	navigationRepository,
 } from '@/components/navigation'
-import { betaSiteRoot, repositoryUrl } from '@/constants'
+import { betaSiteRoot, repositoryUrl, socialChannel } from '@/constants'
 import { NavigationPageLayout } from '@/layouts/NavigationPageLayout'
 import type { Url } from '@/schema/url'
 import { ExternalLink } from '@/ui/atoms/ExternalLink'
@@ -98,8 +98,8 @@ function AboutContents(): React.JSX.Element {
 					open-source project
 				</IconLink>{' '}
 				licensed under the Free and Open-Source MIT license. Discussions are held on the{' '}
-				<IconLink IconComponent={ForumIcon} href={repositoryUrl} target='_blank'>
-					public /walletbeat Farcaster channel
+				<IconLink IconComponent={ForumIcon} href={socialChannel} target='_blank'>
+					Walletbeat Farcaster channel
 				</IconLink>
 				.
 			</Typography>

@@ -25,8 +25,8 @@ export function IconLink({
 	// Convert gap to Tailwind spacing class
 	const gapClass = gap === '0.25rem' ? 'gap-1' : 'gap-2'
 
-	// Default color to text-primary
-	const colorClass = color ?? 'text-primary'
+	// Default color to link-color CSS variable
+	const linkColor = color ?? 'var(--link-color)'
 
 	return (
 		<span className='inline-block'>
@@ -34,12 +34,14 @@ export function IconLink({
 				href={href}
 				target={target}
 				rel={rel}
-				style={style}
-				className={cx(
-					'inline-flex flex-row items-baseline no-underline hover:underline',
-					gapClass,
-					colorClass,
-				)}
+				style={{
+					color: linkColor,
+					...style,
+				}}
+ 			className={cx(
+ 				'inline-flex flex-row items-baseline underline',
+ 				gapClass,
+ 			)}
 			>
 				<IconComponent className='inline-block' fontSize='inherit' />
 				<span className='inline-block'>{children}</span>
