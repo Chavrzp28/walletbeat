@@ -33,8 +33,9 @@ You should **not** use the web browser this web UI is running in as your test br
 
 In order to eliminate noise from the network capture you are about to do, it is imperative to use a dedicated browser or mobile device for wallet testing.
 
-* **For browser extension wallet testing**: The easiest way is to use a different profile. Different browsers have different ways to do this. For Chromium, run `chromium --user-data-dir=/tmp/walletbeat-test-browser` in your terminal. This will launch a dedicated `chromium` browser that lives completely separately from whatever other browser you may otherwise use. All browser-related files will be stored in `/tmp/walletbeat-test-browser`, all settings will be unique to this browser, and all extensions will apply to this browser only.
-- **For mobile app wallet testing**: The easiest way is to use an emulated Android device using [Android Studio](https://developer.android.com/studio). Create a new emulated device for the purpose of wallet testing.
+- **For browser extension wallet testing**: The easiest way is to use a different profile. Different browsers have different ways to do this. For Chromium, run `chromium --user-data-dir=/tmp/walletbeat-test-browser` in your terminal. This will launch a dedicated `chromium` browser that lives completely separately from whatever other browser you may otherwise use. All browser-related files will be stored in `/tmp/walletbeat-test-browser`, all settings will be unique to this browser, and all extensions will apply to this browser only.
+
+* **For mobile app wallet testing**: The easiest way is to use an emulated Android device using [Android Studio](https://developer.android.com/studio). Create a new emulated device for the purpose of wallet testing.
 
 ### Step 4: Set up your browser or device for `mitmproxy`
 
@@ -45,17 +46,17 @@ Putting `mitmproxy` in a place where it _can_ intercept requests from a wallet i
 
 You will need to configure your browser or mobile device to use `mitmproxy` as a proxy. This is browser-dependent (or device-dependent); what's not device dependent is the `mitmproxy` proxy settings: the IP is `127.0.0.1` and the port number is `8080`.
 
-* **For browser extension wallet testing**: Set your browser's proxy settings. This is usually located in the settings. If using a dedicated `chromium` profile from earlier, you can also specify it on the command line: `chromium --user-data-dir=/tmp/walletbeat-test-browser --proxy-server=http://127.0.0.1:8080`
-* **For mobile app wallet testing**: Go to the the Android Studio's settings for the emulated device (**not** the "Settings" app inside the emulated device itself), and you can set device-wide proxy configuration here:
+- **For browser extension wallet testing**: Set your browser's proxy settings. This is usually located in the settings. If using a dedicated `chromium` profile from earlier, you can also specify it on the command line: `chromium --user-data-dir=/tmp/walletbeat-test-browser --proxy-server=http://127.0.0.1:8080`
+- **For mobile app wallet testing**: Go to the the Android Studio's settings for the emulated device (**not** the "Settings" app inside the emulated device itself), and you can set device-wide proxy configuration here:
 
-![](./android-studio-1.png) 
+![](./android-studio-1.png)
 ![](./android-studio-2.png)
 
 Unlike the above screenshot, you will want `127.0.0.1` as "Host name", and `8080` as port.
 
 #### Step 4.b: Install the `mitmproxy` certificate
 
-Because `mitmproxy` needs to intercept authenticated HTTPS connections, it needs to use a certificate that your browser or mobile device will initially be very suspicious of. HTTPS is *designed* to prevent request interception, which is why you will see lots of scary warnings in the process of adding a trusted certificate. Nonetheless, this is required for `mitmproxy` to be able to intercept authenticated requests and show their contents.
+Because `mitmproxy` needs to intercept authenticated HTTPS connections, it needs to use a certificate that your browser or mobile device will initially be very suspicious of. HTTPS is _designed_ to prevent request interception, which is why you will see lots of scary warnings in the process of adding a trusted certificate. Nonetheless, this is required for `mitmproxy` to be able to intercept authenticated requests and show their contents.
 
 To do this, navigate to `http://mitm.it`. If you get a page that says "traffic is not passing through mitmproxy", then go back through this guide and figure out what went wrong. Otherwise, you should get a page that looks like this:
 
@@ -82,9 +83,9 @@ Install the wallet browser extension or app as you normally would. **Do not go t
 Modern web browsers and mobile operating systems produce a lot of background requests even when not in use. By this point in the guide, you likely have a lot of such cruft in `mitmweb`.
 To reduce noise from these, we need to restart from a cleaner slate.
 
-* **Step 7.a**: Shut down the browser/mobile device.
-* **Step 7.b**: In the `mitmweb` web UI, go to `File → Clear All` to get rid of the cruft.
-* **Step 7.c**: Restart the browser or mobile device.
+- **Step 7.a**: Shut down the browser/mobile device.
+- **Step 7.b**: In the `mitmweb` web UI, go to `File → Clear All` to get rid of the cruft.
+- **Step 7.c**: Restart the browser or mobile device.
 
 ### Step 8: Go through wallet onboarding
 
@@ -119,15 +120,15 @@ You can safely ignore such requests, as they are not initiated by the wallet you
 
 The following requests were taken while connecting a wallet to the `app.uniswap.org` dapp frontend using a wallet that shall remain unnamed.
 
-Request 1: The wallet looks up the total balance of the user:
+In this request, the wallet looks up the total balance of the user:
 
 ![](./relevant-request-1.png)
 
-You can see that the Ethereum wallet address is sent to an external provider, so this is definitely relevant. This is also done without any anonymizing proxy, so the external provider learns both the user's IP address, as well as their Ethereum address. Moreover, they are sent a persistent set of tracking cookies which shows up in other requests made to the same provider, such as this one:
+You can see that the Ethereum wallet address (encoded as `WalletInfo.ACCOUNT_ADDRESS` below) is sent to an external provider, so this is definitely relevant. This is also done without any anonymizing proxy, so the external provider learns both the user's IP address (encoded as `PersonalInfo.IP_ADDRESS` below), as well as their Ethereum address. Moreover, they are sent a persistent set of tracking cookies which shows up in other requests made to the same provider, such as this other request:
 
 ![](./relevant-request-2.png)
 
-Here, we can see another request to the same external provider, with the same tracking cookies, sending the domain name of the dapp that the user is connecting to.
+This second request was made to the _same_ external provider, with the _same_ tracking cookies, sending the domain name of the dapp that the user is connecting to (encoded as `WalletInfo.WALLET_CONNECTED_DOMAINS` below).
 
 In summary, through these two requests alone, this external provider is able to learn:
 
@@ -146,38 +147,50 @@ export const someWallet: SoftwareWallet = {
 	features: {
 		privacy: {
 			dataCollection: {
+				// We tested the browser version of the wallet:
 				[Variant.BROWSER]: {
-					// [...]
+					// The UX flow that was being tested in the screenshots above was to connect to a dapp:
 					[UserFlow.DAPP_CONNECTION]: {
 						collected: [
 							{
-								byEntity: someExternalProvider, // Use an existing entity or create a new one, depending on the external provider.
+								// Use an existing entity or create a new one, depending on the external provider:
+								byEntity: someExternalProvider,
+
 								dataCollection: {
-									[PersonalInfo.IP_ADDRESS]: CollectionPolicy.ALWAYS, // Implicitly collected because the wallet did not attempt to anonymize the connection.
-									[WalletInfo.ACCOUNT_ADDRESS]: CollectionPolicy.ALWAYS, // The Ethereum address was sent to this provider.
-									[WalletInfo.WALLET_CONNECTED_DOMAINS]: CollectionPolicy.ALWAYS, // The domain name of the dapp was sent to this provider.
-									endpoint: RegularEndpoint, // The wallet did not attempt to anonymize the connection, nor to connect to a TEE.
+									// IP address implicitly collected because the wallet did not attempt to anonymize the connection:
+									[PersonalInfo.IP_ADDRESS]: CollectionPolicy.ALWAYS,
+
+									// The Ethereum address was sent to this external provider, with no way to opt out:
+									[WalletInfo.ACCOUNT_ADDRESS]: CollectionPolicy.ALWAYS,
+
+									// The domain name of the dapp was sent to this external provider, with no way to opt out:
+									[WalletInfo.WALLET_CONNECTED_DOMAINS]: CollectionPolicy.ALWAYS,
+
+									// [... Add other PersonalInfo or WalletInfo from requests to this same external provider within the same UX flow...]
+
+									// The wallet did not attempt to anonymize the connection, nor to connect to a TEE.
+									endpoint: RegularEndpoint,
+
+									// The wallet (which had 2 configured addresses) only sent the current active Ethereum address:
 									multiAddress: {
-										type: MultiAddressPolicy.ACTIVE_ADDRESS_ONLY, // The wallet only sent the active address.
+										type: MultiAddressPolicy.ACTIVE_ADDRESS_ONLY,
 									},
 								},
 								purposes: [
-									DataCollectionPurpose.CHAIN_DATA_LOOKUP, // The wallet looked up information about the user's balance, which is onchain data.
-									DataCollectionPurpose.SCAM_DETECTION, // The wallet looked up whether the dapp was a known scam site.
-								],
-								ref: [
-									{
-										explanation:
-											'Rabby checks whether the domain you are connecting your wallet to is on a scam list. It sends the domain along with Ethereum address in non-proxied HTTP requests for API methods `getOriginIsScam`, `getOriginPopularityLevel`, `getRecommendChains`, and others.',
-										label: 'Rabby API code on npmjs.com',
-										url: 'https://www.npmjs.com/package/@rabby-wallet/rabby-api?activeTab=code',
-									},
+									// The wallet looked up information about the user's balance, which is onchain data:
+									DataCollectionPurpose.CHAIN_DATA_LOOKUP,
+
+									// The purpose of the second request (`/popularity_level`) was probably to look up
+									// whether the dapp was a known scam site:
+									DataCollectionPurpose.SCAM_DETECTION,
 								],
 							},
+							// [... Add data from requests to other external providers in the same UX flow here...]
 						],
 					},
-					// [...]
+					// [... repeat for other UX flows...]
 				},
+				// [... repeat for other wallet versions (mobile/desktop)...]
 			},
 		},
 	},
