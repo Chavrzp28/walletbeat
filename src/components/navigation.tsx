@@ -1,21 +1,25 @@
-import ForumIcon from '@mui/icons-material/Forum'
-import HelpCenterIcon from '@mui/icons-material/HelpCenter'
-import HomeIcon from '@mui/icons-material/Home'
-import { LuBadgeCheck, LuBuilding2, LuGithub } from 'react-icons/lu'
+import {
+	LuBadgeCheck,
+	LuBadgeHelp,
+	LuBuilding2,
+	LuGithub,
+	LuHouse,
+	LuMessageCircleHeart,
+} from 'react-icons/lu'
 
 import { betaSiteRoot, repositoryUrl, socialChannel } from '@/constants'
 import type { NavigationLinkItem } from '@/ui/organisms/Navigation'
 
 export const navigationHome: NavigationLinkItem = {
 	id: 'wallet-table',
-	icon: <HomeIcon />,
+	icon: <LuHouse />,
 	title: 'Walletbeat',
 	href: `${betaSiteRoot}/#`,
 }
 
 export const navigationFaq: NavigationLinkItem = {
 	id: 'faq',
-	icon: <HelpCenterIcon />,
+	icon: <LuBadgeHelp />,
 	title: 'FAQ',
 	href: `${betaSiteRoot}/faq`,
 }
@@ -43,7 +47,7 @@ export const navigationRepository: NavigationLinkItem = {
 
 export const navigationFarcasterChannel: NavigationLinkItem = {
 	id: 'farcaster-channel',
-	icon: <ForumIcon />,
+	icon: <LuMessageCircleHeart />,
 	title: 'Discuss on Farcaster',
 	href: socialChannel,
 }
