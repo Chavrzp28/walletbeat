@@ -13,7 +13,7 @@ if [[ -z "${1:-}" ]]; then
 	echo 'be replaced with the actual Helios RPC endpoint value.' >&2
 	exit 2
 fi
-ETHEREUM_MAINNET_CONSENSUS_RPC_ENDPOINT="${ETHEREUM_MAINNET_CONSENSUS_RPC_ENDPOINT:-https://www.lightclientdata.org}"
+ETHEREUM_MAINNET_CONSENSUS_RPC_ENDPOINT="${ETHEREUM_MAINNET_CONSENSUS_RPC_ENDPOINT:-https://ethereum.operationsolarstorm.org}"
 ETHEREUM_MAINNET_EXECUTION_RPC_ENDPOINT="${ETHEREUM_MAINNET_EXECUTION_RPC_ENDPOINT:-https://eth-mainnet.g.alchemy.com/v2/demo}"
 HELIOS_STARTUP_PROBE_SECONDS="${HELIOS_STARTUP_PROBE_SECONDS:-10}"
 if ! hash wget; then
