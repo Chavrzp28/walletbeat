@@ -47,7 +47,7 @@ import { SvelteSet, SvelteMap } from 'svelte/reactivity'
 
 
 // State
-export class DataTable<
+export class TableState<
 	RowValue = any,
 	CellValue = any,
 	ColumnId extends string = string
@@ -120,7 +120,7 @@ export class DataTable<
 		[]
 	)
 
-	#rowIsDisabled?: (row: RowValue, table: DataTable<RowValue, CellValue, ColumnId>) => boolean
+	#rowIsDisabled?: (row: RowValue, table: TableState<RowValue, CellValue, ColumnId>) => boolean
 
 	#displaceDisabledRows: boolean
 
@@ -220,7 +220,7 @@ export class DataTable<
 		data: RowValue[]
 		columns: Column<RowValue, CellValue, ColumnId>[]
 		pageSize?: number
-		rowIsDisabled?: (row: RowValue, table: DataTable<RowValue, CellValue, ColumnId>) => boolean
+		rowIsDisabled?: (row: RowValue, table: TableState<RowValue, CellValue, ColumnId>) => boolean
 		displaceDisabledRows?: boolean
 	}) {
 		this.rows = [...data]

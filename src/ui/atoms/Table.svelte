@@ -1,14 +1,14 @@
 <script lang="ts" generics="
-	_DataTable extends DataTable,
+	_TableState extends TableState,
 	RowId
 ">
 	// Types
-	import { DataTable, type Column } from '@/lib/DataTable.svelte.ts'
+	import { TableState, type Column } from '@/lib/TableState.svelte'
 	import type { Snippet } from 'svelte'
 
-	type _RowValue = _DataTable extends DataTable<infer RowValue, any, any> ? RowValue : any
-	type _CellValue = _DataTable extends DataTable<any, infer CellValue, any> ? CellValue : any
-	type _ColumnId = _DataTable extends DataTable<any, any, infer ColumnId> ? ColumnId : string
+	type _RowValue = _TableState extends TableState<infer RowValue, any, any> ? RowValue : any
+	type _CellValue = _TableState extends TableState<any, infer CellValue, any> ? CellValue : any
+	type _ColumnId = _TableState extends TableState<any, any, infer ColumnId> ? ColumnId : string
 	type _Column = Column<_RowValue, _CellValue, _ColumnId>
 
 
@@ -41,7 +41,7 @@
 		rows: _RowValue[]
 
 		rowId?: (row: _RowValue, index: number) => RowId
-		rowIsDisabled?: (row: _RowValue, table: DataTable<_RowValue, _CellValue, _ColumnId>) => boolean
+		rowIsDisabled?: (row: _RowValue, table: TableState<_RowValue, _CellValue, _ColumnId>) => boolean
 		onRowClick?: (row: _RowValue, rowId?: RowId) => void
 		displaceDisabledRows?: boolean
 
@@ -65,7 +65,7 @@
 
 	// State
 	let table = $state(
-		new DataTable({
+		new TableState({
 			data: rows,
 			columns,
 			rowIsDisabled,
@@ -74,7 +74,7 @@
 	)
 
 	$effect(() => {
-		table = new DataTable({
+		table = new TableState({
 			data: rows,
 			columns,
 			rowIsDisabled,
