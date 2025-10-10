@@ -8,12 +8,12 @@
 
 <script lang="ts">
 	// Types/constants
-	import type { Column } from '@/lib/DataTable.svelte'
+	import type { Column } from '@/lib/TableState.svelte'
 	import type { Filter } from '@/ui/molecules/Filters.svelte'
 	import type { RatedWallet } from '@/schema/wallet'
 	import { type AttributeGroup, Rating, ratingIcons } from '@/schema/attributes'
 	import { Variant } from '@/schema/variants'
-	import { variants } from '@/components/variants'
+	import { variants } from '@/constants/variants'
 	import { AccountType } from '@/schema/features/account-support'
 	import { HardwareWalletManufactureType } from '@/schema/features/profile'
 	import { erc4337 } from '@/data/eips/erc-4337'
@@ -108,7 +108,7 @@
 
 
 	// Functions
-	import { variantUrlQuery, variantToName } from '@/components/variants'
+	import { variantUrlQuery, variantToName } from '@/constants/variants'
 	import { hasVariant } from '@/schema/variants'
 	import { walletSupportedAccountTypes, attributeVariantSpecificity, VariantSpecificity } from '@/schema/wallet'
 	import { calculateAttributeGroupScore, calculateOverallScore, filterEvaluationTree } from '@/schema/attribute-groups'

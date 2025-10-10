@@ -23,7 +23,7 @@
 		variantToName,
 		variantUrlQuery,
 		variantToRunsOn,
-	} from '@/components/variants'
+	} from '@/constants/variants'
 	import {
 		attributeTree,
 		calculateAttributeGroupScore,

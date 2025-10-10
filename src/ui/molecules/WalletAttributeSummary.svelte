@@ -23,7 +23,7 @@
 
 	// Functions
 	import { slugifyCamelCase } from '@/types/utils/text'
-	import { variantToName, variantUrlQuery } from '@/components/variants'
+	import { variantToName, variantUrlQuery } from '@/constants/variants'
 
 
 	// Components
