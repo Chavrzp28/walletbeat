@@ -77,7 +77,7 @@
 
 
 	// State
-	let activeFilters = $state(new Set<Filter<RatedWallet>>())
+	let activeFilters: Filters<RatedWallet>['$$prop_def']['activeFilters'] = $state(new Set())
 	let filteredWallets = $state<RatedWallet[]>([])
 
 
@@ -144,39 +144,40 @@
 
 <Table
 	rows={filteredWallets}
+	rowId={wallet => wallet.metadata.id}
+
 	columns={[
 		{
 			id: 'wallet',
 			name: 'Wallet',
-			getValue: wallet => wallet.metadata.displayName,
+			value: wallet => wallet.metadata.displayName,
 			isSticky: true,
+			sort: {
+				defaultDirection: 'asc',
+			},
 		},
 		{
 			id: 'type',
 			name: 'Type',
-			getValue: wallet => WalletTypeFor7702SortPriority[getWalletTypeFor7702(wallet)],
-			defaultSortDirection: 'asc',
+			value: wallet => WalletTypeFor7702SortPriority[getWalletTypeFor7702(wallet)],
+			sort: {
+				isDefault: true,
+				defaultDirection: 'asc',
+			},
 		},
 		{
 			id: 'contract',
 			name: 'Contract',
-			getValue: wallet => getWalletContract(wallet),
-			isSortable: false,
+			value: wallet => getWalletContract(wallet),
 		},
 		{
 			id: 'batching',
 			name: 'Batching',
-			getValue: () => 'Coming soon',
-			isSortable: false,
+			value: () => 'Coming soon',
 		},
 	]}
-	getId={wallet => wallet.metadata.id}
-	defaultSort={{
-		columnId: 'type',
-		direction: 'asc',
-	}}
 >
-	{#snippet cellSnippet({ row: wallet, column, value })}
+	{#snippet Cell({ row: wallet, column, value })}
 		{#if column.id === 'wallet'}
 			<div class="wallet-info">
 				<span class="row-count"></span>
@@ -315,11 +316,7 @@
 		{:else if column.id === 'batching'}
 			{@const contract = getWalletContract(wallet)}
 
-			{#if contract === 'NONE'}
-				<span class="muted-text">–</span>
-			{:else}
-				<span class="muted-text">Coming soon</span>
-			{/if}
+		<span class="muted-text">Coming soon</span>
 
 		{:else}
 			{value}

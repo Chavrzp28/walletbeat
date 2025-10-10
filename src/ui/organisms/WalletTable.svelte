@@ -314,12 +314,13 @@
 
 <Table
 	{tableId}
+
 	rows={wallets}
-	getId={wallet => wallet.metadata.id}
-	isRowDisabled={wallet => (
+	rowId={wallet => wallet.metadata.id}
+	rowIsDisabled={wallet => (
 		!(
 			filteredWallets.includes(wallet)
-			&& (!sortedColumn?.getValue || sortedColumn.getValue(wallet) !== undefined)
+			&& (!sortedColumn?.value || sortedColumn.value(wallet) !== undefined)
 		)
 	)}
 	displaceDisabledRows={true}
@@ -328,38 +329,43 @@
 		(() => {
 			const attrGroupColumns = (
 				displayedAttributeGroups
-						.map(attrGroup => ({
-							id: attrGroup.id,
-							// name: `${attrGroup.icon} ${attrGroup.displayName}`,
-							name: attrGroup.displayName,
-							getValue: wallet => (
-								calculateAttributeGroupScore(attrGroup.attributeWeights, wallet.overall[attrGroup.id])?.score ?? undefined
-							),
-							defaultSortDirection: 'desc',
-							defaultIsExpanded: false,
-							children: (
-								Object.entries(attrGroup.attributes)
-									.map(([attributeId, attribute]) => ({
-										id: `${attrGroup.id}.${attributeId}`,
-										// name: `${attribute.icon} ${attribute.displayName}`,
-										name: attribute.displayName,
-										getValue: wallet => {
-											const attribute = wallet.overall[attrGroup.id]?.[attributeId]
-											return attribute?.evaluation?.value?.rating || undefined
-										},
-										defaultSortDirection: 'desc',
-									} satisfies Column<RatedWallet>))
-							),
-						} satisfies Column<RatedWallet>))
+					.map(attrGroup => ({
+						id: attrGroup.id,
+						name: attrGroup.displayName,
+						value: wallet => (
+							calculateAttributeGroupScore(attrGroup.attributeWeights, wallet.overall[attrGroup.id])?.score ?? undefined
+						),
+
+						sort: {
+							defaultDirection: 'desc',
+						},
+
+						subcolumns: (
+							Object.entries(attrGroup.attributes)
+								.map(([attributeId, attribute]) => ({
+									id: `${attrGroup.id}.${attributeId}`,
+									name: attribute.displayName,
+									value: wallet => {
+										const attribute = wallet.overall[attrGroup.id]?.[attributeId]
+										return attribute?.evaluation?.value?.rating || undefined
+									},
+									sort: { defaultDirection: 'desc' },
+								} satisfies Column<RatedWallet>))
+						),
+						isDefaultExpanded: false,
+					} satisfies Column<RatedWallet>))
 			)
 
 			return [
 				{
 					id: 'displayName',
 					name: 'Wallet',
-					getValue: wallet => (
-						wallet.metadata.displayName
-					),
+					value: wallet => wallet.metadata.displayName,
+
+					sort: {
+						defaultDirection: 'asc',
+					},
+
 					isSticky: true,
 				} satisfies Column<RatedWallet>,
 
@@ -368,7 +374,7 @@
 						{
 							id: 'overall',
 							name: 'Rating',
-							getValue: wallet => (
+							value: wallet => (
 								calculateOverallScore(
 									filterEvaluationTree(
 										wallet.overall,
@@ -377,33 +383,31 @@
 								)
 									?.score
 							),
-							defaultSortDirection: 'desc',
-							defaultIsExpanded: true,
-							children: (
-								attrGroupColumns
-							),
-						} satisfies Column<RatedWallet>
 
+							sort: {
+								isDefault: true,
+								defaultDirection: 'desc',
+							},
+
+							subcolumns: attrGroupColumns,
+							isDefaultExpanded: true,
+						} satisfies Column<RatedWallet>
 					:
 						attrGroupColumns[0]
 				),
 			]
 		})()
 	}
-	defaultSort={{
-		columnId: 'overall',
-		direction: 'desc',
-	}}
 	bind:sortedColumn
 
-	getCellVerticalAlign={({ row }) => (
+	cellVerticalAlign={({ row }) => (
 		isRowExpanded(row.metadata.id) ?
 			'top'
 		:
 			undefined
 	)}
 >
-	{#snippet cellSnippet({
+	{#snippet Cell({
 		row: wallet,
 		column,
 		value,

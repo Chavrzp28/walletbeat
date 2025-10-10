@@ -19,43 +19,51 @@
 	// Inputs
 	let {
 		tableId = `table_${id}`,
-		columns,
-		defaultSort,
+
 		rows,
-		getId,
-		isRowDisabled,
-		getCellVerticalAlign,
-		cellSnippet,
-		headerTitleSnippet,
-		expandHeaderCells = true,
-		onRowClick,
+		rowId: getRowId,
+		rowIsDisabled,
 		displaceDisabledRows = false,
+		onRowClick,
+
+		columns,
 		sortedColumn = $bindable(),
+
+		cellVerticalAlign,
+		Cell,
+
+		HeaderTitle,
+		expandHeaderCells = true,
+
 		...restProps
 	}: {
 		tableId?: string
-		columns: _Column[]
-		defaultSort?: NonNullable<ConstructorParameters<typeof DataTable<_RowValue, _CellValue, _ColumnId>>[0]['defaultSort']>
+
 		rows: _RowValue[]
-		getId?: (row: _RowValue, index: number) => RowId
-		isRowDisabled: (row: _RowValue, table: DataTable<_RowValue, _CellValue, _ColumnId>) => boolean
-		getCellVerticalAlign?: (args: {
+
+		rowId?: (row: _RowValue, index: number) => RowId
+		rowIsDisabled?: (row: _RowValue, table: DataTable<_RowValue, _CellValue, _ColumnId>) => boolean
+		onRowClick?: (row: _RowValue, rowId?: RowId) => void
+		displaceDisabledRows?: boolean
+
+		columns: _Column[]
+		sortedColumn?: _Column | undefined
+
+		cellVerticalAlign?: (args: {
 			row: _RowValue
 			column: _Column
 			value: _CellValue
 		}) => 'top' | 'middle' | 'bottom' | 'baseline' | undefined
-		cellSnippet?: Snippet<[{
+		Cell?: Snippet<[{
 			row: _RowValue
 			column: _Column
 			value: _CellValue
 		}]>
-		headerTitleSnippet?: Snippet<[{
+
+		HeaderTitle?: Snippet<[{
 			column: _Column
 		}]>
-		onRowClick?: (row: _RowValue, rowId?: RowId) => void
-		displaceDisabledRows?: boolean
 		expandHeaderCells?: boolean
-		sortedColumn?: _Column | undefined
 	} = $props()
 
 	// (Derived)
@@ -66,8 +74,8 @@
 			for (const column of columns) {
 				columnsById.set(column.id, column)
 
-				if(column.children?.length)
-					addColumns(column.children)
+				if(column.subcolumns?.length)
+					addColumns(column.subcolumns)
 			}
 		}
 		
@@ -81,10 +89,10 @@
 			Math.max(
 				1,
 				...columns.map(column => (
-					!column.children?.length ?
+					!column.subcolumns?.length ?
 						1
 					:
-						1 + getMaxLevel(column.children)
+						1 + getMaxLevel(column.subcolumns)
 				))
 			)
 		)
@@ -98,8 +106,8 @@
 
 	$effect(() => {
 		sortedColumn = (
-			table.columnSort?.columnId && (
-				columnsById.get(table.columnSort.columnId)
+			table.sortState?.columnId && (
+				columnsById.get(table.sortState.columnId)
 			)
 		)
 	})
@@ -110,8 +118,7 @@
 		new DataTable({
 			data: rows,
 			columns,
-			defaultSort,
-			isRowDisabled,
+			rowIsDisabled,
 			displaceDisabledRows,
 		})
 	)
@@ -120,8 +127,7 @@
 		table = new DataTable({
 			data: rows,
 			columns,
-			defaultSort,
-			isRowDisabled,
+			rowIsDisabled,
 			displaceDisabledRows,
 		})
 	})
@@ -129,13 +135,13 @@
 
 	// Functions
 	const getColumnSpan = (column: _Column): number => (
-		!column.children?.length ?
+		!column.subcolumns?.length ?
 			1
 		:
-			column.children
+			column.subcolumns
 				.reduce(
 					(sum, childColumn) => (
-						!childColumn.children?.length ?
+						!childColumn.subcolumns?.length ?
 							sum + 1
 						:
 							sum + getColumnSpan(childColumn)
@@ -161,12 +167,12 @@
 		<colgroup>
 			{#each table.columnsVisible as column (column.id)}
 				{@const columnSpan = getColumnSpan(column)}
-				{@const isSortable = column.isSortable !== false}
+				{@const isSortable = !!column.sort}
 
 				<col
 					span={columnSpan}
 					data-sortable={isSortable ? '' : undefined}
-					data-sort={table.columnSort?.columnId === column.id ? table.columnSort?.direction : undefined}
+					data-sort={table.sortState?.columnId === column.id ? table.sortState?.direction : undefined}
 				/>
 			{/each}
 		</colgroup>
@@ -180,8 +186,8 @@
 						.flatMap(column => (
 							!column ?
 								[undefined]
-							: column.children?.length && table.isColumnExpanded(column.id) ?
-								column.children
+							: column.subcolumns?.length && table.isColumnExpanded(column.id) ?
+								column.subcolumns
 							:
 								Array.from({ length: getColumnSpan(column) }, () => undefined)
 						))
@@ -204,8 +210,8 @@
 
 			{#snippet headerCell(column: _Column, level: number)}
 				{@const colspan = getColumnSpan(column)}
-				{@const isSortable = column.isSortable !== false}
-				{@const isExpandable = !!column.children?.length}
+				{@const isSortable = !!column.sort}
+				{@const isExpandable = !!column.subcolumns?.length}
 				{@const isExpanded = table.isColumnExpanded(column.id)}
 
 				<th
@@ -218,18 +224,18 @@
 					}
 					data-header-level={level}
 					data-sortable={isSortable ? '' : undefined}
-					data-sort={table.columnSort?.columnId === column.id ? table.columnSort?.direction : undefined}
+					data-sort={table.sortState?.columnId === column.id ? table.sortState?.direction : undefined}
 					data-sticky={column.isSticky ? 'inline' : undefined}
 					data-expandable={isExpandable ? '' : undefined}
 					data-expanded={isExpandable && isExpanded ? '' : undefined}
 				>
 					<div class="header-cell-content">
-						{#snippet _headerTitle()}
+						{#snippet _HeaderTitle()}
 							<span
 								class="header-title"
 							>
-								{#if headerTitleSnippet}
-									{@render headerTitleSnippet({ column })}
+								{#if HeaderTitle}
+									{@render HeaderTitle({ column })}
 								{:else}
 									{column.name}
 								{/if}
@@ -238,7 +244,7 @@
 
 						{#if isSortable}
 							<label class="sort-label">
-								{@render _headerTitle()}
+								{@render _HeaderTitle()}
 
 								<button
 									type="button"
@@ -247,11 +253,11 @@
 									onclick={() => {
 										table.toggleColumnSort(column.id)
 									}}
-									disabled={column.isSortable === false}
+									disabled={!column.sort}
 								></button>
 							</label>
 						{:else}
-							{@render _headerTitle()}
+							{@render _HeaderTitle()}
 						{/if}
 
 						{#if isExpandable}
@@ -271,8 +277,8 @@
 		</thead>
 
 		<tbody>
-			{#each table.rowsVisible as row, index (getId?.(row, index))}
-				{@const rowId = getId?.(row, index)}
+			{#each table.rowsVisible as row, index (getRowId?.(row, index))}
+				{@const rowId = getRowId?.(row, index)}
 
 				<tr
 					tabIndex={0}
@@ -303,11 +309,11 @@
 						}
 					}}
 					animate:flip={{ duration: 300, easing: expoOut }}
-					data-disabled={isRowDisabled?.(row, table) ? '' : undefined}
+					data-disabled={rowIsDisabled?.(row, table) ? '' : undefined}
 				>
 					{#each table.columnsVisible as column (column.id)}
-						{@const isSortable = column.isSortable !== false}
-						{@const value = column.getValue?.(row)}
+					{@const isSortable = !!column.sort}
+                        {@const value = column.value?.(row)}
 						{@const columnSpan = getColumnSpan(column)}
 
 						<td
@@ -315,10 +321,10 @@
 							data-column={column.id}
 							data-row={rowId}
 							data-sortable={isSortable ? '' : undefined}
-							data-sort={table.columnSort?.columnId === column.id ? table.columnSort?.direction : undefined}
+							data-sort={table.sortState?.columnId === column.id ? table.sortState?.direction : undefined}
 							data-sticky={column.isSticky ? 'inline' : undefined}
 							style:--table-cell-verticalAlign={
-								getCellVerticalAlign?.({
+								cellVerticalAlign?.({
 									row,
 									column,
 									value,
@@ -327,8 +333,8 @@
 							animate:flip={{ duration: 300, easing: expoOut }}
 							in:fade={{ duration: 300, easing: expoOut }}
 						>
-							{#if cellSnippet}
-								{@render cellSnippet({
+							{#if Cell}
+								{@render Cell({
 									row,
 									column,
 									value,

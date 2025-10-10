@@ -8,13 +8,18 @@ export type Column<
 > = {
 	id: ColumnId
 	name: string
+	value: (row: RowValue) => CellValue
+
 	isSticky?: boolean
-	isSortable?: boolean
-	defaultSortDirection?: SortDirection
-	getValue: (row: RowValue) => CellValue
-	sorter?: (a: CellValue, b: CellValue, rowA: RowValue, rowB: RowValue) => number
-	children?: Column<RowValue, CellValue, ColumnId>[]
-	defaultIsExpanded?: boolean
+
+	sort?: {
+		isDefault?: boolean
+		defaultDirection: SortDirection
+		compare?: (a: CellValue, b: CellValue, rowA: RowValue, rowB: RowValue) => number
+	}
+
+	subcolumns?: Column<RowValue, CellValue, ColumnId>[]
+	isDefaultExpanded?: boolean
 }
 
 type SortDirection = 'asc' | 'desc'
@@ -45,7 +50,7 @@ export class DataTable<
 				.flatMap(function flatten(column): typeof column[] {
 					return [
 						column,
-						...column.children?.flatMap(flatten) ?? [],
+						...column.subcolumns?.flatMap(flatten) ?? [],
 					]
 				})
 				.map(column => [
@@ -71,27 +76,27 @@ export class DataTable<
 	)
 
 	#defaultColumnSort?: SortState<ColumnId>
-	columnSort?: SortState<ColumnId> = $state(
+	sortState?: SortState<ColumnId> = $state(
 		this.#defaultColumnSort
 	)
 
-	#isRowDisabled?: (row: RowValue, table: DataTable<RowValue, CellValue, ColumnId>) => boolean
+	#rowIsDisabled?: (row: RowValue, table: DataTable<RowValue, CellValue, ColumnId>) => boolean
 	#displaceDisabledRows: boolean
 
 	rowsSorted = $derived.by(() => {
-		if(!this.columnSort)
+		if(!this.sortState)
 			return this.rows
 
-		const { columnId, direction } = this.columnSort
+		const { columnId, direction } = this.sortState
 
 		const column = this.#columnsById.get(columnId)
 
 		return (
 			this.rows
 				.toSorted((a, b) => {
-					if (this.#displaceDisabledRows && this.#isRowDisabled) {
-						const isRowADisplaced = this.#isRowDisabled(a, this)
-						const isRowBDisplaced = this.#isRowDisabled(b, this)
+					if (this.#displaceDisabledRows && this.#rowIsDisabled) {
+						const isRowADisplaced = this.#rowIsDisabled(a, this)
+						const isRowBDisplaced = this.#rowIsDisabled(b, this)
 
 						if(isRowADisplaced || isRowBDisplaced)
 							return (
@@ -104,8 +109,8 @@ export class DataTable<
 							)
 					}
 
-					const aVal = column?.getValue(a)
-					const bVal = column?.getValue(b)
+					const aVal = column?.value(a)
+					const bVal = column?.value(b)
 
 					return (
 						aVal === undefined || aVal === null ?
@@ -114,11 +119,11 @@ export class DataTable<
 						: bVal === undefined || bVal === null ?
 							direction === 'asc' ? -1 : 1
 
-						: column?.sorter ?
+						: column?.sort?.compare ?
 							direction === 'asc' ?
-								column.sorter(aVal, bVal, a, b)
+								column.sort.compare(aVal, bVal, a, b)
 							:
-								column.sorter(bVal, aVal, b, a)
+								column.sort.compare(bVal, aVal, b, a)
 
 						: typeof aVal === 'string' && typeof bVal === 'string' ?
 							direction === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal)
@@ -159,8 +164,8 @@ export class DataTable<
 	columnsVisible = $derived.by(() => {
 		const getVisibleColumns = (columns: Column<RowValue, CellValue, ColumnId>[]): Column<RowValue, CellValue, ColumnId>[] => (
 			columns.flatMap(column => (
-				column.children?.length && this.#isColumnExpanded.has(column.id) ?
-					getVisibleColumns(column.children)
+				column.subcolumns?.length && this.#isColumnExpanded.has(column.id) ?
+					getVisibleColumns(column.subcolumns)
 				:
 					[column]
 			))
@@ -172,31 +177,35 @@ export class DataTable<
 		data,
 		columns,
 		pageSize,
-		defaultSort,
-		isRowDisabled,
+		rowIsDisabled,
 		displaceDisabledRows,
 	}: {
 		data: RowValue[]
 		columns: Column<RowValue, CellValue, ColumnId>[]
 		pageSize?: number
-		defaultSort?: SortState<ColumnId>
-		isRowDisabled?: (row: RowValue, table: DataTable<RowValue, CellValue, ColumnId>) => boolean
+		rowIsDisabled?: (row: RowValue, table: DataTable<RowValue, CellValue, ColumnId>) => boolean
 		displaceDisabledRows?: boolean
 	}) {
 		this.rows = [...data]
 		this.columns = columns
 		this.pageSize = pageSize || Infinity
-		this.#defaultColumnSort = this.columnSort = defaultSort
-		this.#isRowDisabled = isRowDisabled
+
+		const defaultSortedColumn = this.columns.find(column => column.sort?.isDefault)
+		this.#defaultColumnSort = this.sortState = defaultSortedColumn && {
+			columnId: defaultSortedColumn.id,
+			direction: defaultSortedColumn.sort?.defaultDirection ?? 'asc',
+		}
+
+		this.#rowIsDisabled = rowIsDisabled
 		this.#displaceDisabledRows = displaceDisabledRows ?? false
 
 		const initializeIsColumnExpanded = (columns: Column<RowValue, CellValue, ColumnId>[]) => {
 			columns.forEach(column => {
-				if (column.defaultIsExpanded)
+				if (column.isDefaultExpanded)
 					this.#isColumnExpanded.add(column.id)
 
-				if (column.children?.length)
-					initializeIsColumnExpanded(column.children)
+				if (column.subcolumns?.length)
+					initializeIsColumnExpanded(column.subcolumns)
 			})
 		}
 		initializeIsColumnExpanded(columns)
@@ -205,21 +214,19 @@ export class DataTable<
 	toggleColumnSort = (columnId: ColumnId) => {
 		const column = this.#columnsById.get(columnId)
 
-		if (!column || !(column.isSortable ?? true))
+		if (!column?.sort)
 			return false
 
-		const defaultSortDirection = column.defaultSortDirection ?? 'asc'
-
-		this.columnSort = (
-			this.columnSort?.columnId !== columnId ?
+		this.sortState = (
+			this.sortState?.columnId !== columnId ?
 				{
 					columnId,
-					direction: defaultSortDirection,
+					direction: column.sort.defaultDirection,
 				}
-			: this.columnSort?.direction === defaultSortDirection ?
+			: this.sortState?.direction === column.sort.defaultDirection ?
 				{
 					columnId,
-					direction: defaultSortDirection === 'asc' ? 'desc' : 'asc',
+					direction: column.sort.defaultDirection === 'asc' ? 'desc' : 'asc',
 				}
 			:
 				this.#defaultColumnSort
