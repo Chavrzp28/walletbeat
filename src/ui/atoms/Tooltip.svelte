@@ -165,7 +165,7 @@
 
 
 <style>
-	button {
+	[data-tooltip-trigger] {
 		display: grid;
 		font: inherit;
 		padding: 0;

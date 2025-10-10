@@ -19,8 +19,6 @@
 	import { erc4337 } from '@/data/eips/erc-4337'
 	import { eip7702 } from '@/data/eips/eip-7702'
 
-	import type { Snippet } from 'svelte'
-
 
 	// Props
 	let {
@@ -142,10 +140,10 @@
 	import WalletAttributeGroupSummary from '@/ui/molecules/WalletAttributeGroupSummary.svelte'
 	import WalletAttributeSummary from '@/ui/molecules/WalletAttributeSummary.svelte'
 
-	import BlockTransition from '@/ui/atoms/BlockTransition.svelte'
 	import Pie, { PieLayout } from '@/ui/atoms/Pie.svelte'
 	import Table from '@/ui/atoms/Table.svelte'
 	import Tooltip from '@/ui/atoms/Tooltip.svelte'
+	import TooltipOrAccordion from '@/ui/atoms/TooltipOrAccordion.svelte'
 	import Typography from '@/ui/atoms/Typography.svelte'
 
 	import WalletIcon from 'lucide-static/icons/wallet.svg?raw'
@@ -155,11 +153,6 @@
 
 	import InfoIcon from '@material-icons/svg/svg/info/baseline.svg?raw'
 	import OpenInNewRoundedIcon from '@material-icons/svg/svg/open_in_new//baseline.svg?raw'
-
-
-	// Transitions
-	import { fade } from 'svelte/transition'
-	import { expoOut } from 'svelte/easing'
 
 
 	// Styles
@@ -413,61 +406,12 @@
 		value,
 	})}
 		{@const isExpanded = isRowExpanded(wallet.metadata.id)}
-
-		{#snippet withExpandedContent({
-			content,
-			expandedContent,
-		}: {
-			content: Snippet
-			expandedContent: Snippet<[{ isInTooltip?: boolean }]>
-		})}
-			<BlockTransition>
-				<details
-					class="with-expanded-content"
-					bind:open={
-						() => (
-							isExpanded
-						),
-						open => {
-							if(open)
-								expandedRowIds.add(wallet.metadata.id)
-							else
-								expandedRowIds.delete(wallet.metadata.id)
-						}
-					}
-				>
-					<summary>
-						<Tooltip
-							isEnabled={!isExpanded}
-							style="
-								--popover-padding: 0;
-								--popover-backgroundColor: transparent;
-								--popover-borderColor: transparent;
-							"
-						>
-							{@render content()}
-
-							{#snippet tooltip()}
-								{#if !isExpanded}
-									<div class="expanded-tooltip-content">
-										{@render expandedContent({ isInTooltip: true })}
-									</div>
-								{/if}
-							{/snippet}
-						</Tooltip>
-					</summary>
-
-					{#if isExpanded}
-						<div
-							class="expanded-content"
-							transition:fade={{ duration: 200, easing: expoOut }}
-						>
-							{@render expandedContent({ isInTooltip: false })}
-						</div>
-					{/if}
-				</details>
-			</BlockTransition>
-		{/snippet}
+		{@const setIsExpanded = (open: boolean) => {
+			if (open)
+				expandedRowIds.add(wallet.metadata.id)
+			else
+				expandedRowIds.delete(wallet.metadata.id)
+		}}
 
 		{#if column.id === 'displayName'}
 			{@const displayName = value}
@@ -477,7 +421,14 @@
 					.filter(variant => variant in wallet.variants)
 			)}
 
-			{#snippet content()}
+			<TooltipOrAccordion
+				bind:isExpanded={
+					() => isExpanded,
+					setIsExpanded
+				}
+				showAccordionMarker
+				tooltipMaxWidth="18rem"
+			>
 				<div class="wallet-info">
 					<span class="row-count"></span>
 
@@ -623,66 +574,61 @@
 						</div>
 					{/if}
 				</div>
-			{/snippet}
 
-			{#snippet expandedContent()}
-				<div class="wallet-summary">
-					{#if selectedVariant && !wallet.variants[selectedVariant]}
-						<p>
-							{wallet.metadata.displayName} does not have a {selectedVariant} version.
-						</p>
+				{#snippet ExpandedContent({ isInTooltip }: { isInTooltip?: boolean })}
+					<div class="wallet-summary" class:in-tooltip={isInTooltip}>
+						{#if selectedVariant && !wallet.variants[selectedVariant]}
+							<p>
+								{wallet.metadata.displayName} does not have a {selectedVariant} version.
+							</p>
 
-					{:else if wallet.metadata.blurb}
-						<Typography
-							content={wallet.metadata.blurb}
-							strings={{
-								WALLET_NAME: wallet.metadata.displayName,
-								WALLET_PSEUDONYM_SINGULAR: wallet.metadata.pseudonymType?.singular ?? null,
-							}}
-						/>
-					{/if}
+						{:else if wallet.metadata.blurb}
+							<Typography
+								content={wallet.metadata.blurb}
+								strings={{
+									WALLET_NAME: wallet.metadata.displayName,
+									WALLET_PSEUDONYM_SINGULAR: wallet.metadata.pseudonymType?.singular ?? null,
+								}}
+							/>
+						{/if}
 
-					<div class="links">
-						<a
-							href={`/${wallet.metadata.id}/${variantUrlQuery(wallet.variants, selectedVariant ?? null)}`}
-							class="info-link"
-						>
-							<span aria-hidden="true">{@html InfoIcon}</span>
-							Learn more
-						</a>
+						<div class="links">
+							<a
+								href={`/${wallet.metadata.id}/${variantUrlQuery(wallet.variants, selectedVariant ?? null)}`}
+								class="info-link"
+							>
+								<span aria-hidden="true">{@html InfoIcon}</span>
+								Learn more
+							</a>
 
-						<hr>
-
-						<a
-							href={isLabeledUrl(wallet.metadata.url) ? wallet.metadata.url.url : wallet.metadata.url}
-							target="_blank"
-							rel="noopener noreferrer"
-							class="external-link"
-						>
-							{wallet.metadata.displayName} website
-						</a>
-
-						{#if wallet.metadata.repoUrl}
 							<hr>
 
 							<a
-								href={isLabeledUrl(wallet.metadata.repoUrl) ? wallet.metadata.repoUrl.url : wallet.metadata.repoUrl}
+								href={isLabeledUrl(wallet.metadata.url) ? wallet.metadata.url.url : wallet.metadata.url}
 								target="_blank"
 								rel="noopener noreferrer"
 								class="external-link"
 							>
-								Code
-								<span aria-hidden="true">{@html OpenInNewRoundedIcon}</span>
+								{wallet.metadata.displayName} website
 							</a>
-						{/if}
-					</div>
-				</div>
-			{/snippet}
 
-			{@render withExpandedContent({
-				content,
-				expandedContent,
-			})}
+							{#if wallet.metadata.repoUrl}
+								<hr>
+
+								<a
+									href={isLabeledUrl(wallet.metadata.repoUrl) ? wallet.metadata.repoUrl.url : wallet.metadata.repoUrl}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="external-link"
+								>
+									Code
+									<span aria-hidden="true">{@html OpenInNewRoundedIcon}</span>
+								</a>
+							{/if}
+						</div>
+					</div>
+				{/snippet}
+			</TooltipOrAccordion>
 
 		{:else}
 			{@const selectedSliceId = (
@@ -706,6 +652,7 @@
 			)}
 
 			{@const highlightedSliceId = selectedSliceId ?? activeSliceId}
+
 			<!-- Overall rating -->
 			{#if column.id === 'overall'}
 				{@const score = (
@@ -717,7 +664,12 @@
 					)
 				)}
 
-				{#snippet content()}
+				<TooltipOrAccordion
+					bind:isExpanded={
+						() => isExpanded,
+						setIsExpanded
+					}
+				>
 					<Pie
 						slices={
 							displayedAttributeGroups.map(attrGroup => {
@@ -841,60 +793,55 @@
 							{/if}
 						{/snippet}
 					</Pie>
-				{/snippet}
 
-				{#snippet expandedContent({ isInTooltip }: { isInTooltip?: boolean })}
-					{@const displayedAttribute = (
-						activeEntityId?.walletId === wallet.metadata.id ?
-							activeEntityId.attributeId ?
-								wallet.overall[activeEntityId.attributeGroupId]?.[activeEntityId.attributeId]
+					{#snippet ExpandedContent({ isInTooltip }: { isInTooltip?: boolean })}
+						{@const displayedAttribute = (
+							activeEntityId?.walletId === wallet.metadata.id ?
+								activeEntityId.attributeId ?
+									wallet.overall[activeEntityId.attributeGroupId]?.[activeEntityId.attributeId]
+								:
+									undefined
+							: selectedAttribute ?
+								attributeGroups.find(g => g.id in wallet.overall && selectedAttribute in wallet.overall[g.id]) ?
+									wallet.overall[attributeGroups.find(g => g.id in wallet.overall && selectedAttribute in wallet.overall[g.id])!.id]?.[selectedAttribute]
+								:
+									undefined
 							:
 								undefined
-						: selectedAttribute ?
-							attributeGroups.find(g => g.id in wallet.overall && selectedAttribute in wallet.overall[g.id]) ?
-								wallet.overall[attributeGroups.find(g => g.id in wallet.overall && selectedAttribute in wallet.overall[g.id])!.id]?.[selectedAttribute]
+						)}
+			
+						{@const displayedGroup = (
+							activeEntityId?.walletId === wallet.metadata.id ?
+								attributeGroups.find(g => g.id === activeEntityId.attributeGroupId)
+							: selectedAttribute ?
+								attributeGroups.find(g => g.id in wallet.overall && selectedAttribute in wallet.overall[g.id])
 							:
 								undefined
-						:
-							undefined
-					)}
-		
-					{@const displayedGroup = (
-						activeEntityId?.walletId === wallet.metadata.id ?
-							attributeGroups.find(g => g.id === activeEntityId.attributeGroupId)
-						: selectedAttribute ?
-							attributeGroups.find(g => g.id in wallet.overall && selectedAttribute in wallet.overall[g.id])
-						:
-							undefined
-					)}
+						)}
 
-					{#if displayedAttribute}
-						<WalletAttributeSummary
-							{wallet}
-							attribute={displayedAttribute}
-							variant={selectedVariant}
-							showRating={true}
-							{isInTooltip}
-						/>
-					{:else if displayedGroup}
-						<WalletAttributeGroupSummary
-							{wallet}
-							attributeGroup={displayedGroup}
-							{isInTooltip}
-						/>
-					{:else}
-						<WalletOverallSummary
-							{wallet}
-							{score}
-							{isInTooltip}
-						/>
-					{/if}
-				{/snippet}
-
-				{@render withExpandedContent({
-					content,
-					expandedContent,
-				})}
+						{#if displayedAttribute}
+							<WalletAttributeSummary
+								{wallet}
+								attribute={displayedAttribute}
+								variant={selectedVariant}
+								showRating={true}
+								{isInTooltip}
+							/>
+						{:else if displayedGroup}
+							<WalletAttributeGroupSummary
+								{wallet}
+								attributeGroup={displayedGroup}
+								{isInTooltip}
+							/>
+						{:else}
+							<WalletOverallSummary
+								{wallet}
+								{score}
+								{isInTooltip}
+							/>
+						{/if}
+					{/snippet}
+				</TooltipOrAccordion>
 
 			<!-- Attribute group rating -->
 			{:else if !column.id.includes('.')}
@@ -918,7 +865,12 @@
 						undefined
 				)}
 
-				{#snippet content()}
+				<TooltipOrAccordion
+					bind:isExpanded={
+						() => isExpanded,
+						setIsExpanded
+					}
+				>
 					<Pie
 						layout={PieLayout.FullTop}
 						radius={44}
@@ -1042,39 +994,34 @@
 							{/if}
 						{/snippet}
 					</Pie>
-				{/snippet}
 
-				{#snippet expandedContent({ isInTooltip }: { isInTooltip?: boolean })}
-					{@const displayedAttribute = (
-						activeEntityId?.walletId === wallet.metadata.id && activeEntityId?.attributeGroupId === attrGroup.id ?
-							evalGroup[activeEntityId.attributeId]
-						: selectedAttribute ?
-							evalGroup[selectedAttribute]
-						:
-							undefined
-					)}
+					{#snippet ExpandedContent({ isInTooltip }: { isInTooltip?: boolean })}
+						{@const displayedAttribute = (
+							activeEntityId?.walletId === wallet.metadata.id && activeEntityId?.attributeGroupId === attrGroup.id ?
+								evalGroup[activeEntityId.attributeId]
+							: selectedAttribute ?
+								evalGroup[selectedAttribute]
+							:
+								undefined
+						)}
 
-					{#if displayedAttribute}
-						<WalletAttributeSummary
-							{wallet}
-							attribute={displayedAttribute}
-							variant={selectedVariant}
-							showRating={true}
-							{isInTooltip}
-						/>
-					{:else}
-						<WalletAttributeGroupSummary
-							{wallet}
-							attributeGroup={attrGroup}
-							{isInTooltip}
-						/>
-					{/if}
-				{/snippet}
-
-				{@render withExpandedContent({
-					content,
-					expandedContent,
-				})}
+						{#if displayedAttribute}
+							<WalletAttributeSummary
+								{wallet}
+								attribute={displayedAttribute}
+								variant={selectedVariant}
+								showRating={true}
+								{isInTooltip}
+							/>
+						{:else}
+							<WalletAttributeGroupSummary
+								{wallet}
+								attributeGroup={attrGroup}
+								{isInTooltip}
+							/>
+						{/if}
+					{/snippet}
+				</TooltipOrAccordion>
 
 			<!-- Attribute rating -->
 			{:else}
@@ -1082,7 +1029,12 @@
 				{@const attrGroup = displayedAttributeGroups.find(attrGroup => attrGroup.id === attributeGroupId)!}
 				{@const attribute = wallet.overall[attributeGroupId][attributeId]}
 
-				{#snippet content()}
+				<TooltipOrAccordion
+					bind:isExpanded={
+						() => isExpanded,
+						setIsExpanded
+					}
+				>
 					<Pie
 						layout={PieLayout.HalfTop}
 						radius={24}
@@ -1127,22 +1079,17 @@
 						centerLabel={attribute.evaluation.value.rating}
 						class="wallet-attribute-rating-pie"
 					/>
-				{/snippet}
 
-				{#snippet expandedContent({ isInTooltip }: { isInTooltip?: boolean })}
-					<WalletAttributeSummary
-						{wallet}
-						attribute={attribute}
-						variant={selectedVariant}
-						showRating={false}
-						{isInTooltip}
-					/>
-				{/snippet}
-
-				{@render withExpandedContent({
-					content,
-					expandedContent,
-				})}
+					{#snippet ExpandedContent({ isInTooltip }: { isInTooltip?: boolean })}
+						<WalletAttributeSummary
+							{wallet}
+							attribute={attribute}
+							variant={selectedVariant}
+							showRating={false}
+							{isInTooltip}
+						/>
+					{/snippet}
+				</TooltipOrAccordion>
 			{/if}
 		{/if}
 	{/snippet}
@@ -1150,47 +1097,6 @@
 
 
 <style>
-	.with-expanded-content {
-		display: grid;
-
-		transition-property: gap;
-
-		&[open] {
-			gap: 0.75em;
-		}
-
-		summary {
-			:global([data-column]:not([data-is-sticky])) & {
-				display: contents;
-
-				&::after {
-					display: none;
-				}
-			}
-
-			/* Firefox: align `<Tooltip>` trigger center */
-			:global([data-tooltip-trigger]:not(.tags > *)) {
-				width: 100%;
-			}
-		}
-
-		.expanded-content {
-			display: grid;
-			grid-template-columns: minmax(0, 1fr);
-
-			inline-size: 0;
-			min-inline-size: 100%;
-			min-inline-size: -webkit-fill-available;
-
-			font-size: 0.66em;
-			text-align: center;
-		}
-
-		.expanded-tooltip-content {
-			max-width: 16em;
-		}
-	}
-
 	.wallet-info {
 		block-size: 5rem;
 
@@ -1306,14 +1212,10 @@
 		line-height: 1.6;
 		text-align: start;
 
-		.expanded-tooltip-content & {
+		&.in-tooltip {
 			background-color: var(--background-primary);
 			padding: 1em;
 			font-size: 0.75em;
-		}
-
-		.expanded-tooltip-content:has(&) {
-			max-width: 18rem;
 		}
 
 		.links {
