@@ -62,52 +62,6 @@
 		}) => 'top' | 'middle' | 'bottom' | 'baseline' | undefined
 	} = $props()
 
-	// (Derived)
-	let columnsById = $derived.by(() => {
-		const columnsById = new Map<_ColumnId, _Column>()
-		
-		const addColumns = (columns: _Column[]) => {
-			for (const column of columns) {
-				columnsById.set(column.id, column)
-
-				if(column.subcolumns?.length)
-					addColumns(column.subcolumns)
-			}
-		}
-		
-		addColumns(columns)
-
-		return columnsById
-	})
-
-	let maxHeaderLevel = $derived.by(() => {
-		const getMaxLevel = (columns: _Column[]): number => (
-			Math.max(
-				1,
-				...columns.map(column => (
-					!column.subcolumns?.length ?
-						1
-					:
-						1 + getMaxLevel(column.subcolumns)
-				))
-			)
-		)
-		return (
-			expandHeaderCells ?
-				getMaxLevel(columns)
-			:
-				1
-		)
-	})
-
-	$effect(() => {
-		sortedColumn = (
-			table.sortState?.columnId && (
-				columnsById.get(table.sortState.columnId)
-			)
-		)
-	})
-
 
 	// State
 	let table = $state(
@@ -126,6 +80,10 @@
 			rowIsDisabled,
 			displaceDisabledRows,
 		})
+	})
+
+	$effect(() => {
+		sortedColumn = table.sortedColumn
 	})
 
 
@@ -214,7 +172,7 @@
 					{colspan}
 					rowspan={
 						expandHeaderCells && (!isExpandable || !isExpanded) ?
-							maxHeaderLevel - level
+							table.maxHeaderLevel - level
 						:
 							undefined
 					}

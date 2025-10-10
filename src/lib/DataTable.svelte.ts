@@ -76,6 +76,28 @@ export class DataTable<
 		new SvelteSet<ColumnId>()
 	)
 
+	sortedColumn = $derived(
+		this.sortState?.columnId && (
+			this.#columnsById.get(this.sortState.columnId)
+		)
+	)
+
+	maxHeaderLevel = $derived.by(() => {
+		const getMaxLevel = (columns: Column[]): number => (
+			Math.max(
+				1,
+				...columns.map(column => (
+					!column.subcolumns?.length ?
+						1
+					:
+						1 + getMaxLevel(column.subcolumns)
+				))
+			)
+		)
+
+		return getMaxLevel(this.columns)
+	})
+
 	rows = $state<RowValue[]>(
 		[]
 	)
