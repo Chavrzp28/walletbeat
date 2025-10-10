@@ -76,6 +76,24 @@ export class DataTable<
 		new SvelteSet<ColumnId>()
 	)
 
+	columnsVisible = $derived.by(() => {
+		const getVisibleColumns = (columns: Column<RowValue, CellValue, ColumnId>[]): Column<RowValue, CellValue, ColumnId>[] => (
+			columns.flatMap(column => (
+				column.subcolumns?.length && this.#isColumnExpanded.has(column.id) ?
+					getVisibleColumns(column.subcolumns)
+				:
+					[column]
+			))
+		)
+		return getVisibleColumns(this.columns)
+	})
+
+	#defaultColumnSort?: SortState<ColumnId>
+
+	sortState?: SortState<ColumnId> = $state(
+		this.#defaultColumnSort
+	)
+
 	sortedColumn = $derived(
 		this.sortState?.columnId && (
 			this.#columnsById.get(this.sortState.columnId)
@@ -102,19 +120,8 @@ export class DataTable<
 		[]
 	)
 
-	pageSize: number = $state(
-		Infinity
-	)
-	currentPage = $state(
-		1
-	)
-
-	#defaultColumnSort?: SortState<ColumnId>
-	sortState?: SortState<ColumnId> = $state(
-		this.#defaultColumnSort
-	)
-
 	#rowIsDisabled?: (row: RowValue, table: DataTable<RowValue, CellValue, ColumnId>) => boolean
+
 	#displaceDisabledRows: boolean
 
 	rowsSorted = $derived.by(() => {
@@ -175,6 +182,14 @@ export class DataTable<
 		)
 	})
 
+	pageSize: number = $state(
+		Infinity
+	)
+
+	currentPage = $state(
+		1
+	)
+
 	rowsVisible = $derived(
 		this.rowsSorted
 			.slice(
@@ -194,18 +209,6 @@ export class DataTable<
 	canGoForward = $derived(
 		this.rows.length > 0 && this.currentPage < this.totalPages
 	)
-
-	columnsVisible = $derived.by(() => {
-		const getVisibleColumns = (columns: Column<RowValue, CellValue, ColumnId>[]): Column<RowValue, CellValue, ColumnId>[] => (
-			columns.flatMap(column => (
-				column.subcolumns?.length && this.#isColumnExpanded.has(column.id) ?
-					getVisibleColumns(column.subcolumns)
-				:
-					[column]
-			))
-		)
-		return getVisibleColumns(this.columns)
-	})
 
 	constructor({
 		data,
