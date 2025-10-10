@@ -271,7 +271,7 @@ label:has(> input:is([type="checkbox"], [type="radio"])) {
 	padding: 0.6em 0.8em;
 }
 
-.stack {
+[data-stack] {
 	display: grid;
 	grid: 'stack';
 
@@ -282,25 +282,29 @@ label:has(> input:is([type="checkbox"], [type="radio"])) {
 	}
 }
 
-.column {
+[data-column] {
 	display: grid;
 	grid-template-columns: minmax(0, 1fr);
 	gap: 1rem;
 	align-content: start;
 
-	&.inline {
+	&[data-column~="inline"] {
 		gap: 0.25rem;
 	}
 }
 
-.row {
+[data-row] {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	gap: 0.75em;
 
-	&.inline {
+	&[data-row~="inline"] {
 		gap: 0.5ch;
+	}
+
+	&[data-row~="wrap"] {
+		flex-wrap: wrap;
 	}
 }
 
@@ -326,7 +330,7 @@ span svg {
 	}
 }
 
-.card {
+[data-card] {
 	background-color: var(--background-primary);
 	border-radius: 8px;
 	border: 1px solid var(--border);

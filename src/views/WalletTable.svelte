@@ -162,7 +162,7 @@
 
 <header
 	data-sticky="inline"
-	class="row wrap"
+	data-row="wrap"
 >
 	{#if title}
 		<h2>{title}</h2>

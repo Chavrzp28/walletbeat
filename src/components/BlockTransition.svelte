@@ -74,7 +74,8 @@
 	style:--transitionDuration="250ms"
 	style:--transitionDelay="0ms"
 	transition:transition={transitionParams}
-	class={`stack align-${align}`}
+	data-stack
+	class={`align-${align}`}
 >
 	{#if contentTransition}
 		{#if 'in' in contentTransition && contentTransition.in && 'out' in contentTransition && contentTransition.out}
@@ -84,7 +85,8 @@
 				<div
 					data-content
 					bind:borderBoxSize
-					class={`column align-${align}`}
+					data-column
+					class={`align-${align}`}
 					in:inTransition={inParams}
 					out:outTransition={outParams}
 				>
@@ -103,7 +105,8 @@
 				<div
 					data-content
 					bind:borderBoxSize
-					class={`column align-${align}`}
+				data-column
+				class={`align-${align}`}
 					in:inTransition={inParams}
 				>
 					{#if children}
@@ -121,7 +124,8 @@
 				<div
 					data-content
 					bind:borderBoxSize
-					class={`column align-${align}`}
+					data-column
+					class={`align-${align}`}
 					out:outTransition={outParams}
 				>
 					{#if children}
@@ -139,7 +143,8 @@
 				<div
 					data-content
 					bind:borderBoxSize
-					class={`column align-${align}`}
+					data-column
+					class={`align-${align}`}
 					transition:transition={transitionParams}
 				>
 					{#if children}
@@ -156,7 +161,8 @@
 			<div
 				data-content
 				bind:borderBoxSize
-				class={`column align-${align}`}
+				data-column
+				class={`align-${align}`}
 			>
 				{#if children}
 					{@render children({ key, value })}
