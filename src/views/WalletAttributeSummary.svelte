@@ -27,7 +27,7 @@
 
 
 	// Components
-	import Typography from '../atoms/Typography.svelte'
+	import Typography from '../components/Typography.svelte'
 	import InfoIcon from '@material-icons/svg/svg/info/baseline.svg?raw'
 </script>
 

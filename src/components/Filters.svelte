@@ -95,7 +95,7 @@
 
 
 	// Components
-	import Select from '@/ui/atoms/Select.svelte'
+	import Select from '@/components/Select.svelte'
 </script>
 
 

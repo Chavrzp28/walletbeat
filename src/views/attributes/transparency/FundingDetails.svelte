@@ -22,8 +22,8 @@
 	} = $props()
 
 	// Components
-	import ReferenceLinks from '@/ui/atoms/ReferenceLinks.svelte'
-	import Typography from '@/ui/atoms/Typography.svelte'
+	import ReferenceLinks from '@/views/ReferenceLinks.svelte'
+	import Typography from '@/components/Typography.svelte'
 </script>
 
 <Typography 

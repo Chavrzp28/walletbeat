@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Types
-	import type { NavigationItem } from '@/components/navigation'
+	import type { NavigationItem } from '@/constants/navigation'
 
 
 	// Props

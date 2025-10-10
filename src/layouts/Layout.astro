@@ -1,6 +1,6 @@
 ---
 // Global CSS
-import '../global.css'
+import '@/global.css'
 
 // Props
 import type { ComponentProps } from 'astro/types'
@@ -18,7 +18,7 @@ type Props = {
 const { metadata, rewriteUrlTo } = Astro.props
 
 // Components
-import Metadata from '@/components/Metadata.astro'
+import Metadata from '@/layouts/Metadata.astro'
 ---
 
 <!doctype html>

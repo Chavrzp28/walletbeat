@@ -87,10 +87,10 @@
 
 
 	// Components
-	import Filters from '@/ui/molecules/Filters.svelte'
-	import Tooltip from '@/ui/atoms/Tooltip.svelte'
-	import EipDetails from '@/ui/molecules/EipDetails.svelte'
-	import Table from '@/ui/atoms/Table.svelte'
+	import Filters from '@/components/Filters.svelte'
+	import Tooltip from '@/components/Tooltip.svelte'
+	import EipDetails from '@/views/EipDetails.svelte'
+	import Table from '@/components/Table.svelte'
 
 	import KeyIcon from 'lucide-static/icons/key.svg?raw'
 	import ExternalLinkIcon from 'lucide-static/icons/external-link.svg?raw'

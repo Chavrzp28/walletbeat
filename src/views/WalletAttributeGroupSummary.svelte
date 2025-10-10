@@ -25,8 +25,8 @@
 
 
 	// Components
-	import Typography from '../atoms/Typography.svelte'
-	import ScoreBadge from '../atoms/ScoreBadge.svelte'
+	import Typography from '../components/Typography.svelte'
+	import ScoreBadge from '../views/ScoreBadge.svelte'
 </script>
 
 

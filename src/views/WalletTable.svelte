@@ -8,8 +8,8 @@
 
 <script lang="ts">
 	// Types/constants
-	import type { Column } from '@/lib/TableState.svelte'
-	import type { Filter } from '@/ui/molecules/Filters.svelte'
+	import type { Column } from '@/components/TableState.svelte'
+	import type { Filter } from '@/components/Filters.svelte'
 	import type { RatedWallet } from '@/schema/wallet'
 	import { type AttributeGroup, Rating, ratingIcons } from '@/schema/attributes'
 	import { Variant } from '@/schema/variants'
@@ -134,17 +134,17 @@
 
 
 	// Components
-	import EipDetails from '@/ui/molecules/EipDetails.svelte'
-	import Filters from '@/ui/molecules/Filters.svelte'
-	import WalletOverallSummary from '@/ui/molecules/WalletOverallSummary.svelte'
-	import WalletAttributeGroupSummary from '@/ui/molecules/WalletAttributeGroupSummary.svelte'
-	import WalletAttributeSummary from '@/ui/molecules/WalletAttributeSummary.svelte'
+	import EipDetails from '@/views/EipDetails.svelte'
+	import Filters from '@/components/Filters.svelte'
+	import WalletOverallSummary from '@/views/WalletOverallSummary.svelte'
+	import WalletAttributeGroupSummary from '@/views/WalletAttributeGroupSummary.svelte'
+	import WalletAttributeSummary from '@/views/WalletAttributeSummary.svelte'
 
-	import Pie, { PieLayout } from '@/ui/atoms/Pie.svelte'
-	import Table from '@/ui/atoms/Table.svelte'
-	import Tooltip from '@/ui/atoms/Tooltip.svelte'
-	import TooltipOrAccordion from '@/ui/atoms/TooltipOrAccordion.svelte'
-	import Typography from '@/ui/atoms/Typography.svelte'
+	import Pie, { PieLayout } from '@/components/Pie.svelte'
+	import Table from '@/components/Table.svelte'
+	import Tooltip from '@/components/Tooltip.svelte'
+	import TooltipOrAccordion from '@/components/TooltipOrAccordion.svelte'
+	import Typography from '@/components/Typography.svelte'
 
 	import WalletIcon from 'lucide-static/icons/wallet.svg?raw'
 	import AppWindowIcon from 'lucide-static/icons/app-window.svg?raw'

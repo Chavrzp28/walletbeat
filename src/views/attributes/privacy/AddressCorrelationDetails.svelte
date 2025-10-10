@@ -57,7 +57,7 @@
 	)
 
 	// Components
-	import Typography from '@/ui/atoms/Typography.svelte'
+	import Typography from '@/components/Typography.svelte'
 </script>
 
 {#if !linkables}

@@ -24,8 +24,8 @@
 
 
 	// Components
-	import BlockTransition from '@/ui/atoms/BlockTransition.svelte'
-	import Tooltip from '@/ui/atoms/Tooltip.svelte'
+	import BlockTransition from '@/components/BlockTransition.svelte'
+	import Tooltip from '@/components/Tooltip.svelte'
 
 
 	// Transitions/animations

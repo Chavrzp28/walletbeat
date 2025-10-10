@@ -37,12 +37,12 @@
 
 
 	// Components
-	import Typography from '@/ui/atoms/Typography.svelte'
-	import Pie, { PieLayout } from '@/ui/atoms/Pie.svelte'
-	import RenderCustomContent from '@/ui/atoms/RenderCustomContent.svelte'
-	import ReferenceLinks from '@/ui/atoms/ReferenceLinks.svelte'
-	import ScoreBadge from '@/ui/atoms/ScoreBadge.svelte'
-	import WalletAttributeGroupSummary from '@/ui/molecules/WalletAttributeGroupSummary.svelte'
+	import Typography from '@/components/Typography.svelte'
+	import Pie, { PieLayout } from '@/components/Pie.svelte'
+	import RenderCustomContent from '@/views/RenderCustomContent.svelte'
+	import ReferenceLinks from '@/views/ReferenceLinks.svelte'
+	import ScoreBadge from '@/views/ScoreBadge.svelte'
+	import WalletAttributeGroupSummary from '@/views/WalletAttributeGroupSummary.svelte'
 
 
 	// Props

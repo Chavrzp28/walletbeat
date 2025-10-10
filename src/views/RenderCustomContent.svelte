@@ -18,15 +18,15 @@
 
 
 	// Components
-	import AddressCorrelationDetails from '../molecules/attributes/privacy/AddressCorrelationDetails.svelte'
-	import ChainVerificationDetails from '../molecules/attributes/security/ChainVerificationDetails.svelte'
-	import ScamAlertDetails from '../molecules/attributes/security/ScamAlertDetails.svelte'
-	import SecurityAuditsDetails from '../molecules/attributes/security/SecurityAuditsDetails.svelte'
-	import TransactionInclusionDetails from '../molecules/attributes/self-sovereignty/TransactionInclusionDetails.svelte'
-	import FundingDetails from '../molecules/attributes/transparency/FundingDetails.svelte'
-	import LicenseDetails from '../molecules/attributes/transparency/LicenseDetails.svelte'
-	import SourceVisibilityDetails from '../molecules/attributes/transparency/SourceVisibilityDetails.svelte'
-	import UnratedAttribute from '../molecules/attributes/UnratedAttribute.svelte'
+	import AddressCorrelationDetails from '@/views/attributes/privacy/AddressCorrelationDetails.svelte'
+	import ChainVerificationDetails from '@/views/attributes/security/ChainVerificationDetails.svelte'
+	import ScamAlertDetails from '@/views/attributes/security/ScamAlertDetails.svelte'
+	import SecurityAuditsDetails from '@/views/attributes/security/SecurityAuditsDetails.svelte'
+	import TransactionInclusionDetails from '@/views/attributes/self-sovereignty/TransactionInclusionDetails.svelte'
+	import FundingDetails from '@/views/attributes/transparency/FundingDetails.svelte'
+	import LicenseDetails from '@/views/attributes/transparency/LicenseDetails.svelte'
+	import SourceVisibilityDetails from '@/views/attributes/transparency/SourceVisibilityDetails.svelte'
+	import UnratedAttribute from '@/views/attributes/UnratedAttribute.svelte'
 </script>
 
 

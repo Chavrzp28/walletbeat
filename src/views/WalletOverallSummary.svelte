@@ -18,7 +18,7 @@
 
 
 	// Components
-	import ScoreBadge from '../atoms/ScoreBadge.svelte'
+	import ScoreBadge from '../views/ScoreBadge.svelte'
 </script>
 
 

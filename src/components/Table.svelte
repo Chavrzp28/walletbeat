@@ -3,7 +3,7 @@
 	RowId
 ">
 	// Types
-	import { TableState, type Column } from '@/lib/TableState.svelte'
+	import { TableState, type Column } from '@/components/TableState.svelte'
 	import type { Snippet } from 'svelte'
 
 	type _RowValue = _TableState extends TableState<infer RowValue, any, any> ? RowValue : any
