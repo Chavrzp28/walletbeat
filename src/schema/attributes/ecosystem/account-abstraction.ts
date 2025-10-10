@@ -162,8 +162,8 @@ export const accountAbstraction: Attribute<AccountAbstractionValue> = {
 		User experience on Ethereum has historically suffered from the limitations of Externally-Owned Accounts (EOAs), which is the type of account most Ethereum users use today. By contrast, smart wallet accounts offer many UX and security improvements, such as the ability to:
 
 		* Batch multiple transactions, removing the need for separate "token approval" transactions before every other token operation.
-		* Pay gas fees in other tokens than Ether, or having third-parties sponsor transaction fees (with ${eipMarkdownLink(erc4337)})
-		* Delegate some operation to trusted third-parties, such as allowing onchain games to withdraw small amounts of tokens without signing pop-ups for each and every transaction.
+		* Pay gas fees in other tokens than Ether, or support sponsored transaction fees (with ${eipMarkdownLink(erc4337)})
+		* Delegate some operation to trusted provider, such as allowing onchain games to withdraw small amounts of tokens without signing pop-ups for each and every transaction.
 		* Change transaction authorization logic, enabling the use of Passkeys (and cellphone authentication methods) for signing transactions.
 		* Update the set of keys used to control the wallet, enabling the switch to quantum-resistant encryption algorithms in the future.
 		* Define account recovery rules, reducing the risk of losing access to your account when losing a private key or a device.

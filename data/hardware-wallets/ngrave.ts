@@ -116,8 +116,8 @@ export const ngrave: HardwareWallet = {
 			interoperability: null,
 		},
 		transparency: {
-			feeTransparency: null,
 			maintenance: null,
+			operationFees: null,
 			reputation: null,
 		},
 	},

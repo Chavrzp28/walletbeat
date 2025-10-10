@@ -116,6 +116,7 @@ export const nufi: SoftwareWallet = {
 				defaultFungibleTokenTransferMode: 'PUBLIC',
 				[PrivateTransferTechnology.STEALTH_ADDRESSES]: notSupported,
 				[PrivateTransferTechnology.TORNADO_CASH_NOVA]: notSupported,
+				[PrivateTransferTechnology.PRIVACY_POOLS]: notSupported,
 			},
 		},
 		profile: WalletProfile.GENERIC,
@@ -164,7 +165,7 @@ export const nufi: SoftwareWallet = {
 			},
 		},
 		transparency: {
-			feeTransparency: null,
+			operationFees: null,
 		},
 	},
 	variants: {

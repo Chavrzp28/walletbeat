@@ -32,7 +32,7 @@
 	} = $props()
 
 	// Functions
-	import { compareLeakedInfo, leakedInfoName } from '@/schema/features/privacy/data-collection'
+	import { compareUserInfo, userInfoName } from '@/schema/features/privacy/data-collection'
 	import { mergeRefs } from '@/schema/reference'
 	import { isUrl } from '@/schema/url'
 	import { nonEmptyGet, nonEmptySorted } from '@/types/utils/non-empty'
@@ -81,7 +81,7 @@
 			: linkableB.by === 'onchain' ?
 				-1
 			:
-				compareLeakedInfo(linkableA.info, linkableB.info)
+				compareUserInfo(linkableA.info, linkableB.info)
 		),
 		true,
 	)}
@@ -108,7 +108,7 @@
 		bySource.forEach((linkables, sourceName) => {
 			const linkableInfos: LeakInfo[] = linkables.map(linkable => ({
 				key: linkable.info,
-				value: leakedInfoName(linkable.info).long
+				value: userInfoName(linkable.info).long
 			}))
 			const refs = mergeRefs(...linkables.flatMap(linkable => linkable.refs))
 			const entity = nonEmptyGet(linkables).by

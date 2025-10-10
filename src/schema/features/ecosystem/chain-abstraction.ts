@@ -1,6 +1,7 @@
 import type { WithRef } from '@/schema/reference'
 
 import type { Support } from '../support'
+import type { FeeDisplay } from '../transparency/fee-display'
 
 /**
  * How does the wallet display token balances?
@@ -54,12 +55,12 @@ export type ChainAbstraction = {
 				risksExplained: 'NOT_IN_UI' | 'VISIBLE_BY_DEFAULT' | 'HIDDEN_BY_DEFAULT'
 
 				/**
-				 * Are the fees involved in bridging explained to the user?
+				 * How are the fees involved in bridging explained to the user?
 				 * For the purpose of evaluating this attribute, fees of 1bps or
 				 * smaller are not taken into consideration (it is OK for wallets
 				 * to not display them).
 				 */
-				feesLargerThan1bps: 'NOT_IN_UI' | 'VISIBLE_BY_DEFAULT' | 'HIDDEN_BY_DEFAULT'
+				feesLargerThan1bps: FeeDisplay
 			}>
 		>
 

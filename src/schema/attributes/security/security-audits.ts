@@ -188,7 +188,7 @@ export const securityAudits: Attribute<SecurityAuditsValue> = {
 		],
 		fail: [
 			exampleRating(
-				paragraph('The wallet was never audited by a third-party security auditor.'),
+				paragraph('The wallet was never audited by an independent security auditor.'),
 				noAudits().value,
 			),
 			exampleRating(

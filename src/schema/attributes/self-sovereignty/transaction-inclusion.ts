@@ -177,7 +177,7 @@ export const transactionInclusion: Attribute<TransactionInclusionValue> = {
 			take it into account.
 		* Since L2 force-withdrawal transactions require an L1 transaction, the
 			wallet must also be able to get this transaction included without
-			relying on a third-party to broadcast this transaction for block
+			relying on an external service to broadcast this transaction for block
 			inclusion. Therefore, the wallet must also support either participating
 			in Ethereum's L1 gossip network, or (for environments that do not
 			support this such as browser extension wallets) support broadcasting
@@ -222,7 +222,7 @@ export const transactionInclusion: Attribute<TransactionInclusionValue> = {
 		partial: [
 			exampleRating(
 				paragraph(
-					'The wallet supports force-withdrawal transactions on L2s, but requires the use of a third-party RPC provider to submit the L1 transaction that it would take to initiate this force-withdrawal transaction.',
+					'The wallet supports force-withdrawal transactions on L2s, but requires the use of an external RPC provider to submit the L1 transaction that it would take to initiate this force-withdrawal transaction.',
 				),
 				transactionSubmissionEvaluation({
 					supportsL1Broadcast: 'NO',

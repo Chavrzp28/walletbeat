@@ -118,7 +118,8 @@ export const hardwareWalletSupport: Attribute<HardwareWalletSupportValue> = {
 		A wallet receives a passing rating if it supports 3 out of 4 major hardware
 		wallet brands with direct connections (USB, WebUSB, WebHID, Bluetooth, or QR):
 		Ledger, Trezor, Keystone, and GridPlus. Hardware wallets accessible only through 
-		WalletConnect are not counted as they require relying on another third party.
+		WalletConnect are not counted as they require relying on WalletConnect as
+		an external dependency.
 
 		A wallet receives a partial rating if it supports at least one hardware wallet
 		brand with direct connection but doesn't support 3 out of 4 major brands mentioned above.

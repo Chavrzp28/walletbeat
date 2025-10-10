@@ -11,6 +11,7 @@ import { eipMarkdownLink, eipMarkdownLinkAndTitle } from '@/schema/eips'
 import type { ResolvedFeatures } from '@/schema/features'
 import {
 	type FungibleTokenTransferMode,
+	type PrivacyPoolsSupport,
 	PrivateTransferTechnology,
 	type StealthAddressSupport,
 	StealthAddressUnlabeledBehavior,
@@ -23,6 +24,7 @@ import {
 	type Supported,
 	supported,
 } from '@/schema/features/support'
+import { fullySponsoredFees } from '@/schema/features/transparency/fee-display'
 import {
 	markdown,
 	mdParagraph,
@@ -70,10 +72,13 @@ export interface PrivateTransfersPrivacyLevels {
 
 /** Level of privacy for a particular aspect of a private transfer. */
 export enum PrivateTransfersPrivacyLevel {
+	/** Not fully implemented. */
+	NOT_FULLY_IMPLEMENTED = 'NOT_FULLY_IMPLEMENTED',
+
 	/** No privacy at all. */
 	NOT_PRIVATE = 'NOT_PRIVATE',
 
-	/** Chain data reveals no private information, but third party providers may have it. */
+	/** Chain data reveals no private information, but external providers may have it. */
 	CHAIN_DATA_PRIVATE = 'CHAIN_DATA_PRIVATE',
 
 	/** Data is kept private from all but the wallet user. */
@@ -82,12 +87,14 @@ export enum PrivateTransfersPrivacyLevel {
 
 function privacyLevelScore(level: PrivateTransfersPrivacyLevel): number {
 	switch (level) {
-		case PrivateTransfersPrivacyLevel.NOT_PRIVATE:
+		case PrivateTransfersPrivacyLevel.NOT_FULLY_IMPLEMENTED:
 			return 0
-		case PrivateTransfersPrivacyLevel.CHAIN_DATA_PRIVATE:
+		case PrivateTransfersPrivacyLevel.NOT_PRIVATE:
 			return 1
-		case PrivateTransfersPrivacyLevel.FULLY_PRIVATE:
+		case PrivateTransfersPrivacyLevel.CHAIN_DATA_PRIVATE:
 			return 2
+		case PrivateTransfersPrivacyLevel.FULLY_PRIVATE:
+			return 3
 	}
 }
 
@@ -244,10 +251,10 @@ function rateStealthAddressSupport(
 		sendingImprovements: string[]
 	} => {
 		switch (stealthAddresses.recipientAddressResolution.type) {
-			case 'THIRD_PARTY_RESOLVER':
+			case 'EXTERNAL_RESOLVER':
 				return (() => {
-					const thirdPartyLink = entityMarkdownLink(
-						stealthAddresses.recipientAddressResolution.thirdParty,
+					const externalServiceLink = entityMarkdownLink(
+						stealthAddresses.recipientAddressResolution.externalResolver,
 					)
 					const learned = stealthAddresses.recipientAddressResolution.learns
 					const learnedElements = commaListFormat([
@@ -266,12 +273,12 @@ function rateStealthAddressSupport(
 						return {
 							sendingPrivacy: PrivateTransfersPrivacyLevel.CHAIN_DATA_PRIVATE,
 							sendingDetails: mdParagraph(`
-								Sending funds relies on ${thirdPartyLink} for address resolution, which learns ${learnedElements} in the process.
-								While the onchain transaction data does not reveal these details, ${thirdPartyLink} is in a position to learn
+								Sending funds relies on ${externalServiceLink} for address resolution, which learns ${learnedElements} in the process.
+								While the onchain transaction data does not reveal these details, ${externalServiceLink} is in a position to learn
 								a link between the sender and the recipient.
 							`),
 							sendingImprovements: [
-								`avoid sending sender and recipient information to ${thirdPartyLink}`,
+								`avoid sending sender and recipient information to ${externalServiceLink}`,
 							],
 						}
 					}
@@ -280,35 +287,37 @@ function rateStealthAddressSupport(
 						return {
 							sendingPrivacy: PrivateTransfersPrivacyLevel.CHAIN_DATA_PRIVATE,
 							sendingDetails: mdParagraph(`
-								Sending funds relies on ${thirdPartyLink} for address resolution, which learns ${learnedElements} in the process.
-								While the onchain transaction data does not reveal these details, ${thirdPartyLink} is in a position to learn
+								Sending funds relies on ${externalServiceLink} for address resolution, which learns ${learnedElements} in the process.
+								While the onchain transaction data does not reveal these details, ${externalServiceLink} is in a position to learn
 								who the intended recipient of the transaction is.
 							`),
-							sendingImprovements: [`avoid sending recipient information to ${thirdPartyLink}`],
+							sendingImprovements: [
+								`avoid sending recipient information to ${externalServiceLink}`,
+							],
 						}
 					}
 
 					if (
 						learned.recipientMetaAddress &&
-						stealthAddresses.balanceLookup.type === 'THIRD_PARTY_SERVICE' &&
-						stealthAddresses.recipientAddressResolution.thirdParty.id ===
-							stealthAddresses.balanceLookup.thirdParty.id &&
+						stealthAddresses.balanceLookup.type === 'EXTERNAL_SERVICE' &&
+						stealthAddresses.recipientAddressResolution.externalResolver.id ===
+							stealthAddresses.balanceLookup.externalService.id &&
 						stealthAddresses.balanceLookup.learns.userMetaAddress
 					) {
 						return {
 							sendingPrivacy: PrivateTransfersPrivacyLevel.CHAIN_DATA_PRIVATE,
 							sendingDetails: mdParagraph(`
-								Sending funds relies on ${thirdPartyLink} for address resolution, which learns ${learnedElements} in the process.
+								Sending funds relies on ${externalServiceLink} for address resolution, which learns ${learnedElements} in the process.
 								In addition, this same provider is used for performing balance lookups, and learns your stealth meta-address
 								in the process.
 								This means that while the onchain transaction data does not reveal these details,
-								${thirdPartyLink} is in a position to know that you (as a stealth address user)
+								${externalServiceLink} is in a position to know that you (as a stealth address user)
 								have recently refreshed your balance, and which recipient *some* stealth address user
 								may have recently sent funds to, allowing it to infer a link between you and your
 								intended recipient.
 							`),
 							sendingImprovements: [
-								`avoid relying on ${thirdPartyLink} for both recipient address resolution and balance lookups`,
+								`avoid relying on ${externalServiceLink} for both recipient address resolution and balance lookups`,
 							],
 						}
 					}
@@ -316,7 +325,7 @@ function rateStealthAddressSupport(
 					return {
 						sendingPrivacy: PrivateTransfersPrivacyLevel.FULLY_PRIVATE,
 						sendingDetails: mdParagraph(`
-							Sending funds relies on ${thirdPartyLink}, but it cannot learn any association between your IP address,
+							Sending funds relies on ${externalServiceLink}, but it cannot learn any association between your IP address,
 							stealth meta-address, recipient meta-address, or recipient generated stealth address.
 							Onchain transaction data is fully private as well.
 						`),
@@ -335,9 +344,11 @@ function rateStealthAddressSupport(
 		receivingImprovements: string[]
 	} => {
 		switch (stealthAddresses.balanceLookup.type) {
-			case 'THIRD_PARTY_SERVICE':
+			case 'EXTERNAL_SERVICE':
 				return (() => {
-					const thirdPartyLink = entityMarkdownLink(stealthAddresses.balanceLookup.thirdParty)
+					const externalServiceLink = entityMarkdownLink(
+						stealthAddresses.balanceLookup.externalService,
+					)
 					const learned = stealthAddresses.balanceLookup.learns
 
 					if (learned.userMetaAddress && learned.generatedStealthAddresses) {
@@ -345,10 +356,10 @@ function rateStealthAddressSupport(
 							receivingPrivacy: PrivateTransfersPrivacyLevel.CHAIN_DATA_PRIVATE,
 							receivingDetails: mdParagraph(`
 								Looking up your stealth address balance relies on
-								${thirdPartyLink}, which learns your stealth meta-address and
+								${externalServiceLink}, which learns your stealth meta-address and
 								generated stealth addresses.
 								This means that while onchain transaction data is still private,
-								${thirdPartyLink} is in a position to de-anonymize all your past
+								${externalServiceLink} is in a position to de-anonymize all your past
 								transactions.
 							`),
 							receivingImprovements: [
@@ -361,10 +372,10 @@ function rateStealthAddressSupport(
 						return {
 							receivingPrivacy: PrivateTransfersPrivacyLevel.CHAIN_DATA_PRIVATE,
 							receivingDetails: mdParagraph(`
-								Looking up your balance relies on ${thirdPartyLink}, which
+								Looking up your balance relies on ${externalServiceLink}, which
 								learns your generated stealth addresses.
 								This means that while onchain transaction data is still private,
-								${thirdPartyLink} is in a position to de-anonymize all your past
+								${externalServiceLink} is in a position to de-anonymize all your past
 								transactions.
 							`),
 							receivingImprovements: [
@@ -376,7 +387,7 @@ function rateStealthAddressSupport(
 					return {
 						receivingPrivacy: PrivateTransfersPrivacyLevel.FULLY_PRIVATE,
 						receivingDetails: mdParagraph(`
-							Looking up your balance relies on ${thirdPartyLink}, but does not
+							Looking up your balance relies on ${externalServiceLink}, but does not
 							leak sensitive information in the process.
 						`),
 						receivingImprovements: [],
@@ -469,12 +480,12 @@ function rateStealthAddressSupport(
 					`),
 					derivationImprovements: ['perform stealth address private key derivation locally'],
 				}
-			case 'THIRD_PARTY_SERVICE':
+			case 'EXTERNAL_SERVICE':
 				return {
 					derivationPrivacy: PrivateTransfersPrivacyLevel.CHAIN_DATA_PRIVATE,
 					derivationDetails: mdParagraph(`
 						Deriving the private key of your generated stealth addresses relies on
-						${entityMarkdownLink(stealthAddresses.privateKeyDerivation.thirdParty)},
+						${entityMarkdownLink(stealthAddresses.privateKeyDerivation.externalService)},
 						who is in a position to learn this private key and to spend your funds.
 					`),
 					derivationImprovements: ['perform stealth address private key derivation locally'],
@@ -533,6 +544,8 @@ function rateStealthAddressSupport(
 	})
 
 	switch (worstLevel) {
+		case PrivateTransfersPrivacyLevel.NOT_FULLY_IMPLEMENTED:
+			throw new Error('Unreachable')
 		case PrivateTransfersPrivacyLevel.NOT_PRIVATE:
 			return {
 				value: {
@@ -557,7 +570,7 @@ function rateStealthAddressSupport(
 					rating: Rating.PARTIAL,
 					displayName: 'ERC-5564 stealth addresses reliant on trusted provider',
 					shortExplanation: mdSentence(
-						`{{WALLET_NAME}} implements ${eipMarkdownLink(erc5564)} stealth addresses but relies on a trusted third party.`,
+						`{{WALLET_NAME}} implements ${eipMarkdownLink(erc5564)} stealth addresses but relies on a trusted external provider.`,
 					),
 					defaultFungibleTokenTransferMode: PrivateTransferTechnology.STEALTH_ADDRESSES,
 					perTechnology,
@@ -656,7 +669,7 @@ function rateTornadoCashNovaSupport(
 					receivingPrivacy: PrivateTransfersPrivacyLevel.CHAIN_DATA_PRIVATE,
 					receivingDetails: mdParagraph(`
 						The user's private notes (UTXOs) are filtered externally,
-						allowing a third party to correlate the user's funds within
+						allowing an external provider to correlate the user's funds within
 						the pool.
 					`),
 					receivingImprovements: ['should perform UTXO filtering client-side'],
@@ -666,8 +679,8 @@ function rateTornadoCashNovaSupport(
 					receivingPrivacy: PrivateTransfersPrivacyLevel.FULLY_PRIVATE,
 					receivingDetails: mdParagraph(`
 						The user's private notes (UTXOs) are filtered by the wallet
-						itself, ensuring that no third party may correlate the user's
-						received funds in the pool.
+						itself, ensuring that no external provider may correlate the
+						user's received funds in the pool.
 					`),
 					receivingImprovements: [],
 				}
@@ -741,21 +754,6 @@ function rateTornadoCashNovaSupport(
 			break
 	}
 
-	switch (tornadoCashNova.relayerFee) {
-		case 'NOT_IN_UI':
-			extraNotes.push(paragraph('The Tornado Cash Nova relayer fee is not displayed in the UI.'))
-			sendingImprovements.push('display the Tornado Cash Nova relayer fee in the UI')
-			break
-		case 'HIDDEN_BY_DEFAULT':
-			extraNotes.push(
-				paragraph('The Tornado Cash Nova relayer fee is not displayed by default in the UI.'),
-			)
-			sendingImprovements.push('display the Tornado Cash Nova relayer fee in the UI by default')
-			break
-		case 'SHOWN_BY_DEFAULT':
-			break
-	}
-
 	const walletShould = sendingImprovements
 		.concat(receivingImprovements)
 		.concat(spendingImprovements)
@@ -801,6 +799,8 @@ function rateTornadoCashNovaSupport(
 	])
 
 	switch (worstLevel) {
+		case PrivateTransfersPrivacyLevel.NOT_FULLY_IMPLEMENTED:
+			throw new Error('Unreachable')
 		case PrivateTransfersPrivacyLevel.NOT_PRIVATE:
 			return {
 				value: {
@@ -825,7 +825,7 @@ function rateTornadoCashNovaSupport(
 					rating: Rating.PARTIAL,
 					displayName: 'Tornado Cash Nova integration relying on external provider',
 					shortExplanation: mdSentence(
-						'{{WALLET_NAME}} integrates Tornado Cash Nova but relies on a third-party.',
+						'{{WALLET_NAME}} integrates Tornado Cash Nova but relies on an external provider.',
 					),
 					defaultFungibleTokenTransferMode: PrivateTransferTechnology.TORNADO_CASH_NOVA,
 					perTechnology,
@@ -875,6 +875,373 @@ function rateTornadoCashNovaSupport(
 	}
 }
 
+function ratePrivacyPoolsSupport(
+	privacyPools: Supported<PrivacyPoolsSupport>,
+): Evaluation<PrivateTransfersValue> {
+	const references: ReferenceArray = refs(privacyPools)
+	const extraNotes: Paragraph[] = []
+	const { sendingPrivacy, sendingDetails, sendingImprovements } = ((): {
+		sendingPrivacy: PrivateTransfersPrivacyLevel
+		sendingDetails: Paragraph
+		sendingImprovements: string[]
+	} => {
+		if (!isSupported(privacyPools.capabilities.etherL1Pool)) {
+			return {
+				sendingPrivacy: PrivateTransfersPrivacyLevel.NOT_FULLY_IMPLEMENTED,
+				sendingDetails: mdParagraph(`
+					Ether deposits are not supported; this means it is not possible
+					for users to send Ether privately.
+				`),
+				sendingImprovements: ['implement Ether pool support'],
+			}
+		}
+
+		if (!isSupported(privacyPools.capabilities.usdcL1Pool)) {
+			return {
+				sendingPrivacy: PrivateTransfersPrivacyLevel.NOT_FULLY_IMPLEMENTED,
+				sendingDetails: mdParagraph(`
+					ERC-20 deposits are not supported; this means it is not possible
+					for users to send tokens privately.
+				`),
+				sendingImprovements: ['implement ERC-20 pool support'],
+			}
+		}
+
+		if (!isSupported(privacyPools.capabilities.ragequit)) {
+			return {
+				sendingPrivacy: PrivateTransfersPrivacyLevel.NOT_FULLY_IMPLEMENTED,
+				sendingDetails: mdParagraph(`
+					[Ragequitting](https://docs.privacypools.com/protocol/ragequit) is
+					not implemented; this means user funds can be held hostage by the
+					operator of the Privacy Pool, thereby making them effectively
+					frozen.
+				`),
+				sendingImprovements: ['implement permissionless ragequitting support'],
+			}
+		}
+
+		return {
+			sendingPrivacy: PrivateTransfersPrivacyLevel.FULLY_PRIVATE,
+			sendingDetails: mdParagraph(`
+				The wallet supports sending Ether and ERC-20 into their corresponding
+				Privacy Pool, along with the
+				[ragequitting](https://docs.privacypools.com/protocol/ragequit)
+				functionality to ensure deposited funds can be permissionlessly
+				recovered.
+			`),
+			sendingImprovements: [],
+		}
+	})()
+	const { receivingPrivacy, receivingDetails, receivingImprovements } = ((): {
+		receivingPrivacy: PrivateTransfersPrivacyLevel
+		receivingDetails: Paragraph
+		receivingImprovements: string[]
+	} => {
+		return {
+			receivingPrivacy: PrivateTransfersPrivacyLevel.FULLY_PRIVATE,
+			receivingDetails: mdParagraph(`
+				Receiving funds through Privacy Pools requires no special wallet
+				support, as funds show up in the recipient's wallet directly once
+				the sender sends them.
+			`),
+			receivingImprovements: [],
+		}
+	})()
+	const { spendingPrivacy, spendingDetails, spendingImprovements } = ((): {
+		spendingPrivacy: PrivateTransfersPrivacyLevel
+		spendingDetails: Paragraph
+		spendingImprovements: string[]
+	} => {
+		if (!isSupported(privacyPools.depositData.exportable)) {
+			return {
+				spendingPrivacy: PrivateTransfersPrivacyLevel.NOT_FULLY_IMPLEMENTED,
+				spendingDetails: mdParagraph(`
+					Exporting deposit data is not supported; this means users may not
+					be able to spend funds they had deposited into Privacy Pools if
+					they lose access to their wallet or switch to another wallet.
+				`),
+				spendingImprovements: ['allow users to export deposit data'],
+			}
+		}
+
+		if (!isSupported(privacyPools.capabilities.importDeposits)) {
+			return {
+				spendingPrivacy: PrivateTransfersPrivacyLevel.NOT_FULLY_IMPLEMENTED,
+				spendingDetails: mdParagraph(`
+					Importing deposit data is not supported; this means users may not
+					be able to spend funds they had deposited into Privacy Pools while
+					using another wallet.
+				`),
+				spendingImprovements: ['allow users to import deposit data'],
+			}
+		}
+
+		if (
+			privacyPools.depositData.type === 'CUSTODIAN_ONLY' ||
+			privacyPools.depositData.type === 'CUSTODIAN_OR_LOCAL'
+		) {
+			if (privacyPools.depositData.custodianCanLearnDepositData) {
+				return {
+					spendingPrivacy: PrivateTransfersPrivacyLevel.NOT_FULLY_IMPLEMENTED,
+					spendingDetails: mdParagraph(`
+						Deposit data
+						${privacyPools.depositData.type === 'CUSTODIAN_ONLY' ? 'is' : privacyPools.depositData.useOfCustodian === 'BY_DEFAULT' ? 'is by default' : 'may be'}
+						stored by
+						${entityMarkdownLink(privacyPools.depositData.custodian)},
+						who is in a position to be able to spend it without the user's
+						consent.
+					`),
+					spendingImprovements: [
+						"prevent the custodian from being able to learn users' deposits data",
+					],
+				}
+			}
+
+			if (
+				privacyPools.depositData.type === 'CUSTODIAN_ONLY' ||
+				privacyPools.depositData.exportable.exportFunctionDependsOnCustodian
+			) {
+				return {
+					spendingPrivacy: PrivateTransfersPrivacyLevel.NOT_FULLY_IMPLEMENTED,
+					spendingDetails: mdParagraph(`
+						Users cannot export their Privacy Pools deposit data without
+						relying on
+						${entityMarkdownLink(privacyPools.depositData.custodian)};
+						this means users may not
+						be able to spend funds they had deposited into Privacy Pools while
+						using another wallet.
+					`),
+					spendingImprovements: ['store user deposit data locally and allow permissionless export'],
+				}
+			}
+		}
+
+		if (!isSupported(privacyPools.capabilities.withdrawalWithoutRelayer)) {
+			if (!isSupported(privacyPools.capabilities.withdrawalWithRelayer)) {
+				throw new Error('Unreachable; should be prevented by the type system.')
+			}
+
+			// Need a relayer; can we use it without leaking data?
+			if (
+				privacyPools.capabilities.withdrawalWithRelayer.defaultRelayer !== 'NO_DEFAULT_RELAYER' &&
+				privacyPools.capabilities.withdrawalWithRelayer.relayerLearnsUserIpAddress
+			) {
+				if (!isSupported(privacyPools.capabilities.withdrawalWithRelayer.customizableRelayer)) {
+					return {
+						spendingPrivacy: PrivateTransfersPrivacyLevel.NOT_PRIVATE,
+						spendingDetails: mdParagraph(`
+							Withdrawal is only possible through a non-customizable relayer
+							operated by
+							${entityMarkdownLink(privacyPools.capabilities.withdrawalWithRelayer.defaultRelayer)},
+							which learns the user's IP address.
+						`),
+						spendingImprovements: ['use an anonymizing proxy for relayer withdrawals'],
+					}
+				}
+
+				return {
+					spendingPrivacy: PrivateTransfersPrivacyLevel.NOT_PRIVATE,
+					spendingDetails: mdParagraph(`
+						Withdrawal is only possible through a relayer, the default
+						being operated by
+						${entityMarkdownLink(privacyPools.capabilities.withdrawalWithRelayer.defaultRelayer)},
+						which learns the user's IP address.
+					`),
+					spendingImprovements: ['use an anonymizing proxy for relayer withdrawals'],
+				}
+			}
+		}
+
+		if (!isSupported(privacyPools.capabilities.withdrawalWithRelayer)) {
+			return {
+				spendingPrivacy: PrivateTransfersPrivacyLevel.NOT_PRIVATE,
+				spendingDetails: mdParagraph(`
+					Withdrawal is only possible without a relayer, making it
+					impossible for a user to spend funds without revealing their
+					address by spending gas interacting with the Privacy Pools
+					contract directly.
+				`),
+				spendingImprovements: ['implement relayed withdrawals'],
+			}
+		}
+
+		if (!isSupported(privacyPools.capabilities.warnAboutSuccessiveOperations)) {
+			return {
+				spendingPrivacy: PrivateTransfersPrivacyLevel.NOT_PRIVATE,
+				spendingDetails: mdParagraph(`
+					The user is not warned when performing multiple transfers in quick
+					succession. This could allow an observer to correlate multiple pool
+					operations and infer information about the user's identity.
+				`),
+				spendingImprovements: ['warn the user when doing multiple operations in quick succession'],
+			}
+		}
+
+		if (
+			privacyPools.depositData.type !== 'LOCAL_ONLY' &&
+			privacyPools.depositData.custodianCanLearnUserIpAddress
+		) {
+			return {
+				spendingPrivacy: PrivateTransfersPrivacyLevel.CHAIN_DATA_PRIVATE,
+				spendingDetails: mdParagraph(`
+					Encrypted deposit data
+					${privacyPools.depositData.useOfCustodian === 'BY_DEFAULT' ? 'is by default' : 'may be'}
+					stored by
+					${entityMarkdownLink(privacyPools.depositData.custodian)},
+					who learn the user's IP address, enabling time-based correlation
+					against onchain depositors into the Privacy Pool.
+				`),
+				spendingImprovements: ['use an anonymizing proxy for custodian interactions'],
+			}
+		}
+
+		return {
+			spendingPrivacy: PrivateTransfersPrivacyLevel.FULLY_PRIVATE,
+			spendingDetails: mdParagraph(`
+				The wallet supports importing and permissionlessly exporting deposit
+				data, privacy-preserving relayer-based withdrawals, and warns against
+				quick successive operations to protect privacy.
+			`),
+			spendingImprovements: [],
+		}
+	})()
+
+	const walletShould = sendingImprovements
+		.concat(receivingImprovements)
+		.concat(spendingImprovements)
+	const howToImprove = isNonEmptyArray(walletShould)
+		? mdParagraph<{ WALLET_NAME: string }>(
+				`
+					{{WALLET_NAME}} should${markdownListFormat(walletShould, {
+						ifEmpty: { behavior: 'THROW_ERROR' },
+						singleItemTemplate: ' ITEM.',
+						uppercaseFirstCharacterOfListItems: true,
+						multiItemPrefix: `:
+
+					`,
+						multiItemTemplate: `
+					- ITEM`,
+						multiItemSuffix: `
+
+					`,
+					})}
+				`,
+			)
+		: undefined
+	const perTechnology = singleTechnology<PrivateTransfersPrivacyLevels>(
+		PrivateTransferTechnology.PRIVACY_POOLS,
+		{
+			sendingPrivacy,
+			receivingPrivacy,
+			spendingPrivacy,
+		},
+	)
+	const details = privateTransfersDetailsContent({
+		privateTransferDetails: singleTechnology(PrivateTransferTechnology.PRIVACY_POOLS, {
+			sendingDetails,
+			receivingDetails,
+			spendingDetails,
+			extraNotes,
+		}),
+	})
+	const worstLevel = worstPrivateTransfersPrivacyLevel([
+		sendingPrivacy,
+		receivingPrivacy,
+		spendingPrivacy,
+	])
+
+	switch (worstLevel) {
+		case PrivateTransfersPrivacyLevel.NOT_FULLY_IMPLEMENTED:
+			return {
+				value: {
+					id: 'incomplete_private_privacy_pools',
+					rating: Rating.FAIL,
+					displayName: 'Incomplete Privacy Pools integration',
+					shortExplanation: mdSentence(
+						'{{WALLET_NAME}} integrates some Privacy Pools features, but with severe gaps.',
+					),
+					defaultFungibleTokenTransferMode: PrivateTransferTechnology.PRIVACY_POOLS,
+					perTechnology,
+					__brand: brand,
+				},
+				details,
+				howToImprove,
+				references,
+			}
+		case PrivateTransfersPrivacyLevel.NOT_PRIVATE:
+			return {
+				value: {
+					id: 'non_private_privacy_pools',
+					rating: Rating.FAIL,
+					displayName: 'Non-private Privacy Pools integration',
+					shortExplanation: mdSentence(
+						'{{WALLET_NAME}} integrates Privacy Pools in a non-privacy-preserving way.',
+					),
+					defaultFungibleTokenTransferMode: PrivateTransferTechnology.PRIVACY_POOLS,
+					perTechnology,
+					__brand: brand,
+				},
+				details,
+				howToImprove,
+				references,
+			}
+		case PrivateTransfersPrivacyLevel.CHAIN_DATA_PRIVATE:
+			return {
+				value: {
+					id: 'chain_private_privacy_pools',
+					rating: Rating.PARTIAL,
+					displayName: 'Privacy Pools integration relying on external provider',
+					shortExplanation: mdSentence(
+						'{{WALLET_NAME}} integrates Privacy Pools but relies on an external provider.',
+					),
+					defaultFungibleTokenTransferMode: PrivateTransferTechnology.PRIVACY_POOLS,
+					perTechnology,
+					__brand: brand,
+				},
+				details,
+				howToImprove,
+				references,
+			}
+		case PrivateTransfersPrivacyLevel.FULLY_PRIVATE:
+			if (howToImprove !== undefined) {
+				return {
+					value: {
+						id: 'partial_privacy_pools_integration',
+						rating: Rating.PARTIAL,
+						displayName: 'Imperfect Privacy Pools integration',
+						shortExplanation: mdSentence(
+							'{{WALLET_NAME}} integrates Privacy Pools with some important compromises.',
+						),
+						defaultFungibleTokenTransferMode: PrivateTransferTechnology.PRIVACY_POOLS,
+						perTechnology,
+						__brand: brand,
+					},
+					details,
+					howToImprove,
+					references,
+				}
+			}
+
+			return {
+				value: {
+					id: 'full_privacy_pools_integration',
+					rating: Rating.PASS,
+					icon: '\u{1f48c}', // Love letter
+					displayName: 'Full Privacy Pools integration',
+					shortExplanation: mdSentence(
+						'{{WALLET_NAME}} integrates Privacy Pools for private transfers.',
+					),
+					defaultFungibleTokenTransferMode: PrivateTransferTechnology.PRIVACY_POOLS,
+					perTechnology,
+					__brand: brand,
+				},
+				details,
+				howToImprove,
+				references,
+			}
+	}
+}
+
 export const privateTransfers: Attribute<PrivateTransfersValue> = {
 	id: 'privateTransfers',
 	icon: '\u{1f4e8}', // Incoming envelope
@@ -904,7 +1271,7 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 		spend such tokens privately.
 
 		"Privately" here means that other than the wallet user, no single entity
-		(including any third-party provider) can infer or reconstruct the user's
+		(including any external provider) can infer or reconstruct the user's
 		transaction history.
 
 		Walletbeat currently recognizes the following privacy-preserving token
@@ -912,6 +1279,7 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 
 		- ${eipMarkdownLinkAndTitle(erc5564)}
 		- [Tornado Cash Nova](https://nova.tornadocash.eth.limo/)
+		- [Privacy Pools](https://privacypools.com/)
 	`),
 	ratingScale: {
 		display: 'fail-pass',
@@ -939,16 +1307,16 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 				rateStealthAddressSupport(
 					supported({
 						balanceLookup: {
-							type: 'THIRD_PARTY_SERVICE',
-							thirdParty: exampleNodeCompany,
+							type: 'EXTERNAL_SERVICE',
+							externalService: exampleNodeCompany,
 							learns: {
 								generatedStealthAddresses: false,
 								userMetaAddress: false,
 							},
 						},
 						recipientAddressResolution: {
-							type: 'THIRD_PARTY_RESOLVER',
-							thirdParty: exampleNodeCompany,
+							type: 'EXTERNAL_RESOLVER',
+							externalResolver: exampleNodeCompany,
 							learns: {
 								recipientGeneratedStealthAddress: false,
 								recipientMetaAddress: false,
@@ -960,6 +1328,7 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 							type: 'LOCALLY',
 						},
 						userLabeling: notSupported,
+						fees: fullySponsoredFees,
 					}),
 				).value,
 			),
@@ -968,21 +1337,21 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 			exampleRating(
 				mdParagraph(`
 					The wallet's token transfers are implemented using ${eipMarkdownLink(erc5564)} Stealth Addresses by default.
-					However, a third-party provider may learn of the correlation between the user's stealth addresses.
+					However, an external provider may learn of the correlation between the user's stealth addresses.
 				`),
 				rateStealthAddressSupport(
 					supported({
 						balanceLookup: {
-							type: 'THIRD_PARTY_SERVICE',
-							thirdParty: exampleNodeCompany,
+							type: 'EXTERNAL_SERVICE',
+							externalService: exampleNodeCompany,
 							learns: {
 								generatedStealthAddresses: true,
 								userMetaAddress: true,
 							},
 						},
 						recipientAddressResolution: {
-							type: 'THIRD_PARTY_RESOLVER',
-							thirdParty: exampleNodeCompany,
+							type: 'EXTERNAL_RESOLVER',
+							externalResolver: exampleNodeCompany,
 							learns: {
 								recipientGeneratedStealthAddress: false,
 								recipientMetaAddress: false,
@@ -996,28 +1365,29 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 						userLabeling: supported({
 							unlabeledBehavior: StealthAddressUnlabeledBehavior.MUST_LABEL_BEFORE_SPENDING,
 						}),
+						fees: fullySponsoredFees,
 					}),
 				).value,
 			),
 			exampleRating(
 				mdParagraph(`
 					The wallet's token transfers are implemented using ${eipMarkdownLink(erc5564)} Stealth Addresses by default.
-					However, when sending tokens, a third-party provider may learn of the correlation between the recipient's
+					However, when sending tokens, an external provider may learn of the correlation between the recipient's
 					meta-address and their newly-generated stealth address, thereby de-anonymizing the recipient.
 				`),
 				rateStealthAddressSupport(
 					supported({
 						balanceLookup: {
-							type: 'THIRD_PARTY_SERVICE',
-							thirdParty: exampleNodeCompany,
+							type: 'EXTERNAL_SERVICE',
+							externalService: exampleNodeCompany,
 							learns: {
 								generatedStealthAddresses: false,
 								userMetaAddress: false,
 							},
 						},
 						recipientAddressResolution: {
-							type: 'THIRD_PARTY_RESOLVER',
-							thirdParty: exampleNodeCompany,
+							type: 'EXTERNAL_RESOLVER',
+							externalResolver: exampleNodeCompany,
 							learns: {
 								recipientGeneratedStealthAddress: true,
 								recipientMetaAddress: true,
@@ -1031,29 +1401,30 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 						userLabeling: supported({
 							unlabeledBehavior: StealthAddressUnlabeledBehavior.MUST_LABEL_BEFORE_SPENDING,
 						}),
+						fees: fullySponsoredFees,
 					}),
 				).value,
 			),
 			exampleRating(
 				mdParagraph(`
 					The wallet's token transfers are implemented using ${eipMarkdownLink(erc5564)} Stealth Addresses by default.
-					However, when sending tokens, a third-party provider may learn of the correlation between the sender's
+					However, when sending tokens, an external provider may learn of the correlation between the sender's
 					meta-address or IP, and the recipient's newly-generated stealth address, thereby de-anonymizing the
 					sender and recipient of the transfer.
 				`),
 				rateStealthAddressSupport(
 					supported({
 						balanceLookup: {
-							type: 'THIRD_PARTY_SERVICE',
-							thirdParty: exampleNodeCompany,
+							type: 'EXTERNAL_SERVICE',
+							externalService: exampleNodeCompany,
 							learns: {
 								generatedStealthAddresses: false,
 								userMetaAddress: false,
 							},
 						},
 						recipientAddressResolution: {
-							type: 'THIRD_PARTY_RESOLVER',
-							thirdParty: exampleNodeCompany,
+							type: 'EXTERNAL_RESOLVER',
+							externalResolver: exampleNodeCompany,
 							learns: {
 								recipientGeneratedStealthAddress: true,
 								recipientMetaAddress: false,
@@ -1067,6 +1438,7 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 						userLabeling: supported({
 							unlabeledBehavior: StealthAddressUnlabeledBehavior.MUST_LABEL_BEFORE_SPENDING,
 						}),
+						fees: fullySponsoredFees,
 					}),
 				).value,
 			),
@@ -1075,26 +1447,26 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 			exampleRating(
 				mdParagraph(`
 					The wallet's token transfers are implemented using ${eipMarkdownLink(erc5564)} Stealth Addresses by default.
-					Each stealth address is refreshed in such a way that no third-party may learn about the
+					Each stealth address is refreshed in such a way that no external provider may learn about the
 					correlation between these stealth addresses.
 					When spending private balances, users control which stealth addresses are used.
-					When sending tokens to another user's stealth address, no third-party may learn of the correlation between
+					When sending tokens to another user's stealth address, no external provider may learn of the correlation between
 					the sender and the recipient, or of the correlation between the recipient's meta-address and their
 					newly-generated stealth address.
 				`),
 				rateStealthAddressSupport(
 					supported({
 						balanceLookup: {
-							type: 'THIRD_PARTY_SERVICE',
-							thirdParty: exampleNodeCompany,
+							type: 'EXTERNAL_SERVICE',
+							externalService: exampleNodeCompany,
 							learns: {
 								generatedStealthAddresses: false,
 								userMetaAddress: true,
 							},
 						},
 						recipientAddressResolution: {
-							type: 'THIRD_PARTY_RESOLVER',
-							thirdParty: exampleNodeCompany,
+							type: 'EXTERNAL_RESOLVER',
+							externalResolver: exampleNodeCompany,
 							learns: {
 								recipientGeneratedStealthAddress: false,
 								recipientMetaAddress: false,
@@ -1108,6 +1480,7 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 						userLabeling: supported({
 							unlabeledBehavior: StealthAddressUnlabeledBehavior.MUST_LABEL_BEFORE_SPENDING,
 						}),
+						fees: fullySponsoredFees,
 					}),
 				).value,
 			),
@@ -1143,6 +1516,10 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 			maybeEvaluateTechnology(
 				features.privacy.transactionPrivacy.tornadoCashNova,
 				rateTornadoCashNovaSupport,
+			),
+			maybeEvaluateTechnology(
+				features.privacy.transactionPrivacy.privacyPools,
+				ratePrivacyPoolsSupport,
 			),
 		]) {
 			if (maybeEvaluation === null) {

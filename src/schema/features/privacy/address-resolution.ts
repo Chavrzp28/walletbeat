@@ -29,19 +29,19 @@ export type AddressResolutionData =
 	  }
 	| {
 			/**
-			 * The wallet uses a third-party offchain provider to look up the necessary
+			 * The wallet uses an external offchain provider to look up the necessary
 			 * data.
 			 */
 			medium: 'OFFCHAIN'
 
 			/**
-			 * Whether the third-party onchain provider's data is verified,
+			 * Whether the external offchain provider's data is verified,
 			 * for example through a light client.
 			 */
 			offchainDataVerifiability: 'VERIFIABLE' | 'NOT_VERIFIABLE'
 
 			/**
-			 * Whether the wallet directly connects to the third-party offchain
+			 * Whether the wallet directly connects to the external offchain
 			 * provider (thereby revealing information about who is doing the
 			 * lookup), or using anonymizing proxies to do so.
 			 */

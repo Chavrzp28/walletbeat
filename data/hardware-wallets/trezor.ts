@@ -150,8 +150,8 @@ export const trezorWallet: HardwareWallet = {
 			interoperability: null,
 		},
 		transparency: {
-			feeTransparency: null,
 			maintenance: null,
+			operationFees: null,
 			reputation: null,
 		},
 	},

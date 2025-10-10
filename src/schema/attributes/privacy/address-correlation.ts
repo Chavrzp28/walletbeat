@@ -8,20 +8,21 @@ import {
 } from '@/schema/attributes'
 import type { ResolvedFeatures } from '@/schema/features'
 import {
-	compareLeakedInfo,
+	collectedByDefault,
+	type Collection,
+	CollectionPolicy,
+	compareUserInfo,
+	dataCollectionForAllSupportedFlows,
 	type Endpoint,
-	inferEndpointLeaks,
-	inferLeaks,
-	isEndpointLeaks,
-	Leak,
-	type LeakedInfo,
-	leakedInfoName,
-	leakedInfos,
-	LeakedInfoType,
-	leakedInfoType,
-	LeakedPersonalInfo,
-	type Leaks,
-	leaksByDefault,
+	isWithEndpoint,
+	PersonalInfo,
+	personalInfo,
+	qualifiedDataCollection,
+	qualifiedDataCollectionWithEndpoint,
+	UserFlow,
+	type UserInfo,
+	userInfoName,
+	WalletInfo,
 } from '@/schema/features/privacy/data-collection'
 import { markdown, paragraph, sentence } from '@/types/content'
 import { addressCorrelationDetailsContent } from '@/types/content/address-correlation-details'
@@ -49,8 +50,8 @@ const uncorrelated: AddressCorrelationValue = {
 }
 
 export interface WalletAddressLinkableTo {
-	info: LeakedInfo
-	leak: Leak
+	info: UserInfo
+	leak: CollectionPolicy
 	refs: FullyQualifiedReference[]
 }
 
@@ -65,18 +66,18 @@ function linkable(
 	const worstLeak = nonEmptyFirst(
 		linkables,
 		(linkableA: WalletAddressLinkableBy, linkableB: WalletAddressLinkableBy) =>
-			compareLeakedInfo(linkableA.info, linkableB.info),
+			compareUserInfo(linkableA.info, linkableB.info),
 		true,
 	)
 	const { rating, howToImprove } = ((): {
 		rating: Rating
 		howToImprove: string
 	} => {
-		const leakName = leakedInfoName(worstLeak.info).long
+		const leakName = userInfoName(worstLeak.info).long
 		const by = worstLeak.by
 
 		switch (worstLeak.info) {
-			case LeakedPersonalInfo.PSEUDONYM:
+			case PersonalInfo.PSEUDONYM:
 				if (by === 'onchain') {
 					return {
 						rating: Rating.PARTIAL,
@@ -89,7 +90,7 @@ function linkable(
 					rating: Rating.PARTIAL,
 					howToImprove: `{{WALLET_NAME}} should require user consent before allowing your {{WALLET_PSEUDONYM_SINGULAR}} to be linkable to your wallet address, and make it clear that this association will be known to ${by.name}.`,
 				}
-			case LeakedPersonalInfo.IP_ADDRESS:
+			case PersonalInfo.IP_ADDRESS:
 				return {
 					rating: Rating.PARTIAL,
 					howToImprove:
@@ -107,11 +108,11 @@ function linkable(
 		value: {
 			id: `address_and_${worstLeak.info}`,
 			rating,
-			displayName: `Wallet address linkable to ${leakedInfoName(worstLeak.info).short}`,
+			displayName: `Wallet address linkable to ${userInfoName(worstLeak.info).short}`,
 			shortExplanation: sentence(
 				worstLeak.by === 'onchain'
-					? `{{WALLET_NAME}} publishes your ${leakedInfoName(worstLeak.info).short} onchain.`
-					: `{{WALLET_NAME}} allows ${worstLeak.by.name} to link your wallet address with your ${leakedInfoName(worstLeak.info).short}.`,
+					? `{{WALLET_NAME}} publishes your ${userInfoName(worstLeak.info).short} onchain.`
+					: `{{WALLET_NAME}} allows ${worstLeak.by.name} to link your wallet address with your ${userInfoName(worstLeak.info).short}.`,
 			),
 			worstLeak,
 			__brand: brand,
@@ -164,32 +165,30 @@ function isSealedSecureEnclave(endpoint?: Endpoint): boolean {
 	return true
 }
 
-export function linkableToWalletAddress<T extends LeakedInfo>(
-	leaks: Leaks<T>,
+export function linkableToWalletAddress<T extends UserInfo>(
+	leaks: Collection<T>,
 ): WalletAddressLinkableTo[] {
-	const qualLeaks = isEndpointLeaks(leaks) ? inferEndpointLeaks(leaks) : inferLeaks(leaks)
+	const qualLeaks = isWithEndpoint<T>(leaks)
+		? qualifiedDataCollectionWithEndpoint(leaks)
+		: qualifiedDataCollection(leaks)
 
-	if (!leaksByDefault(qualLeaks.walletAddress)) {
+	if (!collectedByDefault(qualLeaks[WalletInfo.ACCOUNT_ADDRESS])) {
 		return []
 	}
 
 	const linkables: WalletAddressLinkableTo[] = []
 	const qualRefs = refs(leaks)
 
-	for (const info of leakedInfos) {
-		if (leakedInfoType(info) !== LeakedInfoType.PERSONAL_DATA) {
+	for (const info of personalInfo.items) {
+		if (!collectedByDefault(qualLeaks[info])) {
 			continue
 		}
 
-		if (!leaksByDefault(qualLeaks[info])) {
-			continue
-		}
-
-		if (info === LeakedPersonalInfo.IP_ADDRESS) {
+		if (info === PersonalInfo.IP_ADDRESS) {
 			// Check if the server is running in a secure enclave with all
 			// desirable properties to shield the IP address from being a
 			// privacy leak.
-			if (isEndpointLeaks(qualLeaks) && isSealedSecureEnclave(qualLeaks.endpoint)) {
+			if (isWithEndpoint(qualLeaks) && isSealedSecureEnclave(qualLeaks.endpoint)) {
 				continue
 			}
 		}
@@ -219,11 +218,11 @@ export const addressCorrelation: Attribute<AddressCorrelationValue> = {
 	`),
 	methodology: markdown(`
 		In order to qualify for a perfect rating on wallet address privacy, a
-		wallet must not, *by default*, allow any third-party to link your wallet
-		address to any personal information.
+		wallet must not, *by default*, allow any external entity to link your
+		wallet address to any personal information.
 
 		As Walletbeat only considers the wallet's *default* behavior, wallets may
-		still choose to offer features that allow third-parties to link wallet
+		still choose to offer features that allow external providers to link wallet
 		addresses with personal information, so long as this is done with explicit
 		user opt-in.
 
@@ -244,8 +243,8 @@ export const addressCorrelation: Attribute<AddressCorrelationValue> = {
 			exampleRating(
 				paragraph(`
 					The wallet requires user information (other than IP address and
-					pseudonyms) by default, and uploads this data to a third-party
-					or records it onchain in a publicly-viewable manner.
+					pseudonyms) by default, and uploads this data to an external
+					provider or records it onchain in a publicly-viewable manner.
 				`),
 				Rating.FAIL,
 			),
@@ -253,24 +252,24 @@ export const addressCorrelation: Attribute<AddressCorrelationValue> = {
 		partial: [
 			exampleRating(
 				paragraph(`
-					The wallet allows a third party to learn the relationship between a
-					user's wallet address and their IP address by default. This is treated
-					as a partial rating because users may mitigate against this by forcing
-					wallet requests to be proxied on their own.
+					The wallet allows an external provider to learn the relationship
+					between a user's wallet address and their IP address by default.
+					This is treated as a partial rating because users may mitigate
+					against this by forcing wallet requests to be proxied on their own.
 				`),
 				(value: AddressCorrelationValue) =>
-					value.rating === Rating.PARTIAL &&
-					value.worstLeak?.info === LeakedPersonalInfo.IP_ADDRESS,
+					value.rating === Rating.PARTIAL && value.worstLeak?.info === PersonalInfo.IP_ADDRESS,
 			),
 			exampleRating(
 				paragraph(`
 					The wallet requires the user to identify themselves via a pseudonym
-					which is sent to a third-party or recorded onchain. This is treated as
-					a partial rating because users may choose an arbitrary pseudonym for
-					each of their wallet address to mitigate this privacy issue.
+					which is sent to an external provider or recorded onchain. This is
+					treated as a partial rating because users may choose an arbitrary
+					pseudonym for each of their wallet address to mitigate this privacy
+					issue.
 				`),
 				(value: AddressCorrelationValue) =>
-					value.rating === Rating.PARTIAL && value.worstLeak?.info === LeakedPersonalInfo.PSEUDONYM,
+					value.rating === Rating.PARTIAL && value.worstLeak?.info === PersonalInfo.PSEUDONYM,
 			),
 		],
 		pass: [
@@ -285,35 +284,42 @@ export const addressCorrelation: Attribute<AddressCorrelationValue> = {
 			exampleRating(
 				paragraph(`
 					The wallet relies exclusively on a user's self-hosted node,
-					involving no third parties.
+					involving no external providers.
 				`),
 				exampleRatingUnimplemented,
 			),
 		],
 	},
 	evaluate: (features: ResolvedFeatures): Evaluation<AddressCorrelationValue> => {
-		if (features.privacy.dataCollection === null) {
+		const allDataCollection = dataCollectionForAllSupportedFlows(features.privacy.dataCollection)
+
+		if (features.privacy.dataCollection === null || allDataCollection === null) {
 			return unrated(addressCorrelation, brand, { worstLeak: null })
 		}
 
 		const linkables: WalletAddressLinkableBy[] = []
 		const allRefs: ReferenceArray = []
 
-		for (const collected of features.privacy.dataCollection.collectedByEntities) {
-			allRefs.push(...refs(collected.leaks))
+		for (const collected of allDataCollection) {
+			allRefs.push(...refs(collected))
 
-			for (const linkable of linkableToWalletAddress(collected.leaks)) {
-				linkables.push({ by: collected.entity, ...linkable })
+			for (const linkable of linkableToWalletAddress(collected.dataCollection)) {
+				linkables.push({ by: collected.byEntity, ...linkable })
 			}
 		}
 
-		allRefs.push(...refs(features.privacy.dataCollection.onchain))
+		const onboarding = features.privacy.dataCollection[UserFlow.ONBOARDING]
 
-		for (const linkable of linkableToWalletAddress({
-			...features.privacy.dataCollection.onchain,
-			walletAddress: Leak.ALWAYS,
-		})) {
-			linkables.push({ by: 'onchain', ...linkable })
+		if (onboarding !== null && onboarding.publishedOnchain !== 'NO_DATA_PUBLISHED_ONCHAIN') {
+			allRefs.push(...refs(onboarding.publishedOnchain))
+
+			for (const linkable of linkableToWalletAddress({
+				...onboarding.publishedOnchain,
+				// Account address is inherently published onchain.
+				[WalletInfo.ACCOUNT_ADDRESS]: CollectionPolicy.ALWAYS,
+			})) {
+				linkables.push({ by: 'onchain', ...linkable })
+			}
 		}
 
 		if (isNonEmptyArray(linkables)) {
@@ -323,7 +329,7 @@ export const addressCorrelation: Attribute<AddressCorrelationValue> = {
 		return {
 			value: uncorrelated,
 			details: paragraph(
-				'{{WALLET_NAME}} does not allow any third-party to link your wallet address to any personal information.',
+				'{{WALLET_NAME}} does not allow any external provider to link your wallet address to any personal information.',
 			),
 			references: allRefs,
 		}

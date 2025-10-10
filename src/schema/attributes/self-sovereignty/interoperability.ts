@@ -15,13 +15,13 @@ import { exempt, pickWorstRating, unrated } from '../common'
 const brand = 'attributes.interoperability'
 
 export type InteroperabilityValue = Value & {
-	thirdPartyCompatibility: InteroperabilityType
+	interoperability: InteroperabilityType
 	noSupplierLinkage: InteroperabilityType
 	__brand: 'attributes.interoperability'
 }
 
 function evaluateInteroperability(features: InteroperabilitySupport): Rating {
-	const ratings = [features.thirdPartyCompatibility, features.noSupplierLinkage]
+	const ratings = [features.interoperability, features.noSupplierLinkage]
 	const passCount = ratings.filter(r => r === InteroperabilityType.PASS).length
 
 	if (passCount === 2) {
@@ -47,13 +47,13 @@ export const interoperability: Attribute<InteroperabilityValue> = {
 		),
 	},
 	question: sentence(
-		'Does {{WALLET_NAME}} work well with third-party wallets and avoid supplier linkage?',
+		'Does {{WALLET_NAME}} work well with independent wallets and avoid supplier linkage?',
 	),
 	why: markdown(
-		'Interoperability ensures the wallet can be used with independent third-party wallets and does not leak identifying metadata to the supplier.',
+		'Interoperability ensures the wallet can be used with independent wallets and does not leak identifying metadata to the supplier.',
 	),
 	methodology: markdown(
-		'Evaluated based on third-party wallet compatibility and supplier independence.',
+		'Evaluated based on independent wallet compatibility and supplier independence.',
 	),
 	ratingScale: {
 		display: 'pass-fail',
@@ -82,7 +82,7 @@ export const interoperability: Attribute<InteroperabilityValue> = {
 	evaluate: (features: ResolvedFeatures): Evaluation<InteroperabilityValue> => {
 		if (features.type !== WalletType.HARDWARE) {
 			return exempt(interoperability, sentence('Only rated for hardware wallets'), brand, {
-				thirdPartyCompatibility: InteroperabilityType.FAIL,
+				interoperability: InteroperabilityType.FAIL,
 				noSupplierLinkage: InteroperabilityType.FAIL,
 			})
 		}
@@ -91,7 +91,7 @@ export const interoperability: Attribute<InteroperabilityValue> = {
 
 		if (interoperabilityFeature === null) {
 			return unrated(interoperability, brand, {
-				thirdPartyCompatibility: InteroperabilityType.FAIL,
+				interoperability: InteroperabilityType.FAIL,
 				noSupplierLinkage: InteroperabilityType.FAIL,
 			})
 		}

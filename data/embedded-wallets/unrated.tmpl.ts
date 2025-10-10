@@ -57,7 +57,7 @@ export const unratedEmbeddedTemplate: EmbeddedWallet = {
 			interoperability: null,
 		},
 		transparency: {
-			feeTransparency: null,
+			operationFees: null,
 		},
 	},
 	variants: {

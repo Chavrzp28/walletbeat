@@ -1,28 +1,128 @@
 import { describe, expect, it } from 'vitest'
 
-import { getCodebaseWordIndex, getRepositoryRoot, GitIgnoredFiles } from './utils/codebase'
+import {
+	commonExclusions,
+	getCodebaseIndex,
+	type IndexedFile,
+	type IndexedFileData,
+} from './utils/codebase'
 import { getCSpellWords } from './utils/cspell'
 
 const cSpellWords = getCSpellWords()
 
-const codebaseWordIndex = await getCodebaseWordIndex({
-	root: getRepositoryRoot(),
-	ignore: [
-		// Exclude .git
-		'.git',
+/**
+ * Maps lowercase words to the set of filenames where they show up.
+ */
+interface CodebaseWordIndex {
+	commonWords: Map<string, Set<string>>
+	properWords: Map<string, Set<string>>
+	lowercaseWords: Map<string, Set<string>>
+}
 
-		// Exclude the cSpell config file itself.
-		'.cspell.json',
+interface FileWords extends IndexedFileData {
+	commonWords: Set<string>
+	properWords: Set<string>
+}
 
-		// Exclude entries from .gitignore.
-		await GitIgnoredFiles(),
+function getFileWords(_: string, fileContents: string): FileWords {
+	let matches: RegExpMatchArray | string[] | null = fileContents.match(
+		/(\b|(?<=[_]))[\p{Lu}\p{Ll}]([\p{Lu}\p{Ll}\p{Nd}]*[\p{Lu}\p{Ll}])?(\b|(?=[_\p{Nd}]))/gu,
+	)
 
-		// Exclude PNG and PDF files.
-		/\.(png|pdf)$/i,
-	],
-})
+	if (matches === null) {
+		matches = []
+	}
 
-describe('cSpell', () => {
+	const commonWords = new Set<string>()
+	const properWords = new Set<string>()
+
+	for (const match of matches) {
+		if (match.toLowerCase() === match) {
+			commonWords.add(match)
+			continue
+		}
+
+		if (match.toUpperCase() === match) {
+			properWords.add(match)
+			continue
+		}
+
+		const isCamelCase = match.match(/^[\p{Ll}]*([\p{Lu}\p{Nd}]+[\p{Ll}]+)+$/u)
+
+		if (isCamelCase) {
+			const camelCaseWords = match.match(
+				/((^|(?<=[\p{Ll}]))[\p{Lu}]+[\p{Ll}]+|^[\p{Ll}]+)($|(?=[\p{Lu}\p{Nd}]))/gu,
+			)
+
+			if (camelCaseWords !== null) {
+				for (const camelCaseWord of camelCaseWords) {
+					properWords.add(camelCaseWord)
+				}
+			}
+		}
+
+		properWords.add(match)
+	}
+
+	const numericalConstants = fileContents.match(
+		/(\b|(?<=[_]))([\p{Lu}]+|[\p{Ll}]+)[\p{Nd}]+(\b|(?=[_]))/gu,
+	)
+
+	if (numericalConstants !== null) {
+		for (const numericalConstant of numericalConstants) {
+			properWords.add(numericalConstant)
+		}
+	}
+
+	return {
+		commonWords,
+		properWords,
+	}
+}
+
+async function getCodebaseWordIndex(): Promise<CodebaseWordIndex> {
+	const index: CodebaseWordIndex = {
+		commonWords: new Map<string, Set<string>>(),
+		properWords: new Map<string, Set<string>>(),
+		lowercaseWords: new Map<string, Set<string>>(),
+	}
+
+	const addWord = (word: string, map: Map<string, Set<string>>, filePath: string) => {
+		let fileSet = map.get(word)
+
+		if (fileSet === undefined) {
+			fileSet = new Set<string>()
+			map.set(word, fileSet)
+		}
+
+		fileSet.add(filePath)
+	}
+
+	await getCodebaseIndex({
+		indexFn: getFileWords,
+		aggregateFn: (fileWords: IndexedFile<FileWords>) => {
+			for (const word of fileWords.commonWords) {
+				addWord(word, index.commonWords, fileWords.filePath)
+				addWord(word, index.lowercaseWords, fileWords.filePath)
+			}
+
+			for (const word of fileWords.properWords) {
+				addWord(word, index.properWords, fileWords.filePath)
+				addWord(word.toLowerCase(), index.lowercaseWords, fileWords.filePath)
+			}
+		},
+		ignore: commonExclusions.concat([
+			// Exclude the cSpell config file itself.
+			'.cspell.json',
+		]),
+	})
+
+	return Promise.resolve(index)
+}
+
+describe('cSpell', async () => {
+	const codebaseWordIndex = await getCodebaseWordIndex()
+
 	it('is in sorted order', () => {
 		cSpellWords.reduce<string>((prev, cur): string => {
 			if (prev.toLowerCase() > cur.toLowerCase()) {

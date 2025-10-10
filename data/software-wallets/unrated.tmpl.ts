@@ -91,7 +91,7 @@ export const unratedTemplate: SoftwareWallet = {
 			},
 		},
 		transparency: {
-			feeTransparency: null,
+			operationFees: null,
 		},
 	},
 	variants: {

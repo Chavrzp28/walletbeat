@@ -45,8 +45,8 @@ const allAccountTypes: NonEmptyArray<AccountType> = [
 
 /** The ability (or lack thereof) to generate a transaction of a specific type. */
 export enum TransactionGenerationCapability {
-	/** The process to generate such a transaction relies on a third-party API. */
-	RELYING_ON_THIRD_PARTY_API = 'RELYING_ON_THIRD_PARTY_API',
+	/** The process to generate such a transaction relies on an external API. */
+	RELYING_ON_EXTERNAL_API = 'RELYING_ON_EXTERNAL_API',
 
 	/** The process to generate such a transaction requires the use of a standalone proprietary application. */
 	USING_PROPRIETARY_STANDALONE_APP = 'USING_PROPRIETARY_STANDALONE_APP',
@@ -169,7 +169,7 @@ interface AccountTypeMultifactor {
 	/**
 	 * Is it possible to create and broadcast an Ethereum transaction that
 	 * withdraws any type of asset from the account to transfer it out to
-	 * another address, without the help of a third-party?
+	 * another address, without the help of an external provider?
 	 *
 	 * This implies that the code to create such a transaction already exists
 	 * and does not rely on any network request to a proprietary API or service.
@@ -183,7 +183,10 @@ interface AccountTypeMultifactor {
  */
 export type AccountTypeMpc = AccountTypeMultifactor & {
 	/** How is the underlying key generation performed before shares are distributed? */
-	initialKeyGeneration: 'ON_USER_DEVICE' | 'BY_THIRD_PARTY_IN_TEE' | 'BY_THIRD_PARTY_IN_THE_CLEAR'
+	initialKeyGeneration:
+		| 'ON_USER_DEVICE'
+		| 'BY_EXTERNAL_PROVIDER_IN_SECURE_ENCLAVE'
+		| 'BY_EXTERNAL_PROVIDER_IN_THE_CLEAR'
 }
 
 /**
@@ -194,7 +197,7 @@ export type AccountTypeMutableMultifactor = AccountTypeMultifactor & {
 	/**
 	 * Is it possible to create and broadcast an Ethereum transaction that
 	 * rotates one of the factors used to control the account without relying
-	 * on a third-party?
+	 * on an external service?
 	 *
 	 * This implies that the code to create such a transaction is open-source
 	 * and does not rely on any network request to a proprietary API or service.

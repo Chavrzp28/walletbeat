@@ -138,10 +138,10 @@ function evaluateMpc(
 				'{{WALLET_NAME}} is an MPC wallet, with the private key split up into multiple shares. By default, the user does not custody enough shares of this private key in order to control the account. Therefore, {{WALLET_NAME}} is not a self-custodial wallet.',
 			),
 			impact: paragraph(
-				'Users of {{WALLET_NAME}} do not have unilateral control over their account, and need to rely on a third-party to authorize transactions or transfer assets out of the account.',
+				'Users of {{WALLET_NAME}} do not have unilateral control over their account, and need to rely on an external provider to authorize transactions or transfer assets out of the account.',
 			),
 			howToImprove: mdParagraph(
-				'{{WALLET_NAME}} should provide a way for users to obtain enough key shares in self-custody such that users no longer *need* to rely on third parties for transactions.',
+				'{{WALLET_NAME}} should provide a way for users to obtain enough key shares in self-custody such that users no longer *need* to rely on an external provider for transactions.',
 			),
 			references,
 		}
@@ -149,24 +149,24 @@ function evaluateMpc(
 
 	if (
 		mpc.tokenTransferTransactionGeneration ===
-		TransactionGenerationCapability.RELYING_ON_THIRD_PARTY_API
+		TransactionGenerationCapability.RELYING_ON_EXTERNAL_API
 	) {
 		return {
 			value: {
 				id: 'mpc_cannot_transfer',
 				rating: Rating.FAIL,
 				icon: '\u{1faa4}', // Mouse trap
-				displayName: 'Cannot withdraw assets without third party',
+				displayName: 'Cannot withdraw assets without external provider',
 				shortExplanation: sentence(
-					'Withdrawing assets out of {{WALLET_NAME}} cannot be done without relying on a third party.',
+					'Withdrawing assets out of {{WALLET_NAME}} cannot be done without relying on an external party.',
 				),
 				__brand: brand,
 			},
 			details: paragraph(
-				'{{WALLET_NAME}} is an MPC wallet, with the private key split up into multiple shares. The user owns enough shares to fully own the account, but generating an asset withdrawal transaction nonetheless requires interaction with a third-party.',
+				'{{WALLET_NAME}} is an MPC wallet, with the private key split up into multiple shares. The user owns enough shares to fully own the account, but generating an asset withdrawal transaction nonetheless requires interaction with an external service.',
 			),
 			impact: paragraph(
-				'While users of {{WALLET_NAME}} have unilateral control over their account, the reliance on a third-party to generate valid transactions means that transactions can be censored by that third-party and effectively freeze the account in place.',
+				'While users of {{WALLET_NAME}} have unilateral control over their account, the reliance on an external provider to generate valid transactions means that transactions can be censored by that provider and effectively freeze the account in place.',
 			),
 			howToImprove: paragraph(
 				'{{WALLET_NAME}} should release an open-source standalone application that allows users to sign transactions using their self-custodial key shares.',
@@ -213,7 +213,7 @@ function evaluateMpc(
 			__brand: brand,
 		},
 		details: paragraph(
-			'{{WALLET_NAME}} is an MPC wallet, with the private key split up into multiple shares. The user owns enough shares to fully control the account, and can generate transactions without relying on a third-party.',
+			'{{WALLET_NAME}} is an MPC wallet, with the private key split up into multiple shares. The user owns enough shares to fully control the account, and can generate transactions without relying on an external provider.',
 		),
 		references,
 	}
@@ -254,16 +254,16 @@ function evaluateMultifactor(
 	if (multifactor.controllingSharesInSelfCustodyByDefault === 'NO') {
 		if (
 			multifactor.keyRotationTransactionGeneration ===
-			TransactionGenerationCapability.RELYING_ON_THIRD_PARTY_API
+			TransactionGenerationCapability.RELYING_ON_EXTERNAL_API
 		) {
 			return {
 				value: {
-					id: `${multifactorType}_no_control_by_default_and_cannot_change_without_third_party`,
+					id: `${multifactorType}_no_control_by_default_and_cannot_change_without_external_provider`,
 					rating: Rating.FAIL,
 					icon: '\u{1faa4}', // Mouse trap
 					displayName: 'Not self-custodial by default',
 					shortExplanation: sentence(
-						'{{WALLET_NAME}} is not self-custodial by default, and changing this requires cooperation from a third-party.',
+						'{{WALLET_NAME}} is not self-custodial by default, and changing this requires cooperation from an external provider.',
 					),
 					__brand: brand,
 				},
@@ -271,7 +271,7 @@ function evaluateMultifactor(
 					{{WALLET_NAME}} is an ${eipMarkdownLink(eip)} (Smart Contract) wallet. By default, the user does not have the ability to unilaterally control the account. Therefore, {{WALLET_NAME}} is not a self-custodial wallet.
 
 
-					The user *may* update the smart contract control logic such that the account becomes effectively self-custodied. However, this process requires the cooperation of a third-party and is therefore at risk that the third-party prevents this switch from taking place.
+					The user *may* update the smart contract control logic such that the account becomes effectively self-custodied. However, this process requires the cooperation of an external provider and is therefore at risk that the provider prevents this switch from taking place.
 				`),
 				howToImprove: mdParagraph(
 					"{{WALLET_NAME}} should either change the smart contract's default control configuration such that the account is self-custodied by the user from the start, or should release an open-source standalone application that allows users to switch their account to be effectively self-custodied.",
@@ -311,27 +311,27 @@ function evaluateMultifactor(
 
 	if (
 		multifactor.tokenTransferTransactionGeneration ===
-		TransactionGenerationCapability.RELYING_ON_THIRD_PARTY_API
+		TransactionGenerationCapability.RELYING_ON_EXTERNAL_API
 	) {
 		return {
 			value: {
-				id: `${multifactorType}_cannot_transfer_without_third_party`,
+				id: `${multifactorType}_cannot_transfer_without_external_provider`,
 				rating: Rating.FAIL,
 				icon: '\u{1faa4}', // Mouse trap
-				displayName: 'Cannot withdraw assets without third party',
+				displayName: 'Cannot withdraw assets without external provider',
 				shortExplanation: sentence(
-					'Withdrawing assets out of {{WALLET_NAME}} cannot be done without relying on a third party.',
+					'Withdrawing assets out of {{WALLET_NAME}} cannot be done without relying on an external provider.',
 				),
 				__brand: brand,
 			},
 			details: mdParagraph(
-				'Users of {{WALLET_NAME}} cannot generate asset transfer transactions without relying on a third-party.',
+				'Users of {{WALLET_NAME}} cannot generate asset transfer transactions without relying on an external provider.',
 			),
 			impact: paragraph(
-				'The reliance on a third-party to generate valid transactions means that transactions can be censored by that third-party, opening up the risk that the third-party effectively freezes the account in place.',
+				'The reliance on an external provider to generate valid transactions means that transactions can be censored by that provider, opening up the risk that the provider effectively freezes the account in place.',
 			),
 			howToImprove: paragraph(
-				'{{WALLET_NAME}} should open-source sufficient wallet components such that users can sign and broadcast arbitrary transactions without relying on any third party.',
+				'{{WALLET_NAME}} should open-source sufficient wallet components such that users can sign and broadcast arbitrary transactions without relying on an external provider.',
 			),
 			references,
 		}
@@ -359,7 +359,7 @@ function evaluateMultifactor(
 				'The reliance on a proprietary application to generate valid transactions means that the application may opaquely decide to reject the generation of certain transactions, opening up the risk that the account is effectively frozen in place.',
 			),
 			howToImprove: paragraph(
-				'{{WALLET_NAME}} should open-source sufficient wallet components such that users can sign and broadcast arbitrary transactions without relying on any third party.',
+				'{{WALLET_NAME}} should open-source sufficient wallet components such that users can sign and broadcast arbitrary transactions without external or proprietary dependencies.',
 			),
 			references,
 		}
@@ -399,7 +399,7 @@ function evaluateMultifactor(
 			__brand: brand,
 		},
 		details: mdParagraph(
-			`{{WALLET_NAME}} is an ${eipMarkdownLink(erc4337)} (Smart Contract) wallet. By default, the user holds sufficient authority to generate and broadcast arbitrary transactions and can do so without relying on a third-party, including transactions which update the smart contract's control logic over the account (e.g. for key rotation).`,
+			`{{WALLET_NAME}} is an ${eipMarkdownLink(erc4337)} (Smart Contract) wallet. By default, the user holds sufficient authority to generate and broadcast arbitrary transactions and can do so without relying on an external provider, including transactions which update the smart contract's control logic over the account (e.g. for key rotation).`,
 		),
 		references,
 	}
@@ -476,10 +476,11 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 			shares of the underlying key to have full control over the wallet in
 			a self-custodial manner. Additionally, there must be a way for the user
 			to generate a transaction (Walletbeat uses a token transfer out of the
-			wallet as the litmus transaction for this) without reliance on a
-			third-party API or proprietary application. The combination of these
+			wallet as the litmus transaction for this) without reliance on an
+			external API or proprietary application. The combination of these
 			factors ensures that the wallet remains self-custodial and that the
-			account cannot be frozen in-place due to an uncooperative third party.
+			account cannot be frozen in-place due to an uncooperative external
+			provider.
 		* ${eipMarkdownLink(erc4337)} (smart contract wallets) are rated based on
 			the level of control the user has over their account according to the
 			smart contract's control logic that the wallet uses. The user must be
@@ -489,15 +490,15 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 
 			* Whether the user has the ability to change the cryptographic keys
 				used to control the account in general, in a manner that does not
-				involve relying on a third party or proprietary software.
+				involve relying on an external provider or proprietary software.
 			* Whether the smart contract wallet's default configuration starts
 				out with the user having self-custody of their account, for example
 				by having a majority of the key shares in self-custody in a multisig
 				wallet.
 			* Whether the generation of a token transfer transaction requires
-				relying on a third-party or proprietary software, even if the user
-				has self-custody of all requisite cryptographic keys to sign such a
-				transaction.
+				relying on an external provider or proprietary software, even if the
+				user has self-custody of all requisite cryptographic keys to sign
+				such a transaction.
 
 		* ${eipMarkdownLink(eip7702)} are not yet rated on account portability and
 			will show up as "Unrated".
@@ -541,7 +542,7 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 						controllingSharesInSelfCustodyByDefault: 'NO',
 						initialKeyGeneration: 'ON_USER_DEVICE',
 						tokenTransferTransactionGeneration:
-							TransactionGenerationCapability.RELYING_ON_THIRD_PARTY_API,
+							TransactionGenerationCapability.RELYING_ON_EXTERNAL_API,
 					},
 					[],
 				).value,
@@ -551,14 +552,14 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 					The wallet is an MPC wallet. By default, the user is in self-custody
 					of sufficient key shares to unilaterally control the account.
 					However, the user cannot generate a token transfer transaction
-					without relying on a third party API.
+					without relying on an external provider.
 				`),
 				evaluateMpc(
 					{
 						controllingSharesInSelfCustodyByDefault: 'YES',
 						initialKeyGeneration: 'ON_USER_DEVICE',
 						tokenTransferTransactionGeneration:
-							TransactionGenerationCapability.RELYING_ON_THIRD_PARTY_API,
+							TransactionGenerationCapability.RELYING_ON_EXTERNAL_API,
 					},
 					[],
 				).value,
@@ -575,7 +576,7 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 						controllingSharesInSelfCustodyByDefault: 'YES',
 						keyRotationTransactionGeneration: TransactionGenerationCapability.IMPOSSIBLE,
 						tokenTransferTransactionGeneration:
-							TransactionGenerationCapability.RELYING_ON_THIRD_PARTY_API,
+							TransactionGenerationCapability.RELYING_ON_EXTERNAL_API,
 					},
 					'erc4337',
 					[],
@@ -585,16 +586,16 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 				mdParagraph(`
 					The wallet is an ${eipMarkdownLink(erc4337)} (smart contract) wallet.
 					The user does not have full self-custodial control by default, and
-					needs to rely on a third-party API or proprietary software to change
+					needs to rely on an external provider or proprietary software to change
 					this.
 				`),
 				evaluateMultifactor(
 					{
 						controllingSharesInSelfCustodyByDefault: 'NO',
 						keyRotationTransactionGeneration:
-							TransactionGenerationCapability.RELYING_ON_THIRD_PARTY_API,
+							TransactionGenerationCapability.RELYING_ON_EXTERNAL_API,
 						tokenTransferTransactionGeneration:
-							TransactionGenerationCapability.RELYING_ON_THIRD_PARTY_API,
+							TransactionGenerationCapability.RELYING_ON_EXTERNAL_API,
 					},
 					'erc4337',
 					[],
@@ -604,16 +605,16 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 				mdParagraph(`
 					The wallet is an ${eipMarkdownLink(erc4337)} (smart contract) wallet.
 					The user has self-custodial control by default, but still needs to
-					rely on a third-party API or proprietary software to generate a
+					rely on an external provider or proprietary software to generate a
 					valid token transfer transaction.
 				`),
 				evaluateMultifactor(
 					{
 						controllingSharesInSelfCustodyByDefault: 'YES',
 						keyRotationTransactionGeneration:
-							TransactionGenerationCapability.RELYING_ON_THIRD_PARTY_API,
+							TransactionGenerationCapability.RELYING_ON_EXTERNAL_API,
 						tokenTransferTransactionGeneration:
-							TransactionGenerationCapability.RELYING_ON_THIRD_PARTY_API,
+							TransactionGenerationCapability.RELYING_ON_EXTERNAL_API,
 					},
 					'erc4337',
 					[],
@@ -702,7 +703,7 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 					The wallet is an MPC wallet where the user is in self-custody of
 					sufficient key shares to unilaterally control the account.
 					The user can generate a token transfer transaction using standalone
-					open-source software which does not rely on any third party API.
+					open-source software which does not rely on any external provider.
 				`),
 				evaluateMpc(
 					{
@@ -719,7 +720,7 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 					The wallet is an ${eipMarkdownLink(erc4337)} (smart contract) wallet,
 					with the user having full self-custodial control by default.
 					The user can create token transfer transactions using solely
-					open-source software without relying on a third-party API.
+					open-source software without relying on an external provider.
 				`),
 				evaluateMultifactor(
 					{

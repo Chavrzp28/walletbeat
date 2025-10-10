@@ -68,7 +68,7 @@
 											value.scamAlerts.sendTransactionWarning.leaksUserAddress && 'your Ethereum address',
 											value.scamAlerts.sendTransactionWarning.leaksRecipient && 'the recipient\'s Ethereum address',
 										]
-											.filter(Boolean) as string[])} to a third party which can correlate them.` 
+											.filter(Boolean) as string[])} to an external provider which can correlate them.` 
 									:
 										''
 								}`
@@ -133,7 +133,7 @@
 											value.scamAlerts.contractTransactionWarning.leaksUserAddress && 'your Ethereum address',
 											value.scamAlerts.contractTransactionWarning.leaksContractAddress && 'the contract address',
 										]
-											.filter(Boolean) as string[])} to a third party which can correlate them ahead of the transaction being submitted.` 
+							.filter(Boolean) as string[])} to an external provider which can correlate them ahead of the transaction being submitted.` 
 									:
 										''
 								}`
@@ -161,7 +161,7 @@
 							isSupported(value.scamAlerts.scamUrlWarning) ?
 								`**{{WALLET_NAME}}** helps you stay safe when connecting to onchain apps by checking its URL against a set of known scam apps.${
 									!value.scamUrlWarning.privacyPreserving && scamUrlLeaks.length > 0 ?
-										` However, in doing so, it leaks ${commaListFormat(scamUrlLeaks)} to a third party${
+							` However, in doing so, it leaks ${commaListFormat(scamUrlLeaks)} to an external provider${
 											scamUrlLeaks.length > 1 ?
 												' which can correlate them' 
 											:

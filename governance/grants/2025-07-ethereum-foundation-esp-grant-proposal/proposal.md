@@ -1,5 +1,5 @@
 ---
-Status: Draft
+Status: Funded
 Grant recipient: Walletbeat (collective)
 Amount: 106100
 Currency: USD

@@ -30,7 +30,7 @@ import type { ChainConfigurability } from './features/self-sovereignty/chain-con
 import type { InteroperabilitySupport } from './features/self-sovereignty/interoperability'
 import type { TransactionSubmission } from './features/self-sovereignty/transaction-submission'
 import type { Support } from './features/support'
-import type { FeeTransparencySupport } from './features/transparency/fee-transparency'
+import type { BasicOperationFees } from './features/transparency/fee-display'
 import type { LicenseWithRef } from './features/transparency/license'
 import type { MaintenanceSupport } from './features/transparency/maintenance'
 import type { Monetization } from './features/transparency/monetization'
@@ -87,7 +87,10 @@ export interface WalletBaseFeatures {
 
 	/** Privacy features. */
 	privacy: {
-		/** Data collection information. */
+		/**
+		 * Data collection information.
+		 * See /docs/mitmproxy-guide for how to collect this.
+		 */
 		dataCollection: VariantFeature<DataCollection>
 
 		/** Privacy policy URL of the wallet. */
@@ -102,8 +105,8 @@ export interface WalletBaseFeatures {
 
 	/** Transparency features. */
 	transparency: {
-		/** Fee transparency information. */
-		feeTransparency: VariantFeature<FeeTransparencySupport>
+		/** Information on how fees are displayed for basic operations. */
+		operationFees: VariantFeature<BasicOperationFees>
 	}
 
 	/** Which types of accounts the wallet supports. */
@@ -267,7 +270,7 @@ export interface ResolvedFeatures {
 		interoperability: ResolvedFeature<InteroperabilitySupport>
 	}
 	transparency: {
-		feeTransparency: ResolvedFeature<FeeTransparencySupport>
+		operationFees: ResolvedFeature<BasicOperationFees>
 		reputation: ResolvedFeature<ReputationSupport>
 		maintenance: ResolvedFeature<MaintenanceSupport>
 	}
@@ -402,9 +405,9 @@ export function resolveFeatures(
 			),
 		},
 		transparency: {
-			feeTransparency: baseFeat(
-				'transparency.feeTransparency',
-				features => features.transparency.feeTransparency,
+			operationFees: baseFeat(
+				'transparency.operationFees',
+				features => features.transparency.operationFees,
 			),
 			reputation: hardwareFeat(
 				'transparency.reputation',
