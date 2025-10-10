@@ -40,6 +40,19 @@ function AboutContents(): React.JSX.Element {
 				url: `${repositoryUrl}/tree/beta/governance/grants/2025-02-ethereum-foundation-pectra-proactive-grant-round`,
 			},
 		},
+		{
+			date: '2025-07',
+			source: 'Ethereum Foundation',
+			amount: '106,100 USD',
+			asPartOf: {
+				label: 'Ethereum Foundation Trillion Dollar Security project',
+				url: 'https://blog.ethereum.org/2025/08/20/trillion-dollar-sec-2',
+			},
+			details: {
+				label: 'Grant Proposal',
+				url: `${repositoryUrl}/tree/beta/governance/grants/2025-07-ethereum-foundation-esp-grant-proposal`,
+			},
+		},
 	]
 
 	return (
