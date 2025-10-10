@@ -29,11 +29,10 @@
 		columns,
 		sortedColumn = $bindable(),
 
+		expandHeaderCells = true,
+
 		cellVerticalAlign,
 		Cell,
-
-		HeaderTitle,
-		expandHeaderCells = true,
 
 		...restProps
 	}: {
@@ -48,22 +47,19 @@
 
 		columns: _Column[]
 		sortedColumn?: _Column | undefined
+		
+		expandHeaderCells?: boolean
 
-		cellVerticalAlign?: (args: {
-			row: _RowValue
-			column: _Column
-			value: _CellValue
-		}) => 'top' | 'middle' | 'bottom' | 'baseline' | undefined
 		Cell?: Snippet<[{
 			row: _RowValue
 			column: _Column
 			value: _CellValue
 		}]>
-
-		HeaderTitle?: Snippet<[{
+		cellVerticalAlign?: (args: {
+			row: _RowValue
 			column: _Column
-		}]>
-		expandHeaderCells?: boolean
+			value: _CellValue
+		}) => 'top' | 'middle' | 'bottom' | 'baseline' | undefined
 	} = $props()
 
 	// (Derived)
@@ -230,12 +226,12 @@
 					data-expanded={isExpandable && isExpanded ? '' : undefined}
 				>
 					<div class="header-cell-content">
-						{#snippet _HeaderTitle()}
+						{#snippet HeaderTitle()}
 							<span
 								class="header-title"
 							>
-								{#if HeaderTitle}
-									{@render HeaderTitle({ column })}
+								{#if column.HeaderTitle}
+									{@render column.HeaderTitle({ column })}
 								{:else}
 									{column.name}
 								{/if}
@@ -244,7 +240,7 @@
 
 						{#if isSortable}
 							<label class="sort-label">
-								{@render _HeaderTitle()}
+								{@render HeaderTitle()}
 
 								<button
 									type="button"
@@ -257,7 +253,7 @@
 								></button>
 							</label>
 						{:else}
-							{@render _HeaderTitle()}
+							{@render HeaderTitle()}
 						{/if}
 
 						{#if isExpandable}
@@ -333,7 +329,13 @@
 							animate:flip={{ duration: 300, easing: expoOut }}
 							in:fade={{ duration: 300, easing: expoOut }}
 						>
-							{#if Cell}
+							{#if column.Cell}
+								{@render column.Cell({
+									row,
+									column,
+									value,
+								})}
+							{:else if Cell}
 								{@render Cell({
 									row,
 									column,

@@ -1,6 +1,8 @@
 /* eslint-disable */
 
 // Types
+import type { Snippet } from 'svelte'
+
 export type Column<
 	RowValue = any,
 	CellValue = any,
@@ -17,6 +19,16 @@ export type Column<
 		defaultDirection: SortDirection
 		compare?: (a: CellValue, b: CellValue, rowA: RowValue, rowB: RowValue) => number
 	}
+
+	HeaderTitle?: Snippet<[{
+		column: Column
+	}]>
+
+	Cell?: Snippet<[{
+		row: RowValue
+		column: Column
+		value: CellValue
+	}]>
 
 	subcolumns?: Column<RowValue, CellValue, ColumnId>[]
 	isDefaultExpanded?: boolean
