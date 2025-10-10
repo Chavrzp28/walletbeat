@@ -14,6 +14,8 @@ import {
 	type Endpoint,
 	type MultiAddressHandling,
 	MultiAddressPolicy,
+	PersonalInfo,
+	type QualifiedDataCollection,
 	qualifiedDataCollectionWithEndpoint,
 	WalletInfo,
 } from '@/schema/features/privacy/data-collection'
@@ -65,6 +67,34 @@ function activeAddressOnly(references: ReferenceArray): Evaluation<MultiAddressC
 		),
 		impact: paragraph(
 			'Multi-address privacy is generally well-preserved by {{WALLET_NAME}}. However, you should avoid quickly switching between active addresses in order to avoid making successive requests to the same RPC endpoint about different addresses.',
+		),
+		references,
+	}
+}
+
+function activeAddressOnlyWithTrackingIdentifier(
+	references: ReferenceArray,
+): Evaluation<MultiAddressCorrelationValue> {
+	return {
+		value: {
+			id: 'active_address_only_with_tracking_identifier',
+			rating: Rating.FAIL,
+			displayName: 'Multiple addresses are correlatable by a tracking cookie',
+			shortExplanation: sentence(
+				'{{WALLET_NAME}} only makes requests about one active address at a time, but uses a tracking cookie across requests allowing addresses to be correlated over time.',
+			),
+			__brand: brand,
+		},
+		details: paragraph(`
+			{{WALLET_NAME}} only has one active address at a time, and all outgoing RPC requests are only about that address.
+			However, requests contain a tracking identifier or cookie, which lets the external provider correlate requests
+			that belong to the same user. This allows the external provider to correlate the user's addresses.
+		`),
+		impact: paragraph(
+			'Using multiple addresses in {{WALLET_NAME}} will allow them to be correlated by an external provider. You should avoid configuring multiple addresses with {{WALLET_NAME}}.',
+		),
+		howToImprove: paragraph(
+			'{{WALLET_NAME}} should strip all tracking identifiers from the RPCs it makes.',
 		),
 		references,
 	}
@@ -200,14 +230,36 @@ function unsupported(): Evaluation<MultiAddressCorrelationValue> {
 	}
 }
 
-function rateHandling(handling: MultiAddressHandling, endpoint: Endpoint): number {
-	switch (handling.type) {
-		case MultiAddressPolicy.SINGLE_REQUEST_WITH_MULTIPLE_ADDRESSES:
-			return 0
+type QualifiedDataCollectionWithMultiAddress = QualifiedDataCollection & {
+	multiAddress: MultiAddressHandling
+}
+
+function isQualifiedDataCollectionWithMultiAddress(
+	dataCollection: QualifiedDataCollection,
+): dataCollection is QualifiedDataCollectionWithMultiAddress {
+	return dataCollection.multiAddress !== undefined
+}
+
+function rateHandling(
+	dataCollection: QualifiedDataCollectionWithMultiAddress,
+	endpoint: Endpoint,
+): number {
+	if (
+		dataCollection.multiAddress.type === MultiAddressPolicy.SINGLE_REQUEST_WITH_MULTIPLE_ADDRESSES
+	) {
+		return 0
+	}
+
+	if (collectedByDefault(dataCollection[PersonalInfo.TRACKING_IDENTIFIER])) {
+		return 0
+	}
+
+	switch (dataCollection.multiAddress.type) {
 		case MultiAddressPolicy.ACTIVE_ADDRESS_ONLY:
 			return 1000
 		case MultiAddressPolicy.SEPARATE_REQUEST_PER_ADDRESS: {
-			const destinationScore = { SAME_FOR_ALL: 0, ISOLATED: 1 }[handling.destination] * 1000
+			const destinationScore =
+				{ SAME_FOR_ALL: 0, ISOLATED: 1 }[dataCollection.multiAddress.destination] * 1000
 			const enclaveScore =
 				(() => {
 					switch (endpoint.type) {
@@ -246,8 +298,9 @@ function rateHandling(handling: MultiAddressHandling, endpoint: Endpoint): numbe
 							}
 					}
 				})() * 100
-			const proxyScore = { NONE: 0, SAME_CIRCUIT: 1, SEPARATE_CIRCUITS: 2 }[handling.proxy] * 10
-			const timingScore = { SIMULTANEOUS: 0, STAGGERED: 1 }[handling.timing]
+			const proxyScore =
+				{ NONE: 0, SAME_CIRCUIT: 1, SEPARATE_CIRCUITS: 2 }[dataCollection.multiAddress.proxy] * 10
+			const timingScore = { SIMULTANEOUS: 0, STAGGERED: 1 }[dataCollection.multiAddress.timing]
 
 			return 1 + destinationScore + enclaveScore + proxyScore + timingScore
 		}
@@ -311,6 +364,12 @@ export const multiAddressCorrelation: Attribute<MultiAddressCorrelationValue> = 
 					'The wallet refreshes multiple address balances by grouping all of these addresses in the same request.',
 				),
 				bulkRequests([]).value,
+			),
+			exampleRating(
+				paragraph(
+					'The wallet only refreshes the currently-active wallet address balances, but such requests carry an identifier or cookie which can identify the same user across requests for different wallet addresses.',
+				),
+				activeAddressOnlyWithTrackingIdentifier([]).value,
 			),
 			exampleRating(
 				paragraph(
@@ -380,18 +439,18 @@ export const multiAddressCorrelation: Attribute<MultiAddressCorrelationValue> = 
 		const allRefs: ReferenceArray = []
 
 		for (const collected of dataCollection) {
-			const leaks = qualifiedDataCollectionWithEndpoint(collected.dataCollection)
+			const dataCollection = qualifiedDataCollectionWithEndpoint(collected.dataCollection)
 
-			if (!collectedByDefault(leaks[WalletInfo.ACCOUNT_ADDRESS])) {
+			if (!collectedByDefault(dataCollection[WalletInfo.ACCOUNT_ADDRESS])) {
 				continue
 			}
 
-			if (leaks.multiAddress === undefined) {
+			if (!isQualifiedDataCollectionWithMultiAddress(dataCollection)) {
 				return unrated(multiAddressCorrelation, brand, null)
 			}
 
 			allRefs.push(...refs(collected))
-			const score = rateHandling(leaks.multiAddress, leaks.endpoint)
+			const score = rateHandling(dataCollection, dataCollection.endpoint)
 
 			if (worstHandling === null || score < worstHandlingScore) {
 				worstHandling = collected
@@ -403,14 +462,20 @@ export const multiAddressCorrelation: Attribute<MultiAddressCorrelationValue> = 
 			return unrated(multiAddressCorrelation, brand, null)
 		}
 
-		const handling = worstHandling.dataCollection.multiAddress
+		const worstCollection = qualifiedDataCollectionWithEndpoint(worstHandling.dataCollection)
 
-		if (handling === undefined) {
+		if (!isQualifiedDataCollectionWithMultiAddress(worstCollection)) {
 			return unrated(multiAddressCorrelation, brand, null)
 		}
 
+		const handling = worstCollection.multiAddress
+
 		switch (handling.type) {
 			case MultiAddressPolicy.ACTIVE_ADDRESS_ONLY:
+				if (collectedByDefault(worstCollection[PersonalInfo.TRACKING_IDENTIFIER])) {
+					return activeAddressOnlyWithTrackingIdentifier(allRefs)
+				}
+
 				// If the wallet has a concept of a singular "active address" and only
 				// ever makes requests about it, then other addresses are never exposed
 				// and therefore not correlatable.
@@ -420,6 +485,10 @@ export const multiAddressCorrelation: Attribute<MultiAddressCorrelationValue> = 
 				// they are clearly correlatable.
 				return bulkRequests(allRefs)
 			case MultiAddressPolicy.SEPARATE_REQUEST_PER_ADDRESS:
+				if (collectedByDefault(worstCollection[PersonalInfo.TRACKING_IDENTIFIER])) {
+					return activeAddressOnlyWithTrackingIdentifier(allRefs)
+				}
+
 				if (handling.destination === 'ISOLATED') {
 					// The wallet makes requests to different endpoints for each
 					// address, so they are not correlatable.

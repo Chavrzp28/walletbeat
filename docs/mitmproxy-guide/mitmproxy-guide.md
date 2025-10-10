@@ -124,7 +124,7 @@ In this request, the wallet looks up the total balance of the user:
 
 ![](./relevant-request-1.png)
 
-You can see that the Ethereum wallet address (encoded as `WalletInfo.ACCOUNT_ADDRESS` below) is sent to an external provider, so this is definitely relevant. This is also done without any anonymizing proxy, so the external provider learns both the user's IP address (encoded as `PersonalInfo.IP_ADDRESS` below), as well as their Ethereum address. Moreover, they are sent a persistent set of tracking cookies which shows up in other requests made to the same provider, such as this other request:
+You can see that the Ethereum wallet address (encoded as `WalletInfo.ACCOUNT_ADDRESS` below) is sent to an external provider, so this is definitely relevant. This is also done without any anonymizing proxy, so the external provider learns both the user's IP address (encoded as `PersonalInfo.IP_ADDRESS` below), as well as their Ethereum address. Moreover, they are sent a persistent set of tracking cookies (encoded as `PersonalInfo.TRACKING_IDENTIFIER` below) which shows up in other requests made to the same provider, such as this other request:
 
 ![](./relevant-request-2.png)
 
@@ -159,6 +159,10 @@ export const someWallet: SoftwareWallet = {
 								dataCollection: {
 									// IP address implicitly collected because the wallet did not attempt to anonymize the connection:
 									[PersonalInfo.IP_ADDRESS]: CollectionPolicy.ALWAYS,
+
+									// The same cookie was sent along to this external provider, which acts as a
+									// tracking identifier the external provider can use to track the user across requests:
+									[PersonalInfo.TRACKING_IDENTIFIER]: CollectionPolicy.ALWAYS,
 
 									// The Ethereum address was sent to this external provider, with no way to opt out:
 									[WalletInfo.ACCOUNT_ADDRESS]: CollectionPolicy.ALWAYS,
@@ -218,7 +222,6 @@ export const someWallet: SoftwareWallet = {
 							},
 						],
 					},
-					// [...]
 ```
 
 As you can imagine, this is very tedious to do, so consider using an LLM coding assistant to help you dig through the wallet's codebase to find these references, and consider doing this only for requests that you find especially surprising in terms of the user data they send.

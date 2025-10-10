@@ -312,6 +312,9 @@ export enum PersonalInfo {
 	/** The user's IP address. */
 	IP_ADDRESS = 'ipAddress',
 
+	/** A cross-request tracking identifier, such as a cookie. */
+	TRACKING_IDENTIFIER = 'trackingIdentifier',
+
 	/** The user's selected pseudonym. */
 	PSEUDONYM = 'pseudonym',
 
@@ -353,6 +356,7 @@ export enum PersonalInfo {
 
 export const personalInfo = new Enum<PersonalInfo>({
 	[PersonalInfo.IP_ADDRESS]: true,
+	[PersonalInfo.TRACKING_IDENTIFIER]: true,
 	[PersonalInfo.PSEUDONYM]: true,
 	[PersonalInfo.LEGAL_NAME]: true,
 	[PersonalInfo.EMAIL]: true,
@@ -425,43 +429,45 @@ function userInfoScore(userInfo: UserInfo): number {
 			return 0
 		case WalletInfo.USER_ACTIONS:
 			return 1
-		case WalletInfo.ASSETS:
+		case PersonalInfo.TRACKING_IDENTIFIER:
 			return 2
-		case WalletInfo.BALANCE:
+		case WalletInfo.ASSETS:
 			return 3
-		case WalletInfo.ACCOUNT_ADDRESS:
+		case WalletInfo.BALANCE:
 			return 4
+		case WalletInfo.ACCOUNT_ADDRESS:
+			return 5
 		case WalletInfo.MEMPOOL_TRANSACTIONS:
-			return 5
-		case WalletInfo.WALLET_CONNECTED_DOMAINS:
-			return 5
-		case PersonalInfo.PSEUDONYM:
 			return 6
+		case WalletInfo.WALLET_CONNECTED_DOMAINS:
+			return 7
+		case PersonalInfo.PSEUDONYM:
+			return 8
 
 		// All the social-media-y entries are roughly the same as email.
 		case PersonalInfo.FARCASTER_ACCOUNT:
-			return 7
+			return 9
 		case PersonalInfo.X_DOT_COM_ACCOUNT:
-			return 7
+			return 9
 		case PersonalInfo.EMAIL:
-			return 7
+			return 9
 
 		case PersonalInfo.BROWSING_HISTORY_URLS:
-			return 8
-		case PersonalInfo.LEGAL_NAME:
-			return 9
-		case PersonalInfo.PHONE:
 			return 10
-		case PersonalInfo.CONTACTS:
+		case PersonalInfo.LEGAL_NAME:
 			return 11
-		case PersonalInfo.PHYSICAL_ADDRESS:
+		case PersonalInfo.PHONE:
 			return 12
-		case PersonalInfo.CEX_ACCOUNT:
+		case PersonalInfo.CONTACTS:
 			return 13
-		case PersonalInfo.FACE:
+		case PersonalInfo.PHYSICAL_ADDRESS:
 			return 14
-		case PersonalInfo.GOVERNMENT_ID:
+		case PersonalInfo.CEX_ACCOUNT:
 			return 15
+		case PersonalInfo.FACE:
+			return 16
+		case PersonalInfo.GOVERNMENT_ID:
+			return 17
 	}
 }
 
@@ -478,6 +484,8 @@ export enum UserInfoType {
 export function userInfoType(userInfo: UserInfo): UserInfoType {
 	switch (userInfo) {
 		case PersonalInfo.IP_ADDRESS:
+			return UserInfoType.PERSONAL_DATA
+		case PersonalInfo.TRACKING_IDENTIFIER:
 			return UserInfoType.PERSONAL_DATA
 		case WalletInfo.USER_ACTIONS:
 			return UserInfoType.WALLET_RELATED
@@ -528,6 +536,8 @@ export function userInfoName(userInfo: UserInfo) {
 	switch (userInfo) {
 		case PersonalInfo.IP_ADDRESS:
 			return { short: 'IP', long: 'IP address' } as const
+		case PersonalInfo.TRACKING_IDENTIFIER:
+			return { short: 'cookie', long: 'tracking cookie' } as const
 		case WalletInfo.USER_ACTIONS:
 			return { short: 'wallet actions', long: 'wallet actions' } as const
 		case WalletInfo.ASSETS:
@@ -756,6 +766,8 @@ export function qualifiedDataCollection<T extends UserInfo>(
 
 	return {
 		[PersonalInfo.IP_ADDRESS]: ipAddressCollection ?? CollectionPolicy.NEVER,
+		[PersonalInfo.TRACKING_IDENTIFIER]:
+			get(PersonalInfo.TRACKING_IDENTIFIER) ?? CollectionPolicy.NEVER,
 		[WalletInfo.USER_ACTIONS]: get(WalletInfo.USER_ACTIONS) ?? CollectionPolicy.NEVER,
 		[WalletInfo.ACCOUNT_ADDRESS]:
 			first(

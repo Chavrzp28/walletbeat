@@ -202,6 +202,7 @@ export const rabby: SoftwareWallet = {
 								byEntity: deBank,
 								dataCollection: {
 									[PersonalInfo.IP_ADDRESS]: CollectionPolicy.ALWAYS,
+									[PersonalInfo.TRACKING_IDENTIFIER]: CollectionPolicy.ALWAYS,
 									[WalletInfo.ACCOUNT_ADDRESS]: CollectionPolicy.ALWAYS,
 									[WalletInfo.WALLET_CONNECTED_DOMAINS]: CollectionPolicy.ALWAYS, // Scam prevention dialog queries online service and sends domain name
 									endpoint: RegularEndpoint,
@@ -229,6 +230,7 @@ export const rabby: SoftwareWallet = {
 								dataCollection: {
 									[PersonalInfo.CEX_ACCOUNT]: CollectionPolicy.NEVER, // There appears to be code to link to a Coinbase account but no way to reach it from the UI?
 									[PersonalInfo.IP_ADDRESS]: CollectionPolicy.ALWAYS,
+									[PersonalInfo.TRACKING_IDENTIFIER]: CollectionPolicy.ALWAYS,
 									[WalletInfo.MEMPOOL_TRANSACTIONS]: CollectionPolicy.ALWAYS,
 									[WalletInfo.USER_ACTIONS]: CollectionPolicy.ALWAYS, // Matomo analytics
 									[WalletInfo.ACCOUNT_ADDRESS]: CollectionPolicy.ALWAYS,
