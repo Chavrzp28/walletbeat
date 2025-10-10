@@ -526,7 +526,7 @@
 											{tag.label}
 										</div>
 
-										{#snippet tooltip()}
+										{#snippet TooltipContent()}
 											<div class="eip-tooltip-content">
 												<EipDetails
 													eip={tag.eipTooltipContent}

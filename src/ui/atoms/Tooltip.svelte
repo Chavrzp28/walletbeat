@@ -30,7 +30,7 @@
 	let {
 		placement = 'block-end',
 		offset = 8,
-		tooltip,
+		TooltipContent,
 		hideDelay = 200,
 		isEnabled = true,
 		children,
@@ -39,7 +39,7 @@
 		placement?: 'block-start' | 'block-end' | 'inline-start' | 'inline-end'
 		offset?: number
 		hideDelay?: number
-		tooltip: Snippet
+		TooltipContent: Snippet
 		isEnabled?: boolean
 		children: Snippet
 	} & Record<string, any> = $props()
@@ -156,7 +156,7 @@
 
 			{...restProps}
 		>
-			{@render tooltip()}
+			{@render TooltipContent()}
 		</div>
 	</button>
 {:else}

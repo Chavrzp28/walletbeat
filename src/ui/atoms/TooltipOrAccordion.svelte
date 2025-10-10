@@ -52,7 +52,7 @@
 			>
 				{@render children()}
 
-				{#snippet tooltip()}
+				{#snippet TooltipContent()}
 					{#if !isExpanded}
 						<div
 							class="expanded-tooltip-content"

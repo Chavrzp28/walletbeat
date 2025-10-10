@@ -221,7 +221,7 @@
 						EIP-7702
 					</button>
 
-					{#snippet tooltip()}
+					{#snippet TooltipContent()}
 						<EipDetails eip={eip7702} />
 					{/snippet}
 				</Tooltip>
@@ -241,7 +241,7 @@
 							ERC-4337
 						</button>
 
-						{#snippet tooltip()}
+						{#snippet TooltipContent()}
 							<EipDetails eip={erc4337} />
 						{/snippet}
 					</Tooltip>
