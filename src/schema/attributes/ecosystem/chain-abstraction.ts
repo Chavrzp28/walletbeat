@@ -417,7 +417,7 @@ export const chainAbstraction: Attribute<ChainAbstractionValue> = {
 						},
 					},
 					bridging: fullySupportedBridging,
-				}).value,
+				}),
 			),
 			exampleRating(
 				sentence('The wallet does not have a built-in cross-chain bridging feature.'),
@@ -427,7 +427,7 @@ export const chainAbstraction: Attribute<ChainAbstractionValue> = {
 						builtInBridging: notSupported,
 						suggestedBridging: notSupported,
 					},
-				}).value,
+				}),
 			),
 		],
 		partial: [
@@ -449,7 +449,7 @@ export const chainAbstraction: Attribute<ChainAbstractionValue> = {
 						},
 					},
 					bridging: fullySupportedBridging,
-				}).value,
+				}),
 			),
 			exampleRating(
 				sentence(
@@ -468,7 +468,7 @@ export const chainAbstraction: Attribute<ChainAbstractionValue> = {
 						}),
 						suggestedBridging: notSupported,
 					},
-				}).value,
+				}),
 			),
 			exampleRating(
 				sentence(
@@ -483,7 +483,7 @@ export const chainAbstraction: Attribute<ChainAbstractionValue> = {
 						}),
 						suggestedBridging: notSupported,
 					},
-				}).value,
+				}),
 			),
 		],
 		pass: exampleRating(
@@ -493,7 +493,7 @@ export const chainAbstraction: Attribute<ChainAbstractionValue> = {
 			evaluateChainAbstraction({
 				crossChainBalances: fullySupportedCrossChainBalances,
 				bridging: fullySupportedBridging,
-			}).value,
+			}),
 		),
 	},
 	evaluate: (features: ResolvedFeatures): Evaluation<ChainAbstractionValue> => {

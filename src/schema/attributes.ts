@@ -295,6 +295,11 @@ export interface ExampleRating<V extends Value> {
 	 * example.
 	 */
 	matchesValue: (value: V) => boolean
+
+	/**
+	 * Sample evaluations for this rating. Optional, may be empty.
+	 */
+	sampleEvaluations: Evaluation<V>[]
 }
 
 /**
@@ -527,9 +532,21 @@ export const exampleRatingUnimplemented = 'UNIMPLEMENTED'
 export function exampleRating<V extends Value>(
 	description: ExampleRating<V>['description'],
 	...matchers: NonEmptyArray<
-		V['id'] | Rating | V | ((value: V) => boolean) | typeof exampleRatingUnimplemented
+		V['id'] | Rating | Evaluation<V> | ((value: V) => boolean) | typeof exampleRatingUnimplemented
 	>
 ): ExampleRating<V> {
+	const sampleEvaluations: Evaluation<V>[] = []
+
+	for (const matcher of matchers) {
+		if (
+			matcher !== exampleRatingUnimplemented &&
+			!isRating(matcher) &&
+			typeof matcher === 'object'
+		) {
+			sampleEvaluations.push(matcher)
+		}
+	}
+
 	return {
 		description,
 		matchesValue: (value: V): boolean =>
@@ -550,7 +567,8 @@ export function exampleRating<V extends Value>(
 					return matcher(value)
 				}
 
-				return matcher.id === value.id
+				return matcher.value.id === value.id
 			}).includes(true),
+		sampleEvaluations,
 	}
 }

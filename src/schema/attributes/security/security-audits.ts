@@ -172,30 +172,30 @@ export const securityAudits: Attribute<SecurityAuditsValue> = {
 			paragraph(
 				'The wallet was audited within the last year, and all flaws of severity "medium" or higher are addressed.',
 			),
-			audited([sampleSecurityAudit], true, false).value,
+			audited([sampleSecurityAudit], true, false),
 		),
 		partial: [
 			exampleRating(
 				paragraph('The wallet was audited over a year ago, and has not been audited since.'),
-				audited([sampleSecurityAudit], false, false).value,
+				audited([sampleSecurityAudit], false, false),
 			),
 			exampleRating(
 				paragraph(
 					'The wallet was audited within the last year, and there remains at least one unaddressed security flaw of severity "medium" or higher.',
 				),
-				audited([sampleSecurityAudit], true, true).value,
+				audited([sampleSecurityAudit], true, true),
 			),
 		],
 		fail: [
 			exampleRating(
 				paragraph('The wallet was never audited by an independent security auditor.'),
-				noAudits().value,
+				noAudits(),
 			),
 			exampleRating(
 				paragraph(
 					'The wallet was audited over a year ago, has not been audited since, and there remains at least one unaddressed security flaw of severity "medium" or higher.',
 				),
-				audited([sampleSecurityAudit], false, true).value,
+				audited([sampleSecurityAudit], false, true),
 			),
 		],
 	},

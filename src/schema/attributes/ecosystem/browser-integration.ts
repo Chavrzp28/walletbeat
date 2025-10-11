@@ -144,7 +144,7 @@ export const browserIntegration: Attribute<BrowserIntegrationValue> = {
 				'1193': featureSupported,
 				'2700': featureSupported,
 				'6963': featureSupported,
-			}).value,
+			}),
 		),
 		partial: exampleRating(
 			sentence('The wallet implements some but not all listed web browser integration standards.'),
@@ -152,7 +152,7 @@ export const browserIntegration: Attribute<BrowserIntegrationValue> = {
 				'1193': featureSupported,
 				'2700': featureSupported,
 				'6963': notSupported,
-			}).value,
+			}),
 		),
 		fail: exampleRating(
 			sentence('The wallet implements none of the listed web browser integration standards.'),
@@ -160,7 +160,7 @@ export const browserIntegration: Attribute<BrowserIntegrationValue> = {
 				'1193': notSupported,
 				'2700': notSupported,
 				'6963': notSupported,
-			}).value,
+			}),
 		),
 	},
 	evaluate: (features: ResolvedFeatures): Evaluation<BrowserIntegrationValue> => {

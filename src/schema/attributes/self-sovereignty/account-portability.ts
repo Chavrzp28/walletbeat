@@ -530,7 +530,7 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 						},
 					},
 					[],
-				).value,
+				),
 			),
 			exampleRating(
 				paragraph(`
@@ -545,7 +545,7 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 							TransactionGenerationCapability.RELYING_ON_EXTERNAL_API,
 					},
 					[],
-				).value,
+				),
 			),
 			exampleRating(
 				paragraph(`
@@ -562,7 +562,7 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 							TransactionGenerationCapability.RELYING_ON_EXTERNAL_API,
 					},
 					[],
-				).value,
+				),
 			),
 			exampleRating(
 				mdParagraph(`
@@ -580,7 +580,7 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 					},
 					'erc4337',
 					[],
-				).value,
+				),
 			),
 			exampleRating(
 				mdParagraph(`
@@ -599,7 +599,7 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 					},
 					'erc4337',
 					[],
-				).value,
+				),
 			),
 			exampleRating(
 				mdParagraph(`
@@ -618,7 +618,7 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 					},
 					'erc4337',
 					[],
-				).value,
+				),
 			),
 		],
 		partial: [
@@ -637,7 +637,7 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 						},
 					},
 					[],
-				).value,
+				),
 			),
 			exampleRating(
 				paragraph(`
@@ -654,7 +654,7 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 							TransactionGenerationCapability.USING_PROPRIETARY_STANDALONE_APP,
 					},
 					[],
-				).value,
+				),
 			),
 			exampleRating(
 				mdParagraph(`
@@ -673,7 +673,7 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 					},
 					'erc4337',
 					[],
-				).value,
+				),
 			),
 		],
 		pass: [
@@ -696,7 +696,7 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 						},
 					},
 					[],
-				).value,
+				),
 			),
 			exampleRating(
 				paragraph(`
@@ -713,7 +713,7 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 							TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
 					},
 					[],
-				).value,
+				),
 			),
 			exampleRating(
 				mdParagraph(`
@@ -732,7 +732,7 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 					},
 					'erc4337',
 					[],
-				).value,
+				),
 			),
 		],
 	},

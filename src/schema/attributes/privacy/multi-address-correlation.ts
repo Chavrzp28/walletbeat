@@ -363,19 +363,19 @@ export const multiAddressCorrelation: Attribute<MultiAddressCorrelationValue> = 
 				paragraph(
 					'The wallet refreshes multiple address balances by grouping all of these addresses in the same request.',
 				),
-				bulkRequests([]).value,
+				bulkRequests([]),
 			),
 			exampleRating(
 				paragraph(
 					'The wallet only refreshes the currently-active wallet address balances, but such requests carry an identifier or cookie which can identify the same user across requests for different wallet addresses.',
 				),
-				activeAddressOnlyWithTrackingIdentifier([]).value,
+				activeAddressOnlyWithTrackingIdentifier([]),
 			),
 			exampleRating(
 				paragraph(
 					"The wallet makes multiple simultaneous requests about each of the user's wallet balances, without proxying or staggering the requests.",
 				),
-				correlatableRequests([]).value,
+				correlatableRequests([]),
 			),
 		],
 		partial: [
@@ -383,13 +383,13 @@ export const multiAddressCorrelation: Attribute<MultiAddressCorrelationValue> = 
 				paragraph(
 					"The wallet makes multiple simultaneous requests about each of the user's wallet balances, proxying each of them through a different proxy circuit (e.g. Tor with unique circuits for each wallet address). The receiving endpoint may still correlate these addresses through time-based correlation.",
 				),
-				separateCircuits([]).value,
+				separateCircuits([]),
 			),
 			exampleRating(
 				paragraph(
 					"The wallet makes multiple requests about each of the user's wallet balances, staggering them over time to avoid time-based correlation. The receiving endpoint may still correlate these addresses through IP-address-based correlation.",
 				),
-				staggeredRequests([]).value,
+				staggeredRequests([]),
 			),
 		],
 		pass: [
@@ -397,19 +397,19 @@ export const multiAddressCorrelation: Attribute<MultiAddressCorrelationValue> = 
 				paragraph(
 					"The wallet makes multiple requests about each of the user's wallet balances, staggering them over time to avoid time-based correlation, and using unique proxy circuits for each wallet address to avoid IP-address-based correlation.",
 				),
-				staggeredAndSeparateCircuits([]).value,
+				staggeredAndSeparateCircuits([]),
 			),
 			exampleRating(
 				paragraph(
 					"The wallet distributes requests about each of the user's wallet balances across unique RPC endpoints owned by different entities, preventing any single entity from learning about more than one wallet address.",
 				),
-				uniqueDestinations([]).value,
+				uniqueDestinations([]),
 			),
 			exampleRating(
 				paragraph(
 					'The wallet only has one active wallet address at a time, and only ever makes requests about this wallet address and no other.',
 				),
-				activeAddressOnly([]).value,
+				activeAddressOnly([]),
 			),
 			exampleRating(
 				paragraph(

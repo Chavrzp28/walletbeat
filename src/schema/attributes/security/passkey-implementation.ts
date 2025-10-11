@@ -247,7 +247,7 @@ export const passkeyImplementation: Attribute<PasskeyImplementationValue> = {
 				smoothCryptoLibImplementation({
 					library: PasskeyVerificationLibrary.SMOOTH_CRYPTO_LIB,
 					libraryUrl: 'https://github.com/get-smooth/crypto-lib',
-				}).value,
+				}),
 			),
 			exampleRating(
 				mdParagraph(
@@ -256,7 +256,7 @@ export const passkeyImplementation: Attribute<PasskeyImplementationValue> = {
 				daimoP256VerifierImplementation({
 					library: PasskeyVerificationLibrary.DAIMO_P256_VERIFIER,
 					libraryUrl: 'https://github.com/daimo-eth/p256-verifier',
-				}).value,
+				}),
 			),
 			exampleRating(
 				mdParagraph(
@@ -266,7 +266,7 @@ export const passkeyImplementation: Attribute<PasskeyImplementationValue> = {
 					library: PasskeyVerificationLibrary.OPEN_ZEPPELIN_P256_VERIFIER,
 					libraryUrl:
 						'https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/cryptography/P256.sol',
-				}).value,
+				}),
 			),
 		],
 		partial: [
@@ -277,7 +277,7 @@ export const passkeyImplementation: Attribute<PasskeyImplementationValue> = {
 				freshCryptoLibImplementation({
 					library: PasskeyVerificationLibrary.FRESH_CRYPTO_LIB,
 					libraryUrl: 'https://github.com/rdubois-crypto/FreshCryptoLib',
-				}).value,
+				}),
 			),
 			exampleRating(
 				mdParagraph(
@@ -286,7 +286,7 @@ export const passkeyImplementation: Attribute<PasskeyImplementationValue> = {
 				webAuthnSolImplementation({
 					library: PasskeyVerificationLibrary.WEB_AUTHN_SOL,
 					libraryUrl: 'https://github.com/base/webauthn-sol',
-				}).value,
+				}),
 			),
 			exampleRating(
 				mdSentence(
@@ -294,7 +294,7 @@ export const passkeyImplementation: Attribute<PasskeyImplementationValue> = {
 				),
 				otherPasskeyImplementation({
 					library: PasskeyVerificationLibrary.OTHER,
-				}).value,
+				}),
 			),
 		],
 		fail: [
@@ -302,7 +302,7 @@ export const passkeyImplementation: Attribute<PasskeyImplementationValue> = {
 				mdParagraph(
 					'The wallet does not implement passkeys or does not use a recognized verification library for P256/R1 curve operations.',
 				),
-				noPasskeyImplementation().value,
+				noPasskeyImplementation(),
 			),
 		],
 	},

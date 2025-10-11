@@ -204,7 +204,7 @@ export const transactionInclusion: Attribute<TransactionInclusionValue> = {
 					supportForceWithdrawal: [TransactionSubmissionL2Type.opStack],
 					unsupportedL2s: [],
 					references: [],
-				}).value,
+				}),
 			),
 			exampleRating(
 				paragraph(
@@ -216,7 +216,7 @@ export const transactionInclusion: Attribute<TransactionInclusionValue> = {
 					supportForceWithdrawal: [TransactionSubmissionL2Type.opStack],
 					unsupportedL2s: [],
 					references: [],
-				}).value,
+				}),
 			),
 		],
 		partial: [
@@ -230,7 +230,7 @@ export const transactionInclusion: Attribute<TransactionInclusionValue> = {
 					supportForceWithdrawal: [TransactionSubmissionL2Type.opStack],
 					unsupportedL2s: [],
 					references: [],
-				}).value,
+				}),
 			),
 			exampleRating(
 				paragraph(
@@ -242,7 +242,7 @@ export const transactionInclusion: Attribute<TransactionInclusionValue> = {
 					supportForceWithdrawal: [TransactionSubmissionL2Type.opStack],
 					unsupportedL2s: [TransactionSubmissionL2Type.arbitrum],
 					references: [],
-				}).value,
+				}),
 			),
 		],
 		fail: exampleRating(
@@ -253,7 +253,7 @@ export const transactionInclusion: Attribute<TransactionInclusionValue> = {
 				supportForceWithdrawal: [],
 				unsupportedL2s: [],
 				references: [],
-			}).value,
+			}),
 		),
 	},
 	evaluate: (features: ResolvedFeatures): Evaluation<TransactionInclusionValue> => {

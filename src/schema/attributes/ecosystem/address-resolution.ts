@@ -305,7 +305,7 @@ export const addressResolution: Attribute<AddressResolutionValue> = {
 						},
 					},
 					[],
-				).value,
+				),
 			),
 			exampleRating(
 				mdSentence(
@@ -329,7 +329,7 @@ export const addressResolution: Attribute<AddressResolutionValue> = {
 						},
 					},
 					refs({}),
-				).value,
+				),
 			),
 		],
 		partial: [
@@ -353,7 +353,7 @@ export const addressResolution: Attribute<AddressResolutionValue> = {
 						},
 					},
 					[],
-				).value,
+				),
 			),
 			exampleRating(
 				mdSentence(
@@ -377,7 +377,7 @@ export const addressResolution: Attribute<AddressResolutionValue> = {
 						},
 					},
 					[],
-				).value,
+				),
 			),
 			exampleRating(
 				mdSentence(
@@ -401,7 +401,7 @@ export const addressResolution: Attribute<AddressResolutionValue> = {
 						},
 					},
 					[],
-				).value,
+				),
 			),
 		],
 		fail: exampleRating(
@@ -421,7 +421,7 @@ export const addressResolution: Attribute<AddressResolutionValue> = {
 					},
 				},
 				[],
-			).value,
+			),
 		),
 	},
 	evaluate: (features: ResolvedFeatures): Evaluation<AddressResolutionValue> => {

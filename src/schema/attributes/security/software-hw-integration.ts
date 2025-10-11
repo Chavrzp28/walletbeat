@@ -197,26 +197,26 @@ export const softwareHWIntegration: Attribute<SoftwareHWIntegrationValue> = {
 			paragraph(
 				'The wallet implements full EIP-712 clear signing support with at least two different hardware wallet brands on both Safe and Aave platforms.',
 			),
-			excellentHardwareWalletIntegration().value,
+			excellentHardwareWalletIntegration(),
 		),
 		partial: [
 			exampleRating(
 				paragraph(
 					'The wallet implements EIP-712 clear signing support on either Safe or Aave (but not both), or supports only one hardware wallet brand for these integrations.',
 				),
-				goodHardwareWalletIntegration().value,
+				goodHardwareWalletIntegration(),
 			),
 			exampleRating(
 				paragraph(
 					'The wallet supports hardware wallet integration but lacks proper EIP-712 clear signing support for major DeFi platforms like Safe and Aave.',
 				),
-				basicHardwareWalletIntegration().value,
+				basicHardwareWalletIntegration(),
 			),
 		],
 		fail: [
 			exampleRating(
 				paragraph('The wallet does not support hardware wallet integration at all.'),
-				noHardwareWalletSupport().value,
+				noHardwareWalletSupport(),
 			),
 		],
 	},

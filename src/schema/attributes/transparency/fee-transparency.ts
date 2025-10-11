@@ -526,7 +526,7 @@ export const feeTransparency: Attribute<FeeTransparencyValue> = {
 				feeTypes: [FeeType.ETH_L1_TRANSFER],
 				isUniform: true,
 				references: [],
-			}).value,
+			}),
 		),
 		partial: exampleRating(
 			paragraph(
@@ -541,7 +541,7 @@ export const feeTransparency: Attribute<FeeTransparencyValue> = {
 				feeTypes: [FeeType.ETH_L1_TRANSFER],
 				isUniform: true,
 				references: [],
-			}).value,
+			}),
 		),
 		pass: [
 			exampleRating(
@@ -557,7 +557,7 @@ export const feeTransparency: Attribute<FeeTransparencyValue> = {
 					feeTypes: [FeeType.ETH_L1_TRANSFER],
 					isUniform: true,
 					references: [],
-				}).value,
+				}),
 			),
 			exampleRating(
 				paragraph(
@@ -572,7 +572,7 @@ export const feeTransparency: Attribute<FeeTransparencyValue> = {
 					feeTypes: [FeeType.ETH_L1_TRANSFER],
 					isUniform: true,
 					references: [],
-				}).value,
+				}),
 			),
 		],
 	},

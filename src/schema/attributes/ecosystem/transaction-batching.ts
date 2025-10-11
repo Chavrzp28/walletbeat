@@ -200,7 +200,7 @@ export const transactionBatching: Attribute<TransactionBatchingValue> = {
 						defaultAccountType: AccountType.eoa,
 					},
 					notSupported,
-				).value,
+				),
 			),
 			exampleRating(
 				mdSentence(
@@ -217,7 +217,7 @@ export const transactionBatching: Attribute<TransactionBatchingValue> = {
 						defaultAccountType: AccountType.eip7702,
 					},
 					notSupported,
-				).value,
+				),
 			),
 		],
 		partial: exampleRating(
@@ -237,7 +237,7 @@ export const transactionBatching: Attribute<TransactionBatchingValue> = {
 				supported({
 					atomicMultiTransactions: notSupported,
 				}),
-			).value,
+			),
 		),
 		pass: exampleRating(
 			mdSentence(
@@ -256,7 +256,7 @@ export const transactionBatching: Attribute<TransactionBatchingValue> = {
 				supported({
 					atomicMultiTransactions: featureSupported,
 				}),
-			).value,
+			),
 		),
 	},
 	evaluate: (features: ResolvedFeatures): Evaluation<TransactionBatchingValue> => {

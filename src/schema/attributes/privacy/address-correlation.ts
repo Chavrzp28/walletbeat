@@ -279,7 +279,7 @@ export const addressCorrelation: Attribute<AddressCorrelationValue> = {
 					default, and proxies all network requests carrying the user's
 					wallet address.
 				`),
-				uncorrelated,
+				uncorrelated.id,
 			),
 			exampleRating(
 				paragraph(`

@@ -454,7 +454,7 @@ export const scamPrevention: Attribute<ScamPreventionValue> = {
 					contractTransactionWarning: notSupported,
 					scamUrlWarning: notSupported,
 					sendTransactionWarning: notSupported,
-				}).value,
+				}),
 			),
 			exampleRating(
 				sentence(
@@ -468,7 +468,7 @@ export const scamPrevention: Attribute<ScamPreventionValue> = {
 						leaksIp: false,
 					}),
 					sendTransactionWarning: notSupported,
-				}).value,
+				}),
 			),
 		],
 		partial: [
@@ -488,7 +488,7 @@ export const scamPrevention: Attribute<ScamPreventionValue> = {
 						leaksUserAddress: false,
 						leaksUserIp: false,
 					}),
-				}).value,
+				}),
 			),
 			exampleRating(
 				sentence(
@@ -515,7 +515,7 @@ export const scamPrevention: Attribute<ScamPreventionValue> = {
 						leaksUserAddress: false,
 						leaksUserIp: false,
 					}),
-				}).value,
+				}),
 			),
 		],
 		pass: exampleRating(
@@ -543,7 +543,7 @@ export const scamPrevention: Attribute<ScamPreventionValue> = {
 					leaksUserAddress: false,
 					leaksUserIp: false,
 				}),
-			}).value,
+			}),
 		),
 	},
 	evaluate: (features: ResolvedFeatures): Evaluation<ScamPreventionValue> => {

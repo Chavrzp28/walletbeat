@@ -200,24 +200,24 @@ export const accountAbstraction: Attribute<AccountAbstractionValue> = {
 				mdSentence(
 					`The wallet supports EOA accounts and can use Account Abstraction features via ${eipMarkdownLinkAndTitle(eip7702)}.`,
 				),
-				supportsEip7702([]).value,
+				supportsEip7702([]),
 			),
 			exampleRating(
 				mdSentence(
 					`The wallet supports smart wallet accounts using ${eipMarkdownLinkAndTitle(erc4337)}.`,
 				),
-				supportsErc4337([]).value,
+				supportsErc4337([]),
 			),
 		],
 		partial: [],
 		fail: [
 			exampleRating(
 				mdSentence('The wallet only supports plain EOAs without Account Abstraction features.'),
-				supportsRawEoaOnly([]).value,
+				supportsRawEoaOnly([]),
 			),
 			exampleRating(
 				mdSentence('The wallet only supports MPC wallets without Account Abstraction features.'),
-				supportsMpcOnly([]).value,
+				supportsMpcOnly([]),
 			),
 		],
 	},

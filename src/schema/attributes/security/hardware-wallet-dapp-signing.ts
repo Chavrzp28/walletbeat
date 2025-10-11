@@ -290,7 +290,7 @@ export const hardwareWalletDappSigning: Attribute<HardwareWalletDappSigningValue
 					CalldataDecoding.SAFEWALLET_AAVE_USDC_APPROVE_SUPPLY_BATCH_NESTED_MULTISEND,
 				),
 				displaysFullTransactionDetails,
-			).value,
+			),
 		),
 		partial: [
 			exampleRating(
@@ -308,7 +308,7 @@ export const hardwareWalletDappSigning: Attribute<HardwareWalletDappSigningValue
 						gas: true,
 						nonce: true,
 					},
-				).value,
+				),
 			),
 			exampleRating(
 				paragraph(`
@@ -325,7 +325,7 @@ export const hardwareWalletDappSigning: Attribute<HardwareWalletDappSigningValue
 						gas: true,
 						nonce: true,
 					},
-				).value,
+				),
 			),
 		],
 		fail: [
@@ -339,13 +339,13 @@ export const hardwareWalletDappSigning: Attribute<HardwareWalletDappSigningValue
 					noDataExtraction,
 					noCalldataDecoding,
 					displaysNoTransactionDetails,
-				).value,
+				),
 			),
 			exampleRating(
 				paragraph(`
 					The wallet does not support hardware wallets at all.
 				`),
-				noHardwareWalletSupport().value,
+				noHardwareWalletSupport(),
 			),
 		],
 	},

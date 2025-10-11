@@ -145,27 +145,27 @@ export const selfHostedNode: Attribute<SelfHostedNodeValue> = {
 		exhaustive: true,
 		pass: exampleRating(
 			paragraph('The wallet lets you configure the RPC endpoint used for Ethereum mainnet.'),
-			supportsSelfHostedNode([]).value,
+			supportsSelfHostedNode([]),
 		),
 		partial: [
 			exampleRating(
 				paragraph(
 					'The wallet does not let you configure the RPC endpoint used for Ethereum mainnet, but lets you add a custom chain with your own self-hosted node as RPC endpoint.',
 				),
-				customChainOnly([]).value,
+				customChainOnly([]),
 			),
 			exampleRating(
 				paragraph(
 					'The wallet lets you configure the RPC endpoint used for Ethereum mainnet, but makes requests to an external RPC provider before the user has a chance to modify this RPC endpoint configuration.',
 				),
-				supportsSelfHostedNodeAfterRequests([]).value,
+				supportsSelfHostedNodeAfterRequests([]),
 			),
 		],
 		fail: exampleRating(
 			paragraph(
 				'The wallet uses an external Ethereum node provider and does not let you change this setting.',
 			),
-			noSelfHostedNode([]).value,
+			noSelfHostedNode([]),
 		),
 	},
 	evaluate: (features: ResolvedFeatures): Evaluation<SelfHostedNodeValue> => {
