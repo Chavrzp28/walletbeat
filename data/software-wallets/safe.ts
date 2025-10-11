@@ -87,6 +87,7 @@ export const safe: SoftwareWallet = {
 		},
 		multiAddress: null,
 		privacy: {
+			dappIsolation: null,
 			dataCollection: null,
 			privacyPolicy: 'https://safe.global/privacy',
 			transactionPrivacy: {

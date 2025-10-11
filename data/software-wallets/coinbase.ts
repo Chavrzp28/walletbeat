@@ -118,6 +118,7 @@ export const coinbase: SoftwareWallet = {
 		},
 		multiAddress: null,
 		privacy: {
+			dappIsolation: null,
 			dataCollection: null,
 			privacyPolicy: 'https://wallet.coinbase.com/privacy-policy',
 			transactionPrivacy: {

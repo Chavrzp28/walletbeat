@@ -296,6 +296,7 @@ export const ambire: SoftwareWallet = {
 		},
 		multiAddress: featureSupported,
 		privacy: {
+			dappIsolation: null,
 			dataCollection: {
 				[UserFlow.NATIVE_SWAP]: {
 					collected: [

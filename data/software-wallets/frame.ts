@@ -99,6 +99,7 @@ export const frame: SoftwareWallet = {
 		},
 		multiAddress: null,
 		privacy: {
+			dappIsolation: null,
 			dataCollection: null,
 			privacyPolicy: null,
 			transactionPrivacy: {

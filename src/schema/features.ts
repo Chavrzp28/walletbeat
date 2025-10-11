@@ -10,6 +10,7 @@ import {
 	type WalletIntegration,
 } from './features/ecosystem/integration'
 import type { AddressResolution } from './features/privacy/address-resolution'
+import type { DappIsolation } from './features/privacy/dapp-isolation'
 import type { DataCollection } from './features/privacy/data-collection'
 import type { HardwarePrivacySupport } from './features/privacy/hardware-privacy'
 import type { TransactionPrivacy } from './features/privacy/transaction-privacy'
@@ -139,6 +140,12 @@ export type WalletSoftwareFeatures = WalletBaseFeatures & {
 
 		/** Passkey verification implementation */
 		passkeyVerification: VariantFeature<PasskeyVerificationImplementation>
+	}
+
+	/** Privacy features. */
+	privacy: WalletBaseFeatures['privacy'] & {
+		/** Does the wallet isolate data between dapps? */
+		dappIsolation: VariantFeature<'DAPP_CONNECTION_NOT_SUPPORTED' | DappIsolation>
 	}
 
 	/** Self-sovereignty features. */

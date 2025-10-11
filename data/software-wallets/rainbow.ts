@@ -93,6 +93,7 @@ export const rainbow: SoftwareWallet = {
 		},
 		multiAddress: null,
 		privacy: {
+			dappIsolation: null,
 			dataCollection: null,
 			privacyPolicy: 'https://rainbow.me/privacy',
 			transactionPrivacy: {
