@@ -63,7 +63,7 @@
 		/>
 	{/if}
 
-	<div class="audits-container">
+    <div class="audits-container" data-card="secondary padding-6">
 		<h4>Audits</h4>
 
 		<ul class="audits-list">
@@ -132,17 +132,13 @@
 
 
 <style>
-	.audits-container {
-		max-height: 300px;
-		overflow-y: auto;
-		padding: 1.5em;
+    .audits-container {
+        max-height: 300px;
+        overflow-y: auto;
 
-		display: grid;
-		gap: 1em;
-
-		border-radius: 0.5em;
-		background-color: var(--background-secondary);
-	}
+        display: grid;
+        gap: 1em;
+    }
 
 	.audits-list {
 		list-style-type: revert;

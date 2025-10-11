@@ -20,7 +20,7 @@
 
 		<ul class="references">
 			{#each references as ref}
-				<li>
+				<li data-card="secondary padding-3">
 					{#if ref.explanation}
 						<p>{ref.explanation}</p>
 					{/if}
@@ -28,7 +28,7 @@
 					<div class="urls">
 						<ul>
 							{#each ref.urls as url}
-								<li>
+								<li data-card="padding-3">
 									<a
 										href={url.url}
 										target="_blank"
@@ -71,17 +71,14 @@
 			margin-top: 1em;
 		}
 
-		> li {
-			background-color: var(--background-secondary);
-			padding: 1em;
-			padding-left: 2em;
-			border-radius: 0.5em;
+        > li {
+            padding-left: 2em;
 
 			> * + * {
 				margin-top: 1em;
 			}
 
-			ul {
+            ul {
 				list-style: none;
 				display: flex;
 				flex-wrap: wrap;
@@ -89,9 +86,7 @@
 				padding: 0;
 
 				li {
-					background-color: var(--background-primary);
-					padding: 0.5em;
-					border-radius: 0.5em;
+                    /* data-card handles background, radius and padding */
 				}
 			}
 		}

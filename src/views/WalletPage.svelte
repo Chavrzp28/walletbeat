@@ -233,6 +233,7 @@
 					<a
 						href={typeof wallet.metadata.url === 'string' ? wallet.metadata.url : wallet.metadata.url?.url ?? '#'}
 						class="wallet-link website"
+						data-card="padding-2"
 						target="_blank"
 						rel="noopener noreferrer"
 					>
@@ -243,6 +244,7 @@
 						<a
 							href={typeof wallet.metadata.repoUrl === 'string' ? wallet.metadata.repoUrl : wallet.metadata.repoUrl?.url ?? '#'}
 							class="wallet-link repo"
+							data-card="padding-2"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
@@ -258,7 +260,7 @@
 					/>
 				</div>
 
-				<footer class="wallet-platforms">
+				<footer class="wallet-platforms" data-card="padding-5">
 					<span class="platforms-label">Platforms: </span>
 					{#each Object.keys(wallet.variants) as variant, i}
 						{i > 0 ? ', ' : ''}<strong>{variantToRunsOn(variant as Variant)}</strong>
@@ -347,7 +349,7 @@
 			{/if}
 
 			<div class="attributes-overview-container">
-				<section class="attributes-overview">
+				<section class="attributes-overview" data-card="radius-8">
 					<div class="attributes-pie">
 						<Pie
 							layout={PieLayout.FullTop}
@@ -404,6 +406,7 @@
 									<a
 										href={attributeUrl}
 										style:--accent={ratingToColor(evalAttr.evaluation.value.rating)}
+										data-card="secondary padding-3"
 										data-highlighted={highlightedAttributeId === attribute.id ? '' : undefined}
 										onmouseenter={() => {
 											highlightedAttributeId = attribute.id
@@ -478,6 +481,7 @@
 		data-icon={attribute.icon}
 	>
 		<details
+			data-card="radius-8 padding-6 border-accent"
 			open
 		>
 			<summary>
@@ -543,7 +547,11 @@
 				{/if}
 			</summary>
 
-			<div class="rating-display" data-rating={evalAttr.evaluation.value.rating.toLowerCase()}>
+			<div
+				class="rating-display"
+				data-rating={evalAttr.evaluation.value.rating.toLowerCase()}
+				data-card
+			>
 				<div class="rating-icon">
 					{ratingIcons[evalAttr.evaluation.value.rating]}
 				</div>
@@ -593,7 +601,7 @@
 			<ReferenceLinks references={toFullyQualified(evalAttr.evaluation.references || [])} />
 
 			{#if attribute.id === 'hardwareWalletSupport' && evalAttr.evaluation.value && typeof evalAttr.evaluation.value === 'object' && 'supportedHardwareWallets' in evalAttr.evaluation.value && Array.isArray(evalAttr.evaluation.value.supportedHardwareWallets) && evalAttr.evaluation.value.supportedHardwareWallets.length > 0}
-				<div class="supported-hardware-wallets">
+				<div class="supported-hardware-wallets" data-card="secondary padding-3">
 					<h5>Supported Hardware Wallets:</h5>
 					<div class="hw-wallet-list">
 						{#each evalAttr.evaluation.value.supportedHardwareWallets as hwWallet}
@@ -622,7 +630,7 @@
 			{/if}
 
 			<div class="attribute-accordions">
-				<details>
+				<details data-card="secondary padding-0 radius-4">
 					<summary>
 						<h4>
 							{evalAttr.evaluation.value.rating === Rating.PASS || evalAttr.evaluation.value.rating === Rating.UNRATED ? 'Why does this matter?' : 'Why should I care?'}
@@ -640,7 +648,7 @@
 					</section>
 				</details>
 
-				<details>
+				<details data-card="secondary padding-0 radius-4">
 					<summary>
 						<h4>
 							{attribute.wording?.midSentenceName === null ? attribute.wording?.howIsEvaluated ?? 'How is this evaluated?' : `How is ${attribute.wording?.midSentenceName ?? 'this'} evaluated?`}
@@ -659,11 +667,11 @@
 								<hr />
 
 								{#if attribute.ratingScale.display === 'simple'}
-									<div class="simple-scale">
+									<div class="simple-scale" data-card="radius-4">
 										<Typography content={attribute.ratingScale.content} />
 									</div>
 								{:else}
-									<div class="example-scale">
+									<div class="example-scale" data-card="radius-4">
 										{#if attribute.ratingScale.exhaustive}
 											<h5>A few examples:</h5>
 										{/if}
@@ -737,7 +745,7 @@
 				</details>
 
 				{#if howToImprove}
-					<details>
+					<details data-card="secondary padding-0 radius-4">
 						<summary>
 							<h4>
 								{#if attribute.wording?.midSentenceName === null}
@@ -766,7 +774,7 @@
 							/>
 
 							{#if override}
-								<div class="note">
+								<div class="note" data-card="secondary padding-3">
 									<div class="icon">ℹ️</div>
 									<div>
 										<p>
@@ -1101,10 +1109,8 @@
 				grid-template-columns: auto 1fr;
 				align-items: center;
 				gap: 0.5rem;
-				padding: 0.5rem;
-				border-radius: var(--border-radius);
+				/* padding handled by data-card */
 				border: 1px solid var(--border-color);
-				background-color: var(--background-primary);
 				color: var(--text-primary);
 				text-decoration: none;
 				font-weight: 500;
@@ -1133,9 +1139,6 @@
 
 		.wallet-platforms {
 			font-size: 0.9rem;
-			padding: 1rem;
-			background-color: var(--background-primary);
-			border-radius: var(--border-radius);
 			color: var(--text-secondary);
 
 			.variant-disclaimer {
@@ -1263,9 +1266,6 @@
 	}
 
 	.attributes-overview {
-		background-color: var(--background-primary);
-		border-radius: var(--border-radius-lg);
-		padding: 1rem;
 		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
 		display: grid;
@@ -1327,8 +1327,7 @@
 					gap: 0.5rem;
 					align-items: center;
 					padding: 0.5rem;
-					background-color: var(--background-secondary);
-					border-radius: var(--border-radius);
+					/* background handled by data-card on anchor; hover state overrides */
 					color: var(--text-primary);
 					text-decoration: none;
 					font-size: 0.875rem;
@@ -1526,11 +1525,6 @@
 
 		> details {
 			display: grid;
-			padding: 1.5rem;
-			border-radius: var(--border-radius-lg);
-			border: 2px solid var(--accent);
-			background-color: var(--background-primary);
-			color: var(--text-primary);
 			scroll-margin-top: 3.5rem;
 			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 			transition:
@@ -1583,9 +1577,7 @@
 				grid-template-columns: auto 1fr;
 				gap: 1rem;
 				font-weight: 500;
-				padding: 1rem;
 				background-color: color-mix(in srgb, var(--accent) 5%, var(--background-secondary));
-				border-radius: var(--border-radius);
 				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
 				@container (max-width: 400px) {
@@ -1800,9 +1792,6 @@
 
 		.simple-scale,
 		.example-scale {
-			padding: 1rem;
-			background-color: var(--background-tertiary);
-			border-radius: var(--border-radius);
 			display: grid;
 			gap: 1rem;
 
@@ -1837,9 +1826,6 @@
 		display: grid;
 		grid-template-columns: auto 1fr;
 		gap: 0.5rem;
-		padding: 1rem;
-		background-color: var(--background-secondary);
-		border-radius: var(--border-radius);
 
 		.icon {
 			font-size: 1.2rem;
@@ -1851,9 +1837,6 @@
 	}
 
 	.supported-hardware-wallets {
-		padding: 1rem;
-		background-color: var(--background-secondary);
-		border-radius: var(--border-radius);
 		display: grid;
 		gap: 0.5rem;
 
@@ -1896,8 +1879,6 @@
 		details {
 			--details-transition-duration: 0.25s;
 			--details-transform-closed: translateY(-4px);
-			background-color: var(--background-secondary);
-			border-radius: var(--border-radius);
 			overflow: hidden;
 
 			summary {

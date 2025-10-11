@@ -32,7 +32,7 @@
 
 <div 
 	class="attribute-group-summary"
-	data-in-tooltip={isInTooltip ? '' : undefined}
+	data-card={isInTooltip ? 'radius p-sm border-accent' : undefined}
 	style:--accent={
 		groupScore?.score !== undefined ?
 			groupScore.hasUnratedComponent ?
@@ -69,13 +69,6 @@
 		display: grid;
 		gap: 1em;
 		line-height: 1.4;
-
-		&[data-in-tooltip] {
-			padding: 0.75rem;
-			border-radius: 0.5rem;
-			border: 2px solid color-mix(in srgb, var(--accent) 80%, transparent);
-			background-color: var(--background-primary);
-		}
 
 		header {
 			display: flex;

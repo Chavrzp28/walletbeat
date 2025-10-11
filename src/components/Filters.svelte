@@ -112,6 +112,7 @@
 
 <form
 	class="menu"
+	data-card="padding-4 radius-4"
 	{...restProps}
 >
 	{#each (
@@ -293,10 +294,6 @@
 		display: flex;
 		align-items: start;
 		gap: 1.5rem;
-		padding: 1rem;
-		background-color: rgba(255, 255, 255, 0.05);
-		border-radius: 0.5em;
-		border: 1px solid rgba(255, 255, 255, 0.1);
 
 		> [data-filter-group] {
 			display: grid;

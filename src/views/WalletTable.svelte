@@ -576,7 +576,7 @@
 				</div>
 
 				{#snippet ExpandedContent({ isInTooltip }: { isInTooltip?: boolean })}
-					<div class="wallet-summary" class:in-tooltip={isInTooltip}>
+					<div class="wallet-summary" data-card={isInTooltip ? 'radius p-sm' : undefined}>
 						{#if selectedVariant && !wallet.variants[selectedVariant]}
 							<p>
 								{wallet.metadata.displayName} does not have a {selectedVariant} version.
@@ -1212,9 +1212,7 @@
 		line-height: 1.6;
 		text-align: start;
 
-		&.in-tooltip {
-			background-color: var(--background-primary);
-			padding: 1em;
+		&[data-card] {
 			font-size: 0.75em;
 		}
 

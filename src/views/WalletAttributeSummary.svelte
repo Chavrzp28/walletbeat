@@ -34,7 +34,7 @@
 
 <div 
 	class="attribute-summary"
-	data-in-tooltip={isInTooltip ? '' : undefined}
+	data-card={isInTooltip ? 'radius p-sm border-accent' : undefined}
 	style:--accent={ratingToColor(attribute.evaluation.value.rating)}
 >
 	<header>
@@ -91,13 +91,6 @@
 		display: grid;
 		gap: 1em;
 		line-height: 1.4;
-
-		&[data-in-tooltip] {
-			padding: 0.75rem;
-			border-radius: 0.5rem;
-			border: 2px solid var(--accent);
-			background-color: var(--background-primary);
-		}
 
 		header {
 			display: flex;

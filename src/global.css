@@ -333,9 +333,58 @@ span svg {
 
 [data-card] {
 	background-color: var(--background-primary);
-	border-radius: 8px;
-	border: 1px solid var(--border);
-	padding: 16px;
+	border-radius: 0.5em;
+	padding: 1em;
+
+	&[data-card~="secondary"] {
+		background-color: var(--background-secondary);
+		border-color: var(--border-color);
+	}
+
+	&[data-card~="radius-1"] {
+		border-radius: 0.125em;
+	}
+	&[data-card~="radius-2"] {
+		border-radius: 0.25em;
+	}
+	&[data-card~="radius-3"] {
+		border-radius: 0.375em;
+	}
+	&[data-card~="radius-4"] {
+		border-radius: 0.5em;
+	}
+	&[data-card~="radius-6"] {
+		border-radius: 0.75em;
+	}
+	&[data-card~="radius-8"] {
+		border-radius: 1em;
+	}
+
+	&[data-card~="padding-0"] {
+		padding: 0em;
+	}
+	&[data-card~="padding-1"] {
+		padding: 0.25em;
+	}
+	&[data-card~="padding-2"] {
+		padding: 0.5em;
+	}
+	&[data-card~="padding-3"] {
+		padding: 0.75em;
+	}
+	&[data-card~="padding-4"] {
+		padding: 1em;
+	}
+	&[data-card~="padding-5"] {
+		padding: 1.25em;
+	}
+	&[data-card~="padding-6"] {
+		padding: 1.5em;
+	}
+
+	&[data-card~="border-accent"] {
+		border: 2px solid color-mix(in srgb, var(--accent) 90%, transparent);
+	}
 }
 
 [data-badge] {
