@@ -1623,7 +1623,7 @@
 					font-size: 0.85rem;
 					font-weight: 500;
 					cursor: pointer;
-					transition: all 0.2s ease;
+					transition-property: all;
 					min-width: 2rem;
 					color: var(--text-primary);
 					position: relative;
@@ -1775,7 +1775,7 @@
 				border-radius: var(--border-radius-sm);
 				font-size: 0.85rem;
 				font-weight: 500;
-				transition: all 0.2s ease;
+				transition-property: all;
 				border: 1px solid transparent;
 				box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 

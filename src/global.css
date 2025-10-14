@@ -106,25 +106,6 @@ html.dark {
 	transition-property: background-color, color;
 }
 
-:root,
-::before,
-::after,
-[popover] {
-	transition-duration: 0.25s;
-	transition-timing-function: var(--transition-easeOutExpo);
-}
-::details-content,
-::picker(select) {
-	transition-duration: 0.25s;
-	transition-timing-function: var(--transition-easeOutExpo);
-	transition-behavior: allow-discrete;
-}
-
-* {
-	transition-duration: inherit;
-	transition-timing-function: inherit;
-}
-
 *,
 ::before,
 ::after,
@@ -136,9 +117,26 @@ html.dark {
 	padding: 0;
 	transition-property: none;
 	transition-behavior: allow-discrete;
+	transition-duration: inherit;
+	transition-timing-function: inherit;
 	interpolate-size: allow-keywords;
 
 	scroll-behavior: smooth;
+}
+
+:root,
+::before,
+::after,
+[popover] {
+	transition-duration: 0.25s;
+	transition-timing-function: var(--transition-easeOutExpo);
+}
+
+::details-content,
+::picker(select) {
+	transition-duration: 0.25s;
+	transition-timing-function: var(--transition-easeOutExpo);
+	transition-behavior: allow-discrete;
 }
 
 [hidden] {
@@ -466,7 +464,6 @@ span svg {
 	border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
 	font-weight: 600;
 	line-height: 1;
-	transition: all 0.2s ease;
 
 	&[data-badge~='small'] {
 		font-size: 0.75em;
