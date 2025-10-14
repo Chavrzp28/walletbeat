@@ -248,7 +248,7 @@ function evaluateChainAbstraction(
 				- Insufficient liquidity on the target chain
 				- Bridge correctness failure
 				- Risks involved in wrapped assets (when applicable)
-				- Risks involved in L2-to-L2 interop (when applicable)
+				- Risks involved in L2-to-L2 interoperability (when applicable)
 
 				Bridging assets to an L2 chain also inherently implies accepting the
 				risk of that L2 chain, which [our friends at L2BEAT](https://l2beat/)

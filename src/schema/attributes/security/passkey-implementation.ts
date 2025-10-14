@@ -104,7 +104,7 @@ function smoothCryptoLibImplementation(
 		value: {
 			id: 'smooth_crypto_lib_implementation',
 			rating: Rating.PASS,
-			displayName: 'Audited passkey implementation SCL',
+			displayName: 'Audited passkey implementation: Smooth Crypto Lib',
 			shortExplanation: mdSentence(
 				'{{WALLET_NAME}} implements passkeys using [Smooth Crypto Lib](https://github.com/get-smooth/crypto-lib).',
 			),

@@ -107,7 +107,7 @@ export const bitboxWallet: HardwareWallet = {
 							ref: [
 								{
 									explanation:
-										'BitBoxApp uses EtherScan to query Ethereum and ERC20 token account information',
+										'BitBoxApp uses Etherscan to query Ethereum and ERC20 token account information',
 									url: 'https://bitbox.swiss/policies/privacy-policy/',
 								},
 							],

@@ -161,9 +161,17 @@ function staggeredRequests(references: ReferenceArray): Evaluation<MultiAddressC
 			),
 			__brand: brand,
 		},
-		details: paragraph(
-			'When configured with multiple addresses, {{WALLET_NAME}} makes requests that contain only one of your addresses at a time. While each of these requests go to the same endpoint, they are staggered over time. Depending on the delay between such requests, this can provide an imperfect degree of privacy, as this makes it harder for the endpoint to correlate these requests as coming from the same user due to the time elapsed between the requests. However, since these requests are still unproxied, the endpoint is still able to correlate the requests due to their identical origin IP address.',
-		),
+		details: paragraph(`
+			When configured with multiple addresses, {{WALLET_NAME}} makes requests
+			that contain only one of your addresses at a time. While each of these
+			requests go to the same endpoint, they are staggered over time.
+			Depending on the delay between such requests, this can provide some
+			degree of privacy, as this makes it harder for the endpoint
+			to correlate these requests as coming from the same user due to the
+			time elapsed between the requests.
+			However, since these requests are still unproxied, the endpoint is
+			still able to correlate the requests due to their identical origin IP address.
+		`),
 		howToImprove: paragraph(
 			'{{WALLET_NAME}} should ensure requests are proxied through distinct proxies in order to prevent the RPC endpoint from learning the correlation between addresses. This can be done through the use of privacy solutions such as Oblivious HTTP, Tor, and others.',
 		),
@@ -183,7 +191,7 @@ function separateCircuits(references: ReferenceArray): Evaluation<MultiAddressCo
 			__brand: brand,
 		},
 		details: paragraph(
-			'When configured with multiple addresses, {{WALLET_NAME}} makes requests that contain only one of your addresses at a time. While each of these requests go to the same endpoint, they each use a different proxy circuit in order to appear as coming from different IPs from the perspective of the endpoint. This provides an imperfect degree of privacy, as it makes it harder for the endpoint to correlate these requests as coming from the same user. However, since these requests are all made together simultaneously, the endpoint is still able to correlate them by grouping them across time.',
+			'When configured with multiple addresses, {{WALLET_NAME}} makes requests that contain only one of your addresses at a time. While each of these requests go to the same endpoint, they each use a different proxy circuit in order to appear as coming from different IP addresses from the perspective of the endpoint. This provides an imperfect degree of privacy, as it makes it harder for the endpoint to correlate these requests as coming from the same user. However, since these requests are all made together simultaneously, the endpoint is still able to correlate them by grouping them across time.',
 		),
 		howToImprove: paragraph(
 			'{{WALLET_NAME}} should add randomized delays between refreshes of separate addresses in order to reduce time-based correlatability of addresses by the RPC endpoint.',
@@ -207,7 +215,7 @@ function staggeredAndSeparateCircuits(
 			__brand: brand,
 		},
 		details: paragraph(
-			'When configured with multiple addresses, {{WALLET_NAME}} makes requests that contain only one of your addresses at a time. While each of these requests go to the same endpoint, they each use a different proxy circuit in order to appear as coming from different IPs from the perspective of the endpoint, and they are staggered over time. This provides a good degree of privacy, as it makes it harder for the endpoint to correlate these requests as coming from the same user. From the perspective of the endpoint, these requests come in from random IPs at random times, avoiding both IP-based and time-based correlation.',
+			'When configured with multiple addresses, {{WALLET_NAME}} makes requests that contain only one of your addresses at a time. While each of these requests go to the same endpoint, they each use a different proxy circuit in order to appear as coming from different IP addresses from the perspective of the endpoint, and they are staggered over time. This provides a good degree of privacy, as it makes it harder for the endpoint to correlate these requests as coming from the same user. From the perspective of the endpoint, these requests come in from random IP addresses at random times, avoiding both IP-based and time-based correlation.',
 		),
 		references,
 	}

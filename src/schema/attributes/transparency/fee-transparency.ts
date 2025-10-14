@@ -312,7 +312,7 @@ function evaluateWorstFeeDisplay(
 	const worstFeeTypesMarkdown = (indent: string): string =>
 		markdownListFormat(nonEmptyMap(worstFeeDisplay.feeTypes, feeTypeDescription), {
 			singleItemTemplate: 'ITEM.',
-			multiItemPrefix: ' the following transaction types:' + indent,
+			multiItemPrefix: 'the following transaction types:' + indent,
 			multiItemTemplate: indent + '* ITEM',
 			multiItemSuffix: indent,
 			uppercaseFirstCharacterOfListItems: true,

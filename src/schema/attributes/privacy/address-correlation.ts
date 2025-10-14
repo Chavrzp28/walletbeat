@@ -82,7 +82,7 @@ function linkable(
 					return {
 						rating: Rating.PARTIAL,
 						howToImprove:
-							"The onchain registry for {{WALLET_PSEUDONYM_PLURAL}} should either not exist onchain, or should be structured such that a user's main wallet address may not be derived from it. The latter may be implemented using a stealth address registry.",
+							"The onchain registry for {{WALLET_PSEUDONYM_PLURAL}} should either not exist onchain, or should be structured such that a user's main wallet address may not be derived from it. The latter can be implemented using a stealth address registry.",
 					}
 				}
 

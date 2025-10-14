@@ -64,7 +64,7 @@ function basicHardwareWalletIntegration(
 		howToImprove: mdParagraph(`
 			{{WALLET_NAME}} should implement full EIP-712 clear signing support for transactions with Safe, Aave, and other major DeFi platforms.
 			This would ensure users can verify all transaction details on their hardware devices before signing.
-			{{WALLET_NAME}} should make sure to support the latest hardware sdk such as [GridPlus's](https://github.com/GridPlus/gridplus-sdk)
+			{{WALLET_NAME}} should make sure to support the latest hardware SDK such as [GridPlus SDK](https://github.com/GridPlus/gridplus-sdk)
 			or [Ledger's device management kit](https://developers.ledger.com/docs/device-interaction/getting-started).
 		`),
 	}
