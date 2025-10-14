@@ -32,8 +32,7 @@
 	</data>
 {:else}
 	<data
-		class="badge"
-		data-badge-size={size}
+		data-badge={size}
 		value="UNRATED"
 		title="*contains unrated components"
 	>

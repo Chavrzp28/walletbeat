@@ -424,7 +424,7 @@
 									>
 										<span>{attribute.displayName}</span>
 										<data
-											class="rating"
+											data-badge="small"
 											value={evalAttr.evaluation.value.rating}
 										>{evalAttr.evaluation.value.rating}</data>
 									</a>
@@ -552,7 +552,7 @@
 						{/if}
 						
 						<data
-							class="rating"
+							data-badge="medium"
 							value={evalAttr.evaluation.value.rating}
 						>{evalAttr.evaluation.value.rating}</data>
 					</div>
@@ -1332,19 +1332,6 @@
 				padding: 2rem 0;
 			}
 		}
-	}
-
-	.score,
-	.rating {
-		font-size: 0.75em;
-		font-weight: 500;
-		padding: 0.25em 0.5em;
-		border-radius: var(--border-radius-sm);
-		background-color: color-mix(in srgb, var(--accent) 33%, transparent);
-	}
-
-	.score {
-		font-size: 1em;
 	}
 
 	@container (min-width: 1140px) {

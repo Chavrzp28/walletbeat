@@ -349,7 +349,8 @@ span svg {
 	}
 }
 
-[data-row] {
+[data-row],
+[data-badge] {
 	display: inline flex;
 	justify-content: space-between;
 	align-items: center;
@@ -456,28 +457,28 @@ span svg {
 }
 
 [data-badge] {
-	display: inline-flex;
-	align-items: center;
-	padding: 0.25em 0.5em;
+	flex-shrink: 0;
+
+	column-gap: 0;
+
 	border-radius: 0.375em;
-	background-color: color-mix(in srgb, var(--accent) 20%, transparent);
+	background-color: color-mix(in srgb, var(--accent) 33%, transparent);
 	border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+
 	font-weight: 600;
 	line-height: 1;
 
-	&[data-badge~='small'] {
+	&[data-badge~="small"] {
 		font-size: 0.75em;
-		padding: 0.3em 0.5em;
+		padding: 0.4em 0.5em;
 	}
-
-	&[data-badge~='medium'] {
+	&[data-badge~="medium"] {
 		font-size: 0.875em;
-		padding: 0.35em 0.6em;
+		padding: 0.45em 0.6em;
 	}
-
-	&[data-badge~='large'] {
+	&[data-badge~="large"] {
 		font-size: 1em;
-		padding: 0.4em 0.7em;
+		padding: 0.5em 0.7em;
 	}
 }
 
