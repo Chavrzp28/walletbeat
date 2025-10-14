@@ -30,6 +30,8 @@ const currentPathname = Astro.url.pathname
 >
 	<header
 		data-sticky
+		data-row
+		data-scroll-container
 	>
 		<a href="/">
 			<picture>
@@ -44,7 +46,7 @@ const currentPathname = Astro.url.pathname
 			</picture>
 		</a>
 
-		<menu>
+		<menu data-row="gap-2">
 			<li>
 				<button
 					type="button"
@@ -105,9 +107,6 @@ const currentPathname = Astro.url.pathname
 			block-size: var(--navigation-mobile-blockSize);
 			box-shadow: 0 0 0 var(--separator-width) var(--border-color);
 
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
 			padding: 1rem;
 
 			a {
@@ -121,10 +120,6 @@ const currentPathname = Astro.url.pathname
 			}
 
 			menu {
-				display: flex;
-				align-items: center;
-				gap: 0.5rem;
-
 				li {
 					display: contents;
 				}
@@ -150,9 +145,6 @@ const currentPathname = Astro.url.pathname
 		}
 
 		#nav-menu {
-			display: grid;
-			align-content: start;
-			gap: 1em;
 			padding: 1rem 0.75rem;
 
 			&[data-sticky-container] {

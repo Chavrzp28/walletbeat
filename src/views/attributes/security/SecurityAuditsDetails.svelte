@@ -63,14 +63,14 @@
 		/>
 	{/if}
 
-    <div class="audits-container" data-card="secondary padding-6">
+	<div class="audits-container" data-card="secondary padding-6">
 		<h4>Audits</h4>
 
 		<ul class="audits-list">
 			{#each securityAuditsSorted as audit}
 				<li>
-					<article>
-						<header>
+					<article data-column>
+						<header data-row="wrap">
 							{#if isUrl(audit.auditor.url)}
 								<cite
 									><a
@@ -132,13 +132,10 @@
 
 
 <style>
-    .audits-container {
-        max-height: 300px;
-        overflow-y: auto;
-
-        display: grid;
-        gap: 1em;
-    }
+	.audits-container {
+		max-height: 300px;
+		overflow-y: auto;
+	}
 
 	.audits-list {
 		list-style-type: revert;
@@ -158,18 +155,6 @@
 
 			> :global(* + *) {
 				margin-top: 0.5em;
-			}
-		}
-
-		article {
-			display: grid;
-			gap: 1em;
-
-			header {
-				display: flex;
-				flex-wrap: wrap;
-				justify-content: space-between;
-				align-items: center;
 			}
 		}
 	}

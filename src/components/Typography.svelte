@@ -36,7 +36,7 @@
 {:else if content.contentType === ContentType.MARKDOWN}
 	{@const text = strings ? renderStrings(content.markdown, strings) : content.markdown}
 
-	<div class="markdown">
+	<div class="markdown" data-column="gap-5">
 		{@html parseMarkdown(text)}
 	</div>
 {/if}
@@ -44,9 +44,6 @@
 
 <style>
 	.markdown {
-		display: grid;
-		gap: 1.25em;
-
 		:global {
 			ul, ol {
 				list-style-type: revert;

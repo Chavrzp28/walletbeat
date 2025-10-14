@@ -221,8 +221,11 @@ details {
 
 		&::after {
 			content: '';
+
+			flex-shrink: 0;
 			width: 0.75em;
 			height: 0.75em;
+
 			background-color: currentColor;
 			mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 3'%3E%3Cpath d='m.5 1 1 1 1-1' fill='none' stroke='black' stroke-width='0.5' stroke-linecap='round' stroke-linejoin='round' /%3E%3C/svg%3E") no-repeat;
 			opacity: 0.66;
@@ -272,43 +275,6 @@ label:has(> input:is([type="checkbox"], [type="radio"])) {
 	padding: 0.6em 0.8em;
 }
 
-[data-stack] {
-	display: grid;
-	grid: 'stack';
-
-	& > *,
-	&::before,
-	&::after {
-		grid-area: stack;
-	}
-}
-
-[data-column] {
-	display: grid;
-	grid-template-columns: minmax(0, 1fr);
-	gap: 1rem;
-	align-content: start;
-
-	&[data-column~="inline"] {
-		gap: 0.25rem;
-	}
-}
-
-[data-row] {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	gap: 0.75em;
-
-	&[data-row~="inline"] {
-		gap: 0.5ch;
-	}
-
-	&[data-row~="wrap"] {
-		flex-wrap: wrap;
-	}
-}
-
 code {
 	/* Why monospace twice? See https://github.com/necolas/normalize.css/issues/519#issuecomment-197131966 */
 	font-family: monospace, monospace;
@@ -328,6 +294,110 @@ span svg {
 
 	&:not([fill="none"]) {
 		fill: currentColor;
+	}
+}
+
+[data-stack] {
+	display: grid;
+	grid: 'stack';
+
+	& > *,
+	&::before,
+	&::after {
+		grid-area: stack;
+	}
+}
+
+[data-column],
+[data-card] {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: 1em;
+	align-content: start;
+
+	&[data-column~="start"] {
+		justify-items: start;
+	}
+	&[data-column~="center"] {
+		justify-items: center;
+	} 
+	&[data-column~="end"] {
+		justify-items: end;
+	}
+
+	&[data-column~="gap-0"] {
+		row-gap: 0em;
+	}
+	&[data-column~="gap-1"] {
+		row-gap: 0.25em;
+	}
+	&[data-column~="gap-2"] {
+		row-gap: 0.5em;
+	}
+	&[data-column~="gap-3"] {
+		row-gap: 0.75em;
+	}
+	&[data-column~="gap-4"] {
+		row-gap: 1em;
+	}
+	&[data-column~="gap-5"] {
+		row-gap: 1.25em;
+	}
+	&[data-column~="gap-6"] {
+		row-gap: 1.5em;
+	}
+	&[data-column~="gap-8"] {
+		row-gap: 2em;
+	}
+}
+
+[data-row] {
+	display: inline flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 1em;
+
+	&[data-row~="wrap"] {
+		flex-wrap: wrap;
+
+		&:not([data-row~="start"]):not([data-row~="center"]):not([data-row~="end"]) > :nth-child(2):last-child {
+			margin-inline-start: auto;
+		}
+	}
+
+	&[data-row~="start"] {
+		justify-content: start;
+	}
+	&[data-row~="center"] {
+		justify-content: center;
+	}
+	&[data-row~="end"] {
+		justify-content: end;
+	}
+
+	&[data-row~="gap-0"] {
+		column-gap: 0em;
+	}
+	&[data-row~="gap-1"] {
+		column-gap: 0.25em;
+	}
+	&[data-row~="gap-2"] {
+		column-gap: 0.5em;
+	}
+	&[data-row~="gap-3"] {
+		column-gap: 0.75em;
+	}
+	&[data-row~="gap-4"] {
+		column-gap: 1em;
+	}
+	&[data-row~="gap-5"] {
+		column-gap: 1.25em;
+	}
+	&[data-row~="gap-6"] {
+		column-gap: 1.5em;
+	}
+	&[data-row~="gap-8"] {
+		column-gap: 2em;
 	}
 }
 

@@ -439,6 +439,7 @@
 
 		svg {
 			display: grid;
+			max-width: 100%;
 
 			.slice {
 				--slice-scale: 1;

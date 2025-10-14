@@ -26,7 +26,7 @@
 					{/if}
 
 					<div class="urls">
-						<ul>
+						<ul data-row="start gap-2">
 							{#each ref.urls as url}
 								<li data-card="padding-3">
 									<a
@@ -71,23 +71,16 @@
 			margin-top: 1em;
 		}
 
-        > li {
-            padding-left: 2em;
+		> li {
+			padding-left: 2em;
 
 			> * + * {
 				margin-top: 1em;
 			}
 
-            ul {
+			ul {
 				list-style: none;
-				display: flex;
-				flex-wrap: wrap;
-				gap: 1em;
 				padding: 0;
-
-				li {
-                    /* data-card handles background, radius and padding */
-				}
 			}
 		}
 	}

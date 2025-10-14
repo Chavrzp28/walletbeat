@@ -35,10 +35,11 @@
 <div 
 	class="attribute-summary"
 	data-card={isInTooltip ? 'radius p-sm border-accent' : undefined}
+	data-column
 	style:--accent={ratingToColor(attribute.evaluation.value.rating)}
 >
-	<header>
-		<h4>
+	<header data-row="center gap-3 wrap">
+		<h4 data-row="gap-2">
 			<span>{attribute.evaluation.value.icon ?? attribute.attribute.icon}</span>
 			{attribute.attribute.displayName}
 		</h4>
@@ -88,22 +89,13 @@
 <style>
 	.attribute-summary {
 		font-size: smaller;
-		display: grid;
-		gap: 1em;
 		line-height: 1.4;
 
 		header {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			flex-wrap: wrap;
-			gap: 0.5em 0.75em;
+			row-gap: 0.5em;
 
 			h4 {
 				font-weight: 600;
-				display: flex;
-				align-items: center;
-				gap: 0.33em;
 			}
 		}
 

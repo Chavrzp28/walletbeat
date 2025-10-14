@@ -179,8 +179,8 @@
 >
 	{#snippet Cell({ row: wallet, column, value })}
 		{#if column.id === 'wallet'}
-			<div class="wallet-info">
-				<span class="row-count"></span>
+			<div class="wallet-info" data-row>
+				<span class="row-count" data-row="center"></span>
 
 				<img
 					src={`/images/wallets/${wallet.metadata.id}.svg`}
@@ -327,19 +327,13 @@
 
 <style>
 	.wallet-info {
-		display: flex;
-		align-items: center;
 		gap: 0.85em;
 		padding: 0.5em 0;
 
 		.row-count {
-			display: inline-flex;
-			justify-content: center;
-			align-items: center;
 			width: 1.25em;
 			height: 1.25em;
 
-			text-align: center;
 			font-weight: 600;
 			color: var(--text-secondary);
 

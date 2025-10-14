@@ -112,7 +112,8 @@
 
 <form
 	class="menu"
-	data-card="padding-4 radius-4"
+	data-card="padding-5 radius-4"
+	data-row="gap-6 wrap"
 	{...restProps}
 >
 	{#each (
@@ -133,6 +134,7 @@
 
 		<fieldset
 			data-filter-group={group.id}
+			data-column="gap-1"
 		>
 			<legend>{group.label}</legend>
 
@@ -174,12 +176,13 @@
 					<!-- Radio Button Group -->
 					{@const activeFilter = Array.from(activeFilters.intersection(filters))[0] ?? null}
 
-					<div class="group">
+					<div class="group" data-column="gap-1">
 						{#each visibleFilters as filter}
 							{@const count = filterItems(activeFilters.difference(filters).union(new Set([filter]))).length}
 							
 							<label
 								data-filter={filter.id}
+								data-column="gap-3"
 								class:disabled={count === 0}
 							>
 								<input
@@ -240,7 +243,7 @@
 
 				{:else if group.displayType === 'group'}
 					<!-- Checkbox Group (default and group with multiple) -->
-					<div class="group">
+					<div class="group" data-column="gap-1">
 						{#each visibleFilters as filter}
 							{@const isChecked = activeFilters.has(filter)}
 							{@const count = filterItems(
@@ -252,6 +255,7 @@
 
 							<label
 								data-filter={filter.id}
+								data-column="gap-3"
 								class:disabled={count === 0 && !isChecked}
 							>
 								<input
@@ -291,12 +295,9 @@
 
 <style>
 	form {
-		display: flex;
 		align-items: start;
-		gap: 1.5rem;
 
 		> [data-filter-group] {
-			display: grid;
 			gap: 0.33em;
 
 			&:is(fieldset) {
@@ -312,8 +313,6 @@
 			}
 
 			> .group {
-				display: grid;
-				gap: 0.25em;
 			}
 
 			> select[multiple] {
@@ -336,11 +335,9 @@
 			:global(option) {
 				cursor: pointer;
 
-				display: grid;
 				align-items: center;
 				grid-template-columns: 1em 1fr auto;
 				grid-auto-flow: column;
-				gap: 0.85em;
 
 				transition-property: background-color, border-color, color;
 

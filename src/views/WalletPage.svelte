@@ -209,10 +209,10 @@
 			Table of contents
 		</div>
 
-		<header id="top">
-			<div>
+		<header id="top" data-column="gap-6">
+			<div data-row="wrap">
 				<a href="#top">
-					<h1>
+					<h1 data-row="gap-2">
 						<img
 							class="wallet-icon"
 							alt={wallet.metadata.displayName}
@@ -222,18 +222,19 @@
 					</h1>
 				</a>
 
-				<div>
+				<div data-row="gap-2">
 					<span>Walletbeat score: </span>
 					<ScoreBadge score={overallScore} size="large" />
 				</div>
 			</div>
 
-			<section class="wallet-overview">
-				<nav class="wallet-links">
+			<section class="wallet-overview" data-column="gap-6">
+				<nav class="wallet-links" data-column="gap-2 wrap">
 					<a
 						href={typeof wallet.metadata.url === 'string' ? wallet.metadata.url : wallet.metadata.url?.url ?? '#'}
 						class="wallet-link website"
 						data-card="padding-2"
+						data-row="gap-2 start"
 						target="_blank"
 						rel="noopener noreferrer"
 					>
@@ -245,6 +246,7 @@
 							href={typeof wallet.metadata.repoUrl === 'string' ? wallet.metadata.repoUrl : wallet.metadata.repoUrl?.url ?? '#'}
 							class="wallet-link repo"
 							data-card="padding-2"
+							data-row="gap-2 start"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
@@ -261,22 +263,26 @@
 				</div>
 
 				<footer class="wallet-platforms" data-card="padding-5">
-					<span class="platforms-label">Platforms: </span>
-					{#each Object.keys(wallet.variants) as variant, i}
-						{i > 0 ? ', ' : ''}<strong>{variantToRunsOn(variant as Variant)}</strong>
-					{/each}.
+					<p>
+						<span class="platforms-label">Platforms: </span>
+						{#each Object.keys(wallet.variants) as variant, i}
+							{i > 0 ? ', ' : ''}<strong>{variantToRunsOn(variant as Variant)}</strong>
+						{/each}.
+					</p>
 
-					{#if singleVariant === null}
-						<span class="variant-disclaimer">
-							The ratings below vary depending on the version.
-							{#if pickedVariant === null}
-								Select a version to see version-specific ratings.
-							{:else}
-								You are currently viewing the ratings for the
-								<strong>{variantToName(pickedVariant, false)}</strong> version.
-							{/if}
-						</span>
-					{/if}
+					<p>
+						{#if singleVariant === null}
+							<span class="variant-disclaimer">
+								The ratings below vary depending on the version.
+								{#if pickedVariant === null}
+									Select a version to see version-specific ratings.
+								{:else}
+									You are currently viewing the ratings for the
+									<strong>{variantToName(pickedVariant, false)}</strong> version.
+								{/if}
+							</span>
+						{/if}
+					</p>
 				</footer>
 			</section>
 		</header>
@@ -323,11 +329,12 @@
 			class="attribute-group"
 			id={slugifyCamelCase(attrGroup.id)}
 			aria-label={attrGroup.displayName}
+			data-column
 			data-score={scoreLevel}
 			data-icon={attrGroup.icon}
 			style:--accent={scoreToColor(score?.score)}
 		>
-			<header data-sticky>
+			<header data-sticky data-row>
 				<a href={`#${slugifyCamelCase(attrGroup.id)}`}>
 					<h2>
 						{attrGroup.displayName}
@@ -396,10 +403,10 @@
 						</Pie>
 					</div>
 
-					<div class="attributes-list">
+					<div class="attributes-list" data-column="gap-3">
 						<h3>Attribute Details:</h3>
 
-						<ul>
+						<ul data-column="gap-2">
 							{#each attributes as { attribute, evalAttr }}
 								{@const attributeUrl = `#${slugifyCamelCase(attribute.id)}`}
 								<li>
@@ -428,7 +435,7 @@
 				</section>
 			</div>
 
-			<div class="attributes">
+			<div class="attributes" data-column>
 				{#each attributes as { attribute, evalAttr }}
 					{@render attributeSnippet({
 						attrGroupId: attrGroup.id,
@@ -481,11 +488,12 @@
 		data-icon={attribute.icon}
 	>
 		<details
-			data-card="radius-8 padding-6 border-accent"
+			data-card="radius-8 padding-0 border-accent"
+			data-column="gap-0"
 			open
 		>
-			<summary>
-				<header>
+			<summary data-row>
+				<header data-row>
 					<div>
 						<a href={`#${slugifyCamelCase(attribute.id)}`}>
 							<h3 data-icon={attribute.icon}>
@@ -502,49 +510,53 @@
 							</div>
 						{/if}
 					</div>
-					
-					<data
-						class="rating"
-						value={evalAttr.evaluation.value.rating}
-					>{evalAttr.evaluation.value.rating}</data>
-				</header>
 
-				{#if relevantVariants.length === 1}
-					<div class="variant-controls">
-						<div
-							class="variant-indicator"
-							title={`Only rated on the ${variantToName(relevantVariants[0], false)} version`}
-						>
-							<small>Only</small>
-							<span class="variant-badge">
-								<span class="variant-icon" aria-hidden="true"
-									>{@html variants[relevantVariants[0]].icon}</span
+					<div data-column="end gap-2">
+						{#if relevantVariants.length === 1}
+							<div class="variant-controls" data-row>
+								<div
+									class="variant-indicator"
+									data-row="gap-2"
+									title={`Only rated on the ${variantToName(relevantVariants[0], false)} version`}
 								>
-							</span>
-						</div>
+									<small>Only</small>
+									<span class="variant-badge" data-row="gap-1">
+										<span class="variant-icon" aria-hidden="true"
+											>{@html variants[relevantVariants[0]].icon}</span
+										>
+									</span>
+								</div>
+							</div>
+						{:else if relevantVariants.length > 1}
+							<fieldset class="variant-selector" data-row="gap-2 wrap">
+								<legend>
+									{pickedVariant === null ? 'Version:' : 'Viewing:'}
+								</legend>
+								<div class="variant-buttons" data-row="gap-1 wrap">
+									{#each relevantVariants as variant}
+										<button
+											class="variant-button"
+											data-row="gap-1"
+											class:active={pickedVariant === variant}
+											onclick={() => updatePickedVariant(pickedVariant === variant ? null : variant)}
+											aria-pressed={pickedVariant === variant}
+											title={pickedVariant === variant ? 'Remove version filter' : `View rating for ${variantToName(variant, false)} version`}
+										>
+											<span class="variant-icon" aria-hidden="true">{@html variants[variant].icon}</span
+											>
+											<span class="variant-name">{variants[variant].label}</span>
+										</button>
+									{/each}
+								</div>
+							</fieldset>
+						{/if}
+						
+						<data
+							class="rating"
+							value={evalAttr.evaluation.value.rating}
+						>{evalAttr.evaluation.value.rating}</data>
 					</div>
-				{:else if relevantVariants.length > 1}
-					<fieldset class="variant-selector">
-						<legend>
-							{pickedVariant === null ? 'Version:' : 'Viewing:'}
-						</legend>
-						<div class="variant-buttons">
-							{#each relevantVariants as variant}
-								<button
-									class="variant-button"
-									class:active={pickedVariant === variant}
-									onclick={() => updatePickedVariant(pickedVariant === variant ? null : variant)}
-									aria-pressed={pickedVariant === variant}
-									title={pickedVariant === variant ? 'Remove version filter' : `View rating for ${variantToName(variant, false)} version`}
-								>
-									<span class="variant-icon" aria-hidden="true">{@html variants[variant].icon}</span
-									>
-									<span class="variant-name">{variants[variant].label}</span>
-								</button>
-							{/each}
-						</div>
-					</fieldset>
-				{/if}
+				</header>
 			</summary>
 
 			<div
@@ -552,7 +564,7 @@
 				data-rating={evalAttr.evaluation.value.rating.toLowerCase()}
 				data-card
 			>
-				<div class="rating-icon">
+				<div class="rating-icon" data-row="center">
 					{ratingIcons[evalAttr.evaluation.value.rating]}
 				</div>
 				<div class="rating-content">
@@ -562,7 +574,7 @@
 							strings={{ WALLET_NAME: wallet.metadata.displayName }}
 						/>
 					{:else if evalAttr.evaluation.details}
-						<div>
+						<div data-column>
 							<RenderCustomContent
 								content={evalAttr.evaluation.details}
 								{wallet}
@@ -571,7 +583,7 @@
 							/>
 						</div>
 					{:else}
-						<div>
+						<div data-column>
 							<Typography
 								content={{
 									contentType: ContentType.TEXT,
@@ -601,13 +613,14 @@
 			<ReferenceLinks references={toFullyQualified(evalAttr.evaluation.references || [])} />
 
 			{#if attribute.id === 'hardwareWalletSupport' && evalAttr.evaluation.value && typeof evalAttr.evaluation.value === 'object' && 'supportedHardwareWallets' in evalAttr.evaluation.value && Array.isArray(evalAttr.evaluation.value.supportedHardwareWallets) && evalAttr.evaluation.value.supportedHardwareWallets.length > 0}
-				<div class="supported-hardware-wallets" data-card="secondary padding-3">
+				<div class="supported-hardware-wallets" data-card="secondary padding-3" data-column="gap-2">
 					<h5>Supported Hardware Wallets:</h5>
-					<div class="hw-wallet-list">
+					<div class="hw-wallet-list" data-row="gap-2 wrap">
 						{#each evalAttr.evaluation.value.supportedHardwareWallets as hwWallet}
 							<div
 								class="hw-wallet-badge"
 								data-type={typeof hwWallet === 'string' ? hwWallet.toLowerCase() : ''}
+								data-row="gap-2"
 							>
 								{
 									typeof hwWallet === 'string' ?
@@ -629,8 +642,8 @@
 				</div>
 			{/if}
 
-			<div class="attribute-accordions">
-				<details data-card="secondary padding-0 radius-4">
+			<div class="attribute-accordions" data-column>
+				<details data-card="secondary padding-0 radius-4" data-column="gap-0">
 					<summary>
 						<h4>
 							{evalAttr.evaluation.value.rating === Rating.PASS || evalAttr.evaluation.value.rating === Rating.UNRATED ? 'Why does this matter?' : 'Why should I care?'}
@@ -648,7 +661,7 @@
 					</section>
 				</details>
 
-				<details data-card="secondary padding-0 radius-4">
+				<details data-card="secondary padding-0 radius-4" data-column="gap-0">
 					<summary>
 						<h4>
 							{attribute.wording?.midSentenceName === null ? attribute.wording?.howIsEvaluated ?? 'How is this evaluated?' : `How is ${attribute.wording?.midSentenceName ?? 'this'} evaluated?`}
@@ -656,7 +669,7 @@
 					</summary>
 
 					<section>
-						<div class="methodology">
+						<div class="methodology" data-column="gap-6">
 							{#if attribute.methodology}
 								<Typography content={attribute.methodology} />
 							{:else}
@@ -676,7 +689,7 @@
 											<h5>A few examples:</h5>
 										{/if}
 
-										<ul>
+										<ul data-column>
 											{#if attribute.ratingScale.pass}
 												<li data-icon={ratingIcons[Rating.PASS]}>
 													<Typography
@@ -745,7 +758,7 @@
 				</details>
 
 				{#if howToImprove}
-					<details data-card="secondary padding-0 radius-4">
+					<details data-card="secondary padding-0 radius-4" data-column="gap-0">
 						<summary>
 							<h4>
 								{#if attribute.wording?.midSentenceName === null}
@@ -774,7 +787,7 @@
 							/>
 
 							{#if override}
-								<div class="note" data-card="secondary padding-3">
+								<div class="note" data-card="secondary padding-3" data-row="gap-2">
 									<div class="icon">ℹ️</div>
 									<div>
 										<p>
@@ -804,12 +817,12 @@
 		display: grid;
 		grid-template:
 			'Content Nav'
-			/ 1fr auto
+			/ minmax(0, 1fr) auto
 		;
 		@media (max-width: 1024px) {
 			grid-template:
 				'Nav Content'
-				/ auto 1fr
+				/ auto minmax(0, 1fr)
 			;
 		}
 		@media (max-width: 864px) {
@@ -817,7 +830,7 @@
 				[Nav-start]
 				'Content'
 				[Nav-end]
-				/ [Nav-start] 1fr [Nav-end]
+				/ [Nav-start] minmax(0, 1fr) [Nav-end]
 			;
 		}
 
@@ -1065,26 +1078,9 @@
 	}
 
 	header {
-		gap: 1.5rem;
-
 		> div {
-			display: flex;
-			align-items: center;
-			gap: 1rem;
-			justify-content: space-between;
-
 			> a > h1 {
-				display: grid;
-				grid-template-columns: auto 1fr;
-				align-items: center;
-				gap: 1rem;
 				font-size: 2.25rem;
-			}
-
-			> div {
-				display: flex;
-				align-items: center;
-				gap: 0.5rem;
 			}
 		}
 	}
@@ -1096,25 +1092,19 @@
 	}
 
 	.wallet-overview {
-		display: grid;
-		gap: 1.5rem;
 
 		.wallet-links {
-			display: grid;
 			grid-template-columns: repeat(auto-fit, minmax(120px, auto));
-			gap: 0.5rem;
 
 			.wallet-link {
-				display: grid;
 				grid-template-columns: auto 1fr;
 				align-items: center;
-				gap: 0.5rem;
-				/* padding handled by data-card */
 				border: 1px solid var(--border-color);
 				color: var(--text-primary);
 				text-decoration: none;
 				font-weight: 500;
 				font-size: 0.9rem;
+				white-space: nowrap;
 
 				&:hover {
 					background-color: var(--background-secondary);
@@ -1164,17 +1154,12 @@
 
 		timeline-scope: --AttributesViewTimeline;
 
-		display: grid;
-		gap: 1em;
 		scroll-margin-top: 3.5rem;
 		padding: 3rem 1.5rem;
 
 		&::scroll-marker {
 			content: attr(data-icon) '\00a0\00a0' attr(aria-label);
 
-			display: flex;
-			align-items: center;
-			gap: 0.5rem;
 			padding: 0.45rem 2rem 0.45rem 0.45rem;
 
 			font-size: 0.975em;
@@ -1218,10 +1203,6 @@
 		}
 
 		> header {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-
 			padding-block: 1rem;
 
 			&[data-sticky]::before {
@@ -1292,9 +1273,6 @@
 		}
 
 		> .attributes-list {
-			display: grid;
-			gap: 0.75em;
-
 			transition-property: translate, scale, opacity;
 
 			@container not scroll-state(stuck: none) {
@@ -1311,8 +1289,6 @@
 			}
 
 			ul {
-				display: grid;
-				gap: 0.5em;
 				list-style: none;
 				margin: 0;
 				padding: 0;
@@ -1327,7 +1303,6 @@
 					gap: 0.5rem;
 					align-items: center;
 					padding: 0.5rem;
-					/* background handled by data-card on anchor; hover state overrides */
 					color: var(--text-primary);
 					text-decoration: none;
 					font-size: 0.875rem;
@@ -1454,8 +1429,6 @@
 		view-timeline: --AttributesViewTimeline block;
 
 		position: relative;
-		display: grid;
-		gap: 1em;
 
 		.attributes-pie {
 			position: sticky;
@@ -1476,9 +1449,6 @@
 			margin-left: 1.5rem;
 			padding: 0.45rem 0.75rem;
 
-			display: flex;
-			align-items: center;
-			gap: 0.5rem;
 			position: relative;
 
 			font-size: 0.9em;
@@ -1537,17 +1507,10 @@
 			}
 
 			> summary {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
+				padding: 1.5rem;
 
 				> header {
 					flex-grow: 1;
-
-					display: flex;
-					align-items: center;
-					justify-content: space-between;
-					gap: 0.5rem;
 
 					> div {
 						display: grid;
@@ -1561,10 +1524,15 @@
 			}
 
 			&::details-content {
-				margin-top: 1.5rem;
+				padding: 1.5rem;
+				padding-top: 0;
 
 				display: grid;
 				gap: 1.5rem;
+			}
+
+			&:not([open])::details-content {
+				padding-block: 0;
 			}
 
 			.subsection-caption {
@@ -1573,26 +1541,16 @@
 			}
 
 			.rating-display {
-				display: grid;
 				grid-template-columns: auto 1fr;
-				gap: 1rem;
 				font-weight: 500;
 				background-color: color-mix(in srgb, var(--accent) 5%, var(--background-secondary));
 				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-
-				@container (max-width: 400px) {
-					grid-template-columns: 1fr;
-					text-align: center;
-				}
 
 				&[data-rating='exempt'] {
 					opacity: 0.7;
 				}
 
 				.rating-icon {
-					display: flex;
-					align-items: center;
-					justify-content: center;
 					width: 1.5rem;
 					height: 1.5rem;
 					font-size: 1.2rem;
@@ -1601,8 +1559,6 @@
 
 				.rating-content > div {
 					color: var(--text-secondary);
-					display: grid;
-					gap: 1em;
 				}
 			}
 
@@ -1622,23 +1578,14 @@
 	}
 
 	.variant-controls {
-		display: flex;
-		align-items: center;
 		font-size: 0.85rem;
 
 		.variant-indicator {
-			display: flex;
-			align-items: center;
-			gap: 0.5rem;
-
 			.variant-badge {
 				padding: 0.2rem 0.5rem;
 				background-color: var(--background-tertiary);
 				border-radius: var(--border-radius-sm);
 				font-weight: 500;
-				display: flex;
-				align-items: center;
-				gap: 0.25rem;
 
 				.variant-icon {
 					font-size: 1rem;
@@ -1651,13 +1598,9 @@
 		}
 
 		.variant-selector {
-			display: flex;
-			align-items: flex-start;
-			gap: 0.5rem;
 			border: none;
 			padding: 0;
 			margin: 0;
-			flex-wrap: wrap;
 
 			> legend {
 				padding: 0;
@@ -1672,10 +1615,6 @@
 			font-size: 0.8rem;
 
 			.variant-buttons {
-				display: flex;
-				gap: 0.25rem;
-				flex-wrap: wrap;
-
 				.variant-button {
 					padding: 0.2rem 0.5rem;
 					background-color: var(--background-tertiary);
@@ -1685,19 +1624,12 @@
 					font-weight: 500;
 					cursor: pointer;
 					transition: all 0.2s ease;
-					display: flex;
-					align-items: center;
-					justify-content: center;
 					min-width: 2rem;
-					gap: 0.25rem;
 					color: var(--text-primary);
 					position: relative;
 					overflow: hidden;
 
 					.variant-icon {
-						display: flex;
-						align-items: center;
-						justify-content: center;
 						font-size: 1.1rem;
 						position: relative;
 						z-index: 2;
@@ -1787,13 +1719,9 @@
 	}
 
 	.methodology {
-		display: grid;
-		gap: 1.5rem;
 
 		.simple-scale,
 		.example-scale {
-			display: grid;
-			gap: 1rem;
 
 			> h5 {
 				margin: 0;
@@ -1809,8 +1737,6 @@
 
 		.example-scale > ul {
 			padding-inline-start: 1rem;
-			display: grid;
-			gap: 1rem;
 
 			> li {
 				padding-inline-start: 0.5rem;
@@ -1823,9 +1749,7 @@
 	}
 
 	.note {
-		display: grid;
 		grid-template-columns: auto 1fr;
-		gap: 0.5rem;
 
 		.icon {
 			font-size: 1.2rem;
@@ -1837,8 +1761,6 @@
 	}
 
 	.supported-hardware-wallets {
-		display: grid;
-		gap: 0.5rem;
 
 		h5 {
 			margin: 0;
@@ -1847,19 +1769,12 @@
 		}
 
 		.hw-wallet-list {
-			display: flex;
-			flex-wrap: wrap;
-			gap: 0.5rem;
-
 			.hw-wallet-badge {
 				padding: 0.25rem 0.75rem;
 				background-color: var(--background-tertiary);
 				border-radius: var(--border-radius-sm);
 				font-size: 0.85rem;
 				font-weight: 500;
-				display: flex;
-				align-items: center;
-				gap: 0.5rem;
 				transition: all 0.2s ease;
 				border: 1px solid transparent;
 				box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -1873,13 +1788,9 @@
 	}
 
 	.attribute-accordions {
-		display: grid;
-		gap: 1rem;
-
 		details {
 			--details-transition-duration: 0.25s;
 			--details-transform-closed: translateY(-4px);
-			overflow: hidden;
 
 			summary {
 				cursor: pointer;
@@ -1903,4 +1814,3 @@
 		}
 	}
 </style>
-

@@ -82,7 +82,7 @@
 </script>
 
 
-<search>
+<search data-column="gap-3">
 	<input
 		type="search"
 		data-sticky
@@ -205,11 +205,6 @@
 
 
 <style>
-	search {
-		display: grid;
-		gap: 0.75rem;
-	}
-
 	menu {
 		display: grid;
 		gap: 2px;

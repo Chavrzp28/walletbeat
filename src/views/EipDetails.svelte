@@ -22,9 +22,9 @@
 </script>
 
 
-<article>
-	<header>
-		<div class="tags">
+<article data-column>
+	<header data-column="gap-6">
+		<div class="tags" data-row="start gap-2">
 			<div
 				data-tag="eip"
 			>
@@ -50,7 +50,7 @@
 	</header>
 
 	{#if eip.summaryMarkdown}
-		<section>
+		<section data-column>
 			<h4>Summary</h4>
 
 			<Typography
@@ -63,7 +63,7 @@
 	{/if}
 
 	{#if eip.whyItMattersMarkdown}
-		<section>
+		<section data-column>
 			<h4>Why It Matters</h4>
 
 			<Typography
@@ -75,7 +75,7 @@
 		</section>
 	{/if}
 
-	<footer>
+	<footer data-row="end">
 		<a
 			href={eipEthereumDotOrgUrl(eip)}
 			target="_blank"
@@ -89,30 +89,24 @@
 
 <style>
 	article {
-		display: grid;
-		gap: 2.25em;
+		&[data-column] {
+			gap: 2.25em;
+		}
 
 		font-size: 0.875rem;
 		text-align: left;
 
 		> header {
-			display: grid;
-			gap: 1.5em;
-
-			.tags {
-				display: flex;
-				align-items: center;
-				gap: 0.5em;
-			}
-
 			h3 {
 				color: var(--text-secondary);
 			}
 		}
 
 		> section {
-			display: grid;
-			gap: 1.75em;
+			&[data-column] {
+				gap: 1.75em;
+			}
+
 			line-height: 1.66;
 
 			color: var(--text-secondary);
@@ -123,13 +117,13 @@
 				letter-spacing: 0.05em;
 			}
 
-			:global(.markdown) {
-				gap: 1.75em;
+			:global {
+				.markdown {
+					&[data-column] {
+						gap: 1.75em;
+					}
+				}
 			}
-		}
-
-		footer {
-			text-align: right;
 		}
 	}
 </style>

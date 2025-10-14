@@ -429,8 +429,8 @@
 				showAccordionMarker
 				tooltipMaxWidth="18rem"
 			>
-				<div class="wallet-info">
-					<span class="row-count"></span>
+				<div class="wallet-info" data-row>
+					<span class="row-count" data-row="center"></span>
 
 					<img
 						alt={displayName}
@@ -439,8 +439,8 @@
 						height="16"
 					/>
 
-					<div class="name-and-tags">
-						<div class="name">
+					<div class="name-and-tags" data-column="gap-2">
+						<div class="name" data-column="gap-1">
 							<h3>{displayName}</h3>
 
 							{#if selectedVariant && selectedVariant in wallet.variants}
@@ -450,7 +450,7 @@
 							{/if}
 						</div>
 
-						<div class="tags">
+						<div class="tags" data-row="start gap-1 wrap">
 							{#each (
 								[
 									// Wallet type tags
@@ -592,7 +592,7 @@
 							/>
 						{/if}
 
-						<div class="links">
+						<div class="links" data-row="gap-2 start wrap">
 							<a
 								href={`/${wallet.metadata.id}/${variantUrlQuery(wallet.variants, selectedVariant ?? null)}`}
 								class="info-link"
@@ -1102,14 +1102,7 @@
 
 		text-align: start;
 
-		display: flex;
-		align-items: center;
-		gap: 0.85em;
-
 		.row-count {
-			display: inline-flex;
-			justify-content: center;
-			align-items: center;
 			width: 1.25em;
 			height: 1.25em;
 
@@ -1137,12 +1130,7 @@
 		.name-and-tags {
 			font-size: 0.85em;
 
-			display: grid;
-			gap: 0.5em;
-
 			.name {
-				display: grid;
-				gap: 0.25em;
 
 				h3 {
 					font-weight: 600;
@@ -1152,12 +1140,6 @@
 			.variant {
 				font-size: smaller;
 				opacity: 0.6;
-			}
-
-			.tags {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 0.25em;
 			}
 		}
 
@@ -1171,8 +1153,6 @@
 			gap: 0.1em;
 
 			button {
-				display: inline-flex;
-				place-items: center;
 				aspect-ratio: 1;
 				padding: 0.33em;
 
@@ -1206,9 +1186,8 @@
 	}
 
 	.wallet-summary {
-		display: grid;
-		padding: 0 0.5em;
-		gap: 1em;
+		padding-inline: 1em;
+
 		line-height: 1.6;
 		text-align: start;
 
@@ -1217,12 +1196,6 @@
 		}
 
 		.links {
-			display: flex;
-			align-items: center;
-			flex-wrap: wrap;
-
-			gap: 0.5rem;
-
 			hr {
 				margin: 0;
 				width: 0;

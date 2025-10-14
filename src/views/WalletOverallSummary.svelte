@@ -25,6 +25,7 @@
 <div 
 	class="wallet-overall-summary"
 	data-card={isInTooltip ? 'radius p-sm border-accent' : undefined}
+	data-column
 	style:--accent={
 		score?.score !== undefined ?
 			score.hasUnratedComponent ?
@@ -35,8 +36,8 @@
 			'var(--rating-unrated)'
 	}
 >
-	<header>
-		<h2>
+	<header data-row="center gap-3 wrap">
+		<h2 data-row="gap-2">
 			<img
 				src={`/images/wallets/${wallet.metadata.id}.${wallet.metadata.iconExtension}`}
 			/>
@@ -44,7 +45,7 @@
 		</h2>
 	</header>
 
-	<div>
+	<div data-column="center gap-2">
 		Walletbeat score:
 
 		<ScoreBadge {score} size="large" />
@@ -61,35 +62,20 @@
 <style>
 	.wallet-overall-summary {
 		font-size: smaller;
-		display: grid;
-		gap: 1em;
 		line-height: 1.4;
 
 		> header {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			flex-wrap: wrap;
-			gap: 0.5em 0.75em;
+			row-gap: 0.5em;
 
 			h2 {
 				font-weight: 600;
 				font-size: 1.33em;
-				display: flex;
-				align-items: center;
-				gap: 0.5em;
 
 				img {
 					width: auto;
 					height: 1.25em;
 				}
 			}
-		}
-
-		> div {
-			display: grid;
-			justify-items: center;
-			gap: 0.5em;
 		}
 	}
 </style> 

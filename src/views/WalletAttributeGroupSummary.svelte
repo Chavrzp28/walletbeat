@@ -33,6 +33,7 @@
 <div 
 	class="attribute-group-summary"
 	data-card={isInTooltip ? 'radius p-sm border-accent' : undefined}
+	data-column
 	style:--accent={
 		groupScore?.score !== undefined ?
 			groupScore.hasUnratedComponent ?
@@ -43,8 +44,8 @@
 			'var(--rating-unrated)'
 	}
 >
-	<header>
-		<h3>
+	<header data-row="center gap-3 wrap">
+		<h3 data-row="gap-2">
 			<span>{attributeGroup.icon}</span> {attributeGroup.displayName}
 		</h3>
 
@@ -65,23 +66,13 @@
 <style>
 	.attribute-group-summary {
 		font-size: smaller;
-
-		display: grid;
-		gap: 1em;
 		line-height: 1.4;
 
 		header {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			flex-wrap: wrap;
-			gap: 0.5em 0.75em;
+			row-gap: 0.5em;
 
 			h3 {
 				font-weight: 600;
-				display: flex;
-				align-items: center;
-				gap: 0.5em;
 			}
 		}
 	}
