@@ -183,7 +183,10 @@
 					data-expandable={isExpandable ? '' : undefined}
 					data-expanded={isExpandable && isExpanded ? '' : undefined}
 				>
-					<div class="header-cell-content">
+					<div
+						class="header-cell-content"
+						data-sticky-container
+					>
 						{#snippet HeaderTitle()}
 							<span
 								class="header-title"
@@ -196,28 +199,35 @@
 							</span>
 						{/snippet}
 
-						{#if isSortable}
-							<label class="sort-label">
-								{@render HeaderTitle()}
+						<div data-sticky-container>
+							{#if isSortable}
+								<label class="sort-label">
+									<span data-sticky>
+										{@render HeaderTitle()}
 
-								<button
-									type="button"
-									aria-label={`Sort by ${column.name}`}
-									class="sort-button"
-									onclick={() => {
-										table.toggleColumnSort(column.id)
-									}}
-									disabled={!column.sort}
-								></button>
-							</label>
-						{:else}
-							{@render HeaderTitle()}
-						{/if}
+										<button
+											type="button"
+											aria-label={`Sort by ${column.name}`}
+											class="sort-button"
+											onclick={() => {
+												table.toggleColumnSort(column.id)
+											}}
+											disabled={!column.sort}
+										></button>
+									</span>
+								</label>
+							{:else}
+								<span data-sticky>
+									{@render HeaderTitle()}
+								</span>
+							{/if}
+						</div>
 
 						{#if isExpandable}
 							<button 
 								type="button"
 								class="expansion-button"
+								data-sticky
 								onclick={() => {
 									table.toggleIsColumnExpanded(column.id)
 								}}
@@ -384,6 +394,14 @@
 						grid-auto-columns: auto;
 						align-items: center;
 						gap: 0.25em;
+
+						&[data-sticky-container] {
+							--sticky-paddingInlineEnd: 0.5em;
+						}
+
+						> [data-sticky-container] {
+							--sticky-paddingInlineEnd: 1em;
+						}
 					}
 
 					&[data-sortable] {
