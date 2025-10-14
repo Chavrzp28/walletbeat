@@ -1,5 +1,6 @@
 import type { Content, Paragraph, Sentence, TypographicContent } from '@/types/content'
 import { type NonEmptyArray, nonEmptyMap, type NonEmptyRecord } from '@/types/utils/non-empty'
+import { Enum } from '@/utils/enum'
 
 import type { ResolvedFeatures } from './features'
 import type { FullyQualifiedReference, ReferenceArray } from './reference'
@@ -46,16 +47,14 @@ export enum Rating {
 	EXEMPT = 'EXEMPT',
 }
 
-/** Type predicate for `Rating`. */
-export function isRating(value: unknown): value is Rating {
-	return (
-		value === Rating.UNRATED ||
-		value === Rating.PASS ||
-		value === Rating.PARTIAL ||
-		value === Rating.FAIL ||
-		value === Rating.EXEMPT
-	)
-}
+/** Ratings enum. */
+export const ratingEnum = new Enum<Rating>({
+	[Rating.PASS]: true,
+	[Rating.PARTIAL]: true,
+	[Rating.FAIL]: true,
+	[Rating.UNRATED]: true,
+	[Rating.EXEMPT]: true,
+})
 
 /**
  * Convert a rating to the icon displayed on the slice tooltip.
@@ -540,7 +539,7 @@ export function exampleRating<V extends Value>(
 	for (const matcher of matchers) {
 		if (
 			matcher !== exampleRatingUnimplemented &&
-			!isRating(matcher) &&
+			!ratingEnum.is(matcher) &&
 			typeof matcher === 'object'
 		) {
 			sampleEvaluations.push(matcher)
@@ -555,7 +554,7 @@ export function exampleRating<V extends Value>(
 					return false
 				}
 
-				if (isRating(matcher)) {
+				if (ratingEnum.is(matcher)) {
 					return value.rating === matcher
 				}
 

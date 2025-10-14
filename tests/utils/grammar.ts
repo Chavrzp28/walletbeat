@@ -1,9 +1,14 @@
 import * as harper from 'harper.js'
-import { expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 import { allWallets } from '@/data/wallets'
 import { getCSpellWords } from '@/tests/utils/cspell'
-import { ContentType, type TypographicContent } from '@/types/content'
+import {
+	ContentType,
+	prerenderTypographicContent,
+	type TypographicContent,
+	typographicContentWithExtraOptionalStrings,
+} from '@/types/content'
 import { trimWhitespacePrefix } from '@/types/utils/text'
 
 let vocabulary: string[] | null = null
@@ -33,6 +38,9 @@ function getVocabulary(): string[] {
 
 async function prepareLinter(linter: harper.LocalLinter) {
 	await linter.setDialect(harper.Dialect.American)
+	await linter.setLintConfig({
+		RoadMap: false, // This otherwise corrects "roadmap" to "road map".
+	})
 	await linter.importWords(getVocabulary())
 	await linter.setup()
 }
@@ -64,7 +72,9 @@ export async function grammarLint(text: string, lintOptions?: harper.LintOptions
 	const message: string[] = []
 
 	for (const lint of lints) {
-		message.push(`- ${lint.span().start}:${lint.span().end}: ${lint.message()}`)
+		message.push(
+			`- ${lint.span().start}:${lint.span().end}: ${lint.lint_kind()}: ${lint.message()}`,
+		)
 
 		if (lint.suggestion_count() !== 0) {
 			message.push('  Consider:')
@@ -109,4 +119,52 @@ export async function contentGrammarLint(content: TypographicContent) {
 		case ContentType.TEXT:
 			return await grammarLint(content.text, { language: 'plaintext' })
 	}
+}
+
+/** Lints wallet-related typographic content with wallet data. */
+export function walletContentGrammarLint(
+	name: string,
+	content:
+		| string
+		| TypographicContent
+		| TypographicContent<{ WALLET_NAME: string }>
+		| TypographicContent<{
+				WALLET_NAME: string
+				WALLET_PSEUDONYM_SINGULAR: string | null
+				WALLET_PSEUDONYM_PLURAL: string | null
+		  }>,
+) {
+	describe(name, () => {
+		it('has correct grammar', async () => {
+			if (typeof content === 'string') {
+				await grammarLint(content, { language: 'plaintext' })
+			} else {
+				if (
+					!typographicContentWithExtraOptionalStrings<
+						{
+							WALLET_NAME: string
+						} | null,
+						{
+							WALLET_NAME: string
+							WALLET_PSEUDONYM_SINGULAR: string | null
+							WALLET_PSEUDONYM_PLURAL: string | null
+						}
+					>(content)
+				) {
+					throw new Error('Unreachable')
+				}
+
+				content = prerenderTypographicContent<{
+					WALLET_NAME: string
+					WALLET_PSEUDONYM_SINGULAR: string | null
+					WALLET_PSEUDONYM_PLURAL: string | null
+				}>(content, {
+					WALLET_NAME: 'Example Wallet',
+					WALLET_PSEUDONYM_SINGULAR: 'Example Wallet Username',
+					WALLET_PSEUDONYM_PLURAL: 'Example Wallet Usernames',
+				})
+				await contentGrammarLint(content)
+			}
+		})
+	})
 }

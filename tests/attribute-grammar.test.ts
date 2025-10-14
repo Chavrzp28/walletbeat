@@ -2,7 +2,6 @@ import { describe, it } from 'vitest'
 
 import { attributeTree } from '@/schema/attribute-groups'
 import type { ExampleRating, Value } from '@/schema/attributes'
-import { prerenderTypographicContent, type TypographicContent } from '@/types/content'
 import {
 	assertNonEmptyArray,
 	isNonEmptyArray,
@@ -10,7 +9,7 @@ import {
 	nonEmptyMap,
 } from '@/types/utils/non-empty'
 
-import { contentGrammarLint, grammarLint, warmupGrammarLinter } from './utils/grammar'
+import { contentGrammarLint, walletContentGrammarLint, warmupGrammarLinter } from './utils/grammar'
 
 await warmupGrammarLinter()
 
@@ -19,33 +18,15 @@ describe('attribute', () => {
 		describe(`group ${attributeGroupName}`, () => {
 			for (const attribute of Object.values(attributeGroup.attributes)) {
 				describe(`attribute ${attribute.displayName}`, () => {
-					const checkGrammar = (
-						name: string,
-						content: string | TypographicContent<{ WALLET_NAME: string }> | TypographicContent,
-					) => {
-						describe(name, () => {
-							it('has correct grammar', async () => {
-								if (typeof content === 'string') {
-									await grammarLint(content, { language: 'plaintext' })
-								} else {
-									content = prerenderTypographicContent(content, {
-										WALLET_NAME: 'Example Wallet',
-									})
-									await contentGrammarLint(content)
-								}
-							})
-						})
-					}
-
-					checkGrammar('name', attribute.displayName)
-					checkGrammar('importance', attribute.why)
-					checkGrammar('methodology', attribute.methodology)
+					walletContentGrammarLint('name', attribute.displayName)
+					walletContentGrammarLint('importance', attribute.why)
+					walletContentGrammarLint('methodology', attribute.methodology)
 
 					if (attribute.wording.midSentenceName === null) {
-						checkGrammar('how is it evaluated', attribute.wording.howIsEvaluated)
-						checkGrammar('what can be done', attribute.wording.whatCanWalletDoAboutIts)
+						walletContentGrammarLint('how is it evaluated', attribute.wording.howIsEvaluated)
+						walletContentGrammarLint('what can be done', attribute.wording.whatCanWalletDoAboutIts)
 					} else {
-						checkGrammar(
+						walletContentGrammarLint(
 							'mid-sentence name',
 							`Is this wallet's ${attribute.wording.midSentenceName} good or bad?`,
 						)
@@ -53,7 +34,7 @@ describe('attribute', () => {
 
 					switch (attribute.ratingScale.display) {
 						case 'simple':
-							checkGrammar('rating scale', attribute.ratingScale.content)
+							walletContentGrammarLint('rating scale', attribute.ratingScale.content)
 							break
 						case 'fail-pass':
 						case 'pass-fail':
