@@ -758,7 +758,7 @@ span svg {
 		}
 	}
 
-	&::before {
+	&:not([data-sticky~="no-backdrop"])::before {
 		content: '';
 		z-index: -1;
 		position: absolute;

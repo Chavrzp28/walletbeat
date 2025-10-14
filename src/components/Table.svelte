@@ -202,7 +202,7 @@
 						<div data-sticky-container>
 							{#if isSortable}
 								<label class="sort-label">
-									<span data-sticky>
+									<span data-sticky="no-backdrop">
 										{@render HeaderTitle()}
 
 										<button
