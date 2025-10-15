@@ -1,4 +1,3 @@
-// cspell:disable-next-line
 import { h3rman } from '@/data/contributors/0xh3rman'
 import { AccountType } from '@/schema/features/account-support'
 import type { AddressResolutionData } from '@/schema/features/privacy/address-resolution'

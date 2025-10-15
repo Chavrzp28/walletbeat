@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
+import { trimWhitespacePrefix } from '@/types/utils/text'
+
 import {
 	commonExclusions,
 	getCodebaseIndex,
@@ -162,7 +164,15 @@ describe('cSpell', async () => {
 	})
 
 	it('does not have any unused words', () => {
+		const allowedUnusedWords: string[] = [
+			'rman', // Used in nickname "0xh3rman"
+		]
+
 		cSpellWords.map(word => {
+			if (allowedUnusedWords.includes(word)) {
+				return
+			}
+
 			const isProper = word.toLowerCase() !== word
 
 			if (isProper) {
@@ -177,5 +187,59 @@ describe('cSpell', async () => {
 				)
 			}
 		})
+	})
+
+	it('has no exceptions in the codebase', async () => {
+		interface FileLines {
+			lines: string[]
+		}
+		const allFilesWithBadLines: IndexedFile<FileLines>[] = []
+
+		await getCodebaseIndex({
+			indexFn: (_: string, fileContents: string): FileLines => ({
+				lines: fileContents.split('\n').filter(line => line.toLowerCase().includes('// cspell')),
+			}),
+			aggregateFn: (fileLines: IndexedFile<FileLines>) => {
+				if (fileLines.lines.length > 0) {
+					allFilesWithBadLines.push(fileLines)
+				}
+			},
+			ignore: commonExclusions.concat([
+				// This file itself.
+				'tests/cspell.test.ts',
+			]),
+		})
+		expect(allFilesWithBadLines).toSatisfy(
+			a => Array.isArray(a) && a.length === 0,
+			trimWhitespacePrefix(`
+				Found cSpell-related comments (\`// cspell\`) in the following files:
+
+				${allFilesWithBadLines
+					.map(
+						f => `
+					* ${f.filePath}:
+					${f.lines
+						.map(
+							l => `
+						- "${l}"
+					`,
+						)
+						.join('')}
+				`,
+					)
+					.join('')}
+
+				This codebase relies on cSpell to enforce spelling, but the cSpell
+				word database is also used for grammar checking with Harper.js.
+				As a result, cSpell-comment-driven exceptions only apply to cSpell
+				checks, not to Harper.js checks, so they do not work at effectively
+				modifying spellcheck behavior; they may get cSpell to pass, but
+				Harper.js will still complain.
+
+				Please remove these cSpell comments, and instead adjust the cSpell
+				config file and/or this unit test. If you need help with any of this,
+				feel free to ask.
+			`),
+		)
 	})
 })
