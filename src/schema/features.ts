@@ -271,6 +271,7 @@ export interface ResolvedFeatures {
 		privacyPolicy: ResolvedFeature<string>
 		hardwarePrivacy: ResolvedFeature<HardwarePrivacySupport>
 		transactionPrivacy: ResolvedFeature<TransactionPrivacy>
+		dappIsolation: ResolvedFeature<'DAPP_CONNECTION_NOT_SUPPORTED' | DappIsolation>
 	}
 	selfSovereignty: {
 		transactionSubmission: ResolvedFeature<TransactionSubmission>
@@ -399,6 +400,10 @@ export function resolveFeatures(
 			transactionPrivacy: baseFeat(
 				'privacy.transactionPrivacy',
 				features => features.privacy.transactionPrivacy,
+			),
+			dappIsolation: softwareFeat(
+				'privacy.dappIsolation',
+				features => features.privacy.dappIsolation,
 			),
 		},
 		selfSovereignty: {

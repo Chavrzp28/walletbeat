@@ -183,11 +183,12 @@ export const rabby: SoftwareWallet = {
 		privacy: {
 			dappIsolation: {
 				[Variant.BROWSER]: {
+					createInDappConnectionFlow: notSupported,
 					erc7846WalletConnect: notSupported,
 					ethAccounts: supported({
 						defaultBehavior: ExposedAccountsBehavior.ACTIVE_ACCOUNT_ONLY,
-						userCustomizable: true,
 					}),
+					useDappSpecificLastConnectedAddresses: notSupported,
 				},
 				[Variant.MOBILE]: null,
 				[Variant.DESKTOP]: null,
