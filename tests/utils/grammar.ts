@@ -166,7 +166,7 @@ function getRegexpLinter({
 const grammarLinters: (() => Promise<AbstractLinter>)[] = [
 	getHarperLinter,
 	getRegexpLinter({
-		name: 'dApp',
+		name: 'dApp', // Replace dApp and dApps
 		regExp: /\bdapps?\b/gi,
 		replace: (substring: string) => (substring.endsWith('s') ? 'apps' : 'app'),
 	}),

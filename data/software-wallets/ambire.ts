@@ -330,7 +330,7 @@ export const ambire: SoftwareWallet = {
 				[UserFlow.SEND]: {
 					collected: [],
 				},
-				[UserFlow.DAPP_CONNECTION]: {
+				[UserFlow.APP_CONNECTION]: {
 					collected: [],
 				},
 				[UserFlow.TRANSACTION]: {

@@ -597,14 +597,14 @@ export enum UserFlow {
 	/** Review a transaction and signing it. */
 	TRANSACTION = 'transaction',
 
-	/** Connecting to a dapp. */
-	DAPP_CONNECTION = 'dappConnection',
+	/** Connecting to an application. */
+	APP_CONNECTION = 'appConnection',
 }
 
 export const userFlow = new Enum<UserFlow>({
 	[UserFlow.UNCLASSIFIED]: true,
 	[UserFlow.ONBOARDING]: true,
-	[UserFlow.DAPP_CONNECTION]: true,
+	[UserFlow.APP_CONNECTION]: true,
 	[UserFlow.SEND]: true,
 	[UserFlow.NATIVE_SWAP]: true,
 	[UserFlow.TRANSACTION]: true,
@@ -881,8 +881,8 @@ export interface DataCollection {
 	/** What data is collected during the transaction review/signing flow? */
 	[UserFlow.TRANSACTION]: DataCollectionForFlow | null | 'FLOW_NOT_SUPPORTED'
 
-	/** What data is collected when connecting to a dapp? */
-	[UserFlow.DAPP_CONNECTION]: DataCollectionForFlow | null | 'FLOW_NOT_SUPPORTED'
+	/** What data is collected when connecting to an app? */
+	[UserFlow.APP_CONNECTION]: DataCollectionForFlow | null | 'FLOW_NOT_SUPPORTED'
 
 	/** What other data is collected but not covered in the other flows, if any? */
 	[UserFlow.UNCLASSIFIED]?: DataCollectionForFlow

@@ -51,7 +51,7 @@ export interface ResolvedWalletIntegration {
 export interface WalletCallIntegration {
 	/**
 	 * `atomic` capability as reported by wallet_getCapabilities.
-	 * This allows dapps to execute multiple transactions atomically.
+	 * This allows apps to execute multiple transactions atomically.
 	 * https://eips.ethereum.org/EIPS/eip-5792#atomic-capability
 	 * For the purpose of this attribute, we only look at support on L1.
 	 * A reported value of 'ready' or 'supported' qualifies as supported.

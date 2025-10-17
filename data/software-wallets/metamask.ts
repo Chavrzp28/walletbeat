@@ -299,7 +299,7 @@ export const metamask: SoftwareWallet = {
 					ref: [
 						{
 							explanation:
-								'MetaMask maintains a local phishing database to detect malicious dApps and websites without revealing browsing activity to external services.',
+								'MetaMask maintains a local phishing database to detect malicious apps and websites without revealing browsing activity to external services.',
 							url: 'https://support.metamask.io/ms/privacy-and-security/how-to-turn-on-security-alerts/',
 						},
 						{
@@ -353,7 +353,7 @@ export const metamask: SoftwareWallet = {
 					note: mdParagraph(`
 						MetaMask collaborated with Blockaid to create a
 						[privacy-preserving security feature](https://metamask.io/news/metamask-security-alerts-by-blockaid-the-new-normal-for-a-safer-transaction)
-						that simulates transactions and alerts users to malicious dapps without
+						that simulates transactions and alerts users to malicious apps without
 						sharing transaction data with parties outside of Consensys.
 					`),
 				},
