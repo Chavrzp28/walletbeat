@@ -101,7 +101,7 @@ export const gemwallet: SoftwareWallet = {
 		},
 		multiAddress: featureSupported,
 		privacy: {
-			dappIsolation: null,
+			appIsolation: null,
 			dataCollection: null,
 			privacyPolicy: 'https://gemwallet.com/privacy',
 			transactionPrivacy: {

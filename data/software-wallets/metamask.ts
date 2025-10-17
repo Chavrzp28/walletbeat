@@ -183,7 +183,7 @@ export const metamask: SoftwareWallet = {
 		},
 		multiAddress: featureSupported,
 		privacy: {
-			dappIsolation: null,
+			appIsolation: null,
 			dataCollection: null,
 			privacyPolicy: 'https://consensys.io/privacy-notice/',
 			transactionPrivacy: {

@@ -17,8 +17,8 @@ export enum ExposedAccountsBehavior {
 	 */
 	NO_DEFAULT = 'NO_DEFAULT',
 
-	/** The wallet exposes a dapp-specific address. */
-	DAPP_SPECIFIC_ACCOUNT = 'DAPP_SPECIFIC_ACCOUNT',
+	/** The wallet exposes an app-specific address. */
+	APP_SPECIFIC_ACCOUNT = 'APP_SPECIFIC_ACCOUNT',
 }
 
 /** Set of exposed accounts. */
@@ -38,10 +38,10 @@ export function sameExposedAccountSet(
 }
 
 /**
- * How the wallet isolates dapps from getting data that other dapps may also
+ * How the wallet isolates apps from getting data that other apps may also
  * gather.
  */
-interface BaseDappIsolation {
+interface BaseAppIsolation {
 	/**
 	 * How does the wallet handle the `eth_accounts` RPC?
 	 */
@@ -54,24 +54,24 @@ interface BaseDappIsolation {
 	erc7846WalletConnect: Support<WithRef<ExposedAccountSet>>
 
 	/**
-	 * When connecting to a new dApp, does the wallet allow creating a new
-	 * address or set of addresses as part of the dApp connection flow?
+	 * When connecting to a new app, does the wallet allow creating a new
+	 * address or set of addresses as part of the app connection flow?
 	 */
-	createInDappConnectionFlow: Support<WithRef<{}>>
+	createInAppConnectionFlow: Support<WithRef<{}>>
 
 	/**
-	 * When connecting to a previously-connected dApp, does the wallet remember
+	 * When connecting to a previously-connected app, does the wallet remember
 	 * which address(es) the user had selected to connect for that specific
-	 * dApp, and use them by default?
+	 * app, and use them by default?
 	 */
-	useDappSpecificLastConnectedAddresses: Support<WithRef<{}>>
+	useAppSpecificLastConnectedAddresses: Support<WithRef<{}>>
 }
 
 /**
- * How the wallet isolates dapps from getting data that other dapps may also
+ * How the wallet isolates apps from getting data that other apps may also
  * gather.
  */
-export type DappIsolation = BaseDappIsolation &
+export type AppIsolation = BaseAppIsolation &
 	// Either `eth_accounts` or `wallet_connect` must be supported.
 	(| { ethAccounts: Supported<WithRef<ExposedAccountSet>> }
 		| { erc7846WalletConnect: Supported<WithRef<ExposedAccountSet>> }

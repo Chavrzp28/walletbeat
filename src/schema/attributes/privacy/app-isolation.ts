@@ -8,11 +8,11 @@ import {
 } from '@/schema/attributes'
 import { type ResolvedFeatures } from '@/schema/features'
 import {
-	type DappIsolation,
+	type AppIsolation,
 	ExposedAccountsBehavior,
 	type ExposedAccountSet,
 	sameExposedAccountSet,
-} from '@/schema/features/privacy/dapp-isolation'
+} from '@/schema/features/privacy/app-isolation'
 import { featureSupported, isSupported, notSupported, supported } from '@/schema/features/support'
 import { type FullyQualifiedReference, mergeRefs } from '@/schema/reference'
 import { WalletType } from '@/schema/wallet-types'
@@ -20,86 +20,86 @@ import { markdown, mdParagraph, paragraph, sentence } from '@/types/content'
 
 import { exempt, pickWorstRating, unrated } from '../common'
 
-const brand = 'attributes.privacy.dapp_isolation'
+const brand = 'attributes.privacy.app_isolation'
 
-export type DappIsolationValue = Value & {
-	__brand: 'attributes.privacy.dapp_isolation'
+export type AppIsolationValue = Value & {
+	__brand: 'attributes.privacy.app_isolation'
 }
 
-function rateDappIsolation(dappIsolation: DappIsolation): Evaluation<DappIsolationValue> {
+function rateAppIsolation(appIsolation: AppIsolation): Evaluation<AppIsolationValue> {
 	let references: FullyQualifiedReference[] = []
 
-	if (!isSupported(dappIsolation.createInDappConnectionFlow)) {
+	if (!isSupported(appIsolation.createInAppConnectionFlow)) {
 		return {
 			value: {
 				id: 'no_account_creation_in_connection_flow',
-				displayName: 'No per-dApp account option',
+				displayName: 'No per-app account option',
 				rating: Rating.FAIL,
 				shortExplanation: sentence(`
 					{{WALLET_NAME}} does not have an option to create a new account
-					as part of the dApp connection flow.
+					as part of the app connection flow.
 				`),
 				__brand: brand,
 			},
 			details: markdown(`
-				When connecting to a dApp, {{WALLET_NAME}} does not provide a way
-				to create a new account unique to the dApp.
+				When connecting to an app, {{WALLET_NAME}} does not provide a way
+				to create a new account unique to the app.
 			`),
 			impact: paragraph(`
-				Without per-dApp accounts, dApps can correlate a user's history and
+				Without per-app accounts, apps can correlate a user's history and
 				activity across web3. While this has composability benefits, having
 				this as default behavior creates an irreversible privacy problem and
 				a regression from the low bar of web2 privacy practices.
 			`),
 			howToImprove: markdown(`
-				{{WALLET_NAME}} should have a way to create a dApp-specific account
-				as part of the dApp connection flow, and have this as the default
+				{{WALLET_NAME}} should have a way to create an app-specific account
+				as part of the app connection flow, and have this as the default
 				option.
 			`),
 			references,
 		}
 	}
 
-	references = mergeRefs(references, dappIsolation.createInDappConnectionFlow.ref)
+	references = mergeRefs(references, appIsolation.createInAppConnectionFlow.ref)
 
-	if (!isSupported(dappIsolation.useDappSpecificLastConnectedAddresses)) {
+	if (!isSupported(appIsolation.useAppSpecificLastConnectedAddresses)) {
 		return {
 			value: {
 				id: 'no_reuse_last_connection_addresses',
-				displayName: 'No per-dApp account persistence',
+				displayName: 'No per-app account persistence',
 				rating: Rating.FAIL,
 				shortExplanation: sentence(`
 					{{WALLET_NAME}} does not remember which set of addresses you last
-					used when connecting to a dApp.
+					used when connecting to an app.
 				`),
 				__brand: brand,
 			},
 			details: markdown(`
-				When connecting to a dApp you have connected to before,
+				When connecting to an app you have connected to before,
 				{{WALLET_NAME}} does not default to the same set of addresses as you
 				had last selected.
 			`),
 			impact: paragraph(`
 				{{WALLET_NAME}} makes it likely for the user to accidentally expose
 				other addresses beyond the one they had initially intended for
-				the dApp to be able to access. Once connected, this allows the dApp to
+				the app to be able to access. Once connected, this allows the app to
 				correlate more of the user's activity than the user had initially
 				intended.
 			`),
 			howToImprove: markdown(`
 				{{WALLET_NAME}} should locally store the set of addresses that the
-				user selected when connecting to dApps, and use this set of addresses
+				user selected when connecting to apps, and use this set of addresses
 				by default when reconnecting to them.
 			`),
 			references,
 		}
 	}
 
-	references = mergeRefs(references, dappIsolation.useDappSpecificLastConnectedAddresses.ref)
+	references = mergeRefs(references, appIsolation.useAppSpecificLastConnectedAddresses.ref)
 
 	let commonExposedAccountSet: ExposedAccountSet | null = null
 
-	for (const exposedAccountSet of [dappIsolation.ethAccounts, dappIsolation.erc7846WalletConnect]) {
+	for (const exposedAccountSet of [appIsolation.ethAccounts, appIsolation.erc7846WalletConnect]) {
 		if (!isSupported(exposedAccountSet)) {
 			continue
 		}
@@ -125,28 +125,28 @@ function rateDappIsolation(dappIsolation: DappIsolation): Evaluation<DappIsolati
 			return {
 				value: {
 					id: 'active_account_only',
-					displayName: 'Encourages account reuse across dApps',
+					displayName: 'Encourages account reuse across apps',
 					rating: Rating.FAIL,
 					shortExplanation: sentence(`
 						{{WALLET_NAME}} defaults to reusing the same account when
-						connecting to various dApps.
+						connecting to various apps.
 					`),
 					__brand: brand,
 				},
 				details: markdown(`
-					When connecting to a new dApp, {{WALLET_NAME}} uses the same
-					account as it does when connecting to any other dApp by default.
+					When connecting to a new app, {{WALLET_NAME}} uses the same
+					account as it does when connecting to any other app by default.
 				`),
 				impact: paragraph(`
-					By reusing the same accounts across dApps, all dApps can correlate
+					By reusing the same accounts across apps, all apps can correlate
 					a user's history and activity across web3. While this has
 					composability benefits, having this as default behavior creates
 					an irreversible privacy problem and a regression from the low bar
 					of web2 privacy practices.
 				`),
 				howToImprove: markdown(`
-					When connecting to a new dApp, {{WALLET_NAME}} should offer to
-					create a new account for that dApp by default.
+					When connecting to a new app, {{WALLET_NAME}} should offer to
+					create a new account for that app by default.
 				`),
 				references,
 			}
@@ -154,47 +154,47 @@ function rateDappIsolation(dappIsolation: DappIsolation): Evaluation<DappIsolati
 			return {
 				value: {
 					id: 'all_accounts_exposed',
-					displayName: 'All accounts exposed to all dApps',
+					displayName: 'All accounts exposed to all apps',
 					rating: Rating.FAIL,
 					shortExplanation: sentence(`
 						{{WALLET_NAME}} exposes all your accounts to all connected
-						dApps by default.
+						apps by default.
 					`),
 					__brand: brand,
 				},
 				details: markdown(`
-					When connecting to a dApp, {{WALLET_NAME}} exposes all your
+					When connecting to an app, {{WALLET_NAME}} exposes all your
 					accounts by default.
 				`),
 				impact: paragraph(`
-					By reusing the same accounts across dApps, all dApps can correlate
+					By reusing the same accounts across apps, all apps can correlate
 					a user's history and activity across web3. While this has
 					composability benefits, having this as default behavior creates
 					an irreversible privacy problem and a regression from the low bar
 					of web2 privacy practices.
 				`),
 				howToImprove: markdown(`
-					When connecting to a new dApp, {{WALLET_NAME}} should offer to
-					create a new account for that dApp by default.
+					When connecting to a new app, {{WALLET_NAME}} should offer to
+					create a new account for that app by default.
 				`),
 				references,
 			}
-		case ExposedAccountsBehavior.DAPP_SPECIFIC_ACCOUNT:
+		case ExposedAccountsBehavior.APP_SPECIFIC_ACCOUNT:
 			return {
 				value: {
-					id: 'dapp_specific_account',
-					displayName: 'Per-dApp account',
+					id: 'app_specific_account',
+					displayName: 'Per-app account',
 					rating: Rating.PASS,
 					shortExplanation: sentence(`
-						{{WALLET_NAME}} creates dApp-specific accounts by default.
+						{{WALLET_NAME}} creates app-specific accounts by default.
 					`),
 					__brand: brand,
 				},
 				details: markdown(`
-					When connecting to a dApp, {{WALLET_NAME}} offers the user to
-					create a new dApp-specific account by default.
-					Doing so improves your privacy across web3 by preventing dApps
-					from correlating your history across dApps.
+					When connecting to an app, {{WALLET_NAME}} offers the user to
+					create a new app-specific account by default.
+					Doing so improves your privacy across web3 by preventing apps
+					from correlating your history across apps.
 				`),
 				references,
 			}
@@ -202,37 +202,37 @@ function rateDappIsolation(dappIsolation: DappIsolation): Evaluation<DappIsolati
 			return {
 				value: {
 					id: 'no_default_behavior',
-					displayName: 'Supports per-dApp accounts',
+					displayName: 'Supports per-app accounts',
 					rating: Rating.PARTIAL,
 					shortExplanation: sentence(`
-						{{WALLET_NAME}} supports the creation of dApp-specific accounts.
+						{{WALLET_NAME}} supports the creation of app-specific accounts.
 						However, this isn't the default.
 					`),
 					__brand: brand,
 				},
 				details: markdown(`
-					When connecting to a dApp, {{WALLET_NAME}} offers the user to
-					create a new dApp-specific account.
-					Doing so improves your privacy across web3 by preventing dApps
-					from correlating your history across dApps.
+					When connecting to an app, {{WALLET_NAME}} offers the user to
+					create a new app-specific account.
+					Doing so improves your privacy across web3 by preventing apps
+					from correlating your history across apps.
 					However, this isn't the default option, which can encourage
-					users to reuse accounts across dApps nonetheless.
+					users to reuse accounts across apps nonetheless.
 				`),
 				references,
 			}
 	}
 }
 
-export const dappIsolation: Attribute<DappIsolationValue> = {
-	id: 'dappIsolation',
+export const appIsolation: Attribute<AppIsolationValue> = {
+	id: 'appIsolation',
 	icon: '\u{1f3dd}', // Desert island
-	displayName: 'dApp isolation',
+	displayName: 'App isolation',
 	wording: {
-		midSentenceName: 'dApp isolation',
+		midSentenceName: 'app isolation',
 	},
 	question: sentence(`
-		If you connect to a dApp, will it be able to learn your past activity
-		from other dApps by default?
+		If you connect to an app, will it be able to learn your past activity
+		from other apps by default?
 	`),
 	why: markdown(`
 		On the web, website \`A\` is not allowed to query your browsing history from
@@ -242,29 +242,29 @@ export const dappIsolation: Attribute<DappIsolationValue> = {
 		by default, each website has its own isolated data about a user,
 		and may not obtain any other information without explicit consent.
 
-		In web3, address reuse allows dApps to correlate your usage and browsing
-		history across other dApps. While this can be a useful feature that
+		In web3, address reuse allows app to correlate your usage and browsing
+		history across other apps. While this can be a useful feature that
 		enables easy composability, it is also an irreversible privacy problem
 		and a regression from web2-level privacy.
 
 		For web3 to avoid perpetuating this privacy problem, users need to be
-		able to control the amount of information each new dApp may learn about
+		able to control the amount of information each new app may learn about
 		their past onchain history.
 
-		Maintaining per-dApp accounts creates complex fragmentation and UX issues
+		Maintaining per-app accounts creates complex fragmentation and UX issues
 		which are difficult to abstract away from users. Nonetheless, address
 		reuse creates an indelible data trail for users.
 	`),
 	methodology: markdown(`
 		Wallets are assessed based on whether they make it easy for the user to
-		create a distinct account for each new dApp they use, and whether this is
+		create a distinct account for each new app they use, and whether this is
 		the default choice.
 
-		When connecting to dApps that the user previously connected to, the
+		When connecting to apps that the user previously connected to, the
 		wallet must use the address(es) that were last used for this specific
-		dApp.
+		app.
 
-		Wallets that do not support connecting to dApps are exempt from this
+		Wallets that do not support connecting to apps are exempt from this
 		attribute.
 	`),
 	ratingScale: {
@@ -273,55 +273,55 @@ export const dappIsolation: Attribute<DappIsolationValue> = {
 		fail: [
 			exampleRating(
 				paragraph(`
-					The wallet does not allow the creation of per-dApp accounts
-					during the dApp connection flow.
+					The wallet does not allow the creation of per-app accounts
+					during the app connection flow.
 				`),
-				rateDappIsolation({
+				rateAppIsolation({
 					ethAccounts: supported({
 						defaultBehavior: ExposedAccountsBehavior.ACTIVE_ACCOUNT_ONLY,
 					}),
 					erc7846WalletConnect: supported({
 						defaultBehavior: ExposedAccountsBehavior.ACTIVE_ACCOUNT_ONLY,
 					}),
-					createInDappConnectionFlow: notSupported,
-					useDappSpecificLastConnectedAddresses: featureSupported,
+					createInAppConnectionFlow: notSupported,
+					useAppSpecificLastConnectedAddresses: featureSupported,
 				}),
 			),
 			exampleRating(
 				paragraph(`
 					The wallet does not remember the address (or set of addresses)
-					that was last used when connecting to a previously-connected dApp.
+					that was last used when connecting to a previously-connected app.
 				`),
-				rateDappIsolation({
+				rateAppIsolation({
 					ethAccounts: supported({
-						defaultBehavior: ExposedAccountsBehavior.DAPP_SPECIFIC_ACCOUNT,
+						defaultBehavior: ExposedAccountsBehavior.APP_SPECIFIC_ACCOUNT,
 					}),
 					erc7846WalletConnect: supported({
-						defaultBehavior: ExposedAccountsBehavior.DAPP_SPECIFIC_ACCOUNT,
+						defaultBehavior: ExposedAccountsBehavior.APP_SPECIFIC_ACCOUNT,
 					}),
-					createInDappConnectionFlow: featureSupported,
-					useDappSpecificLastConnectedAddresses: notSupported,
+					createInAppConnectionFlow: featureSupported,
+					useAppSpecificLastConnectedAddresses: notSupported,
 				}),
 			),
 			exampleRating(
 				paragraph(`
-					The wallet supports creating per-dApp accounts when connecting to
-					a dApp, but the default behavior is to reuse existing accounts.
+					The wallet supports creating per-app accounts when connecting to
+					an app, but the default behavior is to reuse existing accounts.
 				`),
-				rateDappIsolation({
+				rateAppIsolation({
 					ethAccounts: supported({
 						defaultBehavior: ExposedAccountsBehavior.ACTIVE_ACCOUNT_ONLY,
 					}),
 					erc7846WalletConnect: supported({
 						defaultBehavior: ExposedAccountsBehavior.ACTIVE_ACCOUNT_ONLY,
 					}),
-					createInDappConnectionFlow: featureSupported,
-					useDappSpecificLastConnectedAddresses: featureSupported,
+					createInAppConnectionFlow: featureSupported,
+					useAppSpecificLastConnectedAddresses: featureSupported,
 				}),
 			),
 			exampleRating(
 				mdParagraph(`
-					The wallet has different behavior across the dApp connection
+					The wallet has different behavior across the app connection
 					standards it supports:
 					\`eth_accounts\` RPC vs ERC-7846 \`wallet_connect\` RPC.
 				`),
@@ -331,46 +331,46 @@ export const dappIsolation: Attribute<DappIsolationValue> = {
 		pass: [
 			exampleRating(
 				paragraph(`
-					The wallet supports creating per-dApp accounts when connecting to
-					a dApp, and encourages the user to do this by default.
+					The wallet supports creating per-app accounts when connecting to
+					an app, and encourages the user to do this by default.
 				`),
-				rateDappIsolation({
+				rateAppIsolation({
 					ethAccounts: supported({
-						defaultBehavior: ExposedAccountsBehavior.DAPP_SPECIFIC_ACCOUNT,
+						defaultBehavior: ExposedAccountsBehavior.APP_SPECIFIC_ACCOUNT,
 					}),
 					erc7846WalletConnect: supported({
-						defaultBehavior: ExposedAccountsBehavior.DAPP_SPECIFIC_ACCOUNT,
+						defaultBehavior: ExposedAccountsBehavior.APP_SPECIFIC_ACCOUNT,
 					}),
-					createInDappConnectionFlow: featureSupported,
-					useDappSpecificLastConnectedAddresses: featureSupported,
+					createInAppConnectionFlow: featureSupported,
+					useAppSpecificLastConnectedAddresses: featureSupported,
 				}),
 			),
 		],
 	},
-	evaluate: (features: ResolvedFeatures): Evaluation<DappIsolationValue> => {
+	evaluate: (features: ResolvedFeatures): Evaluation<AppIsolationValue> => {
 		if (features.type !== WalletType.SOFTWARE) {
 			return exempt(
-				dappIsolation,
-				sentence('Only software wallets are expected to deal with connecting to dApps.'),
+				appIsolation,
+				sentence('Only software wallets are expected to deal with connecting to apps.'),
 				brand,
 				null,
 			)
 		}
 
-		if (features.privacy.dappIsolation === null) {
-			return unrated(dappIsolation, brand, null)
+		if (features.privacy.appIsolation === null) {
+			return unrated(appIsolation, brand, null)
 		}
 
-		if (features.privacy.dappIsolation === 'DAPP_CONNECTION_NOT_SUPPORTED') {
+		if (features.privacy.appIsolation === 'APP_CONNECTION_NOT_SUPPORTED') {
 			return exempt(
-				dappIsolation,
-				sentence('{{WALLET_NAME}} does not support connecting to dApps.'),
+				appIsolation,
+				sentence('{{WALLET_NAME}} does not support connecting to apps.'),
 				brand,
 				null,
 			)
 		}
 
-		return rateDappIsolation(features.privacy.dappIsolation)
+		return rateAppIsolation(features.privacy.appIsolation)
 	},
-	aggregate: pickWorstRating<DappIsolationValue>,
+	aggregate: pickWorstRating<AppIsolationValue>,
 }

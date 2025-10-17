@@ -82,7 +82,7 @@ export const zerion: SoftwareWallet = {
 		},
 		multiAddress: null,
 		privacy: {
-			dappIsolation: null,
+			appIsolation: null,
 			dataCollection: null,
 			privacyPolicy: null,
 			transactionPrivacy: {

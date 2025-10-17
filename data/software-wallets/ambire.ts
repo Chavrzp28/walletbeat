@@ -1,7 +1,7 @@
 import { jiojosbg } from '@/data/contributors/jiojosbg'
 import { AccountType, TransactionGenerationCapability } from '@/schema/features/account-support'
 import type { AddressResolutionData } from '@/schema/features/privacy/address-resolution'
-import { ExposedAccountsBehavior } from '@/schema/features/privacy/dapp-isolation'
+import { ExposedAccountsBehavior } from '@/schema/features/privacy/app-isolation'
 import {
 	CollectionPolicy,
 	DataCollectionPurpose,
@@ -297,14 +297,14 @@ export const ambire: SoftwareWallet = {
 		},
 		multiAddress: featureSupported,
 		privacy: {
-			dappIsolation: {
+			appIsolation: {
 				[Variant.BROWSER]: {
-					createInDappConnectionFlow: notSupported,
+					createInAppConnectionFlow: notSupported,
 					erc7846WalletConnect: notSupported,
 					ethAccounts: supported({
 						defaultBehavior: ExposedAccountsBehavior.ACTIVE_ACCOUNT_ONLY,
 					}),
-					useDappSpecificLastConnectedAddresses: notSupported,
+					useAppSpecificLastConnectedAddresses: notSupported,
 				},
 				[Variant.MOBILE]: null,
 				[Variant.DESKTOP]: null,

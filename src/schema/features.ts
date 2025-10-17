@@ -10,7 +10,7 @@ import {
 	type WalletIntegration,
 } from './features/ecosystem/integration'
 import type { AddressResolution } from './features/privacy/address-resolution'
-import type { DappIsolation } from './features/privacy/dapp-isolation'
+import type { AppIsolation as AppIsolation } from './features/privacy/app-isolation'
 import type { DataCollection } from './features/privacy/data-collection'
 import type { HardwarePrivacySupport } from './features/privacy/hardware-privacy'
 import type { TransactionPrivacy } from './features/privacy/transaction-privacy'
@@ -144,8 +144,8 @@ export type WalletSoftwareFeatures = WalletBaseFeatures & {
 
 	/** Privacy features. */
 	privacy: WalletBaseFeatures['privacy'] & {
-		/** Does the wallet isolate data between dapps? */
-		dappIsolation: VariantFeature<'DAPP_CONNECTION_NOT_SUPPORTED' | DappIsolation>
+		/** Does the wallet isolate data between apps? */
+		appIsolation: VariantFeature<'APP_CONNECTION_NOT_SUPPORTED' | AppIsolation>
 	}
 
 	/** Self-sovereignty features. */
@@ -271,7 +271,7 @@ export interface ResolvedFeatures {
 		privacyPolicy: ResolvedFeature<string>
 		hardwarePrivacy: ResolvedFeature<HardwarePrivacySupport>
 		transactionPrivacy: ResolvedFeature<TransactionPrivacy>
-		dappIsolation: ResolvedFeature<'DAPP_CONNECTION_NOT_SUPPORTED' | DappIsolation>
+		appIsolation: ResolvedFeature<'APP_CONNECTION_NOT_SUPPORTED' | AppIsolation>
 	}
 	selfSovereignty: {
 		transactionSubmission: ResolvedFeature<TransactionSubmission>
@@ -401,9 +401,9 @@ export function resolveFeatures(
 				'privacy.transactionPrivacy',
 				features => features.privacy.transactionPrivacy,
 			),
-			dappIsolation: softwareFeat(
+			appIsolation: softwareFeat(
 				'privacy.dappIsolation',
-				features => features.privacy.dappIsolation,
+				features => features.privacy.appIsolation,
 			),
 		},
 		selfSovereignty: {

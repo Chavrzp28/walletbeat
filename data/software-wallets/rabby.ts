@@ -1,7 +1,7 @@
 import { nconsigny } from '@/data/contributors/nconsigny'
 import { polymutex } from '@/data/contributors/polymutex'
 import { AccountType } from '@/schema/features/account-support'
-import { ExposedAccountsBehavior } from '@/schema/features/privacy/dapp-isolation'
+import { ExposedAccountsBehavior } from '@/schema/features/privacy/app-isolation'
 import {
 	CollectionPolicy,
 	DataCollectionPurpose,
@@ -181,14 +181,14 @@ export const rabby: SoftwareWallet = {
 		},
 		multiAddress: featureSupported,
 		privacy: {
-			dappIsolation: {
+			appIsolation: {
 				[Variant.BROWSER]: {
-					createInDappConnectionFlow: notSupported,
+					createInAppConnectionFlow: notSupported,
 					erc7846WalletConnect: notSupported,
 					ethAccounts: supported({
 						defaultBehavior: ExposedAccountsBehavior.ACTIVE_ACCOUNT_ONLY,
 					}),
-					useDappSpecificLastConnectedAddresses: notSupported,
+					useAppSpecificLastConnectedAddresses: notSupported,
 				},
 				[Variant.MOBILE]: null,
 				[Variant.DESKTOP]: null,

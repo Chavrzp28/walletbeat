@@ -44,7 +44,7 @@ import {
 	addressCorrelation,
 	type AddressCorrelationValue,
 } from './attributes/privacy/address-correlation'
-import { dappIsolation, type DappIsolationValue } from './attributes/privacy/dapp-isolation'
+import { appIsolation, type AppIsolationValue } from './attributes/privacy/app-isolation'
 import { hardwarePrivacy, type HardwarePrivacyValue } from './attributes/privacy/hardware-privacy'
 import {
 	multiAddressCorrelation,
@@ -182,7 +182,7 @@ type PrivacyValues = Dict<{
 	multiAddressCorrelation: MultiAddressCorrelationValue
 	privateTransfers: PrivateTransfersValue
 	hardwarePrivacy: HardwarePrivacyValue
-	dappIsolation: DappIsolationValue
+	appIsolation: AppIsolationValue
 }>
 
 /** Privacy attributes. */
@@ -198,14 +198,14 @@ export const privacyAttributeGroup: AttributeGroup<PrivacyValues> = {
 		multiAddressCorrelation,
 		privateTransfers,
 		hardwarePrivacy,
-		dappIsolation,
+		appIsolation,
 	},
 	attributeWeights: {
 		addressCorrelation: 1.0,
 		multiAddressCorrelation: 1.0,
 		privateTransfers: 1.0,
 		hardwarePrivacy: 1.0,
-		dappIsolation: 1.0,
+		appIsolation: 1.0,
 	},
 }
 
@@ -459,7 +459,7 @@ export function evaluateAttributes(
 			multiAddressCorrelation: evalAttr(multiAddressCorrelation),
 			privateTransfers: evalAttr(privateTransfers),
 			hardwarePrivacy: evalAttr(hardwarePrivacy),
-			dappIsolation: evalAttr(dappIsolation),
+			appIsolation: evalAttr(appIsolation),
 		},
 		selfSovereignty: {
 			selfHostedNode: evalAttr(selfHostedNode),
@@ -530,7 +530,7 @@ export function aggregateAttributes(perVariant: AtLeastOneVariant<EvaluationTree
 			multiAddressCorrelation: attr(tree => tree.privacy.multiAddressCorrelation),
 			privateTransfers: attr(tree => tree.privacy.privateTransfers),
 			hardwarePrivacy: attr(tree => tree.privacy.hardwarePrivacy),
-			dappIsolation: attr(tree => tree.privacy.dappIsolation),
+			appIsolation: attr(tree => tree.privacy.appIsolation),
 		},
 		selfSovereignty: {
 			selfHostedNode: attr(tree => tree.selfSovereignty.selfHostedNode),

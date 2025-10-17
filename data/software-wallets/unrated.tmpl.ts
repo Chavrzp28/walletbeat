@@ -63,7 +63,7 @@ export const unratedTemplate: SoftwareWallet = {
 		},
 		multiAddress: null,
 		privacy: {
-			dappIsolation: null,
+			appIsolation: null,
 			dataCollection: null,
 			privacyPolicy: 'https://example.com/privacy-policy',
 			transactionPrivacy: null,
