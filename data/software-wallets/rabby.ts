@@ -13,6 +13,7 @@ import {
 } from '@/schema/features/privacy/data-collection'
 import { PrivateTransferTechnology } from '@/schema/features/privacy/transaction-privacy'
 import { WalletProfile } from '@/schema/features/profile'
+import { SeedphraseBackupOnboardingFlowBehavior } from '@/schema/features/security/account-recovery'
 import {
 	HardwareWalletConnection,
 	HardwareWalletType,
@@ -365,6 +366,12 @@ export const rabby: SoftwareWallet = {
 		},
 		profile: WalletProfile.GENERIC,
 		security: {
+			accountRecovery: {
+				guardianRecovery: notSupported,
+				seedPhraseBackup: {
+					onboardingFlow: SeedphraseBackupOnboardingFlowBehavior.NO_DEDICATED_BACKUP_STEP,
+				},
+			},
 			bugBountyProgram: null,
 			hardwareWalletSupport: {
 				[Variant.DESKTOP]: {

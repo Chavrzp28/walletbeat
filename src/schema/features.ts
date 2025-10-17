@@ -16,6 +16,7 @@ import type { DataCollection } from './features/privacy/data-collection'
 import type { HardwarePrivacySupport } from './features/privacy/hardware-privacy'
 import type { TransactionPrivacy } from './features/privacy/transaction-privacy'
 import type { WalletProfile } from './features/profile'
+import type { AccountRecovery } from './features/security/account-recovery'
 import type { BugBountyProgramImplementation } from './features/security/bug-bounty-program'
 import type { FirmwareSupport } from './features/security/firmware'
 import type { HardwareWalletAppSigningImplementation } from './features/security/hardware-wallet-app-signing'
@@ -90,6 +91,9 @@ export interface WalletBaseFeatures {
 
 		/** Passkey verification implementation */
 		passkeyVerification: VariantFeature<PasskeyVerificationImplementation>
+
+		/** How can users of the wallet recover their account? */
+		accountRecovery: VariantFeature<AccountRecovery>
 	}
 
 	/** Privacy features. */
@@ -276,6 +280,7 @@ export interface ResolvedFeatures {
 		supplyChainDIY: ResolvedFeature<SupplyChainDIYSupport>
 		supplyChainFactory: ResolvedFeature<SupplyChainFactorySupport>
 		userSafety: ResolvedFeature<UserSafetySupport>
+		accountRecovery: ResolvedFeature<AccountRecovery>
 	}
 	privacy: {
 		dataCollection: ResolvedFeature<DataCollection>
@@ -404,6 +409,10 @@ export function resolveFeatures(
 				features => features.security.supplyChainFactory,
 			),
 			userSafety: hardwareFeat('security.userSafety', features => features.security.userSafety),
+			accountRecovery: baseFeat(
+				'security.accountRecovery',
+				features => features.security.accountRecovery,
+			),
 		},
 		privacy: {
 			dataCollection: baseFeat(

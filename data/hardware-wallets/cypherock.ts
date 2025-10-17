@@ -99,6 +99,7 @@ export const cypherockWallet: HardwareWallet = {
 		},
 		profile: WalletProfile.GENERIC,
 		security: {
+			accountRecovery: null,
 			bugBountyProgram: supported<BugBountyProgramImplementation>({
 				ref: [
 					{

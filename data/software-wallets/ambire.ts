@@ -432,6 +432,7 @@ export const ambire: SoftwareWallet = {
 		},
 		profile: WalletProfile.GENERIC,
 		security: {
+			accountRecovery: null,
 			bugBountyProgram: supported<BugBountyProgramImplementation>({
 				ref: [
 					{

@@ -102,6 +102,7 @@ export const trezorWallet: HardwareWallet = {
 		},
 		profile: WalletProfile.GENERIC,
 		security: {
+			accountRecovery: null,
 			bugBountyProgram: supported<BugBountyProgramImplementation>({
 				ref: refTodo,
 				availability: BugBountyProgramAvailability.ACTIVE,

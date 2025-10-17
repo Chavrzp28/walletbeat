@@ -121,6 +121,7 @@ export const gemwallet: SoftwareWallet = {
 		},
 		profile: WalletProfile.GENERIC,
 		security: {
+			accountRecovery: null,
 			bugBountyProgram: null,
 			hardwareWalletSupport: null,
 			lightClient: {

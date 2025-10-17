@@ -123,6 +123,7 @@ export const frame: SoftwareWallet = {
 		},
 		profile: WalletProfile.GENERIC,
 		security: {
+			accountRecovery: null,
 			bugBountyProgram: null,
 			hardwareWalletSupport: {
 				ref: refTodo,

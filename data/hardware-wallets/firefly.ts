@@ -59,6 +59,7 @@ export const fireflyWallet: HardwareWallet = {
 		},
 		profile: WalletProfile.GENERIC,
 		security: {
+			accountRecovery: null,
 			bugBountyProgram: notSupported,
 			firmware: null,
 			hardwareWalletAppSigning: {

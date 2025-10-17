@@ -114,6 +114,7 @@ export const ledgerWallet: HardwareWallet = {
 		},
 		profile: WalletProfile.GENERIC,
 		security: {
+			accountRecovery: null,
 			bugBountyProgram: supported<BugBountyProgramImplementation>({
 				ref: refTodo,
 				availability: BugBountyProgramAvailability.ACTIVE,

@@ -5,6 +5,11 @@ import type { AddressResolutionData } from '@/schema/features/privacy/address-re
 import { PrivateTransferTechnology } from '@/schema/features/privacy/transaction-privacy'
 import { WalletProfile } from '@/schema/features/profile'
 import {
+	GuardianPolicyType,
+	GuardianType,
+	SeedphraseBackupOnboardingFlowBehavior,
+} from '@/schema/features/security/account-recovery'
+import {
 	HardwareWalletConnection,
 	HardwareWalletType,
 	type SupportedHardwareWallet,
@@ -31,6 +36,9 @@ import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
 import { mdParagraph, paragraph } from '@/types/content'
 
+import { alphabet } from '../entities/alphabet'
+import { apple } from '../entities/apple'
+import { consensys } from '../entities/consensys'
 import { cure53 } from '../entities/cure53'
 import { cyfrin } from '../entities/cyfrin'
 import { diligence } from '../entities/diligence'
@@ -233,6 +241,37 @@ export const metamask: SoftwareWallet = {
 		},
 		profile: WalletProfile.GENERIC,
 		security: {
+			accountRecovery: {
+				guardianRecovery: supported({
+					minimumGuardianPolicy: {
+						type: GuardianPolicyType.SECRET_SPLIT_ACROSS_GUARDIANS,
+						// Requires at least one external account + the data stored in
+						// MetaMask's secret store service, which is effectively 2 pieces
+						// of data that need to be brought together.
+						numSharesRequiredForRecovery: 2,
+						// Minimum of 1 social login provider + MetaMask data store
+						// = 2 shares across 2 guardians.
+						numSharesTotal: 2,
+						possibleGuardians: [
+							{ type: GuardianType.USER_EXTERNAL_ACCOUNT, entity: alphabet },
+							{ type: GuardianType.USER_EXTERNAL_ACCOUNT, entity: apple },
+							{ type: GuardianType.WALLET_PROVIDER, entity: consensys },
+						],
+						secretReconstitution: 'CLIENT_SIDE',
+					},
+					ref: [
+						{
+							explanation:
+								"MetaMask's social login feature splits your recovery key across Google and/or Apple, and stores an encrypted copy in Consensys's data store service, making it effectively a 2/2-secret-sharing scheme at minimum.",
+							label: 'MetaMask social login documentation',
+							url: 'https://support.metamask.io/configure/wallet/social-login',
+						},
+					],
+				}),
+				seedPhraseBackup: {
+					onboardingFlow: SeedphraseBackupOnboardingFlowBehavior.BYPASSABLE_QUIZ,
+				},
+			},
 			bugBountyProgram: null,
 			hardwareWalletSupport: {
 				ref: [

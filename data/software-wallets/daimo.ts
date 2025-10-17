@@ -353,6 +353,7 @@ export const daimo: SoftwareWallet = {
 		},
 		profile: WalletProfile.PAYMENTS,
 		security: {
+			accountRecovery: null,
 			bugBountyProgram: null,
 			hardwareWalletSupport: {
 				ref: refTodo,
