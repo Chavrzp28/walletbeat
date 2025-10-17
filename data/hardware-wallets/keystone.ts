@@ -6,7 +6,7 @@ import {
 	CalldataDecoding,
 	DataExtraction,
 	displaysFullTransactionDetails,
-} from '@/schema/features/security/hardware-wallet-dapp-signing'
+} from '@/schema/features/security/hardware-wallet-app-signing'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -83,7 +83,7 @@ export const keystoneWallet: HardwareWallet = {
 				reproducibleBuilds: FirmwareType.PASS,
 				silentUpdateProtection: FirmwareType.PASS,
 			},
-			hardwareWalletDappSigning: {
+			hardwareWalletAppSigning: {
 				messageSigning: {
 					calldataDecoding: {
 						[CalldataDecoding.ETH_USDC_TRANSFER]: true,

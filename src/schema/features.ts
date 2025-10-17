@@ -17,7 +17,7 @@ import type { TransactionPrivacy } from './features/privacy/transaction-privacy'
 import type { WalletProfile } from './features/profile'
 import type { BugBountyProgramImplementation } from './features/security/bug-bounty-program'
 import type { FirmwareSupport } from './features/security/firmware'
-import type { HardwareWalletDappSigningImplementation } from './features/security/hardware-wallet-dapp-signing'
+import type { HardwareWalletAppSigningImplementation } from './features/security/hardware-wallet-app-signing'
 import type { HardwareWalletSupport } from './features/security/hardware-wallet-support'
 import type { KeysHandlingSupport } from './features/security/keys-handling'
 import type { EthereumL1LightClientSupport } from './features/security/light-client'
@@ -191,8 +191,8 @@ export function isWalletSoftwareFeatures(
  */
 export type WalletHardwareFeatures = WalletBaseFeatures & {
 	security: WalletBaseFeatures['security'] & {
-		/** Hardware wallet dApp signing support */
-		hardwareWalletDappSigning: VariantFeature<HardwareWalletDappSigningImplementation>
+		/** Hardware wallet app signing support */
+		hardwareWalletAppSigning: VariantFeature<HardwareWalletAppSigningImplementation>
 
 		firmware: VariantFeature<FirmwareSupport>
 		keysHandling: VariantFeature<KeysHandlingSupport>
@@ -257,7 +257,7 @@ export interface ResolvedFeatures {
 			ethereumL1: ResolvedFeature<Support<WithRef<EthereumL1LightClientSupport>>>
 		}
 		hardwareWalletSupport: ResolvedFeature<HardwareWalletSupport>
-		hardwareWalletDappSigning: ResolvedFeature<HardwareWalletDappSigningImplementation>
+		hardwareWalletAppSigning: ResolvedFeature<HardwareWalletAppSigningImplementation>
 		passkeyVerification: ResolvedFeature<PasskeyVerificationImplementation>
 		bugBountyProgram: ResolvedFeature<BugBountyProgramImplementation>
 		firmware: ResolvedFeature<FirmwareSupport>
@@ -360,9 +360,9 @@ export function resolveFeatures(
 				'security.hardwareWalletSupport',
 				features => features.security.hardwareWalletSupport,
 			),
-			hardwareWalletDappSigning: hardwareFeat(
-				'hardwareWalletDappSigning',
-				features => features.security.hardwareWalletDappSigning,
+			hardwareWalletAppSigning: hardwareFeat(
+				'hardwareWalletAppSigning',
+				features => features.security.hardwareWalletAppSigning,
 			),
 			passkeyVerification: baseFeat(
 				'passkeyVerification',
@@ -401,10 +401,7 @@ export function resolveFeatures(
 				'privacy.transactionPrivacy',
 				features => features.privacy.transactionPrivacy,
 			),
-			appIsolation: softwareFeat(
-				'privacy.dappIsolation',
-				features => features.privacy.appIsolation,
-			),
+			appIsolation: softwareFeat('privacy.appIsolation', features => features.privacy.appIsolation),
 		},
 		selfSovereignty: {
 			transactionSubmission: softwareFeat(

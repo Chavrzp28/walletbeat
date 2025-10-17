@@ -286,9 +286,9 @@ export interface TransactionSigningSupport {
 }
 
 /**
- * A record of hardware wallet dapp signing support (both message and transaction)
+ * A record of hardware wallet app signing support (both message and transaction)
  */
-export interface HardwareWalletDappSigningSupport {
+export interface HardwareWalletAppSigningSupport {
 	/**
 	 * Message signing support
 	 */
@@ -301,4 +301,4 @@ export interface HardwareWalletDappSigningSupport {
 
 export type MessageSigningImplementation = WithRef<MessageSigningSupport>
 export type TransactionSigningImplementation = WithRef<TransactionSigningSupport>
-export type HardwareWalletDappSigningImplementation = WithRef<HardwareWalletDappSigningSupport>
+export type HardwareWalletAppSigningImplementation = WithRef<HardwareWalletAppSigningSupport>

@@ -64,9 +64,9 @@ import {
 } from './attributes/security/chain-verification'
 import { firmware, type FirmwareValue } from './attributes/security/firmware'
 import {
-	hardwareWalletDappSigning,
-	type HardwareWalletDappSigningValue,
-} from './attributes/security/hardware-wallet-dapp-signing'
+	hardwareWalletAppSigning,
+	type HardwareWalletAppSigningValue,
+} from './attributes/security/hardware-wallet-app-signing'
 import {
 	hardwareWalletSupport,
 	type HardwareWalletSupportValue,
@@ -126,7 +126,7 @@ type SecurityValues = Dict<{
 	securityAudits: SecurityAuditsValue
 	scamPrevention: ScamPreventionValue
 	chainVerification: ChainVerificationValue
-	hardwareWalletDappSigning: HardwareWalletDappSigningValue
+	hardwareWalletAppSigning: HardwareWalletAppSigningValue
 	hardwareWalletSupport: HardwareWalletSupportValue
 	softwareHWIntegration: SoftwareHWIntegrationValue
 	passkeyImplementation: PasskeyImplementationValue
@@ -148,7 +148,7 @@ export const securityAttributeGroup: AttributeGroup<SecurityValues> = {
 		securityAudits,
 		scamPrevention,
 		chainVerification,
-		hardwareWalletDappSigning,
+		hardwareWalletAppSigning,
 		hardwareWalletSupport,
 		softwareHWIntegration,
 		passkeyImplementation,
@@ -163,7 +163,7 @@ export const securityAttributeGroup: AttributeGroup<SecurityValues> = {
 		securityAudits: 1.0,
 		scamPrevention: 1.0,
 		chainVerification: 1.0,
-		hardwareWalletDappSigning: 1.0,
+		hardwareWalletAppSigning: 1.0,
 		hardwareWalletSupport: 1.0,
 		softwareHWIntegration: 1.0,
 		passkeyImplementation: 1.0,
@@ -340,7 +340,7 @@ export interface SecurityEvaluations extends EvaluatedGroup<SecurityValues> {
 	securityAudits: EvaluatedAttribute<SecurityAuditsValue>
 	scamPrevention: EvaluatedAttribute<ScamPreventionValue>
 	chainVerification: EvaluatedAttribute<ChainVerificationValue>
-	hardwareWalletDappSigning: EvaluatedAttribute<HardwareWalletDappSigningValue>
+	hardwareWalletAppSigning: EvaluatedAttribute<HardwareWalletAppSigningValue>
 	hardwareWalletSupport: EvaluatedAttribute<HardwareWalletSupportValue>
 	softwareHWIntegration: EvaluatedAttribute<SoftwareHWIntegrationValue>
 	passkeyImplementation: EvaluatedAttribute<PasskeyImplementationValue>
@@ -443,7 +443,7 @@ export function evaluateAttributes(
 			securityAudits: evalAttr(securityAudits),
 			scamPrevention: evalAttr(scamPrevention),
 			chainVerification: evalAttr(chainVerification),
-			hardwareWalletDappSigning: evalAttr(hardwareWalletDappSigning),
+			hardwareWalletAppSigning: evalAttr(hardwareWalletAppSigning),
 			hardwareWalletSupport: evalAttr(hardwareWalletSupport),
 			softwareHWIntegration: evalAttr(softwareHWIntegration),
 			passkeyImplementation: evalAttr(passkeyImplementation),
@@ -514,7 +514,7 @@ export function aggregateAttributes(perVariant: AtLeastOneVariant<EvaluationTree
 			securityAudits: attr(tree => tree.security.securityAudits),
 			scamPrevention: attr(tree => tree.security.scamPrevention),
 			chainVerification: attr(tree => tree.security.chainVerification),
-			hardwareWalletDappSigning: attr(tree => tree.security.hardwareWalletDappSigning),
+			hardwareWalletAppSigning: attr(tree => tree.security.hardwareWalletAppSigning),
 			hardwareWalletSupport: attr(tree => tree.security.hardwareWalletSupport),
 			softwareHWIntegration: attr(tree => tree.security.softwareHWIntegration),
 			passkeyImplementation: attr(tree => tree.security.passkeyImplementation),

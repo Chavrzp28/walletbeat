@@ -5,7 +5,7 @@ import {
 	CalldataDecoding,
 	DataExtraction,
 	displaysFullTransactionDetails,
-} from '@/schema/features/security/hardware-wallet-dapp-signing'
+} from '@/schema/features/security/hardware-wallet-app-signing'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -76,7 +76,7 @@ export const gridplusWallet: HardwareWallet = {
 				url: 'https://docs.gridplus.io/resources/bug-bounty-and-responsible-disclosure-policy',
 			},
 			firmware: null,
-			hardwareWalletDappSigning: {
+			hardwareWalletAppSigning: {
 				messageSigning: {
 					calldataDecoding: {
 						[CalldataDecoding.ETH_USDC_TRANSFER]: true,

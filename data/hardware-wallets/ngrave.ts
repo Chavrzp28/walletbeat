@@ -4,7 +4,7 @@ import {
 	DataExtraction,
 	noCalldataDecoding,
 	noDataExtraction,
-} from '@/schema/features/security/hardware-wallet-dapp-signing'
+} from '@/schema/features/security/hardware-wallet-app-signing'
 import { License } from '@/schema/features/transparency/license'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
@@ -70,7 +70,7 @@ export const ngrave: HardwareWallet = {
 		security: {
 			bugBountyProgram: null,
 			firmware: null,
-			hardwareWalletDappSigning: {
+			hardwareWalletAppSigning: {
 				messageSigning: {
 					calldataDecoding: noCalldataDecoding,
 					details:

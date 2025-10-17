@@ -15,7 +15,7 @@ import { FirmwareType } from '@/schema/features/security/firmware'
 import {
 	DataExtraction,
 	noCalldataDecoding,
-} from '@/schema/features/security/hardware-wallet-dapp-signing'
+} from '@/schema/features/security/hardware-wallet-app-signing'
 import { License } from '@/schema/features/transparency/license'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
@@ -152,7 +152,7 @@ export const bitboxWallet: HardwareWallet = {
 				reproducibleBuilds: FirmwareType.PASS,
 				silentUpdateProtection: FirmwareType.PASS,
 			},
-			hardwareWalletDappSigning: {
+			hardwareWalletAppSigning: {
 				messageSigning: {
 					calldataDecoding: noCalldataDecoding,
 					details:
