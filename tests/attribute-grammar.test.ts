@@ -9,9 +9,9 @@ import {
 	nonEmptyMap,
 } from '@/types/utils/non-empty'
 
-import { contentGrammarLint, walletContentGrammarLint, warmupGrammarLinter } from './utils/grammar'
+import { contentGrammarLint, walletContentGrammarLint, warmupHarperLinter } from './utils/grammar'
 
-await warmupGrammarLinter()
+await warmupHarperLinter()
 
 describe('attribute', () => {
 	for (const [attributeGroupName, attributeGroup] of Object.entries(attributeTree)) {

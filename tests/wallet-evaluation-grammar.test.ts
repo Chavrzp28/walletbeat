@@ -21,9 +21,9 @@ import {
 import { isTypographicContent } from '@/types/content'
 import { isNonEmptyArray } from '@/types/utils/non-empty'
 
-import { walletContentGrammarLint, warmupGrammarLinter } from './utils/grammar'
+import { walletContentGrammarLint, warmupHarperLinter } from './utils/grammar'
 
-await warmupGrammarLinter()
+await warmupHarperLinter()
 
 describe('evaluations', () => {
 	type NamedEvaluation<V extends Value> = {
