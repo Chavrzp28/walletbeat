@@ -78,6 +78,7 @@ export const family: SoftwareWallet = {
 		},
 		multiAddress: null,
 		privacy: {
+			appIsolation: null,
 			dataCollection: null,
 			privacyPolicy: null,
 			transactionPrivacy: {

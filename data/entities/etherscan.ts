@@ -2,7 +2,7 @@ import type { ChainDataProvider, CorporateEntity } from '@/schema/entity'
 
 export const etherscan: CorporateEntity & ChainDataProvider = {
 	id: 'etherscan',
-	name: 'EtherScan',
+	name: 'Etherscan',
 	legalName: { name: 'Etherscan', soundsDifferent: false },
 	type: {
 		chainDataProvider: true,

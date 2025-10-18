@@ -182,13 +182,13 @@ export const funding: Attribute<FundingValue> = {
 				paragraph(
 					'The wallet has funding but has not revealed this publicly and transparently to users.',
 				),
-				unclear.value,
+				unclear,
 			),
 			exampleRating(
 				paragraph(
 					'The wallet does not have any funding. Wallets must have sustainable funding sources in order to remain secure and up-to-date.',
 				),
-				noFunding.value,
+				noFunding,
 			),
 		],
 		partial: [

@@ -116,6 +116,16 @@ export function isTypographicContent<Strings extends _Strings = null>(
 }
 
 /**
+ * Type predicate for expanded set of strings.
+ */
+export function typographicContentWithExtraOptionalStrings<
+	BaseStrings extends _Strings,
+	ExtendedStrings extends BaseStrings,
+>(_: TypographicContent<BaseStrings>): _ is TypographicContent<ExtendedStrings> {
+	return true // Always true since ExtendedStrings extends BaseStrings.
+}
+
+/**
  * Pre-render typographic content such that it no longer requires any
  * template string.
  *

@@ -45,6 +45,7 @@ import {
 	addressCorrelation,
 	type AddressCorrelationValue,
 } from './attributes/privacy/address-correlation'
+import { appIsolation, type AppIsolationValue } from './attributes/privacy/app-isolation'
 import { hardwarePrivacy, type HardwarePrivacyValue } from './attributes/privacy/hardware-privacy'
 import {
 	multiAddressCorrelation,
@@ -64,9 +65,9 @@ import {
 } from './attributes/security/chain-verification'
 import { firmware, type FirmwareValue } from './attributes/security/firmware'
 import {
-	hardwareWalletDappSigning,
-	type HardwareWalletDappSigningValue,
-} from './attributes/security/hardware-wallet-dapp-signing'
+	hardwareWalletAppSigning,
+	type HardwareWalletAppSigningValue,
+} from './attributes/security/hardware-wallet-app-signing'
 import {
 	hardwareWalletSupport,
 	type HardwareWalletSupportValue,
@@ -127,7 +128,7 @@ type SecurityValues = Dict<{
 	securityAudits: SecurityAuditsValue
 	scamPrevention: ScamPreventionValue
 	chainVerification: ChainVerificationValue
-	hardwareWalletDappSigning: HardwareWalletDappSigningValue
+	hardwareWalletAppSigning: HardwareWalletAppSigningValue
 	hardwareWalletSupport: HardwareWalletSupportValue
 	softwareHWIntegration: SoftwareHWIntegrationValue
 	passkeyImplementation: PasskeyImplementationValue
@@ -149,7 +150,7 @@ export const securityAttributeGroup: AttributeGroup<SecurityValues> = {
 		securityAudits,
 		scamPrevention,
 		chainVerification,
-		hardwareWalletDappSigning,
+		hardwareWalletAppSigning,
 		hardwareWalletSupport,
 		softwareHWIntegration,
 		passkeyImplementation,
@@ -164,7 +165,7 @@ export const securityAttributeGroup: AttributeGroup<SecurityValues> = {
 		securityAudits: 1.0,
 		scamPrevention: 1.0,
 		chainVerification: 1.0,
-		hardwareWalletDappSigning: 1.0,
+		hardwareWalletAppSigning: 1.0,
 		hardwareWalletSupport: 1.0,
 		softwareHWIntegration: 1.0,
 		passkeyImplementation: 1.0,
@@ -183,6 +184,7 @@ type PrivacyValues = Dict<{
 	multiAddressCorrelation: MultiAddressCorrelationValue
 	privateTransfers: PrivateTransfersValue
 	hardwarePrivacy: HardwarePrivacyValue
+	appIsolation: AppIsolationValue
 }>
 
 /** Privacy attributes. */
@@ -198,12 +200,14 @@ export const privacyAttributeGroup: AttributeGroup<PrivacyValues> = {
 		multiAddressCorrelation,
 		privateTransfers,
 		hardwarePrivacy,
+		appIsolation,
 	},
 	attributeWeights: {
 		addressCorrelation: 1.0,
 		multiAddressCorrelation: 1.0,
 		privateTransfers: 1.0,
 		hardwarePrivacy: 1.0,
+		appIsolation: 1.0,
 	},
 }
 
@@ -338,7 +342,7 @@ export interface SecurityEvaluations extends EvaluatedGroup<SecurityValues> {
 	securityAudits: EvaluatedAttribute<SecurityAuditsValue>
 	scamPrevention: EvaluatedAttribute<ScamPreventionValue>
 	chainVerification: EvaluatedAttribute<ChainVerificationValue>
-	hardwareWalletDappSigning: EvaluatedAttribute<HardwareWalletDappSigningValue>
+	hardwareWalletAppSigning: EvaluatedAttribute<HardwareWalletAppSigningValue>
 	hardwareWalletSupport: EvaluatedAttribute<HardwareWalletSupportValue>
 	softwareHWIntegration: EvaluatedAttribute<SoftwareHWIntegrationValue>
 	passkeyImplementation: EvaluatedAttribute<PasskeyImplementationValue>
@@ -441,7 +445,7 @@ export function evaluateAttributes(
 			securityAudits: evalAttr(securityAudits),
 			scamPrevention: evalAttr(scamPrevention),
 			chainVerification: evalAttr(chainVerification),
-			hardwareWalletDappSigning: evalAttr(hardwareWalletDappSigning),
+			hardwareWalletAppSigning: evalAttr(hardwareWalletAppSigning),
 			hardwareWalletSupport: evalAttr(hardwareWalletSupport),
 			softwareHWIntegration: evalAttr(softwareHWIntegration),
 			passkeyImplementation: evalAttr(passkeyImplementation),
@@ -457,6 +461,7 @@ export function evaluateAttributes(
 			multiAddressCorrelation: evalAttr(multiAddressCorrelation),
 			privateTransfers: evalAttr(privateTransfers),
 			hardwarePrivacy: evalAttr(hardwarePrivacy),
+			appIsolation: evalAttr(appIsolation),
 		},
 		selfSovereignty: {
 			selfHostedNode: evalAttr(selfHostedNode),
@@ -511,7 +516,7 @@ export function aggregateAttributes(perVariant: AtLeastOneVariant<EvaluationTree
 			securityAudits: attr(tree => tree.security.securityAudits),
 			scamPrevention: attr(tree => tree.security.scamPrevention),
 			chainVerification: attr(tree => tree.security.chainVerification),
-			hardwareWalletDappSigning: attr(tree => tree.security.hardwareWalletDappSigning),
+			hardwareWalletAppSigning: attr(tree => tree.security.hardwareWalletAppSigning),
 			hardwareWalletSupport: attr(tree => tree.security.hardwareWalletSupport),
 			softwareHWIntegration: attr(tree => tree.security.softwareHWIntegration),
 			passkeyImplementation: attr(tree => tree.security.passkeyImplementation),
@@ -527,6 +532,7 @@ export function aggregateAttributes(perVariant: AtLeastOneVariant<EvaluationTree
 			multiAddressCorrelation: attr(tree => tree.privacy.multiAddressCorrelation),
 			privateTransfers: attr(tree => tree.privacy.privateTransfers),
 			hardwarePrivacy: attr(tree => tree.privacy.hardwarePrivacy),
+			appIsolation: attr(tree => tree.privacy.appIsolation),
 		},
 		selfSovereignty: {
 			selfHostedNode: attr(tree => tree.selfSovereignty.selfHostedNode),

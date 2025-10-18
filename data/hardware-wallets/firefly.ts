@@ -64,7 +64,7 @@ export const fireflyWallet: HardwareWallet = {
 				url: '',
 			},
 			firmware: null,
-			hardwareWalletDappSigning: {
+			hardwareWalletAppSigning: {
 				messageSigning: {
 					calldataDecoding: null,
 					details:

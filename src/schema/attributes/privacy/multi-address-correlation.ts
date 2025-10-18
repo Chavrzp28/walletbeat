@@ -161,9 +161,17 @@ function staggeredRequests(references: ReferenceArray): Evaluation<MultiAddressC
 			),
 			__brand: brand,
 		},
-		details: paragraph(
-			'When configured with multiple addresses, {{WALLET_NAME}} makes requests that contain only one of your addresses at a time. While each of these requests go to the same endpoint, they are staggered over time. Depending on the delay between such requests, this can provide an imperfect degree of privacy, as this makes it harder for the endpoint to correlate these requests as coming from the same user due to the time elapsed between the requests. However, since these requests are still unproxied, the endpoint is still able to correlate the requests due to their identical origin IP address.',
-		),
+		details: paragraph(`
+			When configured with multiple addresses, {{WALLET_NAME}} makes requests
+			that contain only one of your addresses at a time. While each of these
+			requests go to the same endpoint, they are staggered over time.
+			Depending on the delay between such requests, this can provide some
+			degree of privacy, as this makes it harder for the endpoint
+			to correlate these requests as coming from the same user due to the
+			time elapsed between the requests.
+			However, since these requests are still unproxied, the endpoint is
+			still able to correlate the requests due to their identical origin IP address.
+		`),
 		howToImprove: paragraph(
 			'{{WALLET_NAME}} should ensure requests are proxied through distinct proxies in order to prevent the RPC endpoint from learning the correlation between addresses. This can be done through the use of privacy solutions such as Oblivious HTTP, Tor, and others.',
 		),
@@ -183,7 +191,7 @@ function separateCircuits(references: ReferenceArray): Evaluation<MultiAddressCo
 			__brand: brand,
 		},
 		details: paragraph(
-			'When configured with multiple addresses, {{WALLET_NAME}} makes requests that contain only one of your addresses at a time. While each of these requests go to the same endpoint, they each use a different proxy circuit in order to appear as coming from different IPs from the perspective of the endpoint. This provides an imperfect degree of privacy, as it makes it harder for the endpoint to correlate these requests as coming from the same user. However, since these requests are all made together simultaneously, the endpoint is still able to correlate them by grouping them across time.',
+			'When configured with multiple addresses, {{WALLET_NAME}} makes requests that contain only one of your addresses at a time. While each of these requests go to the same endpoint, they each use a different proxy circuit in order to appear as coming from different IP addresses from the perspective of the endpoint. This provides an imperfect degree of privacy, as it makes it harder for the endpoint to correlate these requests as coming from the same user. However, since these requests are all made together simultaneously, the endpoint is still able to correlate them by grouping them across time.',
 		),
 		howToImprove: paragraph(
 			'{{WALLET_NAME}} should add randomized delays between refreshes of separate addresses in order to reduce time-based correlatability of addresses by the RPC endpoint.',
@@ -207,7 +215,7 @@ function staggeredAndSeparateCircuits(
 			__brand: brand,
 		},
 		details: paragraph(
-			'When configured with multiple addresses, {{WALLET_NAME}} makes requests that contain only one of your addresses at a time. While each of these requests go to the same endpoint, they each use a different proxy circuit in order to appear as coming from different IPs from the perspective of the endpoint, and they are staggered over time. This provides a good degree of privacy, as it makes it harder for the endpoint to correlate these requests as coming from the same user. From the perspective of the endpoint, these requests come in from random IPs at random times, avoiding both IP-based and time-based correlation.',
+			'When configured with multiple addresses, {{WALLET_NAME}} makes requests that contain only one of your addresses at a time. While each of these requests go to the same endpoint, they each use a different proxy circuit in order to appear as coming from different IP addresses from the perspective of the endpoint, and they are staggered over time. This provides a good degree of privacy, as it makes it harder for the endpoint to correlate these requests as coming from the same user. From the perspective of the endpoint, these requests come in from random IP addresses at random times, avoiding both IP-based and time-based correlation.',
 		),
 		references,
 	}
@@ -363,19 +371,19 @@ export const multiAddressCorrelation: Attribute<MultiAddressCorrelationValue> = 
 				paragraph(
 					'The wallet refreshes multiple address balances by grouping all of these addresses in the same request.',
 				),
-				bulkRequests([]).value,
+				bulkRequests([]),
 			),
 			exampleRating(
 				paragraph(
 					'The wallet only refreshes the currently-active wallet address balances, but such requests carry an identifier or cookie which can identify the same user across requests for different wallet addresses.',
 				),
-				activeAddressOnlyWithTrackingIdentifier([]).value,
+				activeAddressOnlyWithTrackingIdentifier([]),
 			),
 			exampleRating(
 				paragraph(
 					"The wallet makes multiple simultaneous requests about each of the user's wallet balances, without proxying or staggering the requests.",
 				),
-				correlatableRequests([]).value,
+				correlatableRequests([]),
 			),
 		],
 		partial: [
@@ -383,13 +391,13 @@ export const multiAddressCorrelation: Attribute<MultiAddressCorrelationValue> = 
 				paragraph(
 					"The wallet makes multiple simultaneous requests about each of the user's wallet balances, proxying each of them through a different proxy circuit (e.g. Tor with unique circuits for each wallet address). The receiving endpoint may still correlate these addresses through time-based correlation.",
 				),
-				separateCircuits([]).value,
+				separateCircuits([]),
 			),
 			exampleRating(
 				paragraph(
 					"The wallet makes multiple requests about each of the user's wallet balances, staggering them over time to avoid time-based correlation. The receiving endpoint may still correlate these addresses through IP-address-based correlation.",
 				),
-				staggeredRequests([]).value,
+				staggeredRequests([]),
 			),
 		],
 		pass: [
@@ -397,19 +405,19 @@ export const multiAddressCorrelation: Attribute<MultiAddressCorrelationValue> = 
 				paragraph(
 					"The wallet makes multiple requests about each of the user's wallet balances, staggering them over time to avoid time-based correlation, and using unique proxy circuits for each wallet address to avoid IP-address-based correlation.",
 				),
-				staggeredAndSeparateCircuits([]).value,
+				staggeredAndSeparateCircuits([]),
 			),
 			exampleRating(
 				paragraph(
 					"The wallet distributes requests about each of the user's wallet balances across unique RPC endpoints owned by different entities, preventing any single entity from learning about more than one wallet address.",
 				),
-				uniqueDestinations([]).value,
+				uniqueDestinations([]),
 			),
 			exampleRating(
 				paragraph(
 					'The wallet only has one active wallet address at a time, and only ever makes requests about this wallet address and no other.',
 				),
-				activeAddressOnly([]).value,
+				activeAddressOnly([]),
 			),
 			exampleRating(
 				paragraph(

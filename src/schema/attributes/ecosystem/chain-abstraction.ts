@@ -248,7 +248,7 @@ function evaluateChainAbstraction(
 				- Insufficient liquidity on the target chain
 				- Bridge correctness failure
 				- Risks involved in wrapped assets (when applicable)
-				- Risks involved in L2-to-L2 interop (when applicable)
+				- Risks involved in L2-to-L2 interoperability (when applicable)
 
 				Bridging assets to an L2 chain also inherently implies accepting the
 				risk of that L2 chain, which [our friends at L2BEAT](https://l2beat/)
@@ -417,7 +417,7 @@ export const chainAbstraction: Attribute<ChainAbstractionValue> = {
 						},
 					},
 					bridging: fullySupportedBridging,
-				}).value,
+				}),
 			),
 			exampleRating(
 				sentence('The wallet does not have a built-in cross-chain bridging feature.'),
@@ -427,7 +427,7 @@ export const chainAbstraction: Attribute<ChainAbstractionValue> = {
 						builtInBridging: notSupported,
 						suggestedBridging: notSupported,
 					},
-				}).value,
+				}),
 			),
 		],
 		partial: [
@@ -449,7 +449,7 @@ export const chainAbstraction: Attribute<ChainAbstractionValue> = {
 						},
 					},
 					bridging: fullySupportedBridging,
-				}).value,
+				}),
 			),
 			exampleRating(
 				sentence(
@@ -468,7 +468,7 @@ export const chainAbstraction: Attribute<ChainAbstractionValue> = {
 						}),
 						suggestedBridging: notSupported,
 					},
-				}).value,
+				}),
 			),
 			exampleRating(
 				sentence(
@@ -483,7 +483,7 @@ export const chainAbstraction: Attribute<ChainAbstractionValue> = {
 						}),
 						suggestedBridging: notSupported,
 					},
-				}).value,
+				}),
 			),
 		],
 		pass: exampleRating(
@@ -493,7 +493,7 @@ export const chainAbstraction: Attribute<ChainAbstractionValue> = {
 			evaluateChainAbstraction({
 				crossChainBalances: fullySupportedCrossChainBalances,
 				bridging: fullySupportedBridging,
-			}).value,
+			}),
 		),
 	},
 	evaluate: (features: ResolvedFeatures): Evaluation<ChainAbstractionValue> => {

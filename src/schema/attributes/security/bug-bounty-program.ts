@@ -202,7 +202,7 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 				comprehensiveBugBountyProgram({
 					type: BugBountyProgramType.COMPREHENSIVE,
 					upgradePathAvailable: true,
-				}).value,
+				}),
 			),
 		],
 		partial: [
@@ -214,7 +214,7 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 				basicBugBountyProgram({
 					type: BugBountyProgramType.BASIC,
 					upgradePathAvailable: true,
-				}).value,
+				}),
 			),
 			exampleRating(
 				mdParagraph(`
@@ -224,7 +224,7 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 				disclosureOnlyProgram({
 					type: BugBountyProgramType.DISCLOSURE_ONLY,
 					upgradePathAvailable: false,
-				}).value,
+				}),
 			),
 		],
 		fail: [
@@ -233,7 +233,7 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 					The hardware wallet does not implement any bug bounty program or vulnerability disclosure policy.
 					It also lacks a clear process for providing security updates to address critical issues.
 				`),
-				noBugBountyProgram().value,
+				noBugBountyProgram(),
 			),
 		],
 	},

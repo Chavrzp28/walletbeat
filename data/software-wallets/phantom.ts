@@ -85,6 +85,7 @@ export const phantom: SoftwareWallet = {
 		},
 		multiAddress: null,
 		privacy: {
+			appIsolation: null,
 			dataCollection: null,
 			privacyPolicy: 'https://www.phantom.com/privacy',
 			transactionPrivacy: {

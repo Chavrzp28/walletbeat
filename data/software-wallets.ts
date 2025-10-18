@@ -6,6 +6,7 @@ import { daimo } from './software-wallets/daimo'
 import { elytro } from './software-wallets/elytro'
 import { family } from './software-wallets/family'
 import { frame } from './software-wallets/frame'
+import { gemwallet } from './software-wallets/gem'
 import { metamask } from './software-wallets/metamask'
 import { nufi } from './software-wallets/nufi'
 import { phantom } from './software-wallets/phantom'
@@ -23,6 +24,7 @@ export const softwareWallets = {
 	elytro,
 	family,
 	frame,
+	gemwallet,
 	metamask,
 	nufi,
 	phantom,

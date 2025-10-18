@@ -82,6 +82,7 @@ export const elytro: SoftwareWallet = {
 		},
 		multiAddress: null,
 		privacy: {
+			appIsolation: null,
 			dataCollection: null,
 			privacyPolicy: 'https://github.com/Elytro-eth',
 			transactionPrivacy: {

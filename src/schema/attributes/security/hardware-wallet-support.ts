@@ -139,7 +139,7 @@ export const hardwareWalletSupport: Attribute<HardwareWalletSupportValue> = {
 				HardwareWalletType.TREZOR,
 				HardwareWalletType.KEYSTONE,
 				HardwareWalletType.GRIDPLUS,
-			]).value,
+			]),
 		),
 		partial: [
 			exampleRating(
@@ -147,7 +147,7 @@ export const hardwareWalletSupport: Attribute<HardwareWalletSupportValue> = {
 					The wallet supports at least one hardware wallet brand, but not multiple
 					major brands or has limited functionality.
 				`),
-				limitedHardwareWalletSupport([HardwareWalletType.LEDGER]).value,
+				limitedHardwareWalletSupport([HardwareWalletType.LEDGER]),
 			),
 		],
 		fail: [
@@ -155,7 +155,7 @@ export const hardwareWalletSupport: Attribute<HardwareWalletSupportValue> = {
 				paragraph(`
 					The wallet does not support any hardware wallets.
 				`),
-				noHardwareWalletSupport().value,
+				noHardwareWalletSupport(),
 			),
 		],
 	},

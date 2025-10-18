@@ -1,6 +1,7 @@
 import { nconsigny } from '@/data/contributors/nconsigny'
 import { polymutex } from '@/data/contributors/polymutex'
 import { AccountType } from '@/schema/features/account-support'
+import { ExposedAccountsBehavior } from '@/schema/features/privacy/app-isolation'
 import {
 	CollectionPolicy,
 	DataCollectionPurpose,
@@ -180,6 +181,18 @@ export const rabby: SoftwareWallet = {
 		},
 		multiAddress: featureSupported,
 		privacy: {
+			appIsolation: {
+				[Variant.BROWSER]: {
+					createInAppConnectionFlow: notSupported,
+					erc7846WalletConnect: notSupported,
+					ethAccounts: supported({
+						defaultBehavior: ExposedAccountsBehavior.ACTIVE_ACCOUNT_ONLY,
+					}),
+					useAppSpecificLastConnectedAddresses: notSupported,
+				},
+				[Variant.MOBILE]: null,
+				[Variant.DESKTOP]: null,
+			},
 			dataCollection: {
 				[Variant.BROWSER]: {
 					[UserFlow.NATIVE_SWAP]: {
@@ -195,7 +208,7 @@ export const rabby: SoftwareWallet = {
 					[UserFlow.TRANSACTION]: {
 						collected: [],
 					},
-					[UserFlow.DAPP_CONNECTION]: {
+					[UserFlow.APP_CONNECTION]: {
 						collected: [
 							{
 								// The code refers to this by `api.rabby.io`, but Rabby is wholly owned by DeBank.
@@ -492,7 +505,7 @@ export const rabby: SoftwareWallet = {
 					leaksVisitedUrl: 'DOMAIN_ONLY',
 					ref: [
 						{
-							label: 'Rabby Security engine rule for scam dapp URL flagging',
+							label: 'Rabby Security engine rule for scam URL flagging',
 							url: 'https://github.com/RabbyHub/rabby-security-engine/blob/5f6acd1a90eb0230176fadc7d0ae373cf8c21a73/src/rules/connect.ts#L5-L73',
 						},
 						{

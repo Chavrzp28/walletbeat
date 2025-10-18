@@ -15,7 +15,7 @@ import { FirmwareType } from '@/schema/features/security/firmware'
 import {
 	DataExtraction,
 	noCalldataDecoding,
-} from '@/schema/features/security/hardware-wallet-dapp-signing'
+} from '@/schema/features/security/hardware-wallet-app-signing'
 import { License } from '@/schema/features/transparency/license'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
@@ -107,7 +107,7 @@ export const bitboxWallet: HardwareWallet = {
 							ref: [
 								{
 									explanation:
-										'BitBoxApp uses EtherScan to query Ethereum and ERC20 token account information',
+										'BitBoxApp uses Etherscan to query Ethereum and ERC20 token account information',
 									url: 'https://bitbox.swiss/policies/privacy-policy/',
 								},
 							],
@@ -118,7 +118,7 @@ export const bitboxWallet: HardwareWallet = {
 					collected: [],
 					publishedOnchain: 'NO_DATA_PUBLISHED_ONCHAIN',
 				},
-				[UserFlow.DAPP_CONNECTION]: 'FLOW_NOT_SUPPORTED',
+				[UserFlow.APP_CONNECTION]: 'FLOW_NOT_SUPPORTED',
 				[UserFlow.NATIVE_SWAP]: 'FLOW_NOT_SUPPORTED',
 				[UserFlow.SEND]: {
 					collected: [],
@@ -152,7 +152,7 @@ export const bitboxWallet: HardwareWallet = {
 				reproducibleBuilds: FirmwareType.PASS,
 				silentUpdateProtection: FirmwareType.PASS,
 			},
-			hardwareWalletDappSigning: {
+			hardwareWalletAppSigning: {
 				messageSigning: {
 					calldataDecoding: noCalldataDecoding,
 					details:

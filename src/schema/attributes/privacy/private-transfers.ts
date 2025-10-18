@@ -1289,13 +1289,13 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 				paragraph(`
 					The wallet does not support private token transfers.
 				`),
-				noPrivateTransfers.value,
+				noPrivateTransfers,
 			),
 			exampleRating(
 				paragraph(`
 					The wallet's default option when sending tokens is to perform a public token transfer.
 				`),
-				nonDefault.value,
+				nonDefault,
 			),
 			exampleRating(
 				mdParagraph(`
@@ -1330,7 +1330,7 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 						userLabeling: notSupported,
 						fees: fullySponsoredFees,
 					}),
-				).value,
+				),
 			),
 		],
 		partial: [
@@ -1367,7 +1367,7 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 						}),
 						fees: fullySponsoredFees,
 					}),
-				).value,
+				),
 			),
 			exampleRating(
 				mdParagraph(`
@@ -1403,7 +1403,7 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 						}),
 						fees: fullySponsoredFees,
 					}),
-				).value,
+				),
 			),
 			exampleRating(
 				mdParagraph(`
@@ -1440,7 +1440,7 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 						}),
 						fees: fullySponsoredFees,
 					}),
-				).value,
+				),
 			),
 		],
 		pass: [
@@ -1482,7 +1482,7 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 						}),
 						fees: fullySponsoredFees,
 					}),
-				).value,
+				),
 			),
 		],
 	},

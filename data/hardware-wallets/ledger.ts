@@ -5,7 +5,7 @@ import {
 	DataExtraction,
 	displaysFullTransactionDetails,
 	noCalldataDecoding,
-} from '@/schema/features/security/hardware-wallet-dapp-signing'
+} from '@/schema/features/security/hardware-wallet-app-signing'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
@@ -101,7 +101,7 @@ export const ledgerWallet: HardwareWallet = {
 				url: 'https://donjon.ledger.com/bounty/',
 			},
 			firmware: null,
-			hardwareWalletDappSigning: {
+			hardwareWalletAppSigning: {
 				messageSigning: {
 					calldataDecoding: noCalldataDecoding,
 					details:

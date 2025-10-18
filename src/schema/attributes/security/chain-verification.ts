@@ -121,13 +121,13 @@ export const chainVerification: Attribute<ChainVerificationValue> = {
 			mdParagraph(
 				'The wallet verifies the integrity of the Ethereum L1 chain using a [light client](https://ethereum.org/en/developers/docs/nodes-and-clients/light-clients/).',
 			),
-			supportsChainVerification([EthereumL1LightClient.helios], []).value,
+			supportsChainVerification([EthereumL1LightClient.helios], []),
 		),
 		fail: exampleRating(
 			paragraph(
 				'The wallet does not verify the integrity of the Ethereum L1 chain, relying on the honesty of external RPC providers instead.',
 			),
-			noChainVerification(null).value,
+			noChainVerification(null),
 		),
 	},
 	evaluate: (features: ResolvedFeatures): Evaluation<ChainVerificationValue> => {

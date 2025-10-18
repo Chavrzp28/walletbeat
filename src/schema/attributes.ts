@@ -1,5 +1,6 @@
 import type { Content, Paragraph, Sentence, TypographicContent } from '@/types/content'
 import { type NonEmptyArray, nonEmptyMap, type NonEmptyRecord } from '@/types/utils/non-empty'
+import { Enum } from '@/utils/enum'
 
 import type { ResolvedFeatures } from './features'
 import type { FullyQualifiedReference, ReferenceArray } from './reference'
@@ -54,16 +55,14 @@ export const ratingIcons = {
 	[Rating.EXEMPT]: '🆗',
 }
 
-/** Type predicate for `Rating`. */
-export function isRating(value: unknown): value is Rating {
-	return (
-		value === Rating.UNRATED ||
-		value === Rating.PASS ||
-		value === Rating.PARTIAL ||
-		value === Rating.FAIL ||
-		value === Rating.EXEMPT
-	)
-}
+/** Ratings enum. */
+export const ratingEnum = new Enum<Rating>({
+	[Rating.PASS]: true,
+	[Rating.PARTIAL]: true,
+	[Rating.FAIL]: true,
+	[Rating.UNRATED]: true,
+	[Rating.EXEMPT]: true,
+})
 
 /**
  * Convert a rating to the icon displayed on the slice tooltip.
@@ -301,6 +300,11 @@ export interface ExampleRating<V extends Value> {
 	 * example.
 	 */
 	matchesValue: (value: V) => boolean
+
+	/**
+	 * Sample evaluations for this rating. Optional, may be empty.
+	 */
+	sampleEvaluations: Evaluation<V>[]
 }
 
 /**
@@ -533,9 +537,21 @@ export const exampleRatingUnimplemented = 'UNIMPLEMENTED'
 export function exampleRating<V extends Value>(
 	description: ExampleRating<V>['description'],
 	...matchers: NonEmptyArray<
-		V['id'] | Rating | V | ((value: V) => boolean) | typeof exampleRatingUnimplemented
+		V['id'] | Rating | Evaluation<V> | ((value: V) => boolean) | typeof exampleRatingUnimplemented
 	>
 ): ExampleRating<V> {
+	const sampleEvaluations: Evaluation<V>[] = []
+
+	for (const matcher of matchers) {
+		if (
+			matcher !== exampleRatingUnimplemented &&
+			!ratingEnum.is(matcher) &&
+			typeof matcher === 'object'
+		) {
+			sampleEvaluations.push(matcher)
+		}
+	}
+
 	return {
 		description,
 		matchesValue: (value: V): boolean =>
@@ -544,7 +560,7 @@ export function exampleRating<V extends Value>(
 					return false
 				}
 
-				if (isRating(matcher)) {
+				if (ratingEnum.is(matcher)) {
 					return value.rating === matcher
 				}
 
@@ -556,7 +572,8 @@ export function exampleRating<V extends Value>(
 					return matcher(value)
 				}
 
-				return matcher.id === value.id
+				return matcher.value.id === value.id
 			}).includes(true),
+		sampleEvaluations,
 	}
 }

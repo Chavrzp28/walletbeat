@@ -48,7 +48,7 @@ function getOffchainProviderInfo(
 			offchainInfo:
 				'It relies on an offchain external provider to do so. The wallet verifies that the address is correct, but the offchain provider may learn your IP address.',
 			walletShould:
-				'contact the external provider using traffic anonymizing techniques, such as Tor or Oblivious HTTP.',
+				'contact the external provider using traffic anonymizing techniques, such as Tor or Oblivious HTTP',
 		}
 	}
 
@@ -58,7 +58,7 @@ function getOffchainProviderInfo(
 			offchainInfo:
 				'It relies on an offchain external provider to do so. This offchain provider trick the wallet into sending funds to a different address than intended.',
 			walletShould:
-				'ensure the response from the external provider is correct using onchain data verified by a light client.',
+				'ensure the response from the external provider is correct using onchain data verified by a light client',
 		}
 	}
 
@@ -67,7 +67,7 @@ function getOffchainProviderInfo(
 		offchainInfo:
 			'It relies on an offchain external provider to do so. This offchain provider may trick the wallet into sending funds to a different address than intended, and may learn your IP address.',
 		walletShould:
-			'contact the external provider using traffic anonymizing techniques (such as Tor or Oblivious HTTP), and ensure the response from the external provider is correct using onchain data verified by a light client.',
+			'contact the external provider using traffic anonymizing techniques (such as Tor or Oblivious HTTP), and ensure the response from the external provider is correct using onchain data verified by a light client',
 	}
 }
 
@@ -305,7 +305,7 @@ export const addressResolution: Attribute<AddressResolutionValue> = {
 						},
 					},
 					[],
-				).value,
+				),
 			),
 			exampleRating(
 				mdSentence(
@@ -329,7 +329,7 @@ export const addressResolution: Attribute<AddressResolutionValue> = {
 						},
 					},
 					refs({}),
-				).value,
+				),
 			),
 		],
 		partial: [
@@ -353,7 +353,7 @@ export const addressResolution: Attribute<AddressResolutionValue> = {
 						},
 					},
 					[],
-				).value,
+				),
 			),
 			exampleRating(
 				mdSentence(
@@ -377,7 +377,7 @@ export const addressResolution: Attribute<AddressResolutionValue> = {
 						},
 					},
 					[],
-				).value,
+				),
 			),
 			exampleRating(
 				mdSentence(
@@ -401,7 +401,7 @@ export const addressResolution: Attribute<AddressResolutionValue> = {
 						},
 					},
 					[],
-				).value,
+				),
 			),
 		],
 		fail: exampleRating(
@@ -421,7 +421,7 @@ export const addressResolution: Attribute<AddressResolutionValue> = {
 					},
 				},
 				[],
-			).value,
+			),
 		),
 	},
 	evaluate: (features: ResolvedFeatures): Evaluation<AddressResolutionValue> => {

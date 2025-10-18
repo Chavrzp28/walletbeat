@@ -83,8 +83,8 @@ function evaluateTransactionBatching(
 			},
 			details: mdParagraph(`
 				{{WALLET_NAME}} does not implement ${eipMarkdownLinkAndTitle(eip5792)}.
-				This means dApps and DeFi applications cannot request the wallet to
-				bundle multiple transactions into a single operation.
+				This means applications cannot request the wallet to bundle multiple
+				transactions into a single operation.
 				For example, this means token approval transactions need to be
 				submitted separately from the transactions that spend these tokens.
 			`),
@@ -110,8 +110,8 @@ function evaluateTransactionBatching(
 			},
 			details: mdParagraph(`
 				{{WALLET_NAME}} implements ${eipMarkdownLinkAndTitle(eip5792)}.
-				This means dApps and DeFi applications can request the wallet to
-				bundle multiple transactions into a single operation.
+				This means applications can request the wallet to bundle multiple
+				transactions into a single operation.
 				For example, this means token approval transactions need to be
 				submitted separately from the transactions that spend these tokens.
 
@@ -141,8 +141,8 @@ function evaluateTransactionBatching(
 		},
 		details: mdParagraph(`
 			{{WALLET_NAME}} implements ${eipMarkdownLinkAndTitle(eip5792)}.
-			This means dApps and DeFi applications can request the wallet to
-			bundle multiple transactions into a single operation.
+			This means applications can request the wallet to bundle multiple
+			transactions into a single operation.
 			For example, this means token approval transactions need to be
 			submitted separately from the transactions that spend these tokens.
 
@@ -175,8 +175,8 @@ export const transactionBatching: Attribute<TransactionBatchingValue> = {
 	methodology: markdown(`
 		Smart account types such as ${eipMarkdownLink(erc4337)} and
 		${eipMarkdownLink(eip7702)} unlock the ability to perform multiple
-		operations as a single transaction. This is exposed to dApps through
-		${eipMarkdownLinkAndTitle(eip5792)}.
+		operations as a single transaction. This is exposed to applications
+		through ${eipMarkdownLinkAndTitle(eip5792)}.
 
 		To qualify for a passing rating, the wallet must:
 
@@ -200,7 +200,7 @@ export const transactionBatching: Attribute<TransactionBatchingValue> = {
 						defaultAccountType: AccountType.eoa,
 					},
 					notSupported,
-				).value,
+				),
 			),
 			exampleRating(
 				mdSentence(
@@ -217,7 +217,7 @@ export const transactionBatching: Attribute<TransactionBatchingValue> = {
 						defaultAccountType: AccountType.eip7702,
 					},
 					notSupported,
-				).value,
+				),
 			),
 		],
 		partial: exampleRating(
@@ -237,7 +237,7 @@ export const transactionBatching: Attribute<TransactionBatchingValue> = {
 				supported({
 					atomicMultiTransactions: notSupported,
 				}),
-			).value,
+			),
 		),
 		pass: exampleRating(
 			mdSentence(
@@ -256,7 +256,7 @@ export const transactionBatching: Attribute<TransactionBatchingValue> = {
 				supported({
 					atomicMultiTransactions: featureSupported,
 				}),
-			).value,
+			),
 		),
 	},
 	evaluate: (features: ResolvedFeatures): Evaluation<TransactionBatchingValue> => {

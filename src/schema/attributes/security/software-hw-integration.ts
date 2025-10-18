@@ -53,7 +53,7 @@ function basicHardwareWalletIntegration(
 			rating: Rating.PARTIAL,
 			displayName: 'Basic hardware wallet integration',
 			shortExplanation: sentence(
-				`{{WALLET_NAME}} has basic hardware wallet integration${supportedWalletsText} but lacks full EIP-712 clear signing support on important dApps.`,
+				`{{WALLET_NAME}} has basic hardware wallet integration${supportedWalletsText} but lacks full EIP-712 clear signing support on important apps.`,
 			),
 			integrationLevel: 1,
 			__brand: brand,
@@ -64,7 +64,7 @@ function basicHardwareWalletIntegration(
 		howToImprove: mdParagraph(`
 			{{WALLET_NAME}} should implement full EIP-712 clear signing support for transactions with Safe, Aave, and other major DeFi platforms.
 			This would ensure users can verify all transaction details on their hardware devices before signing.
-			{{WALLET_NAME}} should make sure to support the latest hardware sdk such as [GridPlus's](https://github.com/GridPlus/gridplus-sdk)
+			{{WALLET_NAME}} should make sure to support the latest hardware SDK such as [GridPlus SDK](https://github.com/GridPlus/gridplus-sdk)
 			or [Ledger's device management kit](https://developers.ledger.com/docs/device-interaction/getting-started).
 		`),
 	}
@@ -72,13 +72,13 @@ function basicHardwareWalletIntegration(
 
 function goodHardwareWalletIntegration(
 	supportedWallets: string[] = [],
-	supportedDApps: string[] = [],
+	supportedApps: string[] = [],
 ): Evaluation<SoftwareHWIntegrationValue> {
 	const supportedWalletsText =
 		supportedWallets.length > 0 ? ` with ${supportedWallets.join(', ')}` : ''
 
-	const supportedDAppsText =
-		supportedDApps.length > 0 ? supportedDApps.join(' or ') : 'one major DeFi platform'
+	const supportedAppsText =
+		supportedApps.length > 0 ? supportedApps.join(' or ') : 'one major DeFi platform'
 
 	return {
 		value: {
@@ -86,13 +86,13 @@ function goodHardwareWalletIntegration(
 			rating: Rating.PARTIAL,
 			displayName: 'Good hardware wallet integration',
 			shortExplanation: sentence(
-				`{{WALLET_NAME}} has good hardware wallet integration${supportedWalletsText} with EIP-712 clear signing support on ${supportedDAppsText}.`,
+				`{{WALLET_NAME}} has good hardware wallet integration${supportedWalletsText} with EIP-712 clear signing support on ${supportedAppsText}.`,
 			),
 			integrationLevel: 2,
 			__brand: brand,
 		},
 		details: paragraph(
-			`{{WALLET_NAME}} has solid hardware wallet integration${supportedWalletsText} with EIP-712 clear signing support on ${supportedDAppsText}. This means users can verify transaction details on their hardware device screens when using these specific platforms, but full integration across all major DeFi applications is not yet available.`,
+			`{{WALLET_NAME}} has solid hardware wallet integration${supportedWalletsText} with EIP-712 clear signing support on ${supportedAppsText}. This means users can verify transaction details on their hardware device screens when using these specific platforms, but full integration across all major DeFi applications is not yet available.`,
 		),
 		howToImprove: paragraph(
 			'{{WALLET_NAME}} should extend its EIP-712 clear signing support to include both Safe and Aave integrations with at least two different hardware wallet brands. This comprehensive support would provide users with maximum security across major DeFi platforms.',
@@ -197,26 +197,26 @@ export const softwareHWIntegration: Attribute<SoftwareHWIntegrationValue> = {
 			paragraph(
 				'The wallet implements full EIP-712 clear signing support with at least two different hardware wallet brands on both Safe and Aave platforms.',
 			),
-			excellentHardwareWalletIntegration().value,
+			excellentHardwareWalletIntegration(),
 		),
 		partial: [
 			exampleRating(
 				paragraph(
 					'The wallet implements EIP-712 clear signing support on either Safe or Aave (but not both), or supports only one hardware wallet brand for these integrations.',
 				),
-				goodHardwareWalletIntegration().value,
+				goodHardwareWalletIntegration(),
 			),
 			exampleRating(
 				paragraph(
 					'The wallet supports hardware wallet integration but lacks proper EIP-712 clear signing support for major DeFi platforms like Safe and Aave.',
 				),
-				basicHardwareWalletIntegration().value,
+				basicHardwareWalletIntegration(),
 			),
 		],
 		fail: [
 			exampleRating(
 				paragraph('The wallet does not support hardware wallet integration at all.'),
-				noHardwareWalletSupport().value,
+				noHardwareWalletSupport(),
 			),
 		],
 	},
@@ -267,7 +267,7 @@ export const softwareHWIntegration: Attribute<SoftwareHWIntegrationValue> = {
 
 		const references = mergeRefs(
 			refs(features.security.hardwareWalletSupport),
-			refs(features.security.hardwareWalletDappSigning ?? {}),
+			refs(features.security.hardwareWalletAppSigning ?? {}),
 		)
 
 		if (!hasHardwareWalletSupport) {

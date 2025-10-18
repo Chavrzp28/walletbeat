@@ -1,6 +1,7 @@
 import { nconsigny } from '@/data/contributors/nconsigny'
 import { polymutex } from '@/data/contributors/polymutex'
 import { AccountType } from '@/schema/features/account-support'
+import type { AddressResolutionData } from '@/schema/features/privacy/address-resolution'
 import { PrivateTransferTechnology } from '@/schema/features/privacy/transaction-privacy'
 import { WalletProfile } from '@/schema/features/profile'
 import {
@@ -8,12 +9,17 @@ import {
 	HardwareWalletType,
 } from '@/schema/features/security/hardware-wallet-support'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
+import { RpcEndpointConfiguration } from '@/schema/features/self-sovereignty/chain-configurability'
 import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
 import { featureSupported, notSupported, supported } from '@/schema/features/support'
+import {
+	comprehensiveFeesShownByDefault,
+	FeeDisplayLevel,
+} from '@/schema/features/transparency/fee-display'
 import { License } from '@/schema/features/transparency/license'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
-import { paragraph } from '@/types/content'
+import { mdParagraph, paragraph } from '@/types/content'
 
 import { cure53 } from '../entities/cure53'
 import { cyfrin } from '../entities/cyfrin'
@@ -26,13 +32,13 @@ export const metamask: SoftwareWallet = {
 		displayName: 'MetaMask',
 		tableName: 'MetaMask',
 		blurb: paragraph(`
-			MetaMask is a popular Ethereum wallet created by Consensys and that has
+			MetaMask is a popular multichain wallet created by Consensys and that has
 			been around for a long time. It is a jack-of-all-trades wallet that can
 			be extended through MetaMask Snaps.
 		`),
 		contributors: [polymutex, nconsigny],
 		iconExtension: 'svg',
-		lastUpdated: '2025-02-08',
+		lastUpdated: '2025-10-13',
 		repoUrl: 'https://github.com/MetaMask/metamask-extension',
 		url: 'https://metamask.io',
 	},
@@ -56,25 +62,86 @@ export const metamask: SoftwareWallet = {
 		},
 		addressResolution: {
 			chainSpecificAddressing: {
-				erc7828: null,
-				erc7831: null,
+				erc7828: notSupported,
+				erc7831: notSupported,
 			},
-			nonChainSpecificEnsResolution: null,
-			ref: null,
+			nonChainSpecificEnsResolution: supported<AddressResolutionData>({
+				medium: 'CHAIN_CLIENT',
+			}),
+			ref: [
+				{
+					explanation: 'MetaMask supports ENS domain resolution.',
+					url: 'https://support.metamask.io/more-web3/learn/sending-or-receiving-a-transaction-with-ens/',
+				},
+			],
 		},
-		chainAbstraction: null,
-		chainConfigurability: null,
+		chainAbstraction: {
+			bridging: {
+				builtInBridging: supported({
+					feesLargerThan1bps: {
+						afterSingleAction: FeeDisplayLevel.COMPREHENSIVE,
+						byDefault: FeeDisplayLevel.COMPREHENSIVE,
+						fullySponsored: false,
+					},
+					ref: {
+						explanation:
+							'MetaMask has a built-in bridge feature that allows users to bridge assets between chains.',
+						url: 'https://support.metamask.io/more-web3/learn/field-guide-to-bridges/',
+					},
+					risksExplained: 'NOT_IN_UI',
+				}),
+				suggestedBridging: notSupported,
+			},
+			crossChainBalances: {
+				ether: {
+					crossChainSumView: notSupported,
+					perChainBalanceViewAcrossMultipleChains: featureSupported,
+				},
+				// MetaMask supports aggregated balance across popular networks, but custom networks are not included
+				globalAccountValue: featureSupported,
+				perChainAccountValue: featureSupported,
+				ref: {
+					explanation:
+						'MetaMask displays tokens across multiple networks in a single aggregated view with estimated portfolio value',
+					url: 'https://support.metamask.io/manage-crypto/tokens/how-to-view-your-token-balance-across-multiple-networks/',
+				},
+				usdc: {
+					crossChainSumView: notSupported,
+					perChainBalanceViewAcrossMultipleChains: featureSupported,
+				},
+			},
+		},
+		chainConfigurability: {
+			customChains: true,
+			l1RpcEndpoint: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
+			otherRpcEndpoints: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
+			ref: [
+				{
+					explanation:
+						'MetaMask allows users to configure custom RPC endpoints for any network, including Ethereum mainnet, before making any requests to the default endpoints.',
+					url: 'https://support.metamask.io/configure/networks/how-to-add-a-custom-network-rpc/',
+				},
+			],
+		},
 		ecosystem: {
 			delegation: null,
 		},
 		integration: {
 			browser: {
-				'1193': null,
-				'2700': null,
-				'6963': null,
-				ref: null,
+				'1193': featureSupported,
+				'2700': featureSupported,
+				'6963': featureSupported,
+				ref: [
+					{
+						explanation:
+							'MetaMask browser extension supports standard Ethereum Provider APIs. Mobile app does not inject into web pages.',
+						url: 'https://support.metamask.io/hc/en-us/articles/360015489471',
+					},
+				],
 			},
-			walletCall: null,
+			walletCall: supported({
+				atomicMultiTransactions: featureSupported,
+			}),
 		},
 		license: {
 			[Variant.BROWSER]: {
@@ -94,24 +161,31 @@ export const metamask: SoftwareWallet = {
 			},
 		},
 		monetization: {
-			ref: null,
-			revenueBreakdownIsPublic: false,
+			ref: [
+				{
+					explanation:
+						'MetaMask is funded through transparent swap fees and venture capital with publicly disclosed funding rounds.',
+					url: 'https://consensys.io/blog/consensys-raises-450m-series-d-funding',
+				},
+			],
+			revenueBreakdownIsPublic: true,
 			strategies: {
-				donations: null,
-				ecosystemGrants: null,
-				governanceTokenLowFloat: null,
-				governanceTokenMostlyDistributed: null,
-				hiddenConvenienceFees: null,
-				publicOffering: null,
-				selfFunded: null,
-				transparentConvenienceFees: null,
-				ventureCapital: null,
+				donations: false,
+				ecosystemGrants: false,
+				governanceTokenLowFloat: false,
+				governanceTokenMostlyDistributed: false,
+				hiddenConvenienceFees: false,
+				publicOffering: false,
+				selfFunded: false,
+				transparentConvenienceFees: true,
+				ventureCapital: true,
 			},
 		},
-		multiAddress: null,
+		multiAddress: featureSupported,
 		privacy: {
+			appIsolation: null,
 			dataCollection: null,
-			privacyPolicy: 'https://consensys.io/privacy-notice',
+			privacyPolicy: 'https://consensys.io/privacy-notice/',
 			transactionPrivacy: {
 				defaultFungibleTokenTransferMode: 'PUBLIC',
 				[PrivateTransferTechnology.STEALTH_ADDRESSES]: notSupported,
@@ -149,17 +223,16 @@ export const metamask: SoftwareWallet = {
 				ethereumL1: notSupported,
 			},
 			passkeyVerification: {
-				details:
-					'MetaMask uses Smooth Crypto lib for passkey verification in their delegation framework.',
-				library: PasskeyVerificationLibrary.SMOOTH_CRYPTO_LIB,
-				libraryUrl: 'https://github.com/MetaMask/delegation-framework/tree/main/lib',
-				ref: [
-					{
-						explanation:
-							'MetaMask implements P256 verification using Smooth Crypto lib in their delegation framework.',
-						url: 'https://github.com/MetaMask/delegation-framework/commit/8641eccdedf486832e66e589b8a9bcfd44d00104',
-					},
-				],
+				[Variant.BROWSER]: {
+					details:
+						'MetaMask browser extension does not currently implement passkey verification. Phase 2 seedless onboarding has passkey scheduled for extension.',
+					library: PasskeyVerificationLibrary.NONE,
+				},
+				[Variant.MOBILE]: {
+					details:
+						'MetaMask mobile uses biometrics that leverage the hardware enclave similar to passkeys. Standard passkey verification is not yet implemented.',
+					library: PasskeyVerificationLibrary.NONE,
+				},
 			},
 			publicSecurityAudits: [
 				{
@@ -203,13 +276,60 @@ export const metamask: SoftwareWallet = {
 					variantsScope: 'ALL_VARIANTS',
 				},
 			],
-			scamAlerts: null,
+			scamAlerts: {
+				contractTransactionWarning: supported({
+					contractRegistry: true,
+					leaksContractAddress: true,
+					leaksUserAddress: true,
+					leaksUserIp: true,
+					previousContractInteractionWarning: true,
+					recentContractWarning: true,
+					ref: [
+						{
+							explanation:
+								'MetaMask uses Blockaid integration to provide privacy-preserving transaction simulation and malicious contract detection without sharing transaction details with parties other than Consensys.',
+							url: 'https://metamask.io/news/latest/metamask-security-alerts-by-blockaid-the-new-normal-for-a-safer-transaction/',
+						},
+					],
+				}),
+				scamUrlWarning: supported({
+					leaksIp: false,
+					leaksUserAddress: false,
+					leaksVisitedUrl: 'NO',
+					ref: [
+						{
+							explanation:
+								'MetaMask maintains a local phishing database to detect malicious apps and websites without revealing browsing activity to external services.',
+							url: 'https://support.metamask.io/ms/privacy-and-security/how-to-turn-on-security-alerts/',
+						},
+						{
+							explanation:
+								'Privacy preserving registry of malicious URLs implemented through eth-phishing-detect.',
+							url: 'https://github.com/MetaMask/eth-phishing-detect',
+						},
+					],
+				}),
+				sendTransactionWarning: supported({
+					leaksRecipient: true,
+					leaksUserAddress: true,
+					leaksUserIp: true,
+					newRecipientWarning: true,
+					ref: [
+						{
+							explanation:
+								'MetaMask provides address labeling and warns about address poisoning attacks using local address book and transaction history. For enhanced security validation, MetaMask may use Consensys services which share recipient and user addresses along with IP addresses. Users can disable external services to prevent this data sharing.',
+							url: 'https://support.metamask.io/configure/privacy/how-to-adjust-metamask-privacy-settings/',
+						},
+					],
+					userWhitelist: true,
+				}),
+			},
 		},
 		selfSovereignty: {
 			transactionSubmission: {
 				l1: {
-					selfBroadcastViaDirectGossip: null,
-					selfBroadcastViaSelfHostedNode: null,
+					selfBroadcastViaDirectGossip: notSupported,
+					selfBroadcastViaSelfHostedNode: notSupported,
 				},
 				l2: {
 					[TransactionSubmissionL2Type.arbitrum]: null,
@@ -218,7 +338,26 @@ export const metamask: SoftwareWallet = {
 			},
 		},
 		transparency: {
-			operationFees: null,
+			operationFees: {
+				builtInErc20Swap: supported(comprehensiveFeesShownByDefault),
+				erc20L1Transfer: supported(comprehensiveFeesShownByDefault),
+				ethL1Transfer: supported(comprehensiveFeesShownByDefault),
+				uniswapUSDCToEtherSwap: supported(comprehensiveFeesShownByDefault),
+			},
+		},
+	},
+	overrides: {
+		attributes: {
+			security: {
+				scamPrevention: {
+					note: mdParagraph(`
+						MetaMask collaborated with Blockaid to create a
+						[privacy-preserving security feature](https://metamask.io/news/metamask-security-alerts-by-blockaid-the-new-normal-for-a-safer-transaction)
+						that simulates transactions and alerts users to malicious apps without
+						sharing transaction data with parties outside of Consensys.
+					`),
+				},
+			},
 		},
 	},
 	variants: {

@@ -137,13 +137,13 @@ export const openSource: Attribute<OpenSourceValue> = {
 		fail: [
 			exampleRating(
 				paragraph('The wallet is licensed under any non-FOSS (proprietary) license.'),
-				proprietary({ license: License.PROPRIETARY }).value,
+				proprietary({ license: License.PROPRIETARY }),
 			),
 			exampleRating(
 				paragraph(
 					"The wallet's source code repository is missing a license file. The lack of a license file may be an accidental omission on the wallet developers' part, but also may indicate that the wallet may set its license to a proprietary license. Therefore, Walletbeat makes the conservative assumption that the wallet is not be Free and Open Open Source Software until it does have a valid license file.",
 				),
-				unlicensed.value,
+				unlicensed,
 			),
 		],
 	},
