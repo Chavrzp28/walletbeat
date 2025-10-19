@@ -808,6 +808,7 @@
 <style>
 	.container {
 		--content-maxWidth: 54rem;
+
 		--wallet-icon-size: 3rem;
 		--border-radius-lg: 1rem;
 		--border-radius: 0.5rem;
@@ -913,10 +914,8 @@
 			}
 
 			> :is(header, section, footer) {
-				display: grid;
-				grid-template-columns: minmax(0, var(--content-maxWidth));
 				justify-content: center;
-				padding: 3rem 1.5rem;
+				padding: 3rem max(1.5rem, (100cqi - var(--content-maxWidth)) / 2);
 			}
 		}
 	}
