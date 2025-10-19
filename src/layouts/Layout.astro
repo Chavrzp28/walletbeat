@@ -68,9 +68,8 @@ import Metadata from '@/layouts/Metadata.astro'
 		@media not (max-width: 1024px) {
 			grid-template:
 				'Nav Main' 100dvh
-				/ var(--navigation-desktop-inlineSize) minmax(0, 1fr);
+				/ var(--navigation-desktop-inlineSize) minmax(0, 1fr)
 			;
-
 			&[data-sticky-container] {
 				--sticky-marginInlineStart: var(--separator-width);
 				--sticky-paddingInlineStart: var(--navigation-desktop-inlineSize);
@@ -103,7 +102,6 @@ import Metadata from '@/layouts/Metadata.astro'
 			min-inline-size: fit-content;
 
 			> section {
-				display: grid;
 				padding: clamp(1.5rem, 6cqi, 2rem);
 
 				&[data-sticky-container] {
@@ -111,7 +109,6 @@ import Metadata from '@/layouts/Metadata.astro'
 					--sticky-paddingInlineEnd: clamp(1.5rem, 6cqi, 2rem);
 				}
 
-				gap: 1.5rem;
 				max-width: 80rem;
 				margin: 0 auto;
 			}

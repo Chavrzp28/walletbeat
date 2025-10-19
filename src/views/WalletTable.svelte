@@ -429,7 +429,7 @@
 				showAccordionMarker
 				tooltipMaxWidth="18rem"
 			>
-				<div class="wallet-info" data-row>
+				<div class="wallet-info" data-row="start">
 					<span class="row-count" data-row="center"></span>
 
 					<img
@@ -551,7 +551,7 @@
 					</div>
 
 					{#if allSupportedVariants.length > 1}
-						<div class="variants inline">
+						<div class="variants" data-row="gap-1">
 							{#each supportedVariants as variant}
 								<button
 									data-selected={variant === selectedVariant ? '' : undefined}
@@ -1147,10 +1147,6 @@
 			margin-inline-start: auto;
 
 			font-size: 1.25em;
-
-			display: flex;
-			align-items: center;
-			gap: 0.1em;
 
 			button {
 				aspect-ratio: 1;

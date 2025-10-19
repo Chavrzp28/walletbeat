@@ -18,7 +18,7 @@ import Navigation from '@/views/Navigation.astro'
 		navigationItems={defaultNavigationItems}
 	/>
 	
-	<main data-sticky-container>
+	<main data-sticky-container data-column="gap-4">
 		<h1>404</h1>
 
 		<p>Page not found.</p>
@@ -33,11 +33,6 @@ import Navigation from '@/views/Navigation.astro'
 <style>
 	main {
 		align-self: stretch;
-
-		display: grid;
-		align-content: center;
-		gap: 1rem;
-
 		text-align: center;
 
 		h1 {

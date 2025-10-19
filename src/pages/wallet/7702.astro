@@ -38,14 +38,14 @@ import GitHubIcon from 'lucide-static/icons/github.svg?raw'
 			/>
 		</header>
 
-		<section data-sticky-container>
+		<section data-sticky-container data-column="gap-6">
 			<Eip7702Table
 				title="Software Wallets by EIP-7702 Support"
 				client:load
 			/>
 
 			<footer data-sticky="inline">
-				<p>Incorrect data? Submit a PR: <a href={repositoryUrl} target="_blank" rel="noopener noreferrer" class="github-link"><span set:html={GitHubIcon}></span>GitHub Repository</a></p>
+				<p>Incorrect data? Submit a PR: <a href={repositoryUrl} target="_blank" rel="noopener noreferrer" class="github-link" data-row="gap-2"><span set:html={GitHubIcon}></span>GitHub Repository</a></p>
 			</footer>
 		</section>
 	</main>
@@ -75,9 +75,6 @@ import GitHubIcon from 'lucide-static/icons/github.svg?raw'
 		}
 		
 		.github-link {
-			display: inline-flex;
-			align-items: center;
-			gap: 0.5rem;
 			margin-left: 0.5rem;
 			padding: 0.5rem 1rem;
 			background: var(--background-primary);

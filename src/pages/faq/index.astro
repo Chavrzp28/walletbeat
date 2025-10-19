@@ -309,7 +309,7 @@ import HelpOutlineIcon from '@material-icons/svg/svg/help_outline/baseline.svg?r
 			<>
 				<hr>
 
-				<section id={entry.anchor}>
+				<section id={entry.anchor} data-column="gap-6">
 					<h2>
 						<span set:html={HelpOutlineIcon} />
 						{entry.question}
@@ -346,9 +346,6 @@ import HelpOutlineIcon from '@material-icons/svg/svg/help_outline/baseline.svg?r
 	}
 
 	section {
-		display: grid;
-		gap: 1.5rem;
-
 		h2 {
 			position: relative;
 
