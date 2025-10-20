@@ -68,7 +68,16 @@
 				{@render defaultOptionContent()}
 				{#snippet defaultOptionContent()}
 					<span aria-hidden="true">
-						{@html option.icon}
+						{#if option.icon}
+							{#if option.icon?.includes('<svg')}
+								{@html option.icon}
+							{:else}
+								<img
+									alt={option.label}
+									src={option.icon}
+								/>
+							{/if}
+						{/if}
 					</span>
 					{option.label}
 				{/snippet}
@@ -142,6 +151,11 @@
 					order: 1;
 					color: var(--accent);
 					font-weight: bold;
+				}
+
+				img, svg {
+					height: 1em;
+					vertical-align: middle;
 				}
 			}
 		}
