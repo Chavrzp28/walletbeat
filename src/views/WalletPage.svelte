@@ -86,6 +86,19 @@
 			queryParams.delete('variant')
 	})
 
+	let selectedModel = $state<string | undefined>(
+		undefined
+	)
+	$effect(() => {
+		selectedModel = queryParams.get('model') ?? undefined
+	})
+	$effect(() => {
+		if(!selectedModel)
+			queryParams.delete('model')
+		else
+			queryParams.set('model', selectedModel)
+	})
+
 	const evalTree = $derived(
 		selectedVariant &&
 			wallet.variants[selectedVariant]?.attributes
@@ -227,6 +240,19 @@
 								...Object.keys(wallet.variants).map(v => ({ value: v, label: variants[v as Variant].label, icon: variants[v as Variant].icon }))
 							]}
 						/>
+					{/if}
+
+					{#if 'hardware' in wallet.variants}
+						{@const brandModels = allHardwareModels.filter(m => m.brandId === wallet.metadata.id)}
+						{#if brandModels.length > 1}
+							<Select
+								bind:value={selectedModel}
+								options={[
+									{ value: undefined, label: 'All models' },
+									...brandModels.map(m => ({ value: m.id, label: `${m.modelName}`, icon: m.iconUrl }))
+								]}
+							/>
+						{/if}
 					{/if}
 				</div>
 
