@@ -694,92 +694,90 @@
 						</h4>
 					</summary>
 
-					<section>
-						<div class="methodology" data-column="gap-6">
-							{#if attribute.methodology}
-								<Typography content={attribute.methodology} />
+					<section class="methodology" data-column="gap-6">
+						{#if attribute.methodology}
+							<Typography content={attribute.methodology} />
+						{:else}
+							<p>No methodology information available.</p>
+						{/if}
+
+						{#if attribute.ratingScale}
+							<hr />
+
+							{#if attribute.ratingScale.display === 'simple'}
+								<div class="simple-scale" data-card="radius-4">
+									<Typography content={attribute.ratingScale.content} />
+								</div>
 							{:else}
-								<p>No methodology information available.</p>
-							{/if}
+								<div class="example-scale" data-card="radius-4">
+									{#if attribute.ratingScale.exhaustive}
+										<h5>A few examples:</h5>
+									{/if}
 
-							{#if attribute.ratingScale}
-								<hr />
-
-								{#if attribute.ratingScale.display === 'simple'}
-									<div class="simple-scale" data-card="radius-4">
-										<Typography content={attribute.ratingScale.content} />
-									</div>
-								{:else}
-									<div class="example-scale" data-card="radius-4">
-										{#if attribute.ratingScale.exhaustive}
-											<h5>A few examples:</h5>
+									<ul data-column>
+										{#if attribute.ratingScale.pass}
+											<li data-icon={ratingIcons[Rating.PASS]}>
+												<Typography
+													content={{
+														contentType: ContentType.MARKDOWN,
+														markdown: [
+															'A wallet would get a **passing** rating if...',
+															[attribute.ratingScale.pass]
+																.flat()
+																.map(
+																	example =>
+																		`* ${(example.description.contentType === ContentType.MARKDOWN ? example.description.markdown : example.description.text).trim()}`,
+																)
+																.join('\n'),
+														].join('\n\n'),
+													}}
+												/>
+											</li>
 										{/if}
 
-										<ul data-column>
-											{#if attribute.ratingScale.pass}
-												<li data-icon={ratingIcons[Rating.PASS]}>
-													<Typography
-														content={{
-															contentType: ContentType.MARKDOWN,
-															markdown: [
-																'A wallet would get a **passing** rating if...',
-																[attribute.ratingScale.pass]
-																	.flat()
-																	.map(
-																		example =>
-																			`* ${(example.description.contentType === ContentType.MARKDOWN ? example.description.markdown : example.description.text).trim()}`,
-																	)
-																	.join('\n'),
-															].join('\n\n'),
-														}}
-													/>
-												</li>
-											{/if}
+										{#if attribute.ratingScale.partial}
+											<li data-icon={ratingIcons[Rating.PARTIAL]}>
+												<Typography
+													content={{
+														contentType: ContentType.MARKDOWN,
+														markdown: [
+															'A wallet would get a **partial** rating if...',
+															[attribute.ratingScale.partial]
+																.flat()
+																.map(
+																	example =>
+																		`* ${(example.description.contentType === ContentType.MARKDOWN ? example.description.markdown : example.description.text).trim()}`,
+																)
+																.join('\n'),
+														].join('\n\n'),
+													}}
+												/>
+											</li>
+										{/if}
 
-											{#if attribute.ratingScale.partial}
-												<li data-icon={ratingIcons[Rating.PARTIAL]}>
-													<Typography
-														content={{
-															contentType: ContentType.MARKDOWN,
-															markdown: [
-																'A wallet would get a **partial** rating if...',
-																[attribute.ratingScale.partial]
-																	.flat()
-																	.map(
-																		example =>
-																			`* ${(example.description.contentType === ContentType.MARKDOWN ? example.description.markdown : example.description.text).trim()}`,
-																	)
-																	.join('\n'),
-															].join('\n\n'),
-														}}
-													/>
-												</li>
-											{/if}
-
-											{#if attribute.ratingScale.fail}
-												<li data-icon={ratingIcons[Rating.FAIL]}>
-													<Typography
-														content={{
-															contentType: ContentType.MARKDOWN,
-															markdown: [
-																'A wallet would get a **failing** rating if...',
-																[attribute.ratingScale.fail]
-																	.flat()
-																	.map(
-																		example =>
-																			`* ${(example.description.contentType === ContentType.MARKDOWN ? example.description.markdown : example.description.text).trim()}`,
-																	)
-																	.join('\n'),
-															].join('\n\n'),
-														}}
-													/>
-												</li>
-											{/if}
-										</ul>
-									</div>
-								{/if}
+										{#if attribute.ratingScale.fail}
+											<li data-icon={ratingIcons[Rating.FAIL]}>
+												<Typography
+													content={{
+														contentType: ContentType.MARKDOWN,
+														markdown: [
+															'A wallet would get a **failing** rating if...',
+															[attribute.ratingScale.fail]
+																.flat()
+																.map(
+																	example =>
+																		`* ${(example.description.contentType === ContentType.MARKDOWN ? example.description.markdown : example.description.text).trim()}`,
+																)
+																.join('\n'),
+														].join('\n\n'),
+													}}
+												/>
+											</li>
+										{/if}
+									</ul>
+								</div>
 							{/if}
-						</div>
+						{/if}
 					</section>
 				</details>
 
@@ -802,7 +800,7 @@
 							</h4>
 						</summary>
 
-						<section>
+						<section data-column>
 							<Typography
 								content={howToImprove}
 								strings={{
@@ -813,13 +811,11 @@
 							/>
 
 							{#if override}
-								<div class="note" data-card="secondary padding-3" data-row="gap-2">
+								<div class="note" data-card="padding-3" data-row="gap-4">
 									<div class="icon">ℹ️</div>
-									<div>
-										<p>
-											{`Note: This recommendation is specific to ${wallet.metadata.displayName} from the Wallet Beat team, not our general recommendation for all wallets of this type.`}
-										</p>
-									</div>
+									<p>
+										{`Note: This recommendation is specific to ${wallet.metadata.displayName} from the Walletbeat team, not our general recommendation for all wallets of this type.`}
+									</p>
 								</div>
 							{/if}
 						</section>
@@ -1114,6 +1110,10 @@
 
 	.wallet-overview {
 		font-size: 0.9rem;
+
+		p {
+			flex: 1 1 0;
+		}
 	}
 
 	.platforms-label {
@@ -1569,23 +1569,12 @@
 	}
 
 	.methodology {
-
-		.simple-scale,
-		.example-scale {
-
-			> h5 {
-				margin: 0;
-				font-size: 1rem;
-				font-weight: 600;
-			}
+		h5 {
+			font-size: 1rem;
+			font-weight: 600;
 		}
 
-		.simple-scale {
-			line-height: 1.5;
-			color: var(--text-secondary);
-		}
-
-		.example-scale > ul {
+		ul {
 			padding-inline-start: 1rem;
 
 			> li {
@@ -1595,18 +1584,6 @@
 					content: attr(data-icon);
 				}
 			}
-		}
-	}
-
-	.note {
-		grid-template-columns: auto 1fr;
-
-		.icon {
-			font-size: 1.2rem;
-		}
-
-		p:first-child {
-			margin-top: 0;
 		}
 	}
 
@@ -1639,27 +1616,13 @@
 
 	.attribute-accordions {
 		details {
-			--details-transition-duration: 0.25s;
-			--details-transform-closed: translateY(-4px);
-
 			summary {
-				cursor: pointer;
-				padding: 1rem;
-				transition: background-color 0.2s ease;
-				border: 1px solid transparent;
-
-				h4 {
-					margin: 0;
-					font-size: 1rem;
-					font-weight: 600;
-				}
+				padding: 1.25rem;
 			}
 
 			section {
-				display: grid;
-				gap: 1rem;
-				padding: 1rem;
-				border-radius: var(--border-radius);
+				padding: 1.25rem;
+				padding-top: 0.25rem;
 			}
 		}
 	}
