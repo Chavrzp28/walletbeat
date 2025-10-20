@@ -128,7 +128,8 @@
 				}
 			}
 
-			option {
+			option,
+			selectedcontent {
 				display: flex;
 				align-items: center;
 				gap: 0.5rem;
