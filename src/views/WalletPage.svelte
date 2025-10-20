@@ -249,7 +249,7 @@
 								bind:value={selectedModel}
 								options={[
 									{ value: undefined, label: 'All models' },
-									...brandModels.map(m => ({ value: m.id, label: `${m.modelName}`, icon: m.iconUrl }))
+									...brandModels.map(m => ({ value: m.id.split('.')[1], label: `${m.modelName}`, icon: m.iconUrl }))
 								]}
 							/>
 						{/if}
@@ -323,7 +323,7 @@
 								The ratings below may vary depending on the model.
 								{#if selectedModel}
 									You are currently viewing the ratings for the
-									<strong>{brandModels.find(m => m.id === selectedModel)?.modelName}</strong> model.
+									<strong>{brandModels.find(m => m.id.split('.')[1] === selectedModel)?.modelName}</strong> model.
 								{:else}
 									Select a model to see model-specific ratings.
 								{/if}
