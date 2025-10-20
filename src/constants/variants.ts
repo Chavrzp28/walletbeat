@@ -76,39 +76,3 @@ export function variantToTooltip(variants: AtLeastOneVariant<unknown>, variant: 
 
 	return `View ${variantToName(variant, false)} version`
 }
-
-/**
- * Return a `?${variant}` query string if supported by `variants`.
- * @param variants The variants object supported by a wallet.
- * @param variant The selected variant, or `null` if no selected variant.
- * @returns A query string suitable for the per-wallet page.
- */
-export function variantUrlQuery(
-	variants: AtLeastOneVariant<unknown>,
-	variant: Variant | null,
-): string {
-	if (variant === null || hasSingleVariant(variants) || !Object.hasOwn(variants, variant)) {
-		return ''
-	}
-
-	return `?${variant}`
-}
-
-/**
- * Return a Variant if present in the URL and supported by a wallet.
- * @param variants The variants object supported by a wallet.
- * @returns The Variant from the URL, or `null` if not present or unsupported.
- */
-export function variantFromUrlQuery(variants: AtLeastOneVariant<unknown>): Variant | null {
-	if (window.location.search === '') {
-		return null
-	}
-
-	const maybeVariant = window.location.search.substring(1)
-
-	if (maybeVariant !== '' && Object.hasOwn(variants, maybeVariant)) {
-		return maybeVariant as Variant // eslint-disable-line @typescript-eslint/no-unsafe-type-assertion -- We just verified that it is a valid Variant.
-	}
-
-	return null
-}

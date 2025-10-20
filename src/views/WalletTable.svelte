@@ -108,7 +108,7 @@
 
 
 	// Functions
-	import { variantUrlQuery, variantToName } from '@/constants/variants'
+	import { variantToName } from '@/constants/variants'
 	import { hasVariant } from '@/schema/variants'
 	import { walletSupportedAccountTypes, attributeVariantSpecificity, VariantSpecificity } from '@/schema/wallet'
 	import { calculateAttributeGroupScore, calculateOverallScore, filterEvaluationTree } from '@/schema/attribute-groups'
@@ -594,7 +594,7 @@
 
 						<div class="links" data-row="gap-2 start wrap">
 							<a
-								href={`/${wallet.metadata.id}/${variantUrlQuery(wallet.variants, selectedVariant ?? null)}`}
+								href={`/${wallet.metadata.id}${selectedVariant ? `?variant=${selectedVariant}` : ''}`}
 								class="info-link"
 							>
 								<span aria-hidden="true">{@html InfoIcon}</span>

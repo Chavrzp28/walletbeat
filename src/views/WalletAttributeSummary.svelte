@@ -23,7 +23,7 @@
 
 	// Functions
 	import { slugifyCamelCase } from '@/types/utils/text'
-	import { variantToName, variantUrlQuery } from '@/constants/variants'
+	import { variantToName } from '@/constants/variants'
 
 
 	// Components
@@ -77,7 +77,7 @@
 
 	<div>
 		<a 
-			href="/{wallet.metadata.id}/{variantUrlQuery(wallet.variants, variant ?? null)}#{slugifyCamelCase(attribute.attribute.id)}"
+			href="/{wallet.metadata.id}{variant ? `?variant=${variant}` : ''}#{slugifyCamelCase(attribute.attribute.id)}"
 		>
 			<span>{@html InfoIcon}</span>
 			Learn more

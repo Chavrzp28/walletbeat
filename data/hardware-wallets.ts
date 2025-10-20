@@ -47,3 +47,35 @@ export function mapHardwareWallets<T>(fn: (wallet: RatedWallet, index: number) =
 
 /** The unrated hardware wallet as a rated wallet. */
 export const unratedHardwareWallet = rateWallet(unratedHardwareTemplate)
+
+export type HardwareModel = {
+	id: string
+	brandId: string
+	brandName: string
+	modelId: string
+	modelName: string
+	url?: string
+	isFlagship?: boolean
+	iconUrl: string
+}
+
+export const allHardwareModels: HardwareModel[] = (
+	Object.values(hardwareWallets)
+			.flatMap(brand => (
+					(brand.metadata.hardwareWalletModels ?? []).map(model => ({
+							id: `${brand.metadata.id}.${model.id}`,
+							brandId: brand.metadata.id,
+							brandName: brand.metadata.tableName ?? brand.metadata.displayName,
+							modelId: model.id,
+							modelName: model.name,
+							url: model.url ?? undefined,
+							isFlagship: model.isFlagship ?? false,
+							iconUrl: `/images/wallets/${brand.metadata.id}.${brand.metadata.iconExtension}`,
+					}))
+			))
+			.sort((a, b) => (
+					a.brandName.localeCompare(b.brandName) || (
+							(b.isFlagship ? 1 : 0) - (a.isFlagship ? 1 : 0)
+					) || a.modelName.localeCompare(b.modelName)
+			))
+)

@@ -10,7 +10,7 @@
 		ratingIcons,
 	} from '@/schema/attributes'
 	import { VariantSpecificity } from '@/schema/wallet'
-	import { getSingleVariant, type Variant } from '@/schema/variants'
+	import { type Variant, hasSingleVariant } from '@/schema/variants'
 	import { allRatedWallets, type WalletName } from '@/data/wallets'
 	import { ContentType, isTypographicContent } from '@/types/content'
 	import { objectEntries, objectKeys } from '@/types/utils/object'
@@ -19,9 +19,7 @@
 	// Functions
 	import {
 		variants,
-		variantFromUrlQuery,
 		variantToName,
-		variantUrlQuery,
 		variantToRunsOn,
 	} from '@/constants/variants'
 	import {
@@ -33,6 +31,7 @@
 	import { toFullyQualified } from '@/schema/reference'
 	import { getAttributeOverride } from '@/schema/wallet'
 	import { scoreToColor } from '@/utils/colors'
+	import { allHardwareModels } from '@/data/hardware-wallets'
 
 
 	// Components
@@ -41,7 +40,7 @@
 	import RenderCustomContent from '@/views/RenderCustomContent.svelte'
 	import ReferenceLinks from '@/views/ReferenceLinks.svelte'
 	import ScoreBadge from '@/views/ScoreBadge.svelte'
-	import WalletAttributeGroupSummary from '@/views/WalletAttributeGroupSummary.svelte'
+	import Select from '@/components/Select.svelte'
 
 
 	// Props
@@ -53,9 +52,17 @@
 
 
 	// State
-	let pickedVariant = $state<Variant | null>(
-		null
+	import { SvelteURLSearchParams } from 'svelte/reactivity'
+
+	let queryParams = $state<URLSearchParams>(
+		globalThis.location && new SvelteURLSearchParams(globalThis.location.search)
 	)
+
+	$effect(() => {
+		if(queryParams.toString() !== globalThis.location.search)
+			globalThis.history.replaceState(null, '', `${globalThis.location.pathname}?${queryParams.toString()}`)
+	})
+
 	let highlightedAttributeId = $state<string | null>(
 		null
 	)
@@ -64,17 +71,25 @@
 	const wallet = $derived(
 		allRatedWallets[walletName]
 	)
-	const singleVariant = $derived(
-		getSingleVariant(wallet.variants ?? {}).singleVariant
+
+	let selectedVariant = $state<Variant | undefined>(
+		undefined
 	)
-
-
 	$effect(() => {
-		pickedVariant = singleVariant !== null ? singleVariant : wallet ? variantFromUrlQuery(wallet.variants) : null
+		selectedVariant = hasSingleVariant(wallet.variants) ? undefined : queryParams.get('variant') as Variant ?? undefined
+	})
+	$effect(() => {
+		if(!hasSingleVariant(wallet.variants) && selectedVariant)
+			queryParams.set('variant', selectedVariant)
+		else
+			queryParams.delete('variant')
 	})
 
 	const evalTree = $derived(
-		pickedVariant === null || !wallet.variants[pickedVariant] ? wallet.overall : wallet.variants[pickedVariant]?.attributes
+		selectedVariant &&
+			wallet.variants[selectedVariant]?.attributes
+		||
+			wallet.overall
 	)
 
 	const attrToRelevantVariants = $derived.by(() => {
@@ -102,23 +117,6 @@
 	const overallScore = $derived(
 		calculateOverallScore(wallet.overall)
 	)
-
-
-	// Actions
-	const updatePickedVariant = (variant: Variant | null) => {
-		if (singleVariant !== null) return // If there is a single variant, do not pollute the URL with it
-
-		window.history.replaceState(
-			null,
-			'',
-			`${window.location.pathname}${variantUrlQuery(
-				wallet.variants,
-				variant ?? null,
-			)}${window.location.hash}`,
-		)
-
-		pickedVariant = variant
-	}
 </script>
 
 
@@ -205,16 +203,31 @@
 
 		<header id="top" data-column="gap-6">
 			<div data-row="wrap">
-				<a href="#top">
-					<h1 data-row="gap-2">
-						<img
-							class="wallet-icon"
-							alt={wallet.metadata.displayName}
-							src={`/images/wallets/${wallet.metadata.id}.${wallet.metadata.iconExtension}`}
+				<div data-row="wrap">
+					<a
+						class="wallet-name"
+						href="#top"
+					>
+						<h1 data-row="gap-2">
+							<img
+								class="wallet-icon"
+								alt={wallet.metadata.displayName}
+								src={`/images/wallets/${wallet.metadata.id}.${wallet.metadata.iconExtension}`}
+							/>
+							<span>{wallet.metadata.displayName}</span>
+						</h1>
+					</a>
+
+					{#if Object.keys(wallet.variants).length > 1}
+						<Select
+							bind:value={selectedVariant}
+							options={[
+								{ value: undefined, label: 'All versions' },
+								...Object.keys(wallet.variants).map(v => ({ value: v, label: variants[v as Variant].label, icon: variants[v as Variant].icon }))
+							]}
 						/>
-						<span>{wallet.metadata.displayName}</span>
-					</h1>
-				</a>
+					{/if}
+				</div>
 
 				<div data-row="gap-2">
 					<span>Walletbeat score: </span>
@@ -264,19 +277,32 @@
 						{/each}.
 					</p>
 
-					<p>
-						{#if singleVariant === null}
-							<span class="variant-disclaimer">
-								The ratings below vary depending on the version.
-								{#if pickedVariant === null}
-									Select a version to see version-specific ratings.
-								{:else}
+					{#if !hasSingleVariant(wallet.variants)}
+						<p>
+							The ratings below may vary depending on the version.
+							{#if selectedVariant}
+								You are currently viewing the ratings for the
+								<strong>{variantToName(selectedVariant, false)}</strong> version.
+							{:else}
+								Select a version to see version-specific ratings.
+							{/if}
+						</p>
+					{/if}
+
+					{#if 'hardware' in wallet.variants}
+						{@const brandModels = allHardwareModels.filter(m => m.brandId === wallet.metadata.id)}
+						{#if brandModels.length > 1}
+							<p>
+								The ratings below may vary depending on the model.
+								{#if selectedModel}
 									You are currently viewing the ratings for the
-									<strong>{variantToName(pickedVariant, false)}</strong> version.
+									<strong>{brandModels.find(m => m.id === selectedModel)?.modelName}</strong> model.
+								{:else}
+									Select a model to see model-specific ratings.
 								{/if}
-							</span>
+							</p>
 						{/if}
-					</p>
+					{/if}
 				</footer>
 			</section>
 		</header>
@@ -461,15 +487,13 @@
 	{@const variantSpecificCaption = (() => {
 		const thisVariantSpecificity = relevantVariants.length === 0 ? VariantSpecificity.ALL_SAME : relevantVariants.length === 1 ? VariantSpecificity.ONLY_ASSESSED_FOR_THIS_VARIANT : VariantSpecificity.NOT_UNIVERSAL
 
-		const thisDisplayedVariant = relevantVariants.length === 1 ? relevantVariants[0] : pickedVariant
-
 		switch (thisVariantSpecificity) {
 			case VariantSpecificity.ALL_SAME:
 				return null
 			case VariantSpecificity.ONLY_ASSESSED_FOR_THIS_VARIANT:
-				return thisDisplayedVariant ? `This rating is only relevant for the ${variantToName(thisDisplayedVariant, false)} version.` : null
+				return selectedVariant ? `This rating is only relevant for the ${variantToName(selectedVariant, false)} version.` : null
 			default:
-				return thisDisplayedVariant === null ? 'This rating differs across versions. Select a specific version for details.' : `This rating is specific to the ${variantToName(thisDisplayedVariant, false)} version.`
+				return selectedVariant ? `This rating is specific to the ${variantToName(selectedVariant, false)} version.` : 'This rating differs across versions. Select a specific version for details.'
 		}
 	})()}
 
@@ -489,11 +513,33 @@
 			<summary data-row>
 				<header data-row>
 					<div>
-						<a href={`#${slugifyCamelCase(attribute.id)}`}>
-							<h3 data-icon={attribute.icon}>
-								{attribute.displayName}
-							</h3>
-						</a>
+						<div data-row="start gap-2">
+							<a href={`#${slugifyCamelCase(attribute.id)}`}>
+								<h3 data-icon={attribute.icon}>
+									{attribute.displayName}
+								</h3>
+							</a>
+
+							{#if 0 < relevantVariants.length && relevantVariants.length < Object.keys(wallet.variants).length}
+								<div
+									class="variant-indicator"
+									data-badge="small"
+									data-row="gap-2"
+									style:--accent="var(--color-accent-pink-light)"
+									title={`Only rated on the ${variantToName(relevantVariants[0], false)} version`}
+								>
+									{#if relevantVariants.length === 1}
+										<small>Only</small>
+									{/if}
+
+									{#each relevantVariants as variant}
+										<span class="variant-badge" data-row="gap-1">
+											{@html variants[variant].icon}
+										</span>
+									{/each}
+								</div>
+							{/if}
+						</div>
 
 						{#if attribute.question}
 							<div class="subsection-caption">
@@ -505,51 +551,10 @@
 						{/if}
 					</div>
 
-					<div data-column="end gap-2">
-						{#if relevantVariants.length === 1}
-							<div class="variant-controls" data-row>
-								<div
-									class="variant-indicator"
-									data-row="gap-2"
-									title={`Only rated on the ${variantToName(relevantVariants[0], false)} version`}
-								>
-									<small>Only</small>
-									<span class="variant-badge" data-row="gap-1">
-										<span class="variant-icon" aria-hidden="true"
-											>{@html variants[relevantVariants[0]].icon}</span
-										>
-									</span>
-								</div>
-							</div>
-						{:else if relevantVariants.length > 1}
-							<fieldset class="variant-selector" data-row="gap-2 wrap">
-								<legend>
-									{pickedVariant === null ? 'Version:' : 'Viewing:'}
-								</legend>
-								<div class="variant-buttons" data-row="gap-1 wrap">
-									{#each relevantVariants as variant}
-										<button
-											class="variant-button"
-											data-row="gap-1"
-											class:active={pickedVariant === variant}
-											onclick={() => updatePickedVariant(pickedVariant === variant ? null : variant)}
-											aria-pressed={pickedVariant === variant}
-											title={pickedVariant === variant ? 'Remove version filter' : `View rating for ${variantToName(variant, false)} version`}
-										>
-											<span class="variant-icon" aria-hidden="true">{@html variants[variant].icon}</span
-											>
-											<span class="variant-name">{variants[variant].label}</span>
-										</button>
-									{/each}
-								</div>
-							</fieldset>
-						{/if}
-						
-						<data
-							data-badge="medium"
-							value={evalAttr.evaluation.value.rating}
-						>{evalAttr.evaluation.value.rating}</data>
-					</div>
+					<data
+						data-badge="medium"
+						value={evalAttr.evaluation.value.rating}
+					>{evalAttr.evaluation.value.rating}</data>
 				</header>
 			</summary>
 
@@ -559,7 +564,7 @@
 				data-card
 			>
 				<div class="rating-icon" data-row="center">
-					{ratingIcons[evalAttr.evaluation.value.rating]}
+					{ratingIcons[evalAttr.evaluation.value.rating as Rating]}
 				</div>
 				<div class="rating-content">
 					{#if isTypographicContent(evalAttr.evaluation.details)}
@@ -956,25 +961,23 @@
 				view-timeline-name: --header-timeline;
 				view-timeline-axis: block;
 
-				> div {
-					> a {
-						h1 img {
-							position: sticky;
-							position: absolute;
-							top: 0;
-							z-index: 2;
+				.wallet-name {
+					h1 img {
+						position: sticky;
+						position: absolute;
+						top: 0;
+						z-index: 2;
 
-							transition-property: opacity;
-							opacity: 1;
+						transition-property: opacity;
+						opacity: 1;
 
-							animation: WalletIconAnimation var(--transition-easeOutExpo) both;
-							animation-timeline: --header-timeline;
-							animation-range: exit 0% exit 120%;
-						}
+						animation: WalletIconAnimation var(--transition-easeOutExpo) both;
+						animation-timeline: --header-timeline;
+						animation-range: exit 0% exit 120%;
+					}
 
-						&:hover h1 img {
-							opacity: 0.75;
-						}
+					&:hover h1 img {
+						opacity: 0.75;
 					}
 				}
 			}
@@ -1070,11 +1073,9 @@
 		}
 	}
 
-	header {
-		> div {
-			> a > h1 {
-				font-size: 2.25rem;
-			}
+	.wallet-name {
+		h1 {
+			font-size: 2.25rem;
 		}
 	}
 
@@ -1553,122 +1554,6 @@
 				color: var(--text-secondary);
 				font-style: italic;
 				opacity: 0.7;
-			}
-		}
-	}
-
-	.variant-controls {
-		font-size: 0.85rem;
-
-		.variant-indicator {
-			.variant-badge {
-				padding: 0.2rem 0.5rem;
-				background-color: var(--background-tertiary);
-				border-radius: var(--border-radius-sm);
-				font-weight: 500;
-
-				.variant-icon {
-					font-size: 1rem;
-
-					:global(svg) {
-						fill: currentColor;
-					}
-				}
-			}
-		}
-
-		.variant-selector {
-			border: none;
-			padding: 0;
-			margin: 0;
-
-			> legend {
-				padding: 0;
-				float: none;
-				flex-shrink: 0;
-			}
-		}
-
-		legend,
-		small {
-			color: var(--text-secondary);
-			font-size: 0.8rem;
-
-			.variant-buttons {
-				.variant-button {
-					padding: 0.2rem 0.5rem;
-					background-color: var(--background-tertiary);
-					border: 1px solid transparent;
-					border-radius: var(--border-radius-sm);
-					font-size: 0.85rem;
-					font-weight: 500;
-					cursor: pointer;
-					transition-property: all;
-					min-width: 2rem;
-					color: var(--text-primary);
-					position: relative;
-					overflow: hidden;
-
-					.variant-icon {
-						font-size: 1.1rem;
-						position: relative;
-						z-index: 2;
-					}
-
-					.variant-name {
-						display: none;
-						font-size: 0.8rem;
-						position: relative;
-						z-index: 2;
-						white-space: nowrap;
-						max-width: 0;
-						opacity: 0;
-						transition:
-							max-width 0.3s ease,
-							opacity 0.2s ease;
-					}
-
-					&:hover {
-						background-color: var(--background-quaternary);
-						transform: translateY(-1px);
-						box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-						.variant-name {
-							display: inline;
-							max-width: 100px;
-							opacity: 1;
-						}
-					}
-
-					&.active {
-						background-color: var(--primary-light);
-						border-color: var(--primary);
-						color: var(--primary);
-						box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-						transform: translateY(-1px);
-
-						.variant-name {
-							display: inline;
-							max-width: 100px;
-							opacity: 1;
-						}
-
-						&::after {
-							content: '';
-							position: absolute;
-							bottom: 0;
-							left: 0;
-							width: 100%;
-							height: 2px;
-							background-color: var(--primary);
-						}
-					}
-
-					&:focus {
-						outline: none;
-						box-shadow: 0 0 0 2px var(--primary-light);
-					}
-				}
 			}
 		}
 	}
