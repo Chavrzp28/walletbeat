@@ -18,6 +18,7 @@
 	import { HardwareWalletManufactureType } from '@/schema/features/profile'
 	import { erc4337 } from '@/data/eips/erc-4337'
 	import { eip7702 } from '@/data/eips/eip-7702'
+	import { allHardwareModels } from '@/data/hardware-wallets'
 
 
 	// Props
@@ -60,7 +61,7 @@
 
 
 	// State
-	import { SvelteSet } from 'svelte/reactivity'
+	import { SvelteSet, SvelteMap } from 'svelte/reactivity'
 
 	let activeFilters = $state(
 		new Set<Filter<RatedWallet>>()
@@ -81,6 +82,8 @@
 	} | undefined = $state(undefined)
 
 	let sortedColumn: Column<RatedWallet> | undefined = $state(undefined)
+
+	let selectedModels = $state(new SvelteMap<string, string>())
 
 
 	// (Derived)
@@ -141,6 +144,7 @@
 	import WalletAttributeSummary from '@/views/WalletAttributeSummary.svelte'
 
 	import Pie, { PieLayout } from '@/components/Pie.svelte'
+	import Select from '@/components/Select.svelte'
 	import Table from '@/components/Table.svelte'
 	import Tooltip from '@/components/Tooltip.svelte'
 	import TooltipOrAccordion from '@/components/TooltipOrAccordion.svelte'
@@ -441,7 +445,26 @@
 
 					<div class="name-and-tags" data-column="gap-2">
 						<div class="name" data-column="gap-1">
-							<h3>{displayName}</h3>
+							<div data-row="gap-2 start wrap">
+								<h3>{displayName}</h3>
+
+								{#if 'hardware' in wallet.variants}
+									{@const brandModels = allHardwareModels.filter(m => m.brandId === wallet.metadata.id)}
+
+									{#if brandModels.length > 1}
+										<Select
+											bind:value={
+												() => selectedModels.get(wallet.metadata.id),
+												(value) => { selectedModels.set(wallet.metadata.id, value) }
+											}
+											options={[
+												{ value: undefined, label: 'All models' },
+												...brandModels.map(m => ({ value: m.id.split('.')[1], label: `${m.modelName}`, icon: m.iconUrl })),
+											]}
+										/>
+									{/if}
+								{/if}
+							</div>
 
 							{#if selectedVariant && selectedVariant in wallet.variants}
 								<div class="variant">
