@@ -61,9 +61,6 @@
 	<button
 		type="button"
 		data-tooltip-trigger
-		onclick={e => {
-			e.preventDefault()
-		}}
 		style:anchor-name={anchorName}
 		popovertarget={popoverId}
 

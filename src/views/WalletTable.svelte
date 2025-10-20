@@ -445,7 +445,7 @@
 
 					<div class="name-and-tags" data-column="gap-2">
 						<div class="name" data-column="gap-1">
-							<div data-row="gap-2 start wrap">
+							<div data-row="gap-3 start wrap">
 								<h3>{displayName}</h3>
 
 								{#if 'hardware' in wallet.variants}
