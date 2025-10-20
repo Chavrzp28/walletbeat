@@ -29,7 +29,6 @@
 		calculateAttributeGroupScore,
 		calculateOverallScore,
 	} from '@/schema/attribute-groups'
-	import { nonEmptyEntries } from '@/types/utils/non-empty'
 	import { renderStrings, slugifyCamelCase } from '@/types/utils/text'
 	import { toFullyQualified } from '@/schema/reference'
 	import { getAttributeOverride } from '@/schema/wallet'
@@ -74,20 +73,15 @@
 		pickedVariant = singleVariant !== null ? singleVariant : wallet ? variantFromUrlQuery(wallet.variants) : null
 	})
 
-	// Derived evaluation tree based on picked variant
 	const evalTree = $derived(
 		pickedVariant === null || !wallet.variants[pickedVariant] ? wallet.overall : wallet.variants[pickedVariant]?.attributes
 	)
 
-	// Map variants to attributes
 	const attrToRelevantVariants = $derived.by(() => {
 		const map = new Map<string, Variant[]>()
 
-		if (!wallet.variantSpecificity) return map
-
-		for (const [variant, variantSpecificityMap] of nonEmptyEntries(wallet.variantSpecificity)) {
-			if (!variantSpecificityMap) continue
-			for (const [evalAttrId, variantSpecificity] of Object.entries(variantSpecificityMap)) {
+		for (const [variant, variantSpecificityMap] of Object.entries(wallet.variantSpecificity)) {
+			for (const [evalAttrId, variantSpecificity] of variantSpecificityMap) {
 				switch (variantSpecificity) {
 					case VariantSpecificity.ALL_SAME:
 					case VariantSpecificity.EXEMPT_FOR_THIS_VARIANT:
