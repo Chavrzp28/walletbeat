@@ -639,30 +639,26 @@
 			<ReferenceLinks references={toFullyQualified(evalAttr.evaluation.references || [])} />
 
 			{#if attribute.id === 'hardwareWalletSupport' && evalAttr.evaluation.value && typeof evalAttr.evaluation.value === 'object' && 'supportedHardwareWallets' in evalAttr.evaluation.value && Array.isArray(evalAttr.evaluation.value.supportedHardwareWallets) && evalAttr.evaluation.value.supportedHardwareWallets.length > 0}
-				<div class="supported-hardware-wallets" data-card="secondary padding-3" data-column="gap-2">
-					<h5>Supported Hardware Wallets:</h5>
-					<div class="hw-wallet-list" data-row="gap-2 wrap">
-						{#each evalAttr.evaluation.value.supportedHardwareWallets as hwWallet}
-							<div
-								class="hw-wallet-badge"
-								data-type={typeof hwWallet === 'string' ? hwWallet.toLowerCase() : ''}
-								data-row="gap-2"
+				{@const supportedBrands = evalAttr.evaluation.value.supportedHardwareWallets}
+
+				{@const supportedModels = (
+					allHardwareModels.filter(m => (
+						supportedBrands.includes(m.brandId.toUpperCase())
+					))
+				)}
+
+				<div class="supported-hardware-wallets" data-card="secondary padding-6">
+					<h4>Supported hardware wallets:</h4>
+					<div data-row="gap-2 wrap start">
+						{#each supportedModels.filter(m => !selectedModel || m.id === selectedModel) as model}
+							<a
+								href={`/${model.brandId}?model=${model.modelId}`}
+								data-badge="medium"
+								style="--accent: var(--accent-light)"
 							>
-								{
-									typeof hwWallet === 'string' ?
-										{
-											LEDGER: 'Ledger',
-											TREZOR: 'Trezor',
-											KEYSTONE: 'Keystone',
-											GRIDPLUS: 'GridPlus',
-											KEEPKEY: 'KeepKey',
-											FIREFLY: 'FireFly',
-										}[hwWallet]
-										?? hwWallet
-									:
-										'Unknown'
-								}
-							</div>
+								<img src={model.iconUrl} alt={model.brandName} />
+								{model.modelName}
+							</a>
 						{/each}
 					</div>
 				</div>
@@ -1582,33 +1578,6 @@
 
 				&::marker {
 					content: attr(data-icon);
-				}
-			}
-		}
-	}
-
-	.supported-hardware-wallets {
-
-		h5 {
-			margin: 0;
-			font-size: 0.9rem;
-			font-weight: 600;
-		}
-
-		.hw-wallet-list {
-			.hw-wallet-badge {
-				padding: 0.25rem 0.75rem;
-				background-color: var(--background-tertiary);
-				border-radius: var(--border-radius-sm);
-				font-size: 0.85rem;
-				font-weight: 500;
-				transition-property: all;
-				border: 1px solid transparent;
-				box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-
-				&:hover {
-					transform: translateY(-2px);
-					box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 				}
 			}
 		}
