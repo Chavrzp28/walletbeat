@@ -481,6 +481,16 @@ span svg {
 		font-size: 1em;
 		padding: 0.5em 0.7em;
 	}
+
+	> img, svg {
+		width: 1.15em;
+		height: 1.15em;
+		vertical-align: -0.2em;
+
+		&:first-child {
+			margin-inline-end: 0.25em;
+		}
+	}
 }
 
 [data-tag] {
