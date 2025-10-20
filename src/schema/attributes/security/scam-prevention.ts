@@ -335,18 +335,15 @@ function evaluateScamAlerts(
 				{{WALLET_NAME}} should ensure all scam alerting features are implemented in a privacy-preserving manner.
 
 				${[
-					!needsImprovement(sendTransactionWarning) &&
-						`
-						* Sending a transaction should not allow an external service to learn a link between any of the sender's IP or Ethereum address and the recipient's address.
-					`,
-					!needsImprovement(contractTransactionWarning) &&
-						`
-						* Checking arbitrary transactions for potential scams should not allow an external service to link your IP or Ethereum address to the contract you are about to interact with or your upcoming transaction.
-					`,
-					!needsImprovement(scamUrlWarning) &&
-						`
-						* Checking arbitrary transactions for potential scams should not allow an external service to link your browsing history with your IP or Ethereum address.
-					`,
+				!needsImprovement(sendTransactionWarning) && `
+				* Sending a transaction should not allow an external service to learn a link between any of the sender's IP or Ethereum address and the recipient's address.
+				`,
+				!needsImprovement(contractTransactionWarning) && `
+				* Checking arbitrary transactions for potential scams should not allow an external service to link your IP or Ethereum address to the contract you are about to interact with or your upcoming transaction.
+				`,
+				!needsImprovement(scamUrlWarning) && `
+				* Checking arbitrary transactions for potential scams should not allow an external service to link your browsing history with your IP or Ethereum address.
+				`,
 				]
 					.filter(Boolean)
 					.join('\n\n')}
