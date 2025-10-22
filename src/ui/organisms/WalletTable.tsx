@@ -310,7 +310,7 @@ export function walletNameCell<T extends { wallet: RatedWallet }>({
 	const walletId = row.original.wallet.metadata.id
 	const logoPath = `/images/wallets/${walletId}.${row.original.wallet.metadata.iconExtension}`
 	const defaultLogo = '/images/wallets/default.svg'
-	const walletUrl = `/${walletId}`
+	const walletUrl = `/${walletId}/`
 
 	return (
 		<div className='flex items-center'>
@@ -530,7 +530,7 @@ function ExpandableHardwareWalletRow({
 						{/* Wallet Name */}
 						<div className='flex flex-col items-start'>
 							<a
-								href={`/${wallet.metadata.id}`}
+								href={`/${wallet.metadata.id}/`}
 								className='text-base font-medium hover:text-blue-600 hover:underline cursor-pointer'
 							>
 								{row.original.name}

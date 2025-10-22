@@ -88,7 +88,7 @@ function AboutContents(): React.JSX.Element {
 					Vitalik&apos;s blog post on wallets
 				</ExternalLink>{' '}
 				and the{' '}
-				<IconLink IconComponent={HelpCenterIcon} href={`${betaSiteRoot}/faq`}>
+				<IconLink IconComponent={HelpCenterIcon} href={`${betaSiteRoot}/faq/`}>
 					Walletbeat FAQ page
 				</IconLink>{' '}
 				for more details.

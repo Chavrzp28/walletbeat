@@ -253,7 +253,7 @@ export function RatingDetailContent<Vs extends ValueSet>({
 								const isExpanded = expandedAttribute === evalAttr.attribute.id
 								const references = toFullyQualified(evalAttr.evaluation.references)
 								const hasReferences = references.length > 0
-								const detailUrl = `/${wallet.metadata.id}#${toKebabCase(evalAttr.attribute.id)}`
+								const detailUrl = `/${wallet.metadata.id}/#${toKebabCase(evalAttr.attribute.id)}`
 
 								return (
 									<div key={evalAttr.attribute.id} className='mb-2'>

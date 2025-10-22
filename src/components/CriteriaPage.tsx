@@ -55,13 +55,13 @@ export const walletNavigationGroups: NavigationGroup[] = Object.values(
 						{
 							title: 'Summary',
 							id: 'summary',
-							href: `/${walletTypeToUrlSlug(walletType)}/summary`,
+							href: `/${walletTypeToUrlSlug(walletType)}/summary/`,
 						},
 						...mapNonExemptAttributeGroupsInTree(
 							representativeWalletForType(walletType).overall,
 							attr => ({
 								title: attr.displayName,
-								href: `/${walletTypeToUrlSlug(walletType)}/${attr.id}`,
+								href: `/${walletTypeToUrlSlug(walletType)}/${attr.id}/`,
 								id: attr.id,
 							}),
 						),
@@ -70,7 +70,7 @@ export const walletNavigationGroups: NavigationGroup[] = Object.values(
 									{
 										title: 'EIP-7702 tracker',
 										id: 'eip-7702-tracker',
-										href: `/${walletTypeToUrlSlug(walletType)}/7702`,
+										href: `/${walletTypeToUrlSlug(walletType)}/7702/`,
 									},
 								]
 							: []),

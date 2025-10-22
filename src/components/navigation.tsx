@@ -21,14 +21,14 @@ export const navigationFaq: NavigationLinkItem = {
 	id: 'faq',
 	icon: <LuBadgeHelp />,
 	title: 'FAQ',
-	href: `${betaSiteRoot}/faq`,
+	href: `${betaSiteRoot}/faq/`,
 }
 
 export const navigationAbout: NavigationLinkItem = {
 	id: 'about',
 	icon: <LuBuilding2 />,
 	title: 'About Walletbeat',
-	href: `${betaSiteRoot}/about`,
+	href: `${betaSiteRoot}/about/`,
 }
 
 export const navigationCriteria: NavigationLinkItem = {
