@@ -14,7 +14,7 @@
 
 {#if references.length > 0}
 	<!-- {@const totalUrls = references.reduce((count: number, ref: FullyQualifiedReference) => count + ref.urls.length, 0)} -->
-	
+
 	<div>
 		<!-- <h5>{totalUrls > 1 ? 'Sources' : 'Source'}</h5> -->
 
@@ -92,4 +92,4 @@
 	p {
 		margin-top: 0.5em;
 	}
-</style> 
+</style>

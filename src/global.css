@@ -654,12 +654,12 @@ span svg {
 			--sticky1-insetBlockEnd: calc(var(--sticky0-insetBlockEnd) + var(--sticky0-paddingBlockEnd) + var(--sticky-marginBlockEnd));
 			--sticky1-insetInlineStart: calc(var(--sticky0-insetInlineStart) + var(--sticky0-paddingInlineStart) + var(--sticky-marginInlineStart));
 			--sticky1-insetInlineEnd: calc(var(--sticky0-insetInlineEnd) + var(--sticky0-paddingInlineEnd) + var(--sticky-marginInlineEnd));
-		
+
 			--sticky1-paddingBlockStart: var(--sticky-paddingBlockStart);
 			--sticky1-paddingBlockEnd: var(--sticky-paddingBlockEnd);
 			--sticky1-paddingInlineStart: var(--sticky-paddingInlineStart);
 			--sticky1-paddingInlineEnd: var(--sticky-paddingInlineEnd);
-		
+
 			--sticky-insetBlockStart: var(--sticky1-insetBlockStart);
 			--sticky-insetBlockEnd: var(--sticky1-insetBlockEnd);
 			--sticky-insetInlineStart: var(--sticky1-insetInlineStart);
@@ -667,17 +667,17 @@ span svg {
 
 			[data-sticky-container] {
 				--sticky-level: 2;
-		
+
 				--sticky2-insetBlockStart: calc(var(--sticky1-insetBlockStart) + var(--sticky1-paddingBlockStart) + var(--sticky-marginBlockStart));
 				--sticky2-insetBlockEnd: calc(var(--sticky1-insetBlockEnd) + var(--sticky1-paddingBlockEnd) + var(--sticky-marginBlockEnd));
 				--sticky2-insetInlineStart: calc(var(--sticky1-insetInlineStart) + var(--sticky1-paddingInlineStart) + var(--sticky-marginInlineStart));
 				--sticky2-insetInlineEnd: calc(var(--sticky1-insetInlineEnd) + var(--sticky1-paddingInlineEnd) + var(--sticky-marginInlineEnd));
-			
+
 				--sticky2-paddingBlockStart: var(--sticky-paddingBlockStart);
 				--sticky2-paddingBlockEnd: var(--sticky-paddingBlockEnd);
 				--sticky2-paddingInlineStart: var(--sticky-paddingInlineStart);
 				--sticky2-paddingInlineEnd: var(--sticky-paddingInlineEnd);
-			
+
 				--sticky-insetBlockStart: var(--sticky2-insetBlockStart);
 				--sticky-insetBlockEnd: var(--sticky2-insetBlockEnd);
 				--sticky-insetInlineStart: var(--sticky2-insetInlineStart);
@@ -685,17 +685,17 @@ span svg {
 
 				[data-sticky-container] {
 					--sticky-level: 3;
-			
+
 					--sticky3-insetBlockStart: calc(var(--sticky2-insetBlockStart) + var(--sticky2-paddingBlockStart) + var(--sticky-marginBlockStart));
 					--sticky3-insetBlockEnd: calc(var(--sticky2-insetBlockEnd) + var(--sticky2-paddingBlockEnd) + var(--sticky-marginBlockEnd));
 					--sticky3-insetInlineStart: calc(var(--sticky2-insetInlineStart) + var(--sticky2-paddingInlineStart) + var(--sticky-marginInlineStart));
 					--sticky3-insetInlineEnd: calc(var(--sticky2-insetInlineEnd) + var(--sticky2-paddingInlineEnd) + var(--sticky-marginInlineEnd));
-				
+
 					--sticky3-paddingBlockStart: var(--sticky-paddingBlockStart);
 					--sticky3-paddingBlockEnd: var(--sticky-paddingBlockEnd);
 					--sticky3-paddingInlineStart: var(--sticky-paddingInlineStart);
 					--sticky3-paddingInlineEnd: var(--sticky-paddingInlineEnd);
-				
+
 					--sticky-insetBlockStart: var(--sticky3-insetBlockStart);
 					--sticky-insetBlockEnd: var(--sticky3-insetBlockEnd);
 					--sticky-insetInlineStart: var(--sticky3-insetInlineStart);
@@ -713,7 +713,7 @@ span svg {
 						--sticky4-paddingBlockEnd: var(--sticky-paddingBlockEnd);
 						--sticky4-paddingInlineStart: var(--sticky-paddingInlineStart);
 						--sticky4-paddingInlineEnd: var(--sticky-paddingInlineEnd);
-					
+
 						--sticky-insetBlockStart: var(--sticky4-insetBlockStart);
 						--sticky-insetBlockEnd: var(--sticky4-insetBlockEnd);
 						--sticky-insetInlineStart: var(--sticky4-insetInlineStart);

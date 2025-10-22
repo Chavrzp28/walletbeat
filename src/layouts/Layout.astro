@@ -2,6 +2,7 @@
 // Global CSS
 import '@/global.css'
 
+
 // Props
 import type { ComponentProps } from 'astro/types'
 import { ClientRouter } from 'astro:transitions'
@@ -17,9 +18,11 @@ type Props = {
 
 const { metadata, rewriteUrlTo } = Astro.props
 
+
 // Components
 import Metadata from '@/layouts/Metadata.astro'
 ---
+
 
 <!doctype html>
 <html lang='en'>
@@ -33,11 +36,15 @@ import Metadata from '@/layouts/Metadata.astro'
 			const colorScheme = localStorage.getItem('theme')
 			if (colorScheme) document.documentElement.style.colorScheme = colorScheme
 		</script>
+
+
 		{
 			rewriteUrlTo !== undefined && (
 				<script is:inline define:vars={{ rewriteUrlTo }}>
 					history.replaceState(null, '', rewriteUrlTo);
 				</script>
+
+
 			)
 		}
 	</head>

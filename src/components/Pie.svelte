@@ -41,6 +41,7 @@
 	}
 </script>
 
+
 <script lang="ts">
 	// Types
 	import type { Snippet } from 'svelte'
@@ -146,7 +147,7 @@
 	}) => {
 		const angleDiff = Math.abs(endAngle - startAngle)
 		const orientation = Math.sign(endAngle - startAngle)
-		
+
 		// Handle full circles (or nearly full circles)
 		if (angleDiff >= 359.99) {
 			return [

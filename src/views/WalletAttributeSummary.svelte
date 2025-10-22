@@ -32,7 +32,7 @@
 </script>
 
 
-<div 
+<div
 	class="attribute-summary"
 	data-card={isInTooltip ? 'radius p-sm border-accent' : undefined}
 	data-column
@@ -76,7 +76,7 @@
 	</p>
 
 	<div>
-		<a 
+		<a
 			href="/{wallet.metadata.id}/{variant ? `?variant=${variant}` : ''}#{slugifyCamelCase(attribute.attribute.id)}"
 		>
 			<span>{@html InfoIcon}</span>

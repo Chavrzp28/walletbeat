@@ -50,7 +50,7 @@
 		const hasEoa =
 			accountTypes !== null &&
 			(hasEip7702 || setContains<AccountType>(accountTypes, AccountType.eoa))
-		
+
 		return hasEip7702
 			? WalletTypeFor7702.EIP7702
 			: hasErc4337
@@ -298,9 +298,9 @@
 						)}
 						{@const rawUrl = isLabeledUrl(sourceUrl) ? sourceUrl.url : sourceUrl}
 
-						<a 
-							href={rawUrl} 
-							target="_blank" 
+						<a
+							href={rawUrl}
+							target="_blank"
 							rel="noopener noreferrer"
 							class="source-link"
 						>

@@ -7,6 +7,7 @@
 	import { toFullyQualified } from '@/schema/reference'
 	import { commaListFormat } from '@/types/utils/text'
 
+
 	// Props
 	let {
 		wallet,
@@ -16,12 +17,14 @@
 		value: ScamPreventionValue
 	} = $props()
 
+
 	// Components
 	import ReferenceLinks from '@/views/ReferenceLinks.svelte'
 	import Typography from '@/components/Typography.svelte'
 </script>
 
-<Typography 
+
+<Typography
 	content={value.shortExplanation}
 	strings={{
 		WALLET_NAME: wallet.metadata.displayName,
@@ -47,7 +50,7 @@
 	<ul class="features-list">
 		{#if value.sendTransactionWarning?.required}
 			<li>
-				<Typography 
+				<Typography
 					content={{
 						contentType: ContentType.MARKDOWN,
 						markdown: (
@@ -68,7 +71,7 @@
 											value.scamAlerts.sendTransactionWarning.leaksUserAddress && 'your Ethereum address',
 											value.scamAlerts.sendTransactionWarning.leaksRecipient && 'the recipient\'s Ethereum address',
 										]
-											.filter(Boolean) as string[])} to an external provider which can correlate them.` 
+											.filter(Boolean) as string[])} to an external provider which can correlate them.`
 									:
 										''
 								}`
@@ -78,7 +81,7 @@
 					}}
 					strings={{ WALLET_NAME: wallet.metadata.displayName }}
 				/>
-				
+
 				{#if isSupported(value.scamAlerts.sendTransactionWarning) && value.scamAlerts.sendTransactionWarning.ref}
 					<hr>
 
@@ -86,7 +89,7 @@
 				{/if}
 			</li>
 		{/if}
-		
+
 		{#if value.contractTransactionWarning?.required}
 			{@const contractFeatures = (
 				isSupported(value.scamAlerts.contractTransactionWarning) ?
@@ -99,9 +102,9 @@
 				:
 					[]
 			)}
-			
+
 			<li>
-				<Typography 
+				<Typography
 					content={{
 						contentType: ContentType.MARKDOWN,
 						markdown: (
@@ -133,7 +136,7 @@
 											value.scamAlerts.contractTransactionWarning.leaksUserAddress && 'your Ethereum address',
 											value.scamAlerts.contractTransactionWarning.leaksContractAddress && 'the contract address',
 										]
-							.filter(Boolean) as string[])} to an external provider which can correlate them ahead of the transaction being submitted.` 
+							.filter(Boolean) as string[])} to an external provider which can correlate them ahead of the transaction being submitted.`
 									:
 										''
 								}`
@@ -143,7 +146,7 @@
 					}}
 					strings={{ WALLET_NAME: wallet.metadata.displayName }}
 				/>
-				
+
 				{#if isSupported(value.scamAlerts.contractTransactionWarning) && value.scamAlerts.contractTransactionWarning.ref}
 					<hr>
 
@@ -151,10 +154,10 @@
 				{/if}
 			</li>
 		{/if}
-		
+
 		{#if value.scamUrlWarning?.required}
 			<li>
-				<Typography 
+				<Typography
 					content={{
 						contentType: ContentType.MARKDOWN,
 						markdown: (
@@ -163,10 +166,10 @@
 									!value.scamUrlWarning.privacyPreserving && scamUrlLeaks.length > 0 ?
 							` However, in doing so, it leaks ${commaListFormat(scamUrlLeaks)} to an external provider${
 											scamUrlLeaks.length > 1 ?
-												' which can correlate them' 
+												' which can correlate them'
 											:
 												''
-										}.` 
+										}.`
 									:
 										''
 								}`
@@ -176,7 +179,7 @@
 					}}
 					strings={{ WALLET_NAME: wallet.metadata.displayName }}
 				/>
-				
+
 				{#if isSupported(value.scamAlerts.scamUrlWarning) && value.scamAlerts.scamUrlWarning.ref}
 					<hr>
 
@@ -186,6 +189,7 @@
 		{/if}
 	</ul>
 {/if}
+
 
 <style>
 	.features-list {

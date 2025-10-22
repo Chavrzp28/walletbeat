@@ -6,6 +6,7 @@
 	}
 </script>
 
+
 <script lang="ts">
 	// Types/constants
 	import type { Column } from '@/components/TableState.svelte'
@@ -45,7 +46,7 @@
 					...attrGroup,
 					attributes: (
 						Object.fromEntries(
-							Object.entries(attrGroup.attributes).filter(([attributeId, _]) => 
+							Object.entries(attrGroup.attributes).filter(([attributeId, _]) =>
 								wallets.find(w => w.variants.browser || w.variants.desktop || w.variants.mobile)
 									?.overall[attrGroup.id]?.[attributeId]?.evaluation?.value?.rating !== Rating.EXEMPT
 							)
@@ -96,7 +97,7 @@
 
 	const selectedVariant = $derived.by(() => {
 		// Derive selected variant from active filters
-		const activeVariantFilters = Array.from(activeFilters).filter(filter => 
+		const activeVariantFilters = Array.from(activeFilters).filter(filter =>
 			filter.id.startsWith('variant-') && filter.id !== 'variant-all'
 		)
 
@@ -527,7 +528,7 @@
 									.filter(Boolean)
 							) as tag (tag.label)}
 								{#if tag.eipTooltipContent}
-									<Tooltip 
+									<Tooltip
 										placement="inline-end"
 									>
 										<div
@@ -769,7 +770,7 @@
 						}}
 						onSliceMouseEnter={sliceId => {
 							const [attributeGroupId, attributeId] = sliceId.split('__').map(part => part.split('_')[1])
-							
+
 							activeEntityId = {
 								walletId: wallet.metadata.id,
 								attributeGroupId: attributeGroupId,
@@ -832,7 +833,7 @@
 							:
 								undefined
 						)}
-			
+
 						{@const displayedGroup = (
 							activeEntityId?.walletId === wallet.metadata.id ?
 								attributeGroups.find(g => g.id === activeEntityId.attributeGroupId)
@@ -906,10 +907,10 @@
 							}
 						]}
 						padding={4}
-						slices={	
+						slices={
 							!isNonEmptyArray(evalEntries) ?
 								[]
-							
+
 							: nonEmptyMap(
 								evalEntries,
 								([attributeId, attribute]) => {
@@ -932,7 +933,7 @@
 												undefined
 										)
 									})()
-									
+
 									return {
 										id: `attrGroup_${attrGroup.id}__attr_${attributeId.toString()}`,
 										color: ratingToColor(attribute.evaluation.value.rating),
@@ -947,7 +948,7 @@
 						{highlightedSliceId}
 						onSliceClick={sliceId => {
 							const [attributeGroupId, attributeId] = sliceId.split('__').map(part => part.split('_')[1])
-							
+
 							if (attributeId) {
 								selectedAttribute = (
 									selectedAttribute === attributeId ? undefined : attributeId
@@ -959,7 +960,7 @@
 						}}
 						onSliceMouseEnter={sliceId => {
 							const [attributeGroupId, attributeId] = sliceId.split('__').map(part => part.split('_')[1])
-							
+
 							if (attributeId) {
 								activeEntityId = {
 									walletId: wallet.metadata.id,
@@ -973,7 +974,7 @@
 						}}
 						onSliceFocus={sliceId => {
 							const [attributeGroupId, attributeId] = sliceId.split('__').map(part => part.split('_')[1])
-							
+
 							if (attributeId) {
 								activeEntityId = {
 									walletId: wallet.metadata.id,

@@ -2,13 +2,14 @@
 	// Types/constants
 	import type { FundingValue } from '@/schema/attributes/transparency/funding'
 	import type { RatedWallet } from '@/schema/wallet'
-	import { 
+	import {
 		type Monetization,
 		monetizationStrategies,
 		monetizationStrategyName
 	} from '@/schema/features/transparency/monetization'
 	import { ContentType } from '@/types/content'
 	import { refs } from '@/schema/reference'
+
 
 	// Props
 	let {
@@ -21,12 +22,14 @@
 		monetization: Monetization | undefined
 	} = $props()
 
+
 	// Components
 	import ReferenceLinks from '@/views/ReferenceLinks.svelte'
 	import Typography from '@/components/Typography.svelte'
 </script>
 
-<Typography 
+
+<Typography
 	content={{
 		contentType: ContentType.MARKDOWN,
 		markdown: (
@@ -52,4 +55,4 @@
 
 		<ReferenceLinks references={references} />
 	{/if}
-{/if} 
+{/if}

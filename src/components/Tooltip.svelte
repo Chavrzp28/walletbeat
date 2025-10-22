@@ -6,7 +6,7 @@
 				hidePopover(): void
 			}
 		}
-		
+
 		interface HTMLElement {
 			showPopover(): void
 			hidePopover(): void

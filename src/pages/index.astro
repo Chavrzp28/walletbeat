@@ -8,13 +8,16 @@ import { attributeTree } from '@/schema/attribute-groups'
 
 const attributeGroups = Object.values(attributeTree)
 
+
 // Layouts
 import Layout from '../layouts/Layout.astro'
+
 
 // Components
 import Navigation from '@/views/Navigation.astro'
 import WalletTable from '@/views/WalletTable.svelte'
 ---
+
 
 <Layout
 	metadata={{
@@ -60,6 +63,7 @@ import WalletTable from '@/views/WalletTable.svelte'
 		</section>
 	</main>
 </Layout>
+
 
 <style>
 	main {

@@ -22,7 +22,7 @@
 </script>
 
 
-<div 
+<div
 	class="wallet-overall-summary"
 	data-card={isInTooltip ? 'radius p-sm border-accent' : undefined}
 	data-column
@@ -51,7 +51,7 @@
 		<ScoreBadge {score} size="large" />
 
 		<!-- <p></p> -->
-	
+
 		{#if score?.hasUnratedComponent}
 			<small>*contains unrated components</small>
 		{/if}
@@ -78,4 +78,4 @@
 			}
 		}
 	}
-</style> 
+</style>

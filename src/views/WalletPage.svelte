@@ -525,9 +525,9 @@
 		}
 	})()}
 
-	<section 
-		class="attribute" 
-		id={slugifyCamelCase(attribute.id)} 
+	<section
+		class="attribute"
+		id={slugifyCamelCase(attribute.id)}
 		aria-label={attribute.displayName}
 		style:--accent={ratingToColor(evalAttr.evaluation.value.rating)}
 		data-rating={evalAttr.evaluation.value.rating.toLowerCase()}
@@ -910,7 +910,7 @@
 						var(--border-color) 1.66rem,
 						var(--border-color) calc(1.66rem + 1px),
 						transparent calc(1.66rem + 1px)
-					) 
+					)
 					0 calc(2.5rem + 1rem) / 100% calc(100% - calc(2.5rem + 1rem) - 1rem) no-repeat,
 					var(--background-secondary)
 				;
@@ -1394,7 +1394,7 @@
 			entry 55% {
 				--isTranslated: 1;
 				--translate: calc(-50% - 1rem) calc(50vh - 50%);
-			}	
+			}
 
 			exit 47.5% {
 				--translate: calc(-50% - 1rem) calc(50vh - 50%);

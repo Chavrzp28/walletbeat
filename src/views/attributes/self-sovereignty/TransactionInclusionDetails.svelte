@@ -43,7 +43,7 @@
 	)}
 
 	{#if allSupportedForceWithdrawals.length}
-		<Typography 
+		<Typography
 			content={{
 				contentType: ContentType.MARKDOWN,
 				markdown: `**{{WALLET_NAME}}** supports L2 force-inclusion withdrawal transactions on **${allSupportedForceWithdrawals.map(l2Type => transactionSubmissionL2TypeName(l2Type)).join(', ')}** L2s.\n\nThis means users may withdraw funds from these L2s without relying on intermediaries.`,
@@ -53,7 +53,7 @@
 	{/if}
 
 	{#if unsupportedL2s.length}
-		<Typography 
+		<Typography
 			content={{
 				contentType: ContentType.MARKDOWN,
 				markdown: `${allSupportedForceWithdrawals.length ? 'However, it' : '**{{WALLET_NAME}}**'} does not support L2 force-inclusion withdrawal transactions on **${unsupportedL2s.map(transactionSubmissionL2TypeName).join(' or ')}** L2s.\n\nThis means users rely on intermediaries in order to withdraw their funds from these L2s.`,
@@ -62,7 +62,7 @@
 		/>
 	{/if}
 {/if}
-<Typography 
+<Typography
 	content={{
 		contentType: ContentType.MARKDOWN,
 		markdown: (

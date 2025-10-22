@@ -4,6 +4,7 @@ import { WalletType } from '@/schema/wallet-types'
 import { defaultNavigationItems } from '@/constants/navigation'
 import { representativeWalletForType, allRatedWallets } from '@/data/wallets'
 
+
 // Functions
 import { getAttributeGroupById } from '@/schema/attribute-groups'
 import { displayedAttributeIdsForWalletType } from '@/schema/wallet-navigation'
@@ -38,6 +39,7 @@ import Navigation from '@/views/Navigation.astro'
 import WalletTable from '@/views/WalletTable.svelte'
 ---
 
+
 <Layout
 	metadata={{
 		title: `${attrGroup.displayName} - Walletbeat`,
@@ -48,7 +50,7 @@ import WalletTable from '@/views/WalletTable.svelte'
 	<Navigation
 		navigationItems={defaultNavigationItems}
 	/>
-	
+
 	<main data-sticky-container>
 		<section data-sticky-container data-column="gap-6">
 			<WalletTable

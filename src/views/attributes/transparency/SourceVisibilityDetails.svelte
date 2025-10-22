@@ -19,7 +19,8 @@
 	import Typography from '@/components/Typography.svelte'
 </script>
 
-<Typography 
+
+<Typography
 	content={{
 		contentType: ContentType.MARKDOWN,
 		markdown: (
@@ -33,7 +34,7 @@
 />
 
 {#if wallet.metadata.repoUrl !== null}
-	<a 
+	<a
 		href={typeof wallet.metadata.repoUrl === 'string' ? wallet.metadata.repoUrl : wallet.metadata.repoUrl.url}
 		target="_blank"
 		rel="noopener noreferrer"
@@ -49,4 +50,4 @@
 		margin-top: 0.5rem;
 		display: inline-block;
 	}
-</style> 
+</style>

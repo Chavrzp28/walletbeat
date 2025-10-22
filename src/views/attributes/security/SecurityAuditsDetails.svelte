@@ -48,7 +48,7 @@
 	)}
 
 	{@const mostRecentAudit = securityAuditsSorted[0]}
-	
+
 	<Typography
 		content={{
 			contentType: ContentType.MARKDOWN,

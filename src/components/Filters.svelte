@@ -86,9 +86,9 @@
 		const filter = filterGroups
 			.flatMap(group => group.filters)
 			.find(filter => filter.id === filterId)
-		
+
 		if (!filter) return
-		
+
 		toggleFilter(filter, exclusive)
 	}
 	toggleFilterById = _toggleFilterById
@@ -150,7 +150,7 @@
 							),
 
 							(filterId) => {
-								activeFilters = filterId && filterId !== '' 
+								activeFilters = filterId && filterId !== ''
 									? activeFilters.difference(filters).union(new Set([filterById.get(filterId)!]))
 									: activeFilters.difference(filters)
 							}
@@ -179,7 +179,7 @@
 					<div class="group" data-column="gap-1">
 						{#each visibleFilters as filter}
 							{@const count = filterItems(activeFilters.difference(filters).union(new Set([filter]))).length}
-							
+
 							<label
 								data-filter={filter.id}
 								data-column="gap-3"

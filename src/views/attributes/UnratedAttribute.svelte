@@ -34,9 +34,10 @@ Please help us by contributing your knowledge on our repository!`
 	GitHub Repository
 </a>
 
+
 <style>
 	.repo-link {
 		margin-top: 0.5rem;
 		display: inline-block;
 	}
-</style> 
+</style>

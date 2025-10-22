@@ -30,7 +30,7 @@
 </script>
 
 
-<div 
+<div
 	class="attribute-group-summary"
 	data-card={isInTooltip ? 'radius p-sm border-accent' : undefined}
 	data-column

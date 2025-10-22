@@ -9,6 +9,7 @@
 	import { ethereumL1LightClientUrl } from '@/schema/features/security/light-client'
 	import { commaListPrefix } from '@/types/utils/text'
 
+
 	// Props
 	let {
 		wallet,
@@ -22,12 +23,14 @@
 		refs?: FullyQualifiedReference[]
 	} = $props()
 
+
 	// Components
 	import ReferenceLinks from '@/views/ReferenceLinks.svelte'
 	import Typography from '@/components/Typography.svelte'
 </script>
 
-<Typography 
+
+<Typography
 	content={{
 		contentType: ContentType.MARKDOWN,
 		markdown: (
@@ -47,4 +50,4 @@
 	<hr>
 
 	<ReferenceLinks references={refs} />
-{/if} 
+{/if}

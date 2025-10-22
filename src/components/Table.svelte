@@ -47,7 +47,7 @@
 
 		columns: _Column[]
 		sortedColumn?: _Column | undefined
-		
+
 		expandHeaderCells?: boolean
 
 		Cell?: Snippet<[{
@@ -224,7 +224,7 @@
 						</div>
 
 						{#if isExpandable}
-							<button 
+							<button
 								type="button"
 								class="expansion-button"
 								data-sticky
@@ -276,8 +276,8 @@
 					data-disabled={rowIsDisabled?.(row, table) ? '' : undefined}
 				>
 					{#each table.columnsVisible as column (column.id)}
-					{@const isSortable = !!column.sort}
-                        {@const value = column.value?.(row)}
+						{@const isSortable = !!column.sort}
+						{@const value = column.value?.(row)}
 						{@const columnSpan = getColumnSpan(column)}
 
 						<td
@@ -319,7 +319,7 @@
 </div>
 
 
-<style>	
+<style>
 	.container {
 		--table-backgroundColor: light-dark(#fdfdfd, #22242b);
 		--table-outerBorderColor: var(--border-color);
