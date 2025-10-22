@@ -379,6 +379,7 @@
 			data-column
 			data-score={scoreLevel}
 			data-icon={attrGroup.icon}
+			style:--attributeGroup-icon={`'${attrGroup.icon}'`}
 			style:--accent={scoreToColor(score?.score)}
 		>
 			<header data-sticky data-row>
@@ -1320,6 +1321,7 @@
 
 		.attributes-pie {
 			background-image: radial-gradient(circle closest-side, var(--background-secondary) 90%, transparent 90%);
+			position: relative;
 
 			animation:
 				AttributesPieAngleAnimation steps(var(--attributesCount), jump-end) forwards,
@@ -1330,6 +1332,26 @@
 				entry 0% exit 100%
 			;
 			animation-timeline: --AttributesViewTimeline;
+
+			&::before {
+				content: var(--attributeGroup-icon);
+				position: absolute;
+				inset: 0;
+				display: grid;
+				place-items: center;
+				font-size: 2.5em;
+				pointer-events: none;
+				opacity: calc(var(--isTranslated, 0) * 0.1);
+				scale: calc(0.85 + 0.15 * var(--isTranslated));
+				filter: contrast(0.5) brightness(3) drop-shadow(1px 2px 3px rgba(0, 0, 0, 0.15));
+
+				transition-property: opacity, scale;
+
+				@container not scroll-state(stuck: none) {
+					opacity: 0;
+					scale: 0.95;
+				}
+			}
 
 			> :global(*) {
 				transition-property: translate, scale, opacity;
@@ -1366,9 +1388,11 @@
 
 		@keyframes AttributesPieTransformAnimation {
 			entry 40% {
+				--isTranslated: 0;
 				--translate: 0px 0px;
 			}
 			entry 55% {
+				--isTranslated: 1;
 				--translate: calc(-50% - 1rem) calc(50vh - 50%);
 			}	
 
