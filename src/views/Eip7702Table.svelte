@@ -195,7 +195,7 @@
 				<div class="name">
 					<h3>
 						<a
-							href={`/${wallet.metadata.id}`}
+							href={`/${wallet.metadata.id}/`}
 						>
 							{wallet.metadata.displayName}
 						</a>

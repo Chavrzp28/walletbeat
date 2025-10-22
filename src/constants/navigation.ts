@@ -32,6 +32,7 @@ import KeyIcon from 'lucide-static/icons/key.svg?raw'
 import MessageCircleIcon from 'lucide-static/icons/message-circle-heart.svg?raw'
 import WalletIcon from 'lucide-static/icons/wallet.svg?raw'
 
+
 // Constants
 export const navigationHome = {
 	id: 'home',
@@ -44,14 +45,14 @@ export const navigationFaq = {
 	id: 'faq',
 	icon: HelpCircleIcon,
 	title: 'FAQ',
-	href: '/faq',
+	href: '/faq/',
 } as const satisfies NavigationItem
 
 export const navigationAbout = {
 	id: 'about',
 	icon: BuildingIcon,
 	title: 'About Walletbeat',
-	href: '/about',
+	href: '/about/',
 } as const satisfies NavigationItem
 
 export const navigationCriteria = {
@@ -82,7 +83,7 @@ export const defaultNavigationItems = [
 			{
 				id: 'software-wallets',
 				title: 'Software Wallets',
-				href: '/wallet/summary',
+				href: '/wallet/summary/',
 				icon: AppWindowIcon,
 				children: [
 					{
@@ -96,7 +97,7 @@ export const defaultNavigationItems = [
 									id: `software-${attrGroup.id}`,
 									title: attrGroup.displayName,
 									icon: attrGroup.icon,
-									href: `/wallet/${attrGroup.id}`,
+									href: `/wallet/${attrGroup.id}/`,
 								}),
 							)
 						),
@@ -110,7 +111,7 @@ export const defaultNavigationItems = [
 								.map(([key, wallet]) => ({
 									id: key,
 									title: wallet.metadata.displayName,
-									href: `/${key}`,
+									href: `/${key}/`,
 									icon: `<img src="/images/wallets/${wallet.metadata.id}.${wallet.metadata.iconExtension}" alt="" />`,
 								}))
 						),
@@ -118,7 +119,7 @@ export const defaultNavigationItems = [
 					{
 						id: 'eip-7702-tracker',
 						title: 'EIP-7702 Tracker',
-						href: '/wallet/7702',
+						href: '/wallet/7702/',
 						icon: ChartBarIcon,
 					},
 				],
@@ -126,7 +127,7 @@ export const defaultNavigationItems = [
 			{
 				id: 'hardware-wallets',
 				title: 'Hardware Wallets',
-				href: '/hww/summary',
+				href: '/hww/summary/',
 				icon: KeyIcon,
 				children: [
 					{
@@ -140,7 +141,7 @@ export const defaultNavigationItems = [
 									id: `hardware-${attrGroup.id}`,
 									title: attrGroup.displayName,
 									icon: attrGroup.icon,
-									href: `/hww/${attrGroup.id}`,
+									href: `/hww/${attrGroup.id}/`,
 								}),
 							),
 						],
@@ -154,7 +155,7 @@ export const defaultNavigationItems = [
 								.map(([key, wallet]) => ({
 									id: key,
 									title: wallet.metadata.displayName.replace(' Wallet', ''),
-									href: `/${key}`,
+									href: `/${key}/`,
 									icon: `<img src="/images/wallets/${wallet.metadata.id}.${wallet.metadata.iconExtension}" alt="" />`,
 								}))
 						),
@@ -164,7 +165,7 @@ export const defaultNavigationItems = [
 			{
 				id: 'embedded-wallets',
 				title: 'Embedded Wallets',
-				href: '/embedded/summary',
+				href: '/embedded/summary/',
 				icon: CpuIcon,
 				children: [
 					{
@@ -178,7 +179,7 @@ export const defaultNavigationItems = [
 									id: `embedded-${attrGroup.id}`,
 									title: attrGroup.displayName,
 									icon: attrGroup.icon,
-									href: `/embedded/${attrGroup.id}`,
+									href: `/embedded/${attrGroup.id}/`,
 								}),
 							),
 						],

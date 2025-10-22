@@ -653,7 +653,7 @@
 					<div data-row="gap-2 wrap start">
 						{#each supportedModels.filter(m => !selectedModel || m.id === selectedModel) as model}
 							<a
-								href={`/${model.brandId}?model=${model.modelId}`}
+								href={`/${model.brandId}/?model=${model.modelId}`}
 								data-badge="medium"
 								style="--accent: var(--accent-light)"
 							>

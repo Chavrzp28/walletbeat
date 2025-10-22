@@ -617,7 +617,7 @@
 
 						<div class="links" data-row="gap-2 start wrap">
 							<a
-								href={`/${wallet.metadata.id}${selectedVariant ? `?variant=${selectedVariant}` : ''}`}
+								href={`/${wallet.metadata.id}/${selectedVariant ? `?variant=${selectedVariant}` : ''}`}
 								class="info-link"
 							>
 								<span aria-hidden="true">{@html InfoIcon}</span>

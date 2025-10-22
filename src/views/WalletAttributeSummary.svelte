@@ -77,7 +77,7 @@
 
 	<div>
 		<a 
-			href="/{wallet.metadata.id}{variant ? `?variant=${variant}` : ''}#{slugifyCamelCase(attribute.attribute.id)}"
+			href="/{wallet.metadata.id}/{variant ? `?variant=${variant}` : ''}#{slugifyCamelCase(attribute.attribute.id)}"
 		>
 			<span>{@html InfoIcon}</span>
 			Learn more
