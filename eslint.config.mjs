@@ -22,10 +22,17 @@ const firstOrderedKeys = [
 	'metadata',
 ]
 
-export default tseslint.config(
-	// Ignore generated files
+export default [
 	{
-		ignores: ['src/generated/**'],
+		ignores: [
+			// Ignore generated files
+			'src/generated/**',
+
+			'**/*.css',
+			'**/*.astro',
+			'**/*.svelte',
+			'**/*.svelte.ts',
+		],
 	},
 	eslintPluginEslintComments.recommended,
 	eslint.configs.recommended,
@@ -167,6 +174,12 @@ export default tseslint.config(
 		rules: {
 			'prettier/prettier': ['error', { singleQuote: true, useTabs: true, semi: false }],
 			quotes: ['error', 'single', { avoidEscape: true }],
+		},
+	},
+	{
+		files: ['**/*.{css,astro,svelte,svelte.ts}'],
+		rules: {
+			'prettier/prettier': 'off',
 		},
 	},
 )

@@ -1,0 +1,4 @@
+*.css
+*.astro
+*.svelte
+*.svelte.ts
