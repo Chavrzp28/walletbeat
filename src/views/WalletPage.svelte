@@ -37,9 +37,17 @@
 	// Components
 	import Typography from '@/components/Typography.svelte'
 	import Pie, { PieLayout } from '@/components/Pie.svelte'
-	import RenderCustomContent from '@/views/RenderCustomContent.svelte'
 	import ReferenceLinks from '@/views/ReferenceLinks.svelte'
 	import ScoreBadge from '@/views/ScoreBadge.svelte'
+	import AddressCorrelationDetails from '@/views/attributes/privacy/AddressCorrelationDetails.svelte'
+	import ChainVerificationDetails from '@/views/attributes/security/ChainVerificationDetails.svelte'
+	import ScamAlertDetails from '@/views/attributes/security/ScamAlertDetails.svelte'
+	import SecurityAuditsDetails from '@/views/attributes/security/SecurityAuditsDetails.svelte'
+	import TransactionInclusionDetails from '@/views/attributes/self-sovereignty/TransactionInclusionDetails.svelte'
+	import FundingDetails from '@/views/attributes/transparency/FundingDetails.svelte'
+	import LicenseDetails from '@/views/attributes/transparency/LicenseDetails.svelte'
+	import SourceVisibilityDetails from '@/views/attributes/transparency/SourceVisibilityDetails.svelte'
+	import UnratedAttribute from '@/views/attributes/UnratedAttribute.svelte'
 	import Select from '@/components/Select.svelte'
 	import { Github, Globe } from 'lucide-static'
 
@@ -600,15 +608,35 @@
 							content={evalAttr.evaluation.details}
 							strings={{ WALLET_NAME: wallet.metadata.displayName }}
 						/>
+
 					{:else if evalAttr.evaluation.details}
+						{@const componentName = evalAttr.evaluation.details.component.component}
+						{@const componentProps = evalAttr.evaluation.details.component.componentProps}
+						{@const value = evalAttr.evaluation.value}
+						{@const references = toFullyQualified(evalAttr.evaluation.references || [])}
+
 						<div data-column>
-							<RenderCustomContent
-								content={evalAttr.evaluation.details}
-								{wallet}
-								value={evalAttr.evaluation.value}
-								references={toFullyQualified(evalAttr.evaluation.references || [])}
-							/>
+							{#if componentName === 'AddressCorrelationDetails'}
+								<AddressCorrelationDetails {...componentProps} {wallet} {value} {references} />
+							{:else if componentName === 'ChainVerificationDetails'}
+								<ChainVerificationDetails {...componentProps} {wallet} {value} {references} />
+							{:else if componentName === 'ScamAlertDetails'}
+								<ScamAlertDetails {...componentProps} {wallet} {value} {references} />
+							{:else if componentName === 'SecurityAuditsDetails'}
+								<SecurityAuditsDetails {...componentProps} {wallet} {value} {references} />
+							{:else if componentName === 'TransactionInclusionDetails'}
+								<TransactionInclusionDetails {...componentProps} {wallet} {value} {references} />
+							{:else if componentName === 'FundingDetails'}
+								<FundingDetails {...componentProps} {wallet} {value} {references} />
+							{:else if componentName === 'LicenseDetails'}
+								<LicenseDetails {...componentProps} {wallet} {value} {references} />
+							{:else if componentName === 'SourceVisibilityDetails'}
+								<SourceVisibilityDetails {...componentProps} {wallet} {value} {references} />
+							{:else if componentName === 'UnratedAttribute'}
+								<UnratedAttribute {...componentProps} {wallet} {value} {references} />
+							{/if}
 						</div>
+
 					{:else}
 						<div data-column>
 							<Typography
