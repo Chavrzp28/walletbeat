@@ -36,19 +36,19 @@ export default [
 	},
 	eslintPluginEslintComments.recommended,
 	eslint.configs.recommended,
-	process.env.WALLETBEAT_PRECOMMIT_FAST === 'true'
+	...(process.env.WALLETBEAT_PRECOMMIT_FAST === 'true'
 		? tseslint.configs.recommended
-		: tseslint.configs.recommendedTypeChecked,
-	process.env.WALLETBEAT_PRECOMMIT_FAST === 'true'
-		? {}
-		: {
+		: tseslint.configs.recommendedTypeChecked),
+	...(process.env.WALLETBEAT_PRECOMMIT_FAST === 'true'
+		? []
+		: [{
 				languageOptions: {
 					parserOptions: {
 						projectService: true,
 						tsconfigRootDir: import.meta.dirname,
 					},
 				},
-			},
+			}]),
 	{
 		files: ['**/*.{js,mjs,cjs,ts}'],
 		languageOptions: {
@@ -182,4 +182,4 @@ export default [
 			'prettier/prettier': 'off',
 		},
 	},
-)
+]
