@@ -1,6 +1,6 @@
 import { describe } from 'vitest'
 
-import { variantToName } from '@/components/variants'
+import { variantToName } from '@/constants/variants'
 import { allRatedWallets } from '@/data/wallets'
 import {
 	type EvaluationTree,
