@@ -305,7 +305,7 @@ import HelpOutlineIcon from '@material-icons/svg/svg/help_outline/baseline.svg?r
 			<h1>Walletbeat FAQ</h1>
 		</header>
 
-		{frequentlyAskedQuestions.map((entry, index) => (
+		{frequentlyAskedQuestions.map((entry) => (
 			<>
 				<hr>
 
@@ -313,12 +313,13 @@ import HelpOutlineIcon from '@material-icons/svg/svg/help_outline/baseline.svg?r
 					<h2>
 						<span set:html={HelpOutlineIcon} />
 						{entry.question}
-					</h2>
+				</h2>
 
-					<Typography
-						client:load
-						content={entry.answer}
-					/>
+				{/* @ts-expect-error - Astro type checking doesn't fully support Svelte 5 generics yet */}
+				<Typography
+					client:load
+					content={entry.answer}
+				/>
 				</section>
 			</>
 		))}

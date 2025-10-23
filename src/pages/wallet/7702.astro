@@ -26,6 +26,7 @@ import GitHubIcon from 'lucide-static/icons/github.svg?raw'
 
 	<main data-sticky-container>
 		<header data-sticky="inline">
+			{/* @ts-expect-error - Astro type checking doesn't fully support Svelte 5 generics yet */}
 			<Typography
 				content={
 					markdown(`
