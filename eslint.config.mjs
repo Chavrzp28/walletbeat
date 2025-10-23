@@ -41,14 +41,16 @@ export default [
 		: tseslint.configs.recommendedTypeChecked),
 	...(process.env.WALLETBEAT_PRECOMMIT_FAST === 'true'
 		? []
-		: [{
-				languageOptions: {
-					parserOptions: {
-						projectService: true,
-						tsconfigRootDir: import.meta.dirname,
+		: [
+				{
+					languageOptions: {
+						parserOptions: {
+							projectService: true,
+							tsconfigRootDir: import.meta.dirname,
+						},
 					},
 				},
-			}]),
+			]),
 	{
 		files: ['**/*.{js,mjs,cjs,ts}'],
 		languageOptions: {

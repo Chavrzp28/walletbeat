@@ -52,30 +52,29 @@ export type HardwareModel = {
 	id: string
 	brandId: string
 	brandName: string
+	iconUrl: string
+	isFlagship?: boolean
 	modelId: string
 	modelName: string
 	url?: string
-	isFlagship?: boolean
-	iconUrl: string
 }
 
-export const allHardwareModels: HardwareModel[] = (
-	Object.values(hardwareWallets)
-			.flatMap(brand => (
-					(brand.metadata.hardwareWalletModels ?? []).map(model => ({
-							id: `${brand.metadata.id}.${model.id}`,
-							brandId: brand.metadata.id,
-							brandName: brand.metadata.tableName ?? brand.metadata.displayName,
-							modelId: model.id,
-							modelName: model.name,
-							url: model.url ?? undefined,
-							isFlagship: model.isFlagship ?? false,
-							iconUrl: `/images/wallets/${brand.metadata.id}.${brand.metadata.iconExtension}`,
-					}))
-			))
-			.sort((a, b) => (
-					a.brandName.localeCompare(b.brandName) || (
-							(b.isFlagship ? 1 : 0) - (a.isFlagship ? 1 : 0)
-					) || a.modelName.localeCompare(b.modelName)
-			))
-)
+export const allHardwareModels: HardwareModel[] = Object.values(hardwareWallets)
+	.flatMap(brand =>
+		(brand.metadata.hardwareWalletModels ?? []).map(model => ({
+			id: `${brand.metadata.id}.${model.id}`,
+			brandId: brand.metadata.id,
+			brandName: brand.metadata.tableName ?? brand.metadata.displayName,
+			iconUrl: `/images/wallets/${brand.metadata.id}.${brand.metadata.iconExtension}`,
+			isFlagship: model.isFlagship ?? false,
+			modelId: model.id,
+			modelName: model.name,
+			url: model.url ?? undefined,
+		})),
+	)
+	.sort(
+		(a, b) =>
+			a.brandName.localeCompare(b.brandName) ||
+			(b.isFlagship ? 1 : 0) - (a.isFlagship ? 1 : 0) ||
+			a.modelName.localeCompare(b.modelName),
+	)

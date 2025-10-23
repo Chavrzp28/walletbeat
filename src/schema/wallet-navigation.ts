@@ -10,4 +10,4 @@ export function displayedAttributeIdsForWalletType(walletType: WalletType): stri
 		representativeWalletForType(walletType).overall,
 		attrGroup => attrGroup.id,
 	)
-} 
+}

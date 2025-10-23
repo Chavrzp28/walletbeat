@@ -122,7 +122,6 @@ import { type MaybeUnratedScore, type WeightedScore, weightedScore } from './sco
 import type { AtLeastOneVariant, Variant } from './variants'
 import type { WalletMetadata } from './wallet'
 
-
 /** A ValueSet for security Values. */
 type SecurityValues = Dict<{
 	securityAudits: SecurityAuditsValue
@@ -688,13 +687,12 @@ export function calculateAttributeGroupScore<Vs extends ValueSet>(
 
 			return score === null
 				? null
-				: {
+				: ({
 						score,
 						weight,
-					} as WeightedScore
+					} as WeightedScore)
 		}),
-	)
-		.filter(score => score !== null)
+	).filter(score => score !== null)
 
 	if (isNonEmptyArray(subScores)) {
 		let hasUnratedComponent = false
@@ -717,16 +715,14 @@ export function calculateAttributeGroupScore<Vs extends ValueSet>(
  */
 export const filterEvaluationTree = (
 	evaluationTree: EvaluationTree,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	attributeGroups: AttributeGroup<any>[],
 ): Partial<EvaluationTree> => {
 	const groupIds = new Set(attributeGroups.map(group => group.id))
 
-	return (
-		Object.fromEntries(
-			Object.entries(evaluationTree)
-				.filter(([attrGroupId]) => groupIds.has(attrGroupId))
-		) as Partial<EvaluationTree>
-	)
+	return Object.fromEntries(
+		Object.entries(evaluationTree).filter(([attrGroupId]) => groupIds.has(attrGroupId)),
+	) as Partial<EvaluationTree>
 }
 
 /**
@@ -734,27 +730,28 @@ export const filterEvaluationTree = (
  * @param evaluationTree The evaluation tree to score.
  * @returns The overall score between 0.0 (lowest) and 1.0 (highest), or undefined if no scores.
  */
-export const calculateOverallScore = (evaluationTree: EvaluationTree | Partial<EvaluationTree>): MaybeUnratedScore => {
-	const scores = (
-		objectEntries(attributeTree)
-			.map(([attrGroupId, attrGroup]) => (
-				evaluationTree[attrGroupId] && (
-					calculateAttributeGroupScore(
-						attrGroup.attributeWeights,
-						evaluationTree[attrGroupId] as any,
-					)
-				)
-			))
-			.filter((score): score is { score: number, hasUnratedComponent: boolean } => score?.score !== undefined)
-	)
+export const calculateOverallScore = (
+	evaluationTree: EvaluationTree | Partial<EvaluationTree>,
+): MaybeUnratedScore => {
+	const scores = objectEntries(attributeTree)
+		.map(
+			([attrGroupId, attrGroup]) =>
+				evaluationTree[attrGroupId] &&
+				calculateAttributeGroupScore(
+					attrGroup.attributeWeights,
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-type-assertion, @typescript-eslint/no-explicit-any
+					evaluationTree[attrGroupId] as any,
+				),
+		)
+		.filter(
+			(score): score is { score: number; hasUnratedComponent: boolean } =>
+				score?.score !== undefined,
+		)
 
 	return {
-		score: (
-			scores.length ?
-				scores.reduce((sum, { score }) => sum + score, 0) / scores.length
-			:
-				undefined
-		),
+		score: scores.length
+			? scores.reduce((sum, { score }) => sum + score, 0) / scores.length
+			: undefined,
 		hasUnratedComponent: scores.some(score => score?.hasUnratedComponent),
 	}
 }

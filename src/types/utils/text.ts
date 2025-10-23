@@ -62,7 +62,10 @@ export function commaListPrefix(index: number, listSize: number, and?: string): 
  * Format a list of strings into a comma-separated list.
  * Falsy values are ignored.
  */
-export function commaListFormat(items: Array<string | false | null | undefined>, and?: string): string {
+export function commaListFormat(
+	items: Array<string | false | null | undefined>,
+	and?: string,
+): string {
 	const filtered = items.filter(item => typeof item === 'string' && item !== '')
 
 	return filtered.map((item, i) => `${commaListPrefix(i, filtered.length, and)}${item}`).join('')
