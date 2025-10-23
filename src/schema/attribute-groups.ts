@@ -118,7 +118,7 @@ import {
 	type SourceVisibilityValue,
 } from './attributes/transparency/source-visibility'
 import type { ResolvedFeatures } from './features'
-import { type MaybeUnratedScore, type Score, type WeightedScore, weightedScore } from './score'
+import { type MaybeUnratedScore, type WeightedScore, weightedScore } from './score'
 import type { AtLeastOneVariant, Variant } from './variants'
 import type { WalletMetadata } from './wallet'
 
