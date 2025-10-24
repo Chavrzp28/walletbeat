@@ -4,7 +4,7 @@
 	"version": "0.0.1",
 	"scripts": {
 		"astro": "ASTRO_TELEMETRY_DISABLED=1 astro",
-		"build": "pnpm run astro build",
+		"build": "deploy/build.sh",
 		"check:all": "pnpm run check:astro && pnpm run check:vitest --run && pnpm run check:lint && pnpm run check:syntax && pnpm run check:spelling:quiet && pnpm run check:misc && pnpm run check:build:post:quiet",
 		"check:quick": "pnpm run check:lint:quick && pnpm run check:syntax && pnpm run check:spelling:quiet && pnpm run check:misc",
 		"check:astro": "pnpm run astro check --minimumSeverity=hint --minimumFailingSeverity=hint",
