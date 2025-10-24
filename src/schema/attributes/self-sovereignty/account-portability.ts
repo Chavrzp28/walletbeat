@@ -728,7 +728,7 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 				`),
 				evaluateMultifactor(
 					{
-						controllingSharesInSelfCustodyByDefault: 'NO',
+						controllingSharesInSelfCustodyByDefault: 'YES',
 						keyRotationTransactionGeneration:
 							TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
 						tokenTransferTransactionGeneration:

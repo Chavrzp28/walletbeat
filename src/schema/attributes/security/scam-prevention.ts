@@ -60,7 +60,7 @@ function rateSendTransactionWarning(scamAlerts: ScamAlerts): ScamAlertSupport & 
 	if (!isSupported(scamAlerts.sendTransactionWarning)) {
 		return {
 			supported: false,
-			privacyPreserving: false,
+			privacyPreserving: true,
 			...baseProps,
 		}
 	}
@@ -78,8 +78,8 @@ function rateSendTransactionWarning(scamAlerts: ScamAlerts): ScamAlertSupport & 
 	return {
 		supported,
 		privacyPreserving:
-			!scamAlerts.sendTransactionWarning.leaksRecipient &&
 			[
+				scamAlerts.sendTransactionWarning.leaksRecipient,
 				scamAlerts.sendTransactionWarning.leaksUserAddress,
 				scamAlerts.sendTransactionWarning.leaksUserIp,
 			].filter(x => x).length <= 1,
@@ -101,7 +101,7 @@ function rateContractTransactionWarning(scamAlerts: ScamAlerts): ScamAlertSuppor
 	if (!isSupported(scamAlerts.contractTransactionWarning)) {
 		return {
 			supported: false,
-			privacyPreserving: false,
+			privacyPreserving: true,
 			...baseProps,
 		}
 	}
@@ -144,7 +144,7 @@ function rateScamUrlWarning(scamAlerts: ScamAlerts): ScamAlertSupport & {
 	if (!isSupported(scamUrlWarning)) {
 		return {
 			supported: false,
-			privacyPreserving: false,
+			privacyPreserving: true,
 			...baseProps,
 		}
 	}
@@ -500,7 +500,7 @@ export const scamPrevention: Attribute<ScamPreventionValue> = {
 						previousContractInteractionWarning: true,
 						recentContractWarning: false,
 						leaksContractAddress: false,
-						leaksUserAddress: false,
+						leaksUserAddress: true,
 						leaksUserIp: true,
 					}),
 					scamUrlWarning: supported({

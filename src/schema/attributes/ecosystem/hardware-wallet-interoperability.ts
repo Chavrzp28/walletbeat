@@ -248,7 +248,7 @@ export const hardwareWalletInteroperability: Attribute<HardwareWalletInteroperab
 					Other major hardware wallets are either unsupported, or require
 					additional software in order to use.
 				`),
-				insufficientHardwareWalletManufacturerSupport({
+				singleHardwareWalletManufacturerSupport({
 					wallets: {
 						[HardwareWalletType.LEDGER]: supported<SupportedHardwareWallet>({
 							connectionTypes: [HardwareWalletConnection.USB],

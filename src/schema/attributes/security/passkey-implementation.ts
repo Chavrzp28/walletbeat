@@ -191,9 +191,6 @@ function webAuthnSolImplementation(
 		details: mdParagraph(
 			"{{WALLET_NAME}} implements passkeys using WebAuthn.sol from Base, a Solidity library for verifying WebAuthn authentication assertions. It builds on Daimo's WebAuthn.sol. This library is optimized for Ethereum layer 2 rollup chains but will work on all EVM chains. Signature verification always attempts to use the RIP-7212 precompile and, if this fails, falls back to using FreshCryptoLib. The library has been [audited](https://github.com/coinbase/smart-wallet/tree/main/audits)",
 		),
-		howToImprove: mdParagraph(
-			'{{WALLET_NAME}} could improve by updating the fallback mechanism to use Smooth Crypto Library instead of FreshCryptoLib for better performance and security.',
-		),
 	}
 }
 
@@ -268,6 +265,15 @@ export const passkeyImplementation: Attribute<PasskeyImplementationValue> = {
 						'https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/cryptography/P256.sol',
 				}),
 			),
+			exampleRating(
+				mdParagraph(
+					"The wallet implements passkeys using [WebAuthn.sol](https://github.com/base/webauthn-sol), which builds on Daimo's WebAuthn.sol but falls back to the FreshCryptoLib.",
+				),
+				webAuthnSolImplementation({
+					library: PasskeyVerificationLibrary.WEB_AUTHN_SOL,
+					libraryUrl: 'https://github.com/base/webauthn-sol',
+				}),
+			),
 		],
 		partial: [
 			exampleRating(
@@ -277,15 +283,6 @@ export const passkeyImplementation: Attribute<PasskeyImplementationValue> = {
 				freshCryptoLibImplementation({
 					library: PasskeyVerificationLibrary.FRESH_CRYPTO_LIB,
 					libraryUrl: 'https://github.com/rdubois-crypto/FreshCryptoLib',
-				}),
-			),
-			exampleRating(
-				mdParagraph(
-					"The wallet implements passkeys using [WebAuthn.sol](https://github.com/base/webauthn-sol), which builds on Daimo's WebAuthn.sol but falls back to the FreshCryptoLib.",
-				),
-				webAuthnSolImplementation({
-					library: PasskeyVerificationLibrary.WEB_AUTHN_SOL,
-					libraryUrl: 'https://github.com/base/webauthn-sol',
 				}),
 			),
 			exampleRating(
