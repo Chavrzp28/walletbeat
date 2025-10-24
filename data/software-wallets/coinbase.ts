@@ -6,10 +6,11 @@ import { WalletProfile } from '@/schema/features/profile'
 import {
 	HardwareWalletConnection,
 	HardwareWalletType,
+	type SupportedHardwareWallet,
 } from '@/schema/features/security/hardware-wallet-support'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
 import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
-import { featureSupported, notSupported, supported } from '@/schema/features/support'
+import { notSupported, supported } from '@/schema/features/support'
 import { License } from '@/schema/features/transparency/license'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
@@ -133,9 +134,9 @@ export const coinbase: SoftwareWallet = {
 			bugBountyProgram: null,
 			hardwareWalletSupport: {
 				ref: null,
-				supportedWallets: {
-					[HardwareWalletType.LEDGER]: supported({
-						[HardwareWalletConnection.webUSB]: featureSupported,
+				wallets: {
+					[HardwareWalletType.LEDGER]: supported<SupportedHardwareWallet>({
+						connectionTypes: [HardwareWalletConnection.webUSB],
 					}),
 				},
 			},

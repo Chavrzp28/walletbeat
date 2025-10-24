@@ -17,6 +17,7 @@ import { BugBountyProgramType } from '@/schema/features/security/bug-bounty-prog
 import {
 	HardwareWalletConnection,
 	HardwareWalletType,
+	type SupportedHardwareWallet,
 } from '@/schema/features/security/hardware-wallet-support'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
 import type { SecurityAudit } from '@/schema/features/security/security-audits'
@@ -430,33 +431,15 @@ Payouts are handled by the Ambire team directly and are denominated in USD. Howe
 						'You can natively sign transactions with Ledger, Trezor, or GridPlus Lattice1 in Ambire.',
 					url: 'https://www.ambire.com/',
 				},
-				supportedWallets: {
-					[HardwareWalletType.LEDGER]: supported({
-						[HardwareWalletConnection.webUSB]: supported({
-							ref: {
-								explanation:
-									'Ambire supports native transaction signing with Ledger hardware wallets.',
-								url: 'https://www.ambire.com/',
-							},
-						}),
+				wallets: {
+					[HardwareWalletType.LEDGER]: supported<SupportedHardwareWallet>({
+						connectionTypes: [HardwareWalletConnection.webUSB],
 					}),
-					[HardwareWalletType.TREZOR]: supported({
-						[HardwareWalletConnection.webUSB]: supported({
-							ref: {
-								explanation:
-									'Ambire supports native transaction signing with Trezor hardware wallets.',
-								url: 'https://www.ambire.com/',
-							},
-						}),
+					[HardwareWalletType.TREZOR]: supported<SupportedHardwareWallet>({
+						connectionTypes: [HardwareWalletConnection.webUSB],
 					}),
-					[HardwareWalletType.GRIDPLUS]: supported({
-						[HardwareWalletConnection.webUSB]: supported({
-							ref: {
-								explanation:
-									'Ambire supports native transaction signing with GridPlus Lattice1 hardware wallets.',
-								url: 'https://www.ambire.com/',
-							},
-						}),
+					[HardwareWalletType.GRIDPLUS]: supported<SupportedHardwareWallet>({
+						connectionTypes: [HardwareWalletConnection.webUSB],
 					}),
 					[HardwareWalletType.KEYSTONE]: notSupported,
 				},

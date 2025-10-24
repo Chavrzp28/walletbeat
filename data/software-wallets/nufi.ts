@@ -5,6 +5,7 @@ import { WalletProfile } from '@/schema/features/profile'
 import {
 	HardwareWalletConnection,
 	HardwareWalletType,
+	type SupportedHardwareWallet,
 } from '@/schema/features/security/hardware-wallet-support'
 import { RpcEndpointConfiguration } from '@/schema/features/self-sovereignty/chain-configurability'
 import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
@@ -124,25 +125,24 @@ export const nufi: SoftwareWallet = {
 		security: {
 			bugBountyProgram: null,
 			hardwareWalletSupport: {
-				supportedWallets: {
-					[HardwareWalletType.LEDGER]: supported({
-						[HardwareWalletConnection.webUSB]: featureSupported,
-						[HardwareWalletConnection.bluetooth]: featureSupported,
+				wallets: {
+					[HardwareWalletType.LEDGER]: supported<SupportedHardwareWallet>({
+						connectionTypes: [HardwareWalletConnection.webUSB, HardwareWalletConnection.bluetooth],
 					}),
-					[HardwareWalletType.TREZOR]: supported({
-						[HardwareWalletConnection.webUSB]: featureSupported,
+					[HardwareWalletType.TREZOR]: supported<SupportedHardwareWallet>({
+						connectionTypes: [HardwareWalletConnection.webUSB],
 					}),
-					[HardwareWalletType.KEYSTONE]: supported({
-						[HardwareWalletConnection.QR]: featureSupported,
+					[HardwareWalletType.KEYSTONE]: supported<SupportedHardwareWallet>({
+						connectionTypes: [HardwareWalletConnection.QR],
 					}),
-					[HardwareWalletType.GRIDPLUS]: supported({
-						[HardwareWalletConnection.webUSB]: featureSupported,
+					[HardwareWalletType.GRIDPLUS]: supported<SupportedHardwareWallet>({
+						connectionTypes: [HardwareWalletConnection.webUSB],
 					}),
-					[HardwareWalletType.ONEKEY]: supported({
-						[HardwareWalletConnection.webUSB]: featureSupported,
+					[HardwareWalletType.ONEKEY]: supported<SupportedHardwareWallet>({
+						connectionTypes: [HardwareWalletConnection.webUSB],
 					}),
-					[HardwareWalletType.BITBOX]: supported({
-						[HardwareWalletConnection.webUSB]: featureSupported,
+					[HardwareWalletType.BITBOX]: supported<SupportedHardwareWallet>({
+						connectionTypes: [HardwareWalletConnection.webUSB],
 					}),
 				},
 			},

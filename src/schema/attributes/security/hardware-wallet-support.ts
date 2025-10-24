@@ -8,80 +8,98 @@ import {
 import type { ResolvedFeatures } from '@/schema/features'
 import {
 	HardwareWalletConnection,
+	hardwareWalletConnectionIsOnlyWalletConnect,
+	type HardwareWalletSupport,
 	HardwareWalletType,
+	hardwareWalletType,
+	type SupportedHardwareWallet,
+	supportsHardwareWalletTypesMarkdown,
 } from '@/schema/features/security/hardware-wallet-support'
-import { isSupported } from '@/schema/features/support'
+import { isSupported, notSupported, supported } from '@/schema/features/support'
 import { popRefs } from '@/schema/reference'
-import { type AtLeastOneVariant } from '@/schema/variants'
 import { WalletType } from '@/schema/wallet-types'
-import { markdown, paragraph, sentence } from '@/types/content'
+import { markdown, mdParagraph, paragraph, sentence } from '@/types/content'
 
 import { exempt, pickWorstRating, unrated } from '../common'
 
 const brand = 'attributes.security.hardware_wallet_support'
 
 export type HardwareWalletSupportValue = Value & {
-	supportedHardwareWallets: HardwareWalletType[]
+	hardwareWalletSupport: HardwareWalletSupport
 	__brand: 'attributes.security.hardware_wallet_support'
 }
 
-function noHardwareWalletSupport(): Evaluation<HardwareWalletSupportValue> {
+function noHardwareWalletSupport(
+	hardwareWalletSupport: HardwareWalletSupport,
+): Evaluation<HardwareWalletSupportValue> {
 	return {
 		value: {
 			id: 'no_hardware_wallet_support',
 			rating: Rating.FAIL,
 			displayName: 'No hardware wallet support',
-			shortExplanation: sentence('{{WALLET_NAME}} does not support any hardware wallets.'),
-			supportedHardwareWallets: [],
+			shortExplanation: sentence('{{WALLET_NAME}} does not support hardware wallets.'),
+			hardwareWalletSupport,
 			__brand: brand,
 		},
-		details: paragraph(
-			'{{WALLET_NAME}} does not support connecting to any hardware wallets. Hardware wallets provide an additional layer of security by keeping private keys offline.',
-		),
-		howToImprove: paragraph(
-			'{{WALLET_NAME}} should add support for popular hardware wallets to improve security options for users.',
-		),
+		details: paragraph(`
+			{{WALLET_NAME}} does not support hardware wallets.
+		`),
+		impact: paragraph(`
+			 Hardware wallets provide an additional layer of security by keeping private keys offline.
+		`),
+		howToImprove: paragraph(`
+			{{WALLET_NAME}} should add support for popular hardware wallets to improve security options for users.
+		`),
 	}
 }
 
-function limitedHardwareWalletSupport(
-	supportedWallets: HardwareWalletType[],
+function indirectHardwareWalletSupport(
+	hardwareWalletSupport: HardwareWalletSupport,
 ): Evaluation<HardwareWalletSupportValue> {
 	return {
 		value: {
-			id: 'limited_hardware_wallet_support',
+			id: 'indirect_hardware_wallet_support',
 			rating: Rating.PARTIAL,
-			displayName: 'Limited hardware wallet support',
-			shortExplanation: sentence(
-				'{{WALLET_NAME}} supports a limited selection of hardware wallets.',
-			),
-			supportedHardwareWallets: supportedWallets,
+			displayName: 'Indirect hardware wallet support',
+			shortExplanation: sentence(`
+				Using a hardware wallet with {{WALLET_NAME}} requires additional software.
+			`),
+			hardwareWalletSupport,
 			__brand: brand,
 		},
-		details: paragraph(
-			'{{WALLET_NAME}} supports some hardware wallets, but not all major ones. Hardware wallets provide an additional layer of security by keeping private keys offline.',
-		),
-		howToImprove: paragraph(
-			'{{WALLET_NAME}} should expand support to include more popular hardware wallets to provide users with more security options.',
-		),
+		details: paragraph(`
+			{{WALLET_NAME}} ${supportsHardwareWalletTypesMarkdown(hardwareWalletSupport.wallets, true)}
+
+			Direct connection is not possible.
+		`),
+		impact: paragraph(`
+			Hardware wallets provide an additional layer of security by keeping private keys offline.
+
+			Since connecting hardware wallets through WalletConnect requires additional software,
+			this makes adoption and everyday usage of hardware wallets less likely for users
+			relative to direct hardware wallet integration straight in {{WALLET_NAME}}.
+		`),
+		howToImprove: paragraph(`
+			{{WALLET_NAME}} should directly integrate hardware wallet support.
+		`),
 	}
 }
 
-function comprehensiveHardwareWalletSupport(
-	supportedWallets: HardwareWalletType[],
+function directHardwareWalletSupport(
+	hardwareWalletSupport: HardwareWalletSupport,
 ): Evaluation<HardwareWalletSupportValue> {
 	return {
 		value: {
-			id: 'comprehensive_hardware_wallet_support',
+			id: 'direct_hardware_wallet_support',
 			rating: Rating.PASS,
-			displayName: 'Comprehensive hardware wallet support',
-			shortExplanation: sentence('{{WALLET_NAME}} supports a wide range of hardware wallets.'),
-			supportedHardwareWallets: supportedWallets,
+			displayName: 'Supports hardware wallets',
+			shortExplanation: sentence('{{WALLET_NAME}} supports hardware wallets.'),
+			hardwareWalletSupport,
 			__brand: brand,
 		},
-		details: paragraph(
-			'{{WALLET_NAME}} supports a comprehensive range of hardware wallets, including the most popular options. Hardware wallets provide an additional layer of security by keeping private keys offline.',
-		),
+		details: mdParagraph(`
+			{{WALLET_NAME}} supports ${supportsHardwareWalletTypesMarkdown(hardwareWalletSupport.wallets, true)}
+		`),
 	}
 }
 
@@ -104,50 +122,54 @@ export const hardwareWalletSupport: Attribute<HardwareWalletSupportValue> = {
 		users from malware, phishing attacks, and other security vulnerabilities that
 		could compromise their funds.
 
-		When a software wallet supports hardware wallet integration, users can enjoy
-		the convenience and features of the software wallet while maintaining the
+		When a software wallet supports hardware wallets, users can enjoy the
+		convenience and features of the software wallet while maintaining the
 		security benefits of keeping their private keys offline. This combination
 		offers the best of both worlds: a user-friendly interface with enhanced security.
-
-		Supporting multiple hardware wallet options gives users flexibility to choose
-		the hardware solution that best fits their needs and preferences.
 	`),
 	methodology: markdown(`
-		Wallets are evaluated based on their direct integration with popular hardware wallet devices.
+		Wallets are evaluated based on whether it is possible to use them in
+		conjunction with any physically-separate hardware wallet.
+		This means the software wallet must provide the same level of
+		functionality as when not using a hardware wallet, and the private key
+		must never leave the hardware wallet.
 
-		A wallet receives a passing rating if it supports 3 out of 4 major hardware
-		wallet brands with direct connections (USB, WebUSB, WebHID, Bluetooth, or QR):
-		Ledger, Trezor, Keystone, and GridPlus. Hardware wallets accessible only through 
-		WalletConnect are not counted as they require relying on WalletConnect as
-		an external dependency.
-
-		A wallet receives a partial rating if it supports at least one hardware wallet
-		brand with direct connection but doesn't support 3 out of 4 major brands mentioned above.
-
-		A wallet fails this attribute if it doesn't support any hardware wallets with direct connections.
+		Wallets that require the use of a separate software component (e.g.
+		WalletConnect to an external desktop application that does the actual
+		interfacing with the hardware device) in order to use the hardware wallet
+		get a partial rating. The need for this additional software component
+		means the user has to do more work to get the hardware wallet working,
+		which decreases the likelihood that users will actually do so in practice.
 	`),
 	ratingScale: {
 		display: 'pass-fail',
 		exhaustive: true,
 		pass: exampleRating(
 			paragraph(`
-				The wallet supports 3 out of 4 major hardware wallet brands: Ledger, Trezor, 
-				Keystone, and GridPlus.
+				The wallet integrates any type of hardware wallet.
 			`),
-			comprehensiveHardwareWalletSupport([
-				HardwareWalletType.LEDGER,
-				HardwareWalletType.TREZOR,
-				HardwareWalletType.KEYSTONE,
-				HardwareWalletType.GRIDPLUS,
-			]),
+			directHardwareWalletSupport({
+				wallets: {
+					[HardwareWalletType.LEDGER]: supported<SupportedHardwareWallet>({
+						connectionTypes: [HardwareWalletConnection.USB],
+					}),
+				},
+			}),
 		),
 		partial: [
 			exampleRating(
 				paragraph(`
-					The wallet supports at least one hardware wallet brand, but not multiple
-					major brands or has limited functionality.
-				`),
-				limitedHardwareWalletSupport([HardwareWalletType.LEDGER]),
+				The wallet integrates any type hardware wallet, but requires the use
+				of an additional software component in order to do so
+				(e.g. WalletConnect).
+			`),
+				indirectHardwareWalletSupport({
+					wallets: {
+						[HardwareWalletType.LEDGER]: supported<SupportedHardwareWallet>({
+							connectionTypes: [HardwareWalletConnection.WALLET_CONNECT],
+						}),
+					},
+				}),
 			),
 		],
 		fail: [
@@ -155,7 +177,7 @@ export const hardwareWalletSupport: Attribute<HardwareWalletSupportValue> = {
 				paragraph(`
 					The wallet does not support any hardware wallets.
 				`),
-				noHardwareWalletSupport(),
+				noHardwareWalletSupport({ wallets: {} }),
 			),
 		],
 	},
@@ -168,7 +190,7 @@ export const hardwareWalletSupport: Attribute<HardwareWalletSupportValue> = {
 					'This attribute is not applicable for {{WALLET_NAME}} as it is a hardware wallet itself.',
 				),
 				brand,
-				{ supportedHardwareWallets: [] },
+				{ hardwareWalletSupport: { wallets: {} } },
 			)
 		}
 
@@ -176,77 +198,46 @@ export const hardwareWalletSupport: Attribute<HardwareWalletSupportValue> = {
 		// 	all such wallets have the opportunity to support hardware wallets to provide better security for the user
 
 		if (features.security.hardwareWalletSupport === null) {
-			return unrated(hardwareWalletSupport, brand, { supportedHardwareWallets: [] })
+			return unrated(hardwareWalletSupport, brand, { hardwareWalletSupport: { wallets: {} } })
 		}
 
 		// Extract references from the hardware wallet support feature
 		const { withoutRefs, refs: extractedRefs } = popRefs(features.security.hardwareWalletSupport)
 
-		const supportedWallets: HardwareWalletType[] = []
-		const hwSupport = withoutRefs.supportedWallets
+		const hwSupport = hardwareWalletType.fullRecord(withoutRefs.wallets, notSupported)
+		const numSupported = Object.entries(
+			hardwareWalletType.filterRecord(hwSupport, (_, support) => isSupported(support)),
+		).length
 
-		// Check which hardware wallets are supported with direct connections (not just WALLET_CONNECT)
-		Object.entries(hwSupport).forEach(([walletType, support]) => {
-			if (isSupported(support)) {
-				// Check if the hardware wallet has any direct connection methods (not just WALLET_CONNECT)
-				const hasDirectConnection = Object.entries(support).some(
-					([connectionType, connectionSupport]) => {
-						return (
-							connectionType !== HardwareWalletConnection.WALLET_CONNECT.toString() &&
-							typeof connectionSupport === 'object' &&
-							connectionSupport !== null &&
-							isSupported(connectionSupport)
-						)
-					},
-				)
-
-				if (hasDirectConnection) {
-					// Type assertion is safe because we're iterating over keys of hwSupport
-					// which are HardwareWalletType values
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Safe because we're iterating over hwSupport keys
-					supportedWallets.push(walletType as HardwareWalletType)
-				}
+		const result = (() => {
+			if (numSupported === 0) {
+				return noHardwareWalletSupport(withoutRefs)
 			}
-		})
 
-		if (supportedWallets.length === 0) {
-			return noHardwareWalletSupport()
+			if (
+				Object.entries(
+					hardwareWalletType.filterRecord(
+						hwSupport,
+						(_, support) =>
+							isSupported(support) &&
+							hardwareWalletConnectionIsOnlyWalletConnect(support.connectionTypes),
+					),
+				).length === numSupported
+			) {
+				return indirectHardwareWalletSupport(withoutRefs)
+			}
+
+			return directHardwareWalletSupport(withoutRefs)
+		})()
+
+		if (numSupported === 0) {
+			return noHardwareWalletSupport(withoutRefs)
 		}
 
-		const hasLedger = supportedWallets.includes(HardwareWalletType.LEDGER)
-		const hasTrezor = supportedWallets.includes(HardwareWalletType.TREZOR)
-		const hasKeystone = supportedWallets.includes(HardwareWalletType.KEYSTONE)
-		const hasGridplus = supportedWallets.includes(HardwareWalletType.GRIDPLUS)
-
-		// Used for future expansion
-		// const hasKeepkey = supportedWallets.includes(HardwareWalletType.KEEPKEY)
-
-		// Generate the base evaluation result
-		const result: Evaluation<HardwareWalletSupportValue> =
-			hasLedger && hasTrezor && hasKeystone && hasGridplus
-				? comprehensiveHardwareWalletSupport(supportedWallets)
-				: limitedHardwareWalletSupport(supportedWallets)
-
-		// Return result with references if any
 		return {
 			...result,
 			...(extractedRefs.length > 0 && { references: extractedRefs }),
 		}
 	},
-	aggregate: (perVariant: AtLeastOneVariant<Evaluation<HardwareWalletSupportValue>>) => {
-		const worstEvaluation = pickWorstRating<HardwareWalletSupportValue>(perVariant)
-
-		// Combine all supported hardware wallets across variants
-		const allSupportedWallets = new Set<HardwareWalletType>()
-
-		Object.values(perVariant).forEach(evaluation => {
-			evaluation.value.supportedHardwareWallets.forEach(wallet => {
-				allSupportedWallets.add(wallet)
-			})
-		})
-
-		worstEvaluation.value.supportedHardwareWallets = Array.from(allSupportedWallets)
-
-		return worstEvaluation
-	},
+	aggregate: pickWorstRating<HardwareWalletSupportValue>,
 }

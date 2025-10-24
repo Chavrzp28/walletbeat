@@ -1,6 +1,7 @@
 import {
 	assertNonEmptyArray,
 	type NonEmptyArray,
+	type NonEmptyRecord,
 	type NonEmptySet,
 	nonEmptySetFromArray,
 	setContains,
@@ -34,6 +35,82 @@ export class Enum<E extends string> {
 
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Safe because this is exactly what we are trying to establish
 		return setContains(this.set, obj as E)
+	}
+
+	/**
+	 * @returns `obj` typecasted to `E`, or throws an error if `obj` is not an enum member.
+	 */
+	public assert(obj: unknown): E {
+		if (!this.is(obj)) {
+			throw new Error(`Attempted to typecast object of type ${typeof obj} to enum`)
+		}
+
+		return obj
+	}
+
+	/** Reorder an array of enums using the canonical enum order. */
+	public reorder(arr: E[]): E[] {
+		return Array.from(this.items.filter(e => arr.includes(e)))
+	}
+
+	/** Reorder a non-empty array of enums using the canonical enum order. */
+	public reorderNonEmpty(arr: NonEmptyArray<E>): NonEmptyArray<E> {
+		return assertNonEmptyArray(this.reorder(arr))
+	}
+
+	/**
+	 *
+	 * @returns The set of keys in the given `rec`, preserving type information.
+	 */
+	public recordKeys(rec: Partial<Record<E, unknown>>): E[] {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Safe because all `rec` keys are of type `E`.
+		return this.reorder(Object.keys(rec) as E[])
+	}
+
+	/**
+	 * Filter a Record<E, whatever> with a given predicate, preserving type information.
+	 */
+	public filterRecord<T>(
+		rec: Partial<Record<E, T>>,
+		predicate: (e: E, t: T) => boolean,
+	): Partial<Record<E, T>> {
+		return this.reorderPartialRecord(
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Safe because we are using the correct types for each entry.
+			Object.fromEntries(
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Safe because all entries have values of type T.
+				Object.entries(rec).filter(entry => predicate(this.assert(entry[0]), entry[1] as T)),
+			) as Partial<Record<E, T>>,
+		)
+	}
+
+	/**
+	 * @returns A non-Partial Record<E, T> containing the non-undefined entries of `rec`, and `defaultValue` for all other keys.
+	 */
+	public fullRecord<T>(rec: Partial<Record<E, T>>, defaultValue: T): Record<E, T> {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Safe because we know all keys are present.
+		return Object.fromEntries(this.items.map(e => [e, rec[e] ?? defaultValue])) as Record<E, T>
+	}
+
+	/** Reorder a non-empty array of enums using the canonical enum order. */
+	public reorderRecord<T>(rec: Record<E, T>): Record<E, T> {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Safe because we are using the correct types in each entry.
+		return Object.fromEntries(this.items.map(e => [e, rec[e]])) as Record<E, T>
+	}
+
+	/** Reorder a non-empty array of enums using the canonical enum order. */
+	public reorderNonEmptyRecord<T>(rec: NonEmptyRecord<E, T>): NonEmptyRecord<E, T> {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Safe because we are using the correct types in each entry.
+		return Object.fromEntries(
+			this.items.filter(e => Object.hasOwn(rec, e)).map(e => [e, rec[e]]),
+		) as NonEmptyRecord<E, T>
+	}
+
+	/** Reorder a non-empty array of enums using the canonical enum order. */
+	public reorderPartialRecord<T>(rec: Partial<Record<E, T>>): Partial<Record<E, T>> {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Safe because we are using the correct types in each entry.
+		return Object.fromEntries(
+			this.items.filter(e => Object.hasOwn(rec, e)).map(e => [e, rec[e]]),
+		) as Partial<Record<E, T>>
 	}
 }
 

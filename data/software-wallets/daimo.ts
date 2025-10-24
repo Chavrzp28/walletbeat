@@ -343,7 +343,7 @@ export const daimo: SoftwareWallet = {
 			bugBountyProgram: null,
 			hardwareWalletSupport: {
 				ref: null,
-				supportedWallets: {},
+				wallets: {},
 			},
 			lightClient: {
 				ethereumL1: notSupported,

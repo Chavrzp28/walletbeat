@@ -105,7 +105,7 @@ export const mtpelerin: SoftwareWallet = {
 			},
 			hardwareWalletSupport: {
 				ref: null,
-				supportedWallets: {},
+				wallets: {},
 			},
 			lightClient: {
 				ethereumL1: null,

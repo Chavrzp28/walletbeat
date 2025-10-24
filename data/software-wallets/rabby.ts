@@ -16,6 +16,7 @@ import { WalletProfile } from '@/schema/features/profile'
 import {
 	HardwareWalletConnection,
 	HardwareWalletType,
+	type SupportedHardwareWallet,
 } from '@/schema/features/security/hardware-wallet-support'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
 import { SecurityFlawSeverity } from '@/schema/features/security/security-audits'
@@ -301,21 +302,21 @@ export const rabby: SoftwareWallet = {
 							url: 'https://rabby.io/download',
 						},
 					],
-					supportedWallets: {
-						[HardwareWalletType.LEDGER]: supported({
-							[HardwareWalletConnection.webUSB]: featureSupported,
+					wallets: {
+						[HardwareWalletType.LEDGER]: supported<SupportedHardwareWallet>({
+							connectionTypes: [HardwareWalletConnection.webUSB],
 						}),
-						[HardwareWalletType.TREZOR]: supported({
-							[HardwareWalletConnection.webUSB]: featureSupported,
+						[HardwareWalletType.TREZOR]: supported<SupportedHardwareWallet>({
+							connectionTypes: [HardwareWalletConnection.webUSB],
 						}),
-						[HardwareWalletType.KEYSTONE]: supported({
-							[HardwareWalletConnection.QR]: featureSupported,
+						[HardwareWalletType.KEYSTONE]: supported<SupportedHardwareWallet>({
+							connectionTypes: [HardwareWalletConnection.QR],
 						}),
-						[HardwareWalletType.GRIDPLUS]: supported({
-							[HardwareWalletConnection.webUSB]: featureSupported,
+						[HardwareWalletType.GRIDPLUS]: supported<SupportedHardwareWallet>({
+							connectionTypes: [HardwareWalletConnection.webUSB],
 						}),
-						[HardwareWalletType.OTHER]: supported({
-							[HardwareWalletConnection.webUSB]: featureSupported,
+						[HardwareWalletType.OTHER]: supported<SupportedHardwareWallet>({
+							connectionTypes: [HardwareWalletConnection.webUSB],
 						}),
 					},
 				},

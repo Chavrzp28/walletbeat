@@ -16,8 +16,9 @@ import { feeTransparency } from '../attributes/transparency/fee-transparency'
 import { funding } from '../attributes/transparency/funding'
 import { openSource } from '../attributes/transparency/open-source'
 import { sourceVisibility } from '../attributes/transparency/source-visibility'
+import { hardwareWalletType } from '../features/security/hardware-wallet-support'
 import { RpcEndpointConfiguration } from '../features/self-sovereignty/chain-configurability'
-import { isSupported } from '../features/support'
+import { isSupported, notSupported } from '../features/support'
 import {
 	type StageCriterionEvaluation,
 	stageCriterionEvaluationPerVariant,
@@ -89,7 +90,10 @@ export const softwareWalletStageOne: WalletStage = {
 							}
 
 							const numSupportedWallets = Object.values(
-								variantWallet.features.security.hardwareWalletSupport.supportedWallets,
+								hardwareWalletType.fullRecord(
+									variantWallet.features.security.hardwareWalletSupport.wallets,
+									notSupported,
+								),
 							).filter(isSupported).length
 
 							if (numSupportedWallets < 3) {
