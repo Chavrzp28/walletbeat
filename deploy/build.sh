@@ -10,7 +10,7 @@ if [[ -n "${WALLETBEAT_BUILD_DO_NOT_RECURSE:-}" ]]; then
 	exec pnpm astro build
 fi
 
-attempts_left=3
+attempts_left=5
 if [[ -n "${WALLETBEAT_BUILD_ATTEMPTS_LEFT:-}" ]]; then
 	attempts_left="$WALLETBEAT_BUILD_ATTEMPTS_LEFT"
 fi
@@ -33,7 +33,7 @@ done < <(do_build)
 
 if [[ -n "$need_rebuild" ]]; then
 	export WALLETBEAT_BUILD_ATTEMPTS_LEFT="$(( "$attempts_left" - 1 ))"
-	if [[ "$attempts_left" -lt 1 ]]; then
+	if [[ "$attempts_left" -le 1 ]]; then
 		echo "> Detected need for rebuild (${need_rebuild}) but ran out of rebuild attempts. Build failed." >&2
 		exit 1
 	elif [[ "$WALLETBEAT_BUILD_ATTEMPTS_LEFT" == 1 ]]; then
