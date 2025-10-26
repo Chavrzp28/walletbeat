@@ -1,10 +1,10 @@
 import eslint from '@eslint/js'
+import eslintPluginEslintComments from '@eslint-community/eslint-plugin-eslint-comments/configs'
 import eslintPluginImport from 'eslint-plugin-import'
 import eslintPluginPrettier from 'eslint-plugin-prettier'
 import eslintPluginSimpleImportSort from 'eslint-plugin-simple-import-sort'
 import eslintPluginSortKeysCustomOrder from 'eslint-plugin-sort-keys-custom-order'
 import eslintPluginUnusedImports from 'eslint-plugin-unused-imports'
-import eslintPluginEslintComments from '@eslint-community/eslint-plugin-eslint-comments/configs'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 

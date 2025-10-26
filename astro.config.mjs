@@ -1,8 +1,8 @@
 // @ts-check
 import { resolve } from 'node:path'
 
-import svelte from '@astrojs/svelte'
 import sitemap from '@astrojs/sitemap'
+import svelte from '@astrojs/svelte'
 import { shield } from '@kindspells/astro-shield'
 import { defineConfig } from 'astro/config'
 
