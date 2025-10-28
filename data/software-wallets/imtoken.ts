@@ -9,8 +9,12 @@ import {
 	UserFlow,
 	WalletInfo,
 } from '@/schema/features/privacy/data-collection'
+import { FeeDisplayLevel } from '@/schema/features/transparency/fee-display'
 import { PrivateTransferTechnology } from '@/schema/features/privacy/transaction-privacy'
 import { WalletProfile } from '@/schema/features/profile'
+import {
+	BugBountyProgramType,
+} from '@/schema/features/security/bug-bounty-program'
 import {
 	HardwareWalletConnection,
 	HardwareWalletType,
@@ -38,11 +42,11 @@ export const imtoken: SoftwareWallet = {
 		displayName: 'imToken',
 		tableName: 'imToken',
 		blurb: paragraph(`
-			Founded in 2016 with a focus on Ethereum mobile wallets, imToken has grown into a popular multichain wallet supporting over 50 major networks — including Ethereum, Bitcoin, and Tron — with a mission to build the most reliable and intuitive digital wallet that gives everyone equal access to the tokenized world.
+			imToken is a reliable and intuitive digital wallet, enabling easy access to over 50+ major networks including Bitcoin, Ethereum, and Tron. imToken supports hardware wallets, token swap and DApp browser etc., and provides secure and trusted non-custodial wallet services to millions of users in more than 150 countries and regions around the world.
 		`),
 		contributors: [polymutex],
 		iconExtension: 'svg',
-		lastUpdated: '2025-05-05',
+		lastUpdated: '2025-10-28',
 		repoUrl: 'https://github.com/consenlabs/token-core-monorepo',
 		url: 'https://token.im',
 	},
@@ -74,11 +78,42 @@ export const imtoken: SoftwareWallet = {
 				{
 					explanation:
 						'imToken supports ENS human-readable names and resolves them on-chain before sending funds.',
-					url: 'https://support.token.im/hc/en-us/categories/360000120973',
+					url: 'https://support.token.im/hc/articles/360039928813',
 				},
 			],
 		},
-		chainAbstraction: null,
+		chainAbstraction: supported({
+			crossChainBalances: {
+				globalAccountValue: notSupported,
+				perChainAccountValue: notSupported,
+				ether: {
+					perChainBalanceViewAcrossMultipleChains: notSupported,
+					crossChainSumView: notSupported,
+				},
+				usdc: {
+					perChainBalanceViewAcrossMultipleChains: notSupported,
+					crossChainSumView: notSupported,
+				},
+			},
+			bridging: {
+				builtInBridging: supported({
+					risksExplained: 'VISIBLE_BY_DEFAULT',
+					feesLargerThan1bps: {
+						byDefault: FeeDisplayLevel.COMPREHENSIVE,
+						afterSingleAction: FeeDisplayLevel.COMPREHENSIVE,
+						fullySponsored: false,
+					},
+					ref: [
+						{
+							explanation:
+								'imToken provides built-in cross-chain bridging through cBridge and other bridge protocols, with clear risk explanations and fee breakdowns.',
+							url: 'https://support.token.im/hc/zh-cn/articles/4404355206553-%E5%A6%82%E4%BD%95%E5%9C%A8-imToken-%E4%BD%BF%E7%94%A8-cBridge-%E8%B7%A8%E9%93%BE%E6%A1%A5',
+						},
+					],
+				}),
+				suggestedBridging: notSupported,
+			},
+		}),
 		chainConfigurability: {
 			customChains: true,
 			l1RpcEndpoint: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
@@ -87,7 +122,7 @@ export const imtoken: SoftwareWallet = {
 				{
 					explanation:
 						'imToken allows users to configure custom RPC endpoints for any network, including Ethereum mainnet, before making any requests to the default endpoints.',
-					url: 'https://support.token.im/hc/en-us/articles/900000039643',
+					url: 'https://support.token.im/hc/en-us/articles/900005324266-imToken-now-supports-custom-RPC-Experience-the-layer-2-ecosystem-today',
 				},
 			],
 		},
@@ -131,7 +166,15 @@ export const imtoken: SoftwareWallet = {
 				ventureCapital: true,
 			},
 		},
-		multiAddress: featureSupported,
+		multiAddress: supported({
+			ref: [
+				{
+					explanation:
+						'imToken only makes requests about one active address at a time, so it cannot be correlated with other addresses.',
+					url: 'https://support.token.im/',
+				},
+			],
+		}),
 		privacy: {
 			appIsolation: {
 				[Variant.MOBILE]: null,
@@ -158,7 +201,7 @@ export const imtoken: SoftwareWallet = {
 							ref: [
 								{
 									explanation:
-										'imToken only makes requests about one active address at a time, so it cannot be correlated with other addresses.',
+										'Technically, imToken can associate your wallet address with the dynamic IP address assigned by your mobile network, but it strictly adheres to privacy principles and does not collect users\' personally identifiable information (PII). imToken only makes requests about one active address at a time, so it cannot be correlated with other addresses.',
 									url: 'https://support.token.im/',
 								},
 							],
@@ -183,23 +226,32 @@ export const imtoken: SoftwareWallet = {
 		},
 		profile: WalletProfile.GENERIC,
 		security: {
-			bugBountyProgram: null,
+			bugBountyProgram: {
+				type: BugBountyProgramType.COMPREHENSIVE,
+				details: 'imToken operates a comprehensive bug bounty program through Bugrap platform, covering both the wallet and the website. The program has a wide scope, competitive rewards, and a responsive disclosure process.',
+				upgradePathAvailable: true,
+				url: 'https://bugrap.io/bounties/imToken%20Wallet',
+				ref: [
+					{
+						explanation: 'imToken bug bounty program covers both wallet and website security vulnerabilities.',
+						url: 'https://bugrap.io/bounties/imToken%20Wallet',
+					},
+					{
+						explanation: 'imToken website bug bounty program for security vulnerabilities.',
+						url: 'https://bugrap.io/bounties/imToken%20Website',
+					},
+				],
+			},
 				hardwareWalletSupport: {
 				[Variant.MOBILE]: {
 					ref: [
 						{
 							explanation:
-								'imToken works with the imKey Bluetooth hardware wallet and with Keystone via QR codes. imToken mobile also supports Ledger and Trezor hardware wallets via Bluetooth connection.',
+								'imToken works with the imKey Bluetooth hardware wallet and with Keystone via QR codes.',
 							url: 'https://support.token.im/hc/en-us/articles/360000670394',
 						},
 					],
 					wallets: {
-						[HardwareWalletType.LEDGER]: supported<SupportedHardwareWallet>({
-							connectionTypes: [HardwareWalletConnection.bluetooth],
-						}),
-						[HardwareWalletType.TREZOR]: supported<SupportedHardwareWallet>({
-							connectionTypes: [HardwareWalletConnection.bluetooth],
-						}),
 						[HardwareWalletType.KEYSTONE]: supported<SupportedHardwareWallet>({
 							connectionTypes: [HardwareWalletConnection.QR],
 						}),
@@ -255,35 +307,14 @@ export const imtoken: SoftwareWallet = {
 						},
 					],
 				}),
-				sendTransactionWarning: supported({
-					leaksRecipient: false,
-					leaksUserAddress: false,
-					leaksUserIp: false,
-					newRecipientWarning: true,
-					ref: [
-						{
-							explanation:
-								'imToken warns when sending to new addresses for the first time and displays address details with historical interaction records to help users verify address accuracy.',
-							url: 'https://support.token.im/hc/en-us/articles/21850966355737-Revamped-imToken-signature-for-safer-and-more-intuitive-transactions',
-						},
-					],
-					userWhitelist: false,
-				}),
+				sendTransactionWarning: notSupported,
 			},
 		},
 		selfSovereignty: {
 			transactionSubmission: {
 				l1: {
 					selfBroadcastViaDirectGossip: notSupported,
-					selfBroadcastViaSelfHostedNode: supported({
-						ref: [
-							{
-								explanation:
-									'imToken can broadcast transactions through a custom RPC that the user operates.',
-								url: 'https://support.token.im/hc/en-us/articles/900000039643',
-							},
-						],
-					}),
+					selfBroadcastViaSelfHostedNode: null,
 				},
 				l2: {
 					[TransactionSubmissionL2Type.arbitrum]:

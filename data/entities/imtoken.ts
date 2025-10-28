@@ -19,10 +19,10 @@ export const imToken: CorporateEntity & WalletDeveloper = {
 	icon: {
 		extension: 'svg',
 	},
-	jurisdiction: 'China',
+	jurisdiction: 'Singapore',
 	linkedin: 'https://www.linkedin.com/company/imtoken',
 	privacyPolicy: 'https://token.im/privacy',
 	repoUrl: 'https://github.com/consenlabs/token-core-monorepo',
-	twitter: 'https://twitter.com/imTokenOfficial',
+	twitter: 'https://x.com/imTokenOfficial',
 	url: 'https://token.im/',
 }
