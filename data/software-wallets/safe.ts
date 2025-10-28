@@ -1,4 +1,6 @@
 import { nconsigny } from '@/data/contributors/nconsigny'
+import { certora } from '@/data/entities/certora'
+import { ackee } from '@/data/entities/ackee'
 import { AccountType, TransactionGenerationCapability } from '@/schema/features/account-support'
 import { PrivateTransferTechnology } from '@/schema/features/privacy/transaction-privacy'
 import { WalletProfile } from '@/schema/features/profile'
@@ -8,8 +10,11 @@ import {
 	type SupportedHardwareWallet,
 } from '@/schema/features/security/hardware-wallet-support'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
-import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
-import { notSupported, supported } from '@/schema/features/support'
+import { TransactionSubmissionL2Type, TransactionSubmissionL2Support } from '@/schema/features/self-sovereignty/transaction-submission'
+import { RpcEndpointConfiguration } from '@/schema/features/self-sovereignty/chain-configurability'
+import { License } from '@/schema/features/transparency/license' // assuming path
+import { FeeDisplayLevel } from '@/schema/features/transparency/fee-display' // for level
+import { featureSupported, notSupported, supported } from '@/schema/features/support'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -31,7 +36,7 @@ export const safe: SoftwareWallet = {
 	},
 	features: {
 		accountSupport: {
-			defaultAccountType: AccountType.rawErc4337,
+			defaultAccountType: AccountType.safe,
 			eip7702: notSupported,
 			eoa: notSupported,
 			mpc: notSupported,
@@ -47,6 +52,24 @@ export const safe: SoftwareWallet = {
 				tokenTransferTransactionGeneration:
 					TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
 			}),
+			safe: supported({
+				canDeployNew: true,
+				controllingSharesInSelfCustodyByDefault: 'YES',
+				defaultConfig: {
+					owners: 1,
+					threshold: 1,
+					modules: [],
+				},
+				keyRotationTransactionGeneration: TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
+				supportsKeyRotationWithoutModules: true,
+				supportedConfigs: {
+					minOwners: 1,
+					maxOwners: 'unlimited',
+					supportsAnyThreshold: true,
+					moduleSupport: 'full',
+				},
+				tokenTransferTransactionGeneration: TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
+			}),
 		},
 		addressResolution: {
 			chainSpecificAddressing: {
@@ -57,7 +80,11 @@ export const safe: SoftwareWallet = {
 			ref: null,
 		},
 		chainAbstraction: null,
-		chainConfigurability: null,
+		chainConfigurability: {
+			customChains: false,
+			l1RpcEndpoint: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
+			otherRpcEndpoints: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
+		},
 		ecosystem: {
 			delegation: null,
 		},
@@ -68,22 +95,54 @@ export const safe: SoftwareWallet = {
 				'6963': null,
 				ref: null,
 			},
-			walletCall: null,
+			walletCall: supported({
+				ref: {
+					explanation: 'Safe supports EIP-5792 for transaction batching.',
+					url: 'https://github.com/safe-global/safe-modules/tree/main/modules/batching',
+				},
+				atomicMultiTransactions: featureSupported,
+			}),
 		},
-		license: null,
+		license: {
+			license: License.GPL_3_0,
+			ref: [
+				{
+					explanation: 'Safe uses the LGPL-3.0 license for its source code', // keep explanation but change enum if needed
+					label: 'Safe License File',
+					url: 'https://github.com/safe-global/safe-wallet-monorepo',
+				},
+			],
+		},
 		monetization: {
-			ref: null,
+			ref: [
+				{
+					explanation: 'SafeDAO has received ecosystem grants; example Optimism grant proposal in the Optimism governance forum.',
+					url: 'https://gov.optimism.io/t/draft-gf-phase-1-proposal-old-template-safe/3400',
+				},
+				{
+					explanation: 'Safe community updates covering grants and RPGF-related support across ecosystems.',
+					url: 'https://forum.safe.global/t/safedao-community-updates/4213',
+				},
+				{
+					explanation: 'Community‑Aligned Fees: revenue (e.g., Native Swaps) pledged to SafeDAO; fee approach is explained publicly.',
+					url: 'https://safefoundation.org/blog/safedao-community-aligned-fees-introduction',
+				},
+				{
+					explanation: 'SAFE tokenomics and governance scope; currently primarily used for SafeDAO treasury resource allocation (e.g., grants).',
+					url: 'https://safefoundation.org/blog/safe-tokenomics',
+				},
+			],
 			revenueBreakdownIsPublic: false,
 			strategies: {
-				donations: null,
-				ecosystemGrants: null,
-				governanceTokenLowFloat: null,
-				governanceTokenMostlyDistributed: null,
-				hiddenConvenienceFees: null,
-				publicOffering: null,
-				selfFunded: null,
-				transparentConvenienceFees: null,
-				ventureCapital: null,
+				donations: false,
+				ecosystemGrants: true,
+				governanceTokenLowFloat: false,
+				governanceTokenMostlyDistributed: false,
+				hiddenConvenienceFees: false,
+				publicOffering: false,
+				selfFunded: false,
+				transparentConvenienceFees: true, // based on community-aligned fees
+				ventureCapital: false,
 			},
 		},
 		multiAddress: null,
@@ -140,23 +199,73 @@ export const safe: SoftwareWallet = {
 					},
 				],
 			},
-			publicSecurityAudits: null,
-			scamAlerts: null,
+			publicSecurityAudits: [
+				{
+					auditDate: '2025-01-14',
+					auditor: certora,
+					ref: 'https://github.com/safe-global/safe-smart-account/blob/main/docs/Safe_Audit_Report_1_5_0_Certora.pdf',
+					unpatchedFlaws: 'NONE_FOUND',
+					variantsScope: 'ALL_VARIANTS',
+				},
+				{
+					auditDate: '2025-05-28',
+					auditor: ackee,
+					ref: 'https://github.com/safe-global/safe-smart-account/blob/main/docs/Safe_Audit_Report_1_5_0_Ackee.pdf',
+					unpatchedFlaws: 'NONE_FOUND',
+					variantsScope: 'ALL_VARIANTS',
+				},
+			],
+			scamAlerts: {
+				contractTransactionWarning: supported({
+					contractRegistry: true, //blockaid
+					leaksContractAddress: true,
+					leaksUserAddress: true,
+					leaksUserIp: true,
+					previousContractInteractionWarning: false,
+					recentContractWarning: true, //blockaid
+				}),
+				scamUrlWarning: supported({
+					leaksIp: true,
+					leaksUserAddress: true,
+					leaksVisitedUrl: 'FULL_URL',
+				}),
+				sendTransactionWarning: supported({
+					leaksRecipient: true,
+					leaksUserAddress: true,
+					leaksUserIp: true,
+					newRecipientWarning: true, //blockaid
+					userWhitelist: true,
+				}),
+			},
 		},
 		selfSovereignty: {
 			transactionSubmission: {
 				l1: {
-					selfBroadcastViaDirectGossip: null,
-					selfBroadcastViaSelfHostedNode: null,
+					selfBroadcastViaDirectGossip: notSupported,
+					selfBroadcastViaSelfHostedNode: featureSupported
 				},
 				l2: {
-					[TransactionSubmissionL2Type.arbitrum]: null,
-					[TransactionSubmissionL2Type.opStack]: null,
+					[TransactionSubmissionL2Type.arbitrum]: TransactionSubmissionL2Support.SUPPORTED_BUT_NO_FORCE_INCLUSION,
+					[TransactionSubmissionL2Type.opStack]: TransactionSubmissionL2Support.SUPPORTED_BUT_NO_FORCE_INCLUSION,
 				},
 			},
 		},
 		transparency: {
-			operationFees: null,
+			operationFees: {
+				ethL1Transfer: supported({
+					byDefault: FeeDisplayLevel.COMPREHENSIVE,
+					afterSingleAction: FeeDisplayLevel.COMPREHENSIVE,
+					fullySponsored: false,
+				}),
+				erc20L1Transfer: supported({
+					byDefault: FeeDisplayLevel.COMPREHENSIVE,
+					afterSingleAction: FeeDisplayLevel.COMPREHENSIVE,
+					fullySponsored: false,
+				}),
+				builtInErc20Swap: null,
+				uniswapUSDCToEtherSwap: null,
+				// add other required fields as null or with values
+			},
 		},
 	},
 	variants: {

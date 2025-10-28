@@ -44,6 +44,7 @@ import { cure53 } from '../entities/cure53'
 import { deBank } from '../entities/debank'
 import { leastAuthority } from '../entities/least-authority'
 import { slowMist } from '../entities/slowmist'
+import { TransactionGenerationCapability } from '@/schema/features/account-support'
 
 export const rabby: SoftwareWallet = {
 	metadata: {
@@ -77,6 +78,24 @@ export const rabby: SoftwareWallet = {
 			}),
 			mpc: notSupported,
 			rawErc4337: notSupported,
+			safe: supported({
+				canDeployNew: false,
+				controllingSharesInSelfCustodyByDefault: 'YES',
+				defaultConfig: {
+					owners: 1,
+					threshold: 1,
+					modules: [],
+				},
+				keyRotationTransactionGeneration: TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
+				supportsKeyRotationWithoutModules: true,
+				supportedConfigs: {
+					minOwners: 1,
+					maxOwners: 10,
+					supportsAnyThreshold: true,
+					moduleSupport: 'partial',
+				},
+				tokenTransferTransactionGeneration: TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
+			}),
 		},
 		addressResolution: {
 			chainSpecificAddressing: {
