@@ -250,7 +250,7 @@ export const imtoken: SoftwareWallet = {
 						{
 							explanation:
 								'imToken works with the imKey Bluetooth hardware wallet and with Keystone via QR codes.',
-							url: 'https://support.token.im/hc/en-us/articles/360000670394',
+							url: 'https://support.token.im/hc/en-us/articles/25985632007193-imToken-and-Hardware-Wallets-Uncompromised-Protection-Unparalleled-Convenience',
 						},
 					],
 					wallets: {
