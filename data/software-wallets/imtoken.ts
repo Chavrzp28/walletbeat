@@ -107,7 +107,7 @@ export const imtoken: SoftwareWallet = {
 						{
 							explanation:
 								'imToken provides built-in cross-chain bridging through cBridge and other bridge protocols, with clear risk explanations and fee breakdowns.',
-							url: 'https://support.token.im/hc/zh-cn/articles/4404355206553-%E5%A6%82%E4%BD%95%E5%9C%A8-imToken-%E4%BD%BF%E7%94%A8-cBridge-%E8%B7%A8%E9%93%BE%E6%A1%A5',
+							url: 'https://support.token.im/hc/en-us/articles/4404355206553-How-to-use-cBridge-with-imToken',
 						},
 					],
 				}),
@@ -120,8 +120,8 @@ export const imtoken: SoftwareWallet = {
 			otherRpcEndpoints: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
 			ref: [
 				{
-					explanation:
-						'imToken allows users to configure custom RPC endpoints for any network, including Ethereum mainnet, before making any requests to the default endpoints.',
+						explanation:
+							'imToken allows users to configure custom RPC endpoints for any evm network, before making any requests to the default endpoints.',
 					url: 'https://support.token.im/hc/en-us/articles/900005324266-imToken-now-supports-custom-RPC-Experience-the-layer-2-ecosystem-today',
 				},
 			],
