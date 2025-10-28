@@ -9,12 +9,9 @@ import {
 	UserFlow,
 	WalletInfo,
 } from '@/schema/features/privacy/data-collection'
-import { FeeDisplayLevel } from '@/schema/features/transparency/fee-display'
 import { PrivateTransferTechnology } from '@/schema/features/privacy/transaction-privacy'
 import { WalletProfile } from '@/schema/features/profile'
-import {
-	BugBountyProgramType,
-} from '@/schema/features/security/bug-bounty-program'
+import { BugBountyProgramType } from '@/schema/features/security/bug-bounty-program'
 import {
 	HardwareWalletConnection,
 	HardwareWalletType,
@@ -26,8 +23,11 @@ import {
 	TransactionSubmissionL2Support,
 	TransactionSubmissionL2Type,
 } from '@/schema/features/self-sovereignty/transaction-submission'
-import { featureSupported, notSupported, supported } from '@/schema/features/support'
-import { comprehensiveFeesShownByDefault } from '@/schema/features/transparency/fee-display'
+import { notSupported, supported } from '@/schema/features/support'
+import {
+	comprehensiveFeesShownByDefault,
+	FeeDisplayLevel,
+} from '@/schema/features/transparency/fee-display'
 import { License } from '@/schema/features/transparency/license'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
@@ -83,24 +83,11 @@ export const imtoken: SoftwareWallet = {
 			],
 		},
 		chainAbstraction: supported({
-			crossChainBalances: {
-				globalAccountValue: notSupported,
-				perChainAccountValue: notSupported,
-				ether: {
-					perChainBalanceViewAcrossMultipleChains: notSupported,
-					crossChainSumView: notSupported,
-				},
-				usdc: {
-					perChainBalanceViewAcrossMultipleChains: notSupported,
-					crossChainSumView: notSupported,
-				},
-			},
 			bridging: {
 				builtInBridging: supported({
-					risksExplained: 'VISIBLE_BY_DEFAULT',
 					feesLargerThan1bps: {
-						byDefault: FeeDisplayLevel.COMPREHENSIVE,
 						afterSingleAction: FeeDisplayLevel.COMPREHENSIVE,
+						byDefault: FeeDisplayLevel.COMPREHENSIVE,
 						fullySponsored: false,
 					},
 					ref: [
@@ -110,8 +97,21 @@ export const imtoken: SoftwareWallet = {
 							url: 'https://support.token.im/hc/en-us/articles/4404355206553-How-to-use-cBridge-with-imToken',
 						},
 					],
+					risksExplained: 'VISIBLE_BY_DEFAULT',
 				}),
 				suggestedBridging: notSupported,
+			},
+			crossChainBalances: {
+				ether: {
+					crossChainSumView: notSupported,
+					perChainBalanceViewAcrossMultipleChains: notSupported,
+				},
+				globalAccountValue: notSupported,
+				perChainAccountValue: notSupported,
+				usdc: {
+					crossChainSumView: notSupported,
+					perChainBalanceViewAcrossMultipleChains: notSupported,
+				},
 			},
 		}),
 		chainConfigurability: {
@@ -120,8 +120,8 @@ export const imtoken: SoftwareWallet = {
 			otherRpcEndpoints: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
 			ref: [
 				{
-						explanation:
-							'imToken allows users to configure custom RPC endpoints for any evm network, before making any requests to the default endpoints.',
+					explanation:
+						'imToken allows users to configure custom RPC endpoints for any evm network, before making any requests to the default endpoints.',
 					url: 'https://support.token.im/hc/en-us/articles/900005324266-imToken-now-supports-custom-RPC-Experience-the-layer-2-ecosystem-today',
 				},
 			],
@@ -201,7 +201,7 @@ export const imtoken: SoftwareWallet = {
 							ref: [
 								{
 									explanation:
-										'Technically, imToken can associate your wallet address with the dynamic IP address assigned by your mobile network, but it strictly adheres to privacy principles and does not collect users\' personally identifiable information (PII). imToken only makes requests about one active address at a time, so it cannot be correlated with other addresses.',
+										"Technically, imToken can associate your wallet address with the dynamic IP address assigned by your mobile network, but it strictly adheres to privacy principles and does not collect users' personally identifiable information (PII). imToken only makes requests about one active address at a time, so it cannot be correlated with other addresses.",
 									url: 'https://support.token.im/',
 								},
 							],
@@ -228,12 +228,12 @@ export const imtoken: SoftwareWallet = {
 		security: {
 			bugBountyProgram: {
 				type: BugBountyProgramType.COMPREHENSIVE,
-				details: 'imToken operates a comprehensive bug bounty program through Bugrap platform, covering both the wallet and the website. The program has a wide scope, competitive rewards, and a responsive disclosure process.',
-				upgradePathAvailable: true,
-				url: 'https://bugrap.io/bounties/imToken%20Wallet',
+				details:
+					'imToken operates a comprehensive bug bounty program through Bugrap platform, covering both the wallet and the website. The program has a wide scope, competitive rewards, and a responsive disclosure process.',
 				ref: [
 					{
-						explanation: 'imToken bug bounty program covers both wallet and website security vulnerabilities.',
+						explanation:
+							'imToken bug bounty program covers both wallet and website security vulnerabilities.',
 						url: 'https://bugrap.io/bounties/imToken%20Wallet',
 					},
 					{
@@ -241,8 +241,10 @@ export const imtoken: SoftwareWallet = {
 						url: 'https://bugrap.io/bounties/imToken%20Website',
 					},
 				],
+				upgradePathAvailable: true,
+				url: 'https://bugrap.io/bounties/imToken%20Wallet',
 			},
-				hardwareWalletSupport: {
+			hardwareWalletSupport: {
 				[Variant.MOBILE]: {
 					ref: [
 						{
