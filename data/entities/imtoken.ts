@@ -21,7 +21,7 @@ export const imToken: CorporateEntity & WalletDeveloper = {
 	},
 	jurisdiction: 'Singapore',
 	linkedin: 'https://www.linkedin.com/company/imtoken',
-	privacyPolicy: 'https://token.im/privacy',
+	privacyPolicy: 'https://token.im/tos-en.html',
 	repoUrl: 'https://github.com/consenlabs/token-core-monorepo',
 	twitter: 'https://x.com/imTokenOfficial',
 	url: 'https://token.im/',

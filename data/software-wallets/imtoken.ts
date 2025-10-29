@@ -121,7 +121,7 @@ export const imtoken: SoftwareWallet = {
 			ref: [
 				{
 					explanation:
-						'imToken allows users to configure custom RPC endpoints for any evm network, before making any requests to the default endpoints.',
+						'imToken allows users to set custom RPC endpoints for any EVM network before sending requests to the default ones.',
 					url: 'https://support.token.im/hc/en-us/articles/900005324266-imToken-now-supports-custom-RPC-Experience-the-layer-2-ecosystem-today',
 				},
 			],
@@ -170,8 +170,7 @@ export const imtoken: SoftwareWallet = {
 			ref: [
 				{
 					explanation:
-						'imToken only makes requests about one active address at a time, so it cannot be correlated with other addresses.',
-					url: 'https://support.token.im/',
+						'Each request only involves one active address, preventing any correlation between multiple addresses.'
 				},
 			],
 		}),
@@ -201,8 +200,8 @@ export const imtoken: SoftwareWallet = {
 							ref: [
 								{
 									explanation:
-										"Technically, imToken can associate your wallet address with the dynamic IP address assigned by your mobile network, but it strictly adheres to privacy principles and does not collect users' personally identifiable information (PII). imToken only makes requests about one active address at a time, so it cannot be correlated with other addresses.",
-									url: 'https://support.token.im/',
+										"Technically, imToken could associate your wallet address with your mobile network’s dynamic IP address, but it strictly follows privacy principles and never collects personally identifiable information (PII). Each request only involves one active address, preventing any correlation between multiple addresses.",
+									url: 'https://token.im/tos-en.html',
 								},
 							],
 						},
@@ -276,7 +275,13 @@ export const imtoken: SoftwareWallet = {
 				{
 					auditDate: '2018-05-07',
 					auditor: cure53,
-					ref: 'https://cure53.de/pentest-report_imtoken.pdf',
+					ref: [
+						{
+							explanation:
+								"imToken underwent a comprehensive security audit by Cure53 in 2018. While the core codebase has remained stable, the audit is now more than six years old. Since then, imToken has maintained a rigorous internal audit process for each release.",
+							url: 'https://cure53.de/pentest-report_imtoken.pdf',
+						},
+					],
 					unpatchedFlaws: 'ALL_FIXED',
 					variantsScope: 'ALL_VARIANTS',
 				},
