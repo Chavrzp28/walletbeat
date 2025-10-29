@@ -226,30 +226,30 @@ export type AccountType7702 = SmartAccountType
 /** Support information for Safe multisig accounts. */
 export interface AccountTypeSafe extends AccountTypeMutableMultifactor {
 	/** Can the wallet deploy new Safe contracts? */
-	canDeployNew: boolean;
+	canDeployNew: boolean
 
 	/** Default configuration when creating a new Safe. */
 	defaultConfig: {
 		/** Number of owners by default. */
-		owners: number;
+		owners: number
 		/** Signature threshold by default. */
-		threshold: number;
+		threshold: number
 		/** Enabled modules by default. */
-		modules: string[]; // or more specific type if needed
-	};
+		modules: string[] // or more specific type if needed
+	}
 
 	/** Does the wallet support key rotation without additional modules? */
-	supportsKeyRotationWithoutModules: boolean;
+	supportsKeyRotationWithoutModules: boolean
 
 	/** Supported configurations for existing Safes. */
 	supportedConfigs: {
 		/** Minimum number of owners supported. */
-		minOwners: number;
+		minOwners: number
 		/** Maximum number of owners supported (or 'unlimited'). */
-		maxOwners: number | 'unlimited';
+		maxOwners: number | 'unlimited'
 		/** Whether any threshold is supported. */
-		supportsAnyThreshold: boolean;
+		supportsAnyThreshold: boolean
 		/** Level of module support. */
-		moduleSupport: 'none' | 'partial' | 'full';
-	};
+		moduleSupport: 'none' | 'partial' | 'full'
+	}
 }

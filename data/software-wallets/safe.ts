@@ -1,6 +1,6 @@
 import { nconsigny } from '@/data/contributors/nconsigny'
-import { certora } from '@/data/entities/certora'
 import { ackee } from '@/data/entities/ackee'
+import { certora } from '@/data/entities/certora'
 import { AccountType, TransactionGenerationCapability } from '@/schema/features/account-support'
 import { PrivateTransferTechnology } from '@/schema/features/privacy/transaction-privacy'
 import { WalletProfile } from '@/schema/features/profile'
@@ -10,11 +10,14 @@ import {
 	type SupportedHardwareWallet,
 } from '@/schema/features/security/hardware-wallet-support'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
-import { TransactionSubmissionL2Type, TransactionSubmissionL2Support } from '@/schema/features/self-sovereignty/transaction-submission'
 import { RpcEndpointConfiguration } from '@/schema/features/self-sovereignty/chain-configurability'
-import { License } from '@/schema/features/transparency/license' // assuming path
-import { FeeDisplayLevel } from '@/schema/features/transparency/fee-display' // for level
+import {
+	TransactionSubmissionL2Support,
+	TransactionSubmissionL2Type,
+} from '@/schema/features/self-sovereignty/transaction-submission'
 import { featureSupported, notSupported, supported } from '@/schema/features/support'
+import { FeeDisplayLevel } from '@/schema/features/transparency/fee-display' // for level
+import { License } from '@/schema/features/transparency/license' // assuming path
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -56,19 +59,21 @@ export const safe: SoftwareWallet = {
 				canDeployNew: true,
 				controllingSharesInSelfCustodyByDefault: 'YES',
 				defaultConfig: {
+					modules: [],
 					owners: 1,
 					threshold: 1,
-					modules: [],
 				},
-				keyRotationTransactionGeneration: TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
-				supportsKeyRotationWithoutModules: true,
+				keyRotationTransactionGeneration:
+					TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
 				supportedConfigs: {
-					minOwners: 1,
 					maxOwners: 'unlimited',
-					supportsAnyThreshold: true,
+					minOwners: 1,
 					moduleSupport: 'full',
+					supportsAnyThreshold: true,
 				},
-				tokenTransferTransactionGeneration: TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
+				supportsKeyRotationWithoutModules: true,
+				tokenTransferTransactionGeneration:
+					TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
 			}),
 		},
 		addressResolution: {
@@ -96,11 +101,11 @@ export const safe: SoftwareWallet = {
 				ref: null,
 			},
 			walletCall: supported({
+				atomicMultiTransactions: featureSupported,
 				ref: {
 					explanation: 'Safe supports EIP-5792 for transaction batching.',
-					url: 'https://github.com/safe-global/safe-modules/tree/main/modules/batching',
+					url: 'https://github.com/safe-global/safe-wallet-monorepo/blob/f918ceb9b561dd3a27af96903071cd56c1fb5ddd/apps/web/src/services/safe-wallet-provider/index.ts#L184',
 				},
-				atomicMultiTransactions: featureSupported,
 			}),
 		},
 		license: {
@@ -116,19 +121,23 @@ export const safe: SoftwareWallet = {
 		monetization: {
 			ref: [
 				{
-					explanation: 'SafeDAO has received ecosystem grants; example Optimism grant proposal in the Optimism governance forum.',
+					explanation:
+						'SafeDAO has received ecosystem grants; example Optimism grant proposal in the Optimism governance forum.',
 					url: 'https://gov.optimism.io/t/draft-gf-phase-1-proposal-old-template-safe/3400',
 				},
 				{
-					explanation: 'Safe community updates covering grants and RPGF-related support across ecosystems.',
+					explanation:
+						'Safe community updates covering grants and RPGF-related support across ecosystems.',
 					url: 'https://forum.safe.global/t/safedao-community-updates/4213',
 				},
 				{
-					explanation: 'Community‑Aligned Fees: revenue (e.g., Native Swaps) pledged to SafeDAO; fee approach is explained publicly.',
+					explanation:
+						'Community‑Aligned Fees: revenue (e.g., Native Swaps) pledged to SafeDAO; fee approach is explained publicly.',
 					url: 'https://safefoundation.org/blog/safedao-community-aligned-fees-introduction',
 				},
 				{
-					explanation: 'SAFE tokenomics and governance scope; currently primarily used for SafeDAO treasury resource allocation (e.g., grants).',
+					explanation:
+						'SAFE tokenomics and governance scope; currently primarily used for SafeDAO treasury resource allocation (e.g., grants).',
 					url: 'https://safefoundation.org/blog/safe-tokenomics',
 				},
 			],
@@ -242,29 +251,38 @@ export const safe: SoftwareWallet = {
 			transactionSubmission: {
 				l1: {
 					selfBroadcastViaDirectGossip: notSupported,
-					selfBroadcastViaSelfHostedNode: featureSupported
+					selfBroadcastViaSelfHostedNode: featureSupported,
 				},
 				l2: {
-					[TransactionSubmissionL2Type.arbitrum]: TransactionSubmissionL2Support.SUPPORTED_BUT_NO_FORCE_INCLUSION,
-					[TransactionSubmissionL2Type.opStack]: TransactionSubmissionL2Support.SUPPORTED_BUT_NO_FORCE_INCLUSION,
+					[TransactionSubmissionL2Type.arbitrum]:
+						TransactionSubmissionL2Support.SUPPORTED_BUT_NO_FORCE_INCLUSION,
+					[TransactionSubmissionL2Type.opStack]:
+						TransactionSubmissionL2Support.SUPPORTED_BUT_NO_FORCE_INCLUSION,
 				},
 			},
 		},
 		transparency: {
 			operationFees: {
-				ethL1Transfer: supported({
-					byDefault: FeeDisplayLevel.COMPREHENSIVE,
+				builtInErc20Swap: supported({
 					afterSingleAction: FeeDisplayLevel.COMPREHENSIVE,
+					byDefault: FeeDisplayLevel.COMPREHENSIVE,
 					fullySponsored: false,
 				}),
 				erc20L1Transfer: supported({
-					byDefault: FeeDisplayLevel.COMPREHENSIVE,
 					afterSingleAction: FeeDisplayLevel.COMPREHENSIVE,
+					byDefault: FeeDisplayLevel.COMPREHENSIVE,
 					fullySponsored: false,
 				}),
-				builtInErc20Swap: null,
-				uniswapUSDCToEtherSwap: null,
-				// add other required fields as null or with values
+				ethL1Transfer: supported({
+					afterSingleAction: FeeDisplayLevel.COMPREHENSIVE,
+					byDefault: FeeDisplayLevel.COMPREHENSIVE,
+					fullySponsored: false,
+				}),
+				uniswapUSDCToEtherSwap: supported({
+					afterSingleAction: FeeDisplayLevel.COMPREHENSIVE,
+					byDefault: FeeDisplayLevel.COMPREHENSIVE,
+					fullySponsored: false,
+				}),
 			},
 		},
 	},

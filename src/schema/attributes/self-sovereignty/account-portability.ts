@@ -414,7 +414,6 @@ function evaluateSafe(
 	safe: AccountTypeSafe,
 	references: ReferenceArray,
 ): Evaluation<AccountPortabilityValue> {
-	// Similar to multifactor, but for Safe
 	if (safe.keyRotationTransactionGeneration === TransactionGenerationCapability.IMPOSSIBLE) {
 		return {
 			value: {
@@ -440,8 +439,6 @@ function evaluateSafe(
 		}
 	}
 
-	// Add other conditions similar to multifactor
-	// For simplicity, assume pass if supports key rotation without external provider
 	return {
 		value: {
 			id: 'safe_ok',
@@ -846,7 +843,9 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 
 		if (isSupported<AccountTypeSafe>(features.accountSupport.safe)) {
 			const evaluation = evaluateSafe(features.accountSupport.safe, allRefs)
+
 			evaluations.push(evaluation)
+
 			if (features.accountSupport.defaultAccountType === AccountType.safe) {
 				defaultEvaluation = evaluation
 			}

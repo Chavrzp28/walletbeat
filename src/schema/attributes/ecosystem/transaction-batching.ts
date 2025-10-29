@@ -195,6 +195,7 @@ export const transactionBatching: Attribute<TransactionBatchingValue> = {
 					{
 						eoa: notSupported,
 						mpc: notSupported,
+						safe: notSupported,
 						eip7702: notSupported,
 						rawErc4337: notSupported,
 						defaultAccountType: AccountType.eoa,
@@ -210,6 +211,7 @@ export const transactionBatching: Attribute<TransactionBatchingValue> = {
 					{
 						eoa: notSupported,
 						mpc: notSupported,
+						safe: notSupported,
 						eip7702: supported({
 							contract: 'UNKNOWN',
 						}),
@@ -228,6 +230,7 @@ export const transactionBatching: Attribute<TransactionBatchingValue> = {
 				{
 					eoa: notSupported,
 					mpc: notSupported,
+					safe: notSupported,
 					eip7702: supported({
 						contract: 'UNKNOWN',
 					}),
@@ -247,6 +250,7 @@ export const transactionBatching: Attribute<TransactionBatchingValue> = {
 				{
 					eoa: notSupported,
 					mpc: notSupported,
+					safe: notSupported,
 					eip7702: supported({
 						contract: 'UNKNOWN',
 					}),

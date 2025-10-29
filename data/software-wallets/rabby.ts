@@ -1,6 +1,6 @@
 import { nconsigny } from '@/data/contributors/nconsigny'
 import { polymutex } from '@/data/contributors/polymutex'
-import { AccountType } from '@/schema/features/account-support'
+import { AccountType, TransactionGenerationCapability } from '@/schema/features/account-support'
 import { ExposedAccountsBehavior } from '@/schema/features/privacy/app-isolation'
 import {
 	CollectionPolicy,
@@ -44,7 +44,6 @@ import { cure53 } from '../entities/cure53'
 import { deBank } from '../entities/debank'
 import { leastAuthority } from '../entities/least-authority'
 import { slowMist } from '../entities/slowmist'
-import { TransactionGenerationCapability } from '@/schema/features/account-support'
 
 export const rabby: SoftwareWallet = {
 	metadata: {
@@ -82,19 +81,21 @@ export const rabby: SoftwareWallet = {
 				canDeployNew: false,
 				controllingSharesInSelfCustodyByDefault: 'YES',
 				defaultConfig: {
+					modules: [],
 					owners: 1,
 					threshold: 1,
-					modules: [],
 				},
-				keyRotationTransactionGeneration: TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
-				supportsKeyRotationWithoutModules: true,
+				keyRotationTransactionGeneration:
+					TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
 				supportedConfigs: {
-					minOwners: 1,
 					maxOwners: 10,
-					supportsAnyThreshold: true,
+					minOwners: 1,
 					moduleSupport: 'partial',
+					supportsAnyThreshold: true,
 				},
-				tokenTransferTransactionGeneration: TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
+				supportsKeyRotationWithoutModules: true,
+				tokenTransferTransactionGeneration:
+					TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
 			}),
 		},
 		addressResolution: {
