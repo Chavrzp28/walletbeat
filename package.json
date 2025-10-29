@@ -30,13 +30,13 @@
 	},
 	"dependencies": {
 		"@astrojs/sitemap": "^3.6.0",
-		"@astrojs/svelte": "^7.2.0",
+		"@astrojs/svelte": "^7.2.1",
 		"@eslint/js": "^9.38.0",
 		"@floating-ui/dom": "^1.7.4",
 		"@fontsource/montserrat": "^5.2.8",
 		"@material-icons/svg": "^1.0.33",
 		"@tanstack/match-sorter-utils": "^8.19.4",
-		"astro": "^5.14.8",
+		"astro": "^5.15.2",
 		"autoprefixer": "^10.4.21",
 		"eslint-plugin-import": "^2.32.0",
 		"eslint-plugin-prettier": "^5.5.4",
@@ -44,7 +44,7 @@
 		"lucide-static": "^0.487.0",
 		"micromark": "^4.0.2",
 		"postcss": "^8.5.6",
-		"svelte": "^5.41.2",
+		"svelte": "^5.43.0",
 		"typescript-eslint": "^8.46.2"
 	},
 	"devDependencies": {
