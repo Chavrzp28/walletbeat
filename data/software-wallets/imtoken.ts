@@ -1,4 +1,4 @@
-import { polymutex } from '@/data/contributors/polymutex'
+import { mako } from '@/data/contributors/mako'
 import { AccountType } from '@/schema/features/account-support'
 import type { AddressResolutionData } from '@/schema/features/privacy/address-resolution'
 import {
@@ -44,7 +44,7 @@ export const imtoken: SoftwareWallet = {
 		blurb: paragraph(`
 			imToken is a reliable and intuitive digital wallet, enabling easy access to over 50+ major networks including Bitcoin, Ethereum, and Tron. imToken supports hardware wallets, token swap and DApp browser etc., and provides secure and trusted non-custodial wallet services to millions of users in more than 150 countries and regions around the world.
 		`),
-		contributors: [polymutex],
+		contributors: [mako],
 		iconExtension: 'svg',
 		lastUpdated: '2025-10-28',
 		repoUrl: 'https://github.com/consenlabs/token-core-monorepo',
@@ -130,7 +130,7 @@ export const imtoken: SoftwareWallet = {
 			delegation: null,
 		},
 		integration: {
-			browser: null,
+			browser: 'NOT_A_BROWSER_WALLET',
 			walletCall: null,
 		},
 		license: {
@@ -216,7 +216,7 @@ export const imtoken: SoftwareWallet = {
 					publishedOnchain: 'NO_DATA_PUBLISHED_ONCHAIN',
 				},
 			},
-			privacyPolicy: 'https://token.im/privacy',
+			privacyPolicy: 'https://token.im/tos-en.html',
 			transactionPrivacy: {
 				defaultFungibleTokenTransferMode: 'PUBLIC',
 				[PrivateTransferTechnology.STEALTH_ADDRESSES]: notSupported,
