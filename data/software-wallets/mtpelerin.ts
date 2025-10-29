@@ -1,40 +1,37 @@
-import { lucemans } from '@/data/contributors/lucemans'
-import { nconsigny } from '@/data/contributors/nconsigny'
-import { polymutex } from '@/data/contributors/polymutex'
-import { AccountType } from '@/schema/features/account-support'
+import { sigri } from '@/data/contributors/sigri'
 import { PrivateTransferTechnology } from '@/schema/features/privacy/transaction-privacy'
 import { WalletProfile } from '@/schema/features/profile'
-import {
-	HardwareWalletConnection,
-	HardwareWalletType,
-	type SupportedHardwareWallet,
-} from '@/schema/features/security/hardware-wallet-support'
+import { BugBountyProgramType } from '@/schema/features/security/bug-bounty-program'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
-import { RpcEndpointConfiguration } from '@/schema/features/self-sovereignty/chain-configurability'
 import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
-import { notSupported, supported } from '@/schema/features/support'
+import { featureSupported, notSupported } from '@/schema/features/support'
+import { License } from '@/schema/features/transparency/license'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
 
-export const frame: SoftwareWallet = {
+export const mtpelerin: SoftwareWallet = {
 	metadata: {
-		id: 'frame',
-		displayName: 'Frame',
-		tableName: 'Frame',
-		blurb: paragraph('Frame...'),
-		contributors: [polymutex, nconsigny, lucemans],
+		id: 'mtpelerin',
+		displayName: 'Bridge Wallet',
+		tableName: 'Bridge Wallet',
+		blurb: paragraph(
+			'Buy, swap and sell crypto with the lowest fees, zero hidden costs and full control over your cryptoassets.',
+		),
+		contributors: [sigri],
 		iconExtension: 'svg',
-		lastUpdated: '2025-03-13',
-		repoUrl: null,
-		url: 'https://frame.sh',
+		lastUpdated: '2025-08-26',
+		repoUrl: 'https://github.com/mtpelerin',
+		url: 'https://www.mtpelerin.com/',
 	},
 	features: {
-		accountSupport: {
+		/*accountSupport: {
 			defaultAccountType: AccountType.eoa,
 			eip7702: notSupported,
+			// BIP support is not verified
 			eoa: supported({
 				canExportPrivateKey: true,
+				eip7702: notSupported,
 				keyDerivation: {
 					type: 'BIP32',
 					canExportSeedPhrase: true,
@@ -44,7 +41,8 @@ export const frame: SoftwareWallet = {
 			}),
 			mpc: notSupported,
 			rawErc4337: notSupported,
-		},
+		},*/
+		accountSupport: null,
 		addressResolution: {
 			chainSpecificAddressing: {
 				erc7828: null,
@@ -54,22 +52,7 @@ export const frame: SoftwareWallet = {
 			ref: null,
 		},
 		chainAbstraction: null,
-		chainConfigurability: {
-			customChains: true,
-			l1RpcEndpoint: RpcEndpointConfiguration.YES_AFTER_OTHER_REQUESTS,
-			otherRpcEndpoints: RpcEndpointConfiguration.YES_AFTER_OTHER_REQUESTS,
-			ref: [
-				{
-					explanation: 'Frame allows connecting to your own Ethereum node',
-					urls: [
-						{
-							label: 'Frame node connection documentation',
-							url: 'https://docs.frame.sh/docs/Getting%20Started/Basics/Configuring%20Chains',
-						},
-					],
-				},
-			],
-		},
+		chainConfigurability: null,
 		ecosystem: {
 			delegation: null,
 		},
@@ -82,9 +65,11 @@ export const frame: SoftwareWallet = {
 			},
 			walletCall: null,
 		},
-		license: null,
+		license: {
+			license: License.PROPRIETARY,
+		},
 		monetization: {
-			ref: null,
+			ref: 'https://developers.mtpelerin.com/service-information/revenue-sharing',
 			revenueBreakdownIsPublic: false,
 			strategies: {
 				donations: null,
@@ -93,16 +78,16 @@ export const frame: SoftwareWallet = {
 				governanceTokenMostlyDistributed: null,
 				hiddenConvenienceFees: null,
 				publicOffering: null,
-				selfFunded: null,
+				selfFunded: true,
 				transparentConvenienceFees: null,
 				ventureCapital: null,
 			},
 		},
-		multiAddress: null,
+		multiAddress: featureSupported,
 		privacy: {
 			appIsolation: null,
 			dataCollection: null,
-			privacyPolicy: null,
+			privacyPolicy: 'https://www.mtpelerin.com/privacy-policy',
 			transactionPrivacy: {
 				defaultFungibleTokenTransferMode: 'PUBLIC',
 				[PrivateTransferTechnology.STEALTH_ADDRESSES]: notSupported,
@@ -112,26 +97,15 @@ export const frame: SoftwareWallet = {
 		},
 		profile: WalletProfile.GENERIC,
 		security: {
-			bugBountyProgram: null,
+			bugBountyProgram: {
+				type: BugBountyProgramType.COMPREHENSIVE,
+				details: 'The wallet implements a comprehensive bug bounty program through Immunefi.',
+				upgradePathAvailable: true,
+				url: 'https://immunefi.com/bug-bounty/mtpelerin/',
+			},
 			hardwareWalletSupport: {
 				ref: null,
-				wallets: {
-					[HardwareWalletType.LEDGER]: supported<SupportedHardwareWallet>({
-						connectionTypes: [HardwareWalletConnection.webUSB],
-					}),
-					[HardwareWalletType.TREZOR]: supported<SupportedHardwareWallet>({
-						connectionTypes: [HardwareWalletConnection.webUSB],
-					}),
-					[HardwareWalletType.KEYSTONE]: supported<SupportedHardwareWallet>({
-						connectionTypes: [HardwareWalletConnection.QR],
-					}),
-					[HardwareWalletType.GRIDPLUS]: supported<SupportedHardwareWallet>({
-						connectionTypes: [HardwareWalletConnection.webUSB],
-					}),
-					[HardwareWalletType.OTHER]: supported<SupportedHardwareWallet>({
-						connectionTypes: [HardwareWalletConnection.webUSB],
-					}),
-				},
+				wallets: {},
 			},
 			lightClient: {
 				ethereumL1: null,
@@ -160,7 +134,7 @@ export const frame: SoftwareWallet = {
 		},
 	},
 	variants: {
+		[Variant.MOBILE]: true,
 		[Variant.BROWSER]: true,
-		[Variant.DESKTOP]: true,
 	},
 }

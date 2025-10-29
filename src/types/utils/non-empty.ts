@@ -173,6 +173,26 @@ export function nonEmptyFlatten<T>(arr: NonEmptyArray<NonEmptyArray<T>>): NonEmp
 }
 
 /**
+ * Deduplicate a non-empty array.
+ * Use the provided `eqFn` as equality function if provided, otherwise use `===`.
+ */
+export function nonEmptyDedup<T>(
+	arr: NonEmptyArray<T>,
+	eqFn?: (v1: T, v2: T) => boolean,
+): NonEmptyArray<T> {
+	const result: NonEmptyArray<T> = [arr[0]]
+	const eq = eqFn === undefined ? (v1: T, v2: T) => v1 === v2 : eqFn
+
+	for (const item of arr) {
+		if (!result.some(v => eq(v, item))) {
+			result.push(item)
+		}
+	}
+
+	return result
+}
+
+/**
  * A set that contains at least one true element.
  */
 export type NonEmptySet<K extends string | number | symbol> = NonEmptyRecord<K, true>

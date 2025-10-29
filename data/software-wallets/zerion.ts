@@ -5,6 +5,7 @@ import { WalletProfile } from '@/schema/features/profile'
 import {
 	HardwareWalletConnection,
 	HardwareWalletType,
+	type SupportedHardwareWallet,
 } from '@/schema/features/security/hardware-wallet-support'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
 import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
@@ -103,41 +104,18 @@ export const zerion: SoftwareWallet = {
 						url: ['https://www.ledger.com/zerion'],
 					},
 				],
-				supportedWallets: {
-					[HardwareWalletType.LEDGER]: supported({
-						[HardwareWalletConnection.webUSB]: supported({
-							ref: {
-								explanation: 'Ledger has native first-class support in Zerion via USB connection.',
-								url: 'https://www.ledger.com/zerion',
-							},
-						}),
+				wallets: {
+					[HardwareWalletType.LEDGER]: supported<SupportedHardwareWallet>({
+						connectionTypes: [HardwareWalletConnection.webUSB],
 					}),
-					[HardwareWalletType.TREZOR]: supported({
-						[HardwareWalletConnection.WALLET_CONNECT]: supported({
-							ref: {
-								explanation:
-									'Trezor can be used with Zerion via WalletConnect and external-wallet routes, with one extra hop.',
-								url: 'https://www.ledger.com/zerion',
-							},
-						}),
+					[HardwareWalletType.TREZOR]: supported<SupportedHardwareWallet>({
+						connectionTypes: [HardwareWalletConnection.WALLET_CONNECT],
 					}),
-					[HardwareWalletType.KEYSTONE]: supported({
-						[HardwareWalletConnection.WALLET_CONNECT]: supported({
-							ref: {
-								explanation:
-									'Keystone can be used with Zerion via WalletConnect and external-wallet routes, with one extra hop.',
-								url: 'https://www.ledger.com/zerion',
-							},
-						}),
+					[HardwareWalletType.KEYSTONE]: supported<SupportedHardwareWallet>({
+						connectionTypes: [HardwareWalletConnection.WALLET_CONNECT],
 					}),
-					[HardwareWalletType.GRIDPLUS]: supported({
-						[HardwareWalletConnection.WALLET_CONNECT]: supported({
-							ref: {
-								explanation:
-									'GridPlus can be used with Zerion via WalletConnect and external-wallet routes, with one extra hop.',
-								url: 'https://www.ledger.com/zerion',
-							},
-						}),
+					[HardwareWalletType.GRIDPLUS]: supported<SupportedHardwareWallet>({
+						connectionTypes: [HardwareWalletConnection.WALLET_CONNECT],
 					}),
 				},
 			},

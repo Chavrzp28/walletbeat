@@ -93,7 +93,7 @@ export const family: SoftwareWallet = {
 			bugBountyProgram: null,
 			hardwareWalletSupport: {
 				ref: null,
-				supportedWallets: {},
+				wallets: {},
 			},
 			lightClient: {
 				ethereumL1: null,

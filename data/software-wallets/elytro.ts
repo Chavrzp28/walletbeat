@@ -97,7 +97,7 @@ export const elytro: SoftwareWallet = {
 			bugBountyProgram: null,
 			hardwareWalletSupport: {
 				ref: undefined,
-				supportedWallets: {},
+				wallets: {},
 			},
 			lightClient: {
 				ethereumL1: null,
