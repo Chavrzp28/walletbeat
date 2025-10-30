@@ -20,13 +20,14 @@ import {
 	type SupportedHardwareWallet,
 } from '@/schema/features/security/hardware-wallet-support'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
+import type { ScamUrlWarning } from '@/schema/features/security/scam-alerts'
 import type { SecurityAudit } from '@/schema/features/security/security-audits'
 import { RpcEndpointConfiguration } from '@/schema/features/self-sovereignty/chain-configurability'
 import { TransactionSubmissionL2Support } from '@/schema/features/self-sovereignty/transaction-submission'
 import { featureSupported, notSupported, supported } from '@/schema/features/support'
 import { comprehensiveFeesShownByDefault } from '@/schema/features/transparency/fee-display'
 import { License } from '@/schema/features/transparency/license'
-import type { References } from '@/schema/reference'
+import { type References, refNotNecessary, refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -44,6 +45,7 @@ import { ambireDelegatorContract } from '../wallet-contracts/ambire-delegator'
 
 const v2Audits: SecurityAudit[] = [
 	{
+		ref: 'https://github.com/AmbireTech/ambire-common/blob/v2/audits/Pashov-Ambire-third-security-review.md',
 		auditDate: '2024-01-26',
 		auditor: pashov,
 		codeSnapshot: {
@@ -51,11 +53,11 @@ const v2Audits: SecurityAudit[] = [
 				'https://github.com/AmbireTech/ambire-common/tree/da3ba641a004d1f0143a20ddde48049b619431ad',
 			date: '2023-11-08',
 		},
-		ref: 'https://github.com/AmbireTech/ambire-common/blob/v2/audits/Pashov-Ambire-third-security-review.md',
 		unpatchedFlaws: 'ALL_FIXED',
 		variantsScope: { [Variant.BROWSER]: true },
 	},
 	{
+		ref: 'https://github.com/AmbireTech/ambire-common/blob/v2/audits/Ambire-EIP-7702-Update-Hunter-Security-Audit-Report-0.1.pdf',
 		auditDate: '2025-02-20',
 		auditor: hunterSecurity,
 		codeSnapshot: {
@@ -63,7 +65,6 @@ const v2Audits: SecurityAudit[] = [
 				'https://github.com/AmbireTech/ambire-common/commit/de88e26041db8777468f384e56d5ad0cb96e29a5',
 			date: '2025-02-17',
 		},
-		ref: 'https://github.com/AmbireTech/ambire-common/blob/v2/audits/Ambire-EIP-7702-Update-Hunter-Security-Audit-Report-0.1.pdf',
 		unpatchedFlaws: 'NONE_FOUND',
 		variantsScope: { [Variant.BROWSER]: true },
 	},
@@ -152,14 +153,15 @@ export const ambire: SoftwareWallet = {
 		accountSupport: {
 			defaultAccountType: AccountType.eip7702,
 			eip7702: supported({
-				contract: ambireDelegatorContract,
 				ref: {
 					explanation:
 						'Ambire is AA wallet by default. With the introduction of EIP-7702 it allows you to use your existing EOA just like you would use any smart account wallet!',
 					url: 'https://blog.ambire.com/eip-7702-wallet',
 				},
+				contract: ambireDelegatorContract,
 			}),
 			eoa: supported({
+				ref: refTodo,
 				canExportPrivateKey: true,
 				canExportSeedPhrase: true,
 				keyDerivation: {
@@ -171,20 +173,21 @@ export const ambire: SoftwareWallet = {
 			}),
 			mpc: notSupported,
 			rawErc4337: supported({
-				contract: ambireAccountContract,
-				controllingSharesInSelfCustodyByDefault: 'YES',
-				keyRotationTransactionGeneration:
-					TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
 				ref: {
 					explanation: 'Ambire supports ERC-4337 smart contract wallets',
 					url: 'https://github.com/AmbireTech/ambire-common/blob/v2/contracts/AmbireAccount.sol',
 				},
+				contract: ambireAccountContract,
+				controllingSharesInSelfCustodyByDefault: 'YES',
+				keyRotationTransactionGeneration:
+					TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
 				tokenTransferTransactionGeneration:
 					TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
 			}),
 			safe: notSupported,
 		},
 		addressResolution: {
+			ref: refTodo,
 			chainSpecificAddressing: {
 				erc7828: notSupported,
 				erc7831: notSupported,
@@ -198,47 +201,44 @@ export const ambire: SoftwareWallet = {
 			bridging: {
 				/** Does the wallet have a built-in bridging feature? */
 				builtInBridging: supported({
-					feesLargerThan1bps: comprehensiveFeesShownByDefault,
 					ref: {
 						explanation: 'All fees are displayed when agreeing to the bridge',
 						url: 'https://www.ambire.com/',
 					},
+					feesLargerThan1bps: comprehensiveFeesShownByDefault,
 					risksExplained: 'NOT_IN_UI',
 				}),
 				suggestedBridging: notSupported,
 			},
 			crossChainBalances: {
-				ether: supported({
-					crossChainSumView: notSupported,
-					perChainBalanceViewAcrossMultipleChains: featureSupported,
-					ref: {
-						explanation: 'Ambire supports filtering by token name.',
-						label: 'Implementation of token filtering by name',
-						url: 'https://github.com/AmbireTech/extension/blob/main/src/common/modules/dashboard/components/Tokens/Tokens.tsx#L89-L106',
-					},
-				}),
-				globalAccountValue: featureSupported,
-				perChainAccountValue: featureSupported,
 				ref: {
 					explanation:
 						'Ambire supports filtering by token name and chain, as well as displaying the total balance from the resulting tokens',
 					label: 'Implementation of token filtering by name',
 					url: 'https://github.com/AmbireTech/extension/blob/main/src/common/modules/dashboard/components/Tokens/Tokens.tsx#L89-L106',
 				},
-				usdc: supported({
+				ether: supported({
+					ref: {
+						explanation: 'Ambire supports filtering by token name.',
+						label: 'Implementation of token filtering by name',
+						url: 'https://github.com/AmbireTech/extension/blob/main/src/common/modules/dashboard/components/Tokens/Tokens.tsx#L89-L106',
+					},
 					crossChainSumView: notSupported,
 					perChainBalanceViewAcrossMultipleChains: featureSupported,
+				}),
+				globalAccountValue: featureSupported,
+				perChainAccountValue: featureSupported,
+				usdc: supported({
 					ref: {
 						explanation: 'Ambire supports filtering by token name.',
 						url: 'https://www.ambire.com/',
 					},
+					crossChainSumView: notSupported,
+					perChainBalanceViewAcrossMultipleChains: featureSupported,
 				}),
 			},
 		},
 		chainConfigurability: {
-			customChains: true,
-			l1RpcEndpoint: RpcEndpointConfiguration.YES_AFTER_OTHER_REQUESTS,
-			otherRpcEndpoints: RpcEndpointConfiguration.YES_AFTER_OTHER_REQUESTS,
 			ref: {
 				explanation: "Ambire executes generic RPC requests to get user's balance and ENS.",
 				label: 'List of RPCs Ambire uses for default chains',
@@ -248,6 +248,9 @@ export const ambire: SoftwareWallet = {
 					'https://github.com/AmbireTech/ambire-common/blob/v2/src/libs/portfolio/getOnchainBalances.ts',
 				],
 			},
+			customChains: true,
+			l1RpcEndpoint: RpcEndpointConfiguration.YES_AFTER_OTHER_REQUESTS,
+			otherRpcEndpoints: RpcEndpointConfiguration.YES_AFTER_OTHER_REQUESTS,
 		},
 		ecosystem: {
 			delegation: {
@@ -265,25 +268,24 @@ export const ambire: SoftwareWallet = {
 		},
 		integration: {
 			browser: {
-				'1193': featureSupported,
-				'2700': featureSupported,
-				'6963': featureSupported,
 				ref: {
 					url: 'https://github.com/AmbireTech/extension/blob/v2/src/web/extension-services/background/background.ts',
 				},
+				'1193': featureSupported,
+				'2700': featureSupported,
+				'6963': featureSupported,
 			},
 			walletCall: supported({
-				atomicMultiTransactions: supported({
-					ref: 'https://github.com/AmbireTech/ambire-common/blob/eba5dda7bccbd1c404f293d75c4ea74d939c8d01/src/libs/account/EOA7702.ts#L181-L183',
-				}),
+				ref: 'https://github.com/AmbireTech/ambire-common/blob/eba5dda7bccbd1c404f293d75c4ea74d939c8d01/src/libs/account/EOA7702.ts#L181-L183',
+				atomicMultiTransactions: featureSupported,
 			}),
 		},
 		license: {
-			license: License.GPL_3_0,
 			ref: 'https://github.com/AmbireTech/extension/blob/main/LICENSE',
+			license: License.GPL_3_0,
 		},
 		monetization: {
-			ref: null,
+			ref: refTodo,
 			revenueBreakdownIsPublic: false,
 			strategies: {
 				donations: false,
@@ -304,6 +306,7 @@ export const ambire: SoftwareWallet = {
 					createInAppConnectionFlow: notSupported,
 					erc7846WalletConnect: notSupported,
 					ethAccounts: supported({
+						ref: refTodo,
 						defaultBehavior: ExposedAccountsBehavior.ACTIVE_ACCOUNT_ONLY,
 					}),
 					useAppSpecificLastConnectedAddresses: notSupported,
@@ -315,13 +318,13 @@ export const ambire: SoftwareWallet = {
 				[UserFlow.NATIVE_SWAP]: {
 					collected: [
 						{
+							ref: dataLeakReferences.lifi,
 							byEntity: lifi,
 							dataCollection: {
 								[PersonalInfo.IP_ADDRESS]: CollectionPolicy.ALWAYS,
 								endpoint: RegularEndpoint,
 							},
 							purposes: [DataCollectionPurpose.ASSET_METADATA],
-							ref: dataLeakReferences.lifi,
 						},
 					],
 				},
@@ -338,6 +341,7 @@ export const ambire: SoftwareWallet = {
 				[UserFlow.TRANSACTION]: {
 					collected: [
 						{
+							ref: dataLeakReferences.ambire,
 							byEntity: ambireEntity,
 							dataCollection: {
 								[PersonalInfo.IP_ADDRESS]: CollectionPolicy.ALWAYS,
@@ -352,9 +356,9 @@ export const ambire: SoftwareWallet = {
 								DataCollectionPurpose.CHAIN_DATA_LOOKUP,
 								DataCollectionPurpose.TRANSACTION_BROADCAST,
 							],
-							ref: dataLeakReferences.ambire,
 						},
 						{
+							ref: dataLeakReferences.pimlico,
 							byEntity: pimlico,
 							dataCollection: {
 								[PersonalInfo.IP_ADDRESS]: CollectionPolicy.ALWAYS,
@@ -366,9 +370,9 @@ export const ambire: SoftwareWallet = {
 								},
 							},
 							purposes: [DataCollectionPurpose.TRANSACTION_BROADCAST],
-							ref: dataLeakReferences.pimlico,
 						},
 						{
+							ref: dataLeakReferences.biconomy,
 							byEntity: biconomy,
 							dataCollection: {
 								[PersonalInfo.IP_ADDRESS]: CollectionPolicy.ALWAYS,
@@ -380,13 +384,13 @@ export const ambire: SoftwareWallet = {
 								},
 							},
 							purposes: [DataCollectionPurpose.TRANSACTION_BROADCAST],
-							ref: dataLeakReferences.biconomy,
 						},
 					],
 				},
 				[UserFlow.UNCLASSIFIED]: {
 					collected: [
 						{
+							ref: dataLeakReferences.github,
 							byEntity: github,
 							dataCollection: {
 								[PersonalInfo.IP_ADDRESS]: CollectionPolicy.ALWAYS,
@@ -396,7 +400,6 @@ export const ambire: SoftwareWallet = {
 								DataCollectionPurpose.UPDATE_CHECKING,
 								DataCollectionPurpose.STATIC_ASSETS,
 							],
-							ref: dataLeakReferences.github,
 						},
 					],
 				},
@@ -413,6 +416,7 @@ export const ambire: SoftwareWallet = {
 		security: {
 			bugBountyProgram: {
 				type: BugBountyProgramType.COMPREHENSIVE,
+				ref: refTodo,
 
 				details: `Rewards are distributed according to the impact of the vulnerability based on the Immunefi Vulnerability Severity Classification System V2.2. This is a simplified 5-level scale, with separate scales for websites/apps and smart contracts/blockchains, encompassing everything from consequence of exploitation to privilege required to likelihood of a successful exploit.
 
@@ -449,16 +453,13 @@ Payouts are handled by the Ambire team directly and are denominated in USD. Howe
 				ethereumL1: notSupported,
 			},
 			passkeyVerification: {
+				ref: refNotNecessary,
 				library: PasskeyVerificationLibrary.NONE,
-				ref: null,
 			},
 			publicSecurityAudits: v2Audits,
 			scamAlerts: {
 				contractTransactionWarning: notSupported,
-				scamUrlWarning: supported({
-					leaksIp: false,
-					leaksUserAddress: false,
-					leaksVisitedUrl: 'NO',
+				scamUrlWarning: supported<ScamUrlWarning>({
 					ref: {
 						explanation:
 							"Every 6 hours, Ambire downloads a list of publicly available known scam URLs from an external API. Then, it checks if the website you're connecting to is on that list. If it is, a warning is displayed.",
@@ -470,6 +471,9 @@ Payouts are handled by the Ambire team directly and are denominated in USD. Howe
 							},
 						],
 					},
+					leaksIp: false,
+					leaksUserAddress: false,
+					leaksVisitedUrl: 'NO',
 				}),
 				sendTransactionWarning: notSupported,
 			},
@@ -477,10 +481,12 @@ Payouts are handled by the Ambire team directly and are denominated in USD. Howe
 		selfSovereignty: {
 			transactionSubmission: {
 				l1: {
+					ref: refTodo,
 					selfBroadcastViaDirectGossip: notSupported,
 					selfBroadcastViaSelfHostedNode: featureSupported,
 				},
 				l2: {
+					ref: refTodo,
 					arbitrum: TransactionSubmissionL2Support.SUPPORTED_BUT_NO_FORCE_INCLUSION,
 					opStack: TransactionSubmissionL2Support.SUPPORTED_BUT_NO_FORCE_INCLUSION,
 				},

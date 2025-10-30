@@ -2,7 +2,6 @@ import { type Attribute, type Evaluation, Rating, type Value } from '@/schema/at
 import { exampleRating } from '@/schema/attributes'
 import type { ResolvedFeatures } from '@/schema/features'
 import { type ReputationSupport, ReputationType } from '@/schema/features/transparency/reputation'
-import { popRefs } from '@/schema/reference'
 import type { AtLeastOneVariant } from '@/schema/variants'
 import { WalletType } from '@/schema/wallet-types'
 import { markdown, paragraph, sentence } from '@/types/content'
@@ -116,8 +115,7 @@ export const reputation: Attribute<ReputationValue> = {
 			})
 		}
 
-		const { withoutRefs, refs: extractedRefs } = popRefs<ReputationSupport>(reputationFeature)
-		const rating = evaluateReputation(withoutRefs)
+		const rating = evaluateReputation(reputationFeature)
 
 		return {
 			value: {
@@ -125,12 +123,12 @@ export const reputation: Attribute<ReputationValue> = {
 				rating,
 				displayName: 'Reputation',
 				shortExplanation: sentence(`{{WALLET_NAME}} has ${rating.toLowerCase()} reputation.`),
-				...withoutRefs,
+				...reputationFeature, // TODO: Filter fields
 				__brand: brand,
 			},
 			details: paragraph(`{{WALLET_NAME}} reputation evaluation is ${rating.toLowerCase()}.`),
 			howToImprove: paragraph('{{WALLET_NAME}} should improve sub-criteria rated PARTIAL or FAIL.'),
-			...(extractedRefs.length > 0 && { references: extractedRefs }),
+			// TODO: Add references
 		}
 	},
 }

@@ -8,6 +8,7 @@ import {
 	noDataExtraction,
 } from '@/schema/features/security/hardware-wallet-app-signing'
 import { License } from '@/schema/features/transparency/license'
+import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -38,16 +39,16 @@ export const cypherockWallet: HardwareWallet = {
 	features: {
 		accountSupport: null,
 		license: {
-			license: License.MIT_WITH_CLAUSE,
 			ref: [
 				{
 					explanation: 'Cypherock is open-source and reproducible',
 					url: 'https://github.com/Cypherock/x1_wallet_firmware/blob/main/LICENSE.md',
 				},
 			],
+			license: License.MIT_WITH_CLAUSE,
 		},
 		monetization: {
-			ref: null,
+			ref: refTodo,
 			revenueBreakdownIsPublic: false,
 			strategies: {
 				donations: null,
@@ -72,8 +73,6 @@ export const cypherockWallet: HardwareWallet = {
 		security: {
 			bugBountyProgram: {
 				type: BugBountyProgramType.BASIC,
-				details:
-					'Cypherock provides legal protection for security researchers and discretionary rewards for valid security issues affecting X1 Wallet and X1 Card.',
 				ref: [
 					{
 						explanation:
@@ -81,6 +80,8 @@ export const cypherockWallet: HardwareWallet = {
 						url: 'https://cypherock.com/bug-bounty',
 					},
 				],
+				details:
+					'Cypherock provides legal protection for security researchers and discretionary rewards for valid security issues affecting X1 Wallet and X1 Card.',
 				upgradePathAvailable: true,
 				url: 'https://cypherock.com/bug-bounty',
 			},
@@ -92,16 +93,6 @@ export const cypherockWallet: HardwareWallet = {
 				silentUpdateProtection: FirmwareType.PASS,
 			},
 			hardwareWalletAppSigning: {
-				messageSigning: {
-					calldataDecoding: noCalldataDecoding,
-					details:
-						'Shows EIP-712 signature data only in the companion application, not on the hardware wallet itself.',
-					messageExtraction: {
-						[DataExtraction.EYES]: true,
-						[DataExtraction.HASHES]: false,
-						[DataExtraction.QRCODE]: false,
-					},
-				},
 				ref: [
 					{
 						explanation: "Independent video demonstration of Cypherock's signing implementation.",
@@ -113,6 +104,16 @@ export const cypherockWallet: HardwareWallet = {
 						url: 'https://youtube.com/shorts/YG6lzwTUojE',
 					},
 				],
+				messageSigning: {
+					calldataDecoding: noCalldataDecoding,
+					details:
+						'Shows EIP-712 signature data only in the companion application, not on the hardware wallet itself.',
+					messageExtraction: {
+						[DataExtraction.EYES]: true,
+						[DataExtraction.HASHES]: false,
+						[DataExtraction.QRCODE]: false,
+					},
+				},
 				transactionSigning: {
 					calldataDecoding: noCalldataDecoding,
 					calldataExtraction: noDataExtraction,

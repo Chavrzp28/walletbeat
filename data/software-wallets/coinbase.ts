@@ -12,6 +12,7 @@ import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-v
 import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
 import { notSupported, supported } from '@/schema/features/support'
 import { License } from '@/schema/features/transparency/license'
+import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -39,13 +40,14 @@ export const coinbase: SoftwareWallet = {
 		accountSupport: {
 			defaultAccountType: AccountType.eip7702,
 			eip7702: supported({
-				contract: 'UNKNOWN',
 				ref: {
 					explanation: 'Coinbase Wallet announced support for EIP-7702.',
 					url: 'https://www.coinbase.com/blog/coinbase-wallet-introduces-support-for-eip-7702',
 				},
+				contract: 'UNKNOWN',
 			}),
 			eoa: supported({
+				ref: refTodo,
 				canExportPrivateKey: true,
 				canExportSeedPhrase: true,
 				keyDerivation: {
@@ -57,25 +59,25 @@ export const coinbase: SoftwareWallet = {
 			}),
 			mpc: notSupported,
 			rawErc4337: supported({
-				contract: 'UNKNOWN',
-				controllingSharesInSelfCustodyByDefault: 'YES',
-				keyRotationTransactionGeneration: TransactionGenerationCapability.IMPOSSIBLE,
 				ref: {
 					explanation: 'Coinbase Wallet supports ERC-4337 via its smart wallet implementation.',
 					url: 'https://github.com/coinbase/smart-wallet',
 				},
+				contract: 'UNKNOWN',
+				controllingSharesInSelfCustodyByDefault: 'YES',
+				keyRotationTransactionGeneration: TransactionGenerationCapability.IMPOSSIBLE,
 				tokenTransferTransactionGeneration:
 					TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
 			}),
 			safe: notSupported,
 		},
 		addressResolution: {
+			ref: refTodo,
 			chainSpecificAddressing: {
 				erc7828: null,
 				erc7831: null,
 			},
 			nonChainSpecificEnsResolution: null,
-			ref: null,
 		},
 		chainAbstraction: null,
 		chainConfigurability: null,
@@ -84,15 +86,14 @@ export const coinbase: SoftwareWallet = {
 		},
 		integration: {
 			browser: {
+				ref: refTodo,
 				'1193': null,
 				'2700': null,
 				'6963': null,
-				ref: null,
 			},
 			walletCall: null,
 		},
 		license: {
-			license: License.BSD_3_CLAUSE,
 			ref: {
 				explanation: 'Coinbase Wallet uses the BSD-3-Clause license for its source code',
 				urls: [
@@ -102,9 +103,10 @@ export const coinbase: SoftwareWallet = {
 					},
 				],
 			},
+			license: License.BSD_3_CLAUSE,
 		},
 		monetization: {
-			ref: null,
+			ref: refTodo,
 			revenueBreakdownIsPublic: false,
 			strategies: {
 				donations: null,
@@ -134,7 +136,7 @@ export const coinbase: SoftwareWallet = {
 		security: {
 			bugBountyProgram: null,
 			hardwareWalletSupport: {
-				ref: null,
+				ref: refTodo,
 				wallets: {
 					[HardwareWalletType.LEDGER]: supported<SupportedHardwareWallet>({
 						connectionTypes: [HardwareWalletConnection.webUSB],
@@ -145,40 +147,40 @@ export const coinbase: SoftwareWallet = {
 				ethereumL1: null,
 			},
 			passkeyVerification: {
-				library: PasskeyVerificationLibrary.WEB_AUTHN_SOL,
-				libraryUrl:
-					'https://github.com/base/webauthn-sol/tree/619f20ab0f074fef41066ee4ab24849a913263b2',
 				ref: {
 					explanation: 'Coinbase uses the webauthn-sol library for passkey verification.',
 					url: 'https://github.com/base/webauthn-sol/tree/619f20ab0f074fef41066ee4ab24849a913263b2',
 				},
+				library: PasskeyVerificationLibrary.WEB_AUTHN_SOL,
+				libraryUrl:
+					'https://github.com/base/webauthn-sol/tree/619f20ab0f074fef41066ee4ab24849a913263b2',
 			},
 			publicSecurityAudits: [
 				{
+					ref: 'https://github.com/coinbase/smart-wallet/blob/main/audits/Cantina-April-2024.pdf',
 					auditDate: '2024-04-01',
 					auditor: cantina,
-					ref: 'https://github.com/coinbase/smart-wallet/blob/main/audits/Cantina-April-2024.pdf',
 					unpatchedFlaws: 'NONE_FOUND',
 					variantsScope: 'ALL_VARIANTS',
 				},
 				{
+					ref: 'https://github.com/coinbase/smart-wallet/blob/main/audits/Code4rena-March-2024.md',
 					auditDate: '2024-03-01',
 					auditor: code4rena,
-					ref: 'https://github.com/coinbase/smart-wallet/blob/main/audits/Code4rena-March-2024.md',
 					unpatchedFlaws: 'NONE_FOUND',
 					variantsScope: 'ALL_VARIANTS',
 				},
 				{
+					ref: 'https://github.com/coinbase/smart-wallet/blob/main/audits/Certora-February-2024.pdf',
 					auditDate: '2024-02-01',
 					auditor: certora,
-					ref: 'https://github.com/coinbase/smart-wallet/blob/main/audits/Certora-February-2024.pdf',
 					unpatchedFlaws: 'NONE_FOUND',
 					variantsScope: 'ALL_VARIANTS',
 				},
 				{
+					ref: 'https://github.com/coinbase/smart-wallet/blob/main/audits/Cantina-December-2023.pdf',
 					auditDate: '2023-12-01',
 					auditor: cantina,
-					ref: 'https://github.com/coinbase/smart-wallet/blob/main/audits/Cantina-December-2023.pdf',
 					unpatchedFlaws: 'NONE_FOUND',
 					variantsScope: 'ALL_VARIANTS',
 				},
@@ -188,12 +190,14 @@ export const coinbase: SoftwareWallet = {
 		selfSovereignty: {
 			transactionSubmission: {
 				l1: {
+					ref: refTodo,
 					selfBroadcastViaDirectGossip: null,
 					selfBroadcastViaSelfHostedNode: null,
 				},
 				l2: {
 					[TransactionSubmissionL2Type.arbitrum]: null,
 					[TransactionSubmissionL2Type.opStack]: null,
+					ref: refTodo,
 				},
 			},
 		},

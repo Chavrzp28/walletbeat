@@ -1,5 +1,6 @@
 import { exampleContributor } from '@/data/contributors/example'
 import { WalletProfile } from '@/schema/features/profile'
+import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { EmbeddedWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -24,7 +25,7 @@ export const unratedEmbeddedTemplate: EmbeddedWallet = {
 		accountSupport: null,
 		license: null,
 		monetization: {
-			ref: null,
+			ref: refTodo,
 			revenueBreakdownIsPublic: false,
 			strategies: {
 				donations: null,

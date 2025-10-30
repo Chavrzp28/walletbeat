@@ -17,6 +17,7 @@ import {
 	type AccountTypeSafe,
 	isAccountTypeSupported,
 } from '@/schema/features/account-support'
+import { isSupported } from '@/schema/features/support'
 import { mergeRefs, type ReferenceArray, refs } from '@/schema/reference'
 import { markdown, mdParagraph, mdSentence, sentence } from '@/types/content'
 
@@ -237,10 +238,12 @@ export const accountAbstraction: Attribute<AccountAbstractionValue> = {
 			eip7702: isAccountTypeSupported<AccountType7702>(features.accountSupport.eip7702),
 		}
 		const allRefs = mergeRefs(
-			refs(features.accountSupport.eoa),
-			refs(features.accountSupport.mpc),
-			refs(features.accountSupport.rawErc4337),
-			refs(features.accountSupport.eip7702),
+			isSupported(features.accountSupport.eoa) ? refs(features.accountSupport.eoa) : [],
+			isSupported(features.accountSupport.mpc) ? refs(features.accountSupport.mpc) : [],
+			isSupported(features.accountSupport.rawErc4337)
+				? refs(features.accountSupport.rawErc4337)
+				: [],
+			isSupported(features.accountSupport.eip7702) ? refs(features.accountSupport.eip7702) : [],
 		)
 
 		if (supported.rawErc4337 && supported.eip7702) {

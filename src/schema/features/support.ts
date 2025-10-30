@@ -1,6 +1,6 @@
 import type { NonEmptyRecord } from '@/types/utils/non-empty'
 
-import type { WithRef } from '../reference'
+import { refNotNecessary, type WithRef } from '../reference'
 
 /** A supported feature. */
 export type Supported<T extends object = object> = T & {
@@ -37,6 +37,12 @@ export const notSupported: NotSupported = { support: 'NOT_SUPPORTED' } as const
 
 /** The feature is supported. */
 export const featureSupported: Supported = { support: 'SUPPORTED' } as const
+
+/** The feature is supported without reference necessary. */
+export const featureSupportedNoRef: WithRef<Supported> = {
+	support: 'SUPPORTED',
+	ref: refNotNecessary,
+} as const
 
 /** The feature is unsupported but still carries additional data. */
 export function notSupportedWith<T = object>(obj: T): NotSupported & T {

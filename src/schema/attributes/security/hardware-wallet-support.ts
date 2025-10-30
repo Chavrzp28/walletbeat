@@ -16,7 +16,7 @@ import {
 	supportsHardwareWalletTypesMarkdown,
 } from '@/schema/features/security/hardware-wallet-support'
 import { isSupported, notSupported, supported } from '@/schema/features/support'
-import { popRefs } from '@/schema/reference'
+import { popRefs, refNotNecessary } from '@/schema/reference'
 import { WalletType } from '@/schema/wallet-types'
 import { markdown, mdParagraph, paragraph, sentence } from '@/types/content'
 
@@ -149,6 +149,7 @@ export const hardwareWalletSupport: Attribute<HardwareWalletSupportValue> = {
 				The wallet integrates any type of hardware wallet.
 			`),
 			directHardwareWalletSupport({
+				ref: refNotNecessary,
 				wallets: {
 					[HardwareWalletType.LEDGER]: supported<SupportedHardwareWallet>({
 						connectionTypes: [HardwareWalletConnection.USB],
@@ -164,6 +165,7 @@ export const hardwareWalletSupport: Attribute<HardwareWalletSupportValue> = {
 				(e.g. WalletConnect).
 			`),
 				indirectHardwareWalletSupport({
+					ref: refNotNecessary,
 					wallets: {
 						[HardwareWalletType.LEDGER]: supported<SupportedHardwareWallet>({
 							connectionTypes: [HardwareWalletConnection.WALLET_CONNECT],
@@ -177,7 +179,7 @@ export const hardwareWalletSupport: Attribute<HardwareWalletSupportValue> = {
 				paragraph(`
 					The wallet does not support any hardware wallets.
 				`),
-				noHardwareWalletSupport({ wallets: {} }),
+				noHardwareWalletSupport({ wallets: {}, ref: refNotNecessary }),
 			),
 		],
 	},
@@ -190,7 +192,7 @@ export const hardwareWalletSupport: Attribute<HardwareWalletSupportValue> = {
 					'This attribute is not applicable for {{WALLET_NAME}} as it is a hardware wallet itself.',
 				),
 				brand,
-				{ hardwareWalletSupport: { wallets: {} } },
+				{ hardwareWalletSupport: { wallets: {}, ref: refNotNecessary } },
 			)
 		}
 
@@ -198,7 +200,9 @@ export const hardwareWalletSupport: Attribute<HardwareWalletSupportValue> = {
 		// 	all such wallets have the opportunity to support hardware wallets to provide better security for the user
 
 		if (features.security.hardwareWalletSupport === null) {
-			return unrated(hardwareWalletSupport, brand, { hardwareWalletSupport: { wallets: {} } })
+			return unrated(hardwareWalletSupport, brand, {
+				hardwareWalletSupport: { wallets: {}, ref: refNotNecessary },
+			})
 		}
 
 		// Extract references from the hardware wallet support feature
@@ -211,7 +215,7 @@ export const hardwareWalletSupport: Attribute<HardwareWalletSupportValue> = {
 
 		const result = (() => {
 			if (numSupported === 0) {
-				return noHardwareWalletSupport(withoutRefs)
+				return noHardwareWalletSupport(features.security.hardwareWalletSupport)
 			}
 
 			if (
@@ -224,14 +228,14 @@ export const hardwareWalletSupport: Attribute<HardwareWalletSupportValue> = {
 					),
 				).length === numSupported
 			) {
-				return indirectHardwareWalletSupport(withoutRefs)
+				return indirectHardwareWalletSupport(features.security.hardwareWalletSupport)
 			}
 
-			return directHardwareWalletSupport(withoutRefs)
+			return directHardwareWalletSupport(features.security.hardwareWalletSupport)
 		})()
 
 		if (numSupported === 0) {
-			return noHardwareWalletSupport(withoutRefs)
+			return noHardwareWalletSupport(features.security.hardwareWalletSupport)
 		}
 
 		return {

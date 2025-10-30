@@ -10,6 +10,7 @@ import {
 	type SupportedHardwareWallet,
 } from '@/schema/features/security/hardware-wallet-support'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
+import type { ScamUrlWarning } from '@/schema/features/security/scam-alerts'
 import { RpcEndpointConfiguration } from '@/schema/features/self-sovereignty/chain-configurability'
 import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
 import { featureSupported, notSupported, supported } from '@/schema/features/support'
@@ -18,6 +19,7 @@ import {
 	FeeDisplayLevel,
 } from '@/schema/features/transparency/fee-display'
 import { License } from '@/schema/features/transparency/license'
+import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
 import { mdParagraph, paragraph } from '@/types/content'
@@ -47,9 +49,11 @@ export const metamask: SoftwareWallet = {
 		accountSupport: {
 			defaultAccountType: AccountType.eoa,
 			eip7702: supported({
+				ref: refTodo,
 				contract: metamask7702DelegatorContract,
 			}),
 			eoa: supported({
+				ref: refTodo,
 				canExportPrivateKey: true,
 				keyDerivation: {
 					type: 'BIP32',
@@ -63,6 +67,12 @@ export const metamask: SoftwareWallet = {
 			safe: notSupported,
 		},
 		addressResolution: {
+			ref: [
+				{
+					explanation: 'MetaMask supports ENS domain resolution.',
+					url: 'https://support.metamask.io/more-web3/learn/sending-or-receiving-a-transaction-with-ens/',
+				},
+			],
 			chainSpecificAddressing: {
 				erc7828: notSupported,
 				erc7831: notSupported,
@@ -70,31 +80,30 @@ export const metamask: SoftwareWallet = {
 			nonChainSpecificEnsResolution: supported<AddressResolutionData>({
 				medium: 'CHAIN_CLIENT',
 			}),
-			ref: [
-				{
-					explanation: 'MetaMask supports ENS domain resolution.',
-					url: 'https://support.metamask.io/more-web3/learn/sending-or-receiving-a-transaction-with-ens/',
-				},
-			],
 		},
 		chainAbstraction: {
 			bridging: {
 				builtInBridging: supported({
-					feesLargerThan1bps: {
-						afterSingleAction: FeeDisplayLevel.COMPREHENSIVE,
-						byDefault: FeeDisplayLevel.COMPREHENSIVE,
-						fullySponsored: false,
-					},
 					ref: {
 						explanation:
 							'MetaMask has a built-in bridge feature that allows users to bridge assets between chains.',
 						url: 'https://support.metamask.io/more-web3/learn/field-guide-to-bridges/',
+					},
+					feesLargerThan1bps: {
+						afterSingleAction: FeeDisplayLevel.COMPREHENSIVE,
+						byDefault: FeeDisplayLevel.COMPREHENSIVE,
+						fullySponsored: false,
 					},
 					risksExplained: 'NOT_IN_UI',
 				}),
 				suggestedBridging: notSupported,
 			},
 			crossChainBalances: {
+				ref: {
+					explanation:
+						'MetaMask displays tokens across multiple networks in a single aggregated view with estimated portfolio value',
+					url: 'https://support.metamask.io/manage-crypto/tokens/how-to-view-your-token-balance-across-multiple-networks/',
+				},
 				ether: {
 					crossChainSumView: notSupported,
 					perChainBalanceViewAcrossMultipleChains: featureSupported,
@@ -102,11 +111,6 @@ export const metamask: SoftwareWallet = {
 				// MetaMask supports aggregated balance across popular networks, but custom networks are not included
 				globalAccountValue: featureSupported,
 				perChainAccountValue: featureSupported,
-				ref: {
-					explanation:
-						'MetaMask displays tokens across multiple networks in a single aggregated view with estimated portfolio value',
-					url: 'https://support.metamask.io/manage-crypto/tokens/how-to-view-your-token-balance-across-multiple-networks/',
-				},
 				usdc: {
 					crossChainSumView: notSupported,
 					perChainBalanceViewAcrossMultipleChains: featureSupported,
@@ -114,9 +118,6 @@ export const metamask: SoftwareWallet = {
 			},
 		},
 		chainConfigurability: {
-			customChains: true,
-			l1RpcEndpoint: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
-			otherRpcEndpoints: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
 			ref: [
 				{
 					explanation:
@@ -124,15 +125,15 @@ export const metamask: SoftwareWallet = {
 					url: 'https://support.metamask.io/configure/networks/how-to-add-a-custom-network-rpc/',
 				},
 			],
+			customChains: true,
+			l1RpcEndpoint: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
+			otherRpcEndpoints: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
 		},
 		ecosystem: {
 			delegation: null,
 		},
 		integration: {
 			browser: {
-				'1193': featureSupported,
-				'2700': featureSupported,
-				'6963': featureSupported,
 				ref: [
 					{
 						explanation:
@@ -140,26 +141,30 @@ export const metamask: SoftwareWallet = {
 						url: 'https://support.metamask.io/hc/en-us/articles/360015489471',
 					},
 				],
+				'1193': featureSupported,
+				'2700': featureSupported,
+				'6963': featureSupported,
 			},
 			walletCall: supported({
+				ref: refTodo,
 				atomicMultiTransactions: featureSupported,
 			}),
 		},
 		license: {
 			[Variant.BROWSER]: {
-				license: License.PROPRIETARY_SOURCE_AVAILABLE,
 				ref: {
 					explanation:
 						'The MetaMask browser extension uses a proprietary source-available license.',
 					url: 'https://github.com/MetaMask/metamask-extension/blob/main/LICENSE',
 				},
+				license: License.PROPRIETARY_SOURCE_AVAILABLE,
 			},
 			[Variant.MOBILE]: {
-				license: License.PROPRIETARY_SOURCE_AVAILABLE,
 				ref: {
 					explanation: 'The MetaMask mobile app uses a proprietary source-available license.',
 					url: 'https://github.com/MetaMask/metamask-mobile/blob/main/LICENSE',
 				},
+				license: License.PROPRIETARY_SOURCE_AVAILABLE,
 			},
 		},
 		monetization: {
@@ -226,11 +231,13 @@ export const metamask: SoftwareWallet = {
 			},
 			passkeyVerification: {
 				[Variant.BROWSER]: {
+					ref: refTodo,
 					details:
 						'MetaMask browser extension does not currently implement passkey verification. Phase 2 seedless onboarding has passkey scheduled for extension.',
 					library: PasskeyVerificationLibrary.NONE,
 				},
 				[Variant.MOBILE]: {
+					ref: refTodo,
 					details:
 						'MetaMask mobile uses biometrics that leverage the hardware enclave similar to passkeys. Standard passkey verification is not yet implemented.',
 					library: PasskeyVerificationLibrary.NONE,
@@ -238,54 +245,48 @@ export const metamask: SoftwareWallet = {
 			},
 			publicSecurityAudits: [
 				{
+					ref: 'https://assets.ctfassets.net/clixtyxoaeas/21m4LE3WLYbgWjc33aDcp2/8252073e115688b1dc1500a9c2d33fe4/metamask-delegator-framework-audit-2024-10.pdf',
 					auditDate: '2024-10-25',
 					auditor: diligence,
 					codeSnapshot: {
 						date: '2024-10-25',
 					},
-					ref: 'https://assets.ctfassets.net/clixtyxoaeas/21m4LE3WLYbgWjc33aDcp2/8252073e115688b1dc1500a9c2d33fe4/metamask-delegator-framework-audit-2024-10.pdf',
 					unpatchedFlaws: 'ALL_FIXED',
 					variantsScope: 'ALL_VARIANTS',
 				},
 				{
+					ref: 'https://assets.ctfassets.net/clixtyxoaeas/4sNMB55kkGw6BtAiIn08mm/f1f4a78d3901dd03848d070e15a1ff12/pentest-report_metamask-signing-snap.pdf',
 					auditDate: '2024-10-25',
 					auditor: cure53,
 					codeSnapshot: {
 						date: '2024-03-25',
 					},
-					ref: 'https://assets.ctfassets.net/clixtyxoaeas/4sNMB55kkGw6BtAiIn08mm/f1f4a78d3901dd03848d070e15a1ff12/pentest-report_metamask-signing-snap.pdf',
 					unpatchedFlaws: 'ALL_FIXED',
 					variantsScope: 'ALL_VARIANTS',
 				},
 				{
+					ref: 'https://github.com/Cyfrin/cyfrin-audit-reports/blob/main/reports/2025-03-18-cyfrin-Metamask-DelegationFramework1-v2.0.pdf',
 					auditDate: '2025-03-18',
 					auditor: cyfrin,
 					codeSnapshot: {
 						date: '2025-02-07',
 					},
-					ref: 'https://github.com/Cyfrin/cyfrin-audit-reports/blob/main/reports/2025-03-18-cyfrin-Metamask-DelegationFramework1-v2.0.pdf',
 					unpatchedFlaws: 'ALL_FIXED',
 					variantsScope: 'ALL_VARIANTS',
 				},
 				{
+					ref: 'https://github.com/Cyfrin/cyfrin-audit-reports/blob/main/reports/2025-04-01-cyfrin-Metamask-DelegationFramework2-v2.0.pdf',
 					auditDate: '2025-04-01',
 					auditor: cyfrin,
 					codeSnapshot: {
 						date: '2025-04-01',
 					},
-					ref: 'https://github.com/Cyfrin/cyfrin-audit-reports/blob/main/reports/2025-04-01-cyfrin-Metamask-DelegationFramework2-v2.0.pdf',
 					unpatchedFlaws: 'ALL_FIXED',
 					variantsScope: 'ALL_VARIANTS',
 				},
 			],
 			scamAlerts: {
 				contractTransactionWarning: supported({
-					contractRegistry: true,
-					leaksContractAddress: true,
-					leaksUserAddress: true,
-					leaksUserIp: true,
-					previousContractInteractionWarning: true,
-					recentContractWarning: true,
 					ref: [
 						{
 							explanation:
@@ -293,11 +294,14 @@ export const metamask: SoftwareWallet = {
 							url: 'https://metamask.io/news/latest/metamask-security-alerts-by-blockaid-the-new-normal-for-a-safer-transaction/',
 						},
 					],
+					contractRegistry: true,
+					leaksContractAddress: true,
+					leaksUserAddress: true,
+					leaksUserIp: true,
+					previousContractInteractionWarning: true,
+					recentContractWarning: true,
 				}),
-				scamUrlWarning: supported({
-					leaksIp: false,
-					leaksUserAddress: false,
-					leaksVisitedUrl: 'NO',
+				scamUrlWarning: supported<ScamUrlWarning>({
 					ref: [
 						{
 							explanation:
@@ -310,12 +314,11 @@ export const metamask: SoftwareWallet = {
 							url: 'https://github.com/MetaMask/eth-phishing-detect',
 						},
 					],
+					leaksIp: false,
+					leaksUserAddress: false,
+					leaksVisitedUrl: 'NO',
 				}),
 				sendTransactionWarning: supported({
-					leaksRecipient: true,
-					leaksUserAddress: true,
-					leaksUserIp: true,
-					newRecipientWarning: true,
 					ref: [
 						{
 							explanation:
@@ -323,6 +326,10 @@ export const metamask: SoftwareWallet = {
 							url: 'https://support.metamask.io/configure/privacy/how-to-adjust-metamask-privacy-settings/',
 						},
 					],
+					leaksRecipient: true,
+					leaksUserAddress: true,
+					leaksUserIp: true,
+					newRecipientWarning: true,
 					userWhitelist: true,
 				}),
 			},
@@ -330,12 +337,14 @@ export const metamask: SoftwareWallet = {
 		selfSovereignty: {
 			transactionSubmission: {
 				l1: {
+					ref: refTodo,
 					selfBroadcastViaDirectGossip: notSupported,
 					selfBroadcastViaSelfHostedNode: notSupported,
 				},
 				l2: {
 					[TransactionSubmissionL2Type.arbitrum]: null,
 					[TransactionSubmissionL2Type.opStack]: null,
+					ref: refTodo,
 				},
 			},
 		},

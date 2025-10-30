@@ -17,7 +17,7 @@ import {
 	supportsHardwareWalletTypesMarkdown,
 } from '@/schema/features/security/hardware-wallet-support'
 import { isSupported, notSupported, supported } from '@/schema/features/support'
-import { popRefs } from '@/schema/reference'
+import { popRefs, refNotNecessary } from '@/schema/reference'
 import { WalletType } from '@/schema/wallet-types'
 import { markdown, mdParagraph, paragraph, sentence } from '@/types/content'
 import type { NonEmptyArray } from '@/types/utils/non-empty'
@@ -206,6 +206,7 @@ export const hardwareWalletInteroperability: Attribute<HardwareWalletInteroperab
 				WalletConnect with an external application).
 			`),
 			comprehensiveHardwareWalletSupport({
+				ref: refNotNecessary,
 				wallets: {
 					[HardwareWalletType.LEDGER]: supported<SupportedHardwareWallet>({
 						connectionTypes: [HardwareWalletConnection.USB],
@@ -227,6 +228,7 @@ export const hardwareWalletInteroperability: Attribute<HardwareWalletInteroperab
 					additional software in order to use.
 				`),
 				insufficientHardwareWalletManufacturerSupport({
+					ref: refNotNecessary,
 					wallets: {
 						[HardwareWalletType.LEDGER]: supported<SupportedHardwareWallet>({
 							connectionTypes: [HardwareWalletConnection.USB],
@@ -249,6 +251,7 @@ export const hardwareWalletInteroperability: Attribute<HardwareWalletInteroperab
 					additional software in order to use.
 				`),
 				singleHardwareWalletManufacturerSupport({
+					ref: refNotNecessary,
 					wallets: {
 						[HardwareWalletType.LEDGER]: supported<SupportedHardwareWallet>({
 							connectionTypes: [HardwareWalletConnection.USB],
@@ -272,13 +275,13 @@ export const hardwareWalletInteroperability: Attribute<HardwareWalletInteroperab
 					'This attribute is not applicable for {{WALLET_NAME}} as it is a hardware wallet itself.',
 				),
 				brand,
-				{ hardwareWalletSupport: { wallets: {} } },
+				{ hardwareWalletSupport: { ref: refNotNecessary, wallets: {} } },
 			)
 		}
 
 		if (features.security.hardwareWalletSupport === null) {
 			return unrated(hardwareWalletInteroperability, brand, {
-				hardwareWalletSupport: { wallets: {} },
+				hardwareWalletSupport: { ref: refNotNecessary, wallets: {} },
 			})
 		}
 
@@ -308,13 +311,15 @@ export const hardwareWalletInteroperability: Attribute<HardwareWalletInteroperab
 						{ hardwareWalletSupport: features.security.hardwareWalletSupport },
 					)
 				case 1:
-					return singleHardwareWalletManufacturerSupport(withoutRefs)
+					return singleHardwareWalletManufacturerSupport(features.security.hardwareWalletSupport)
 				default:
 					if (majorManufacturerSupported < minMajorHardwareWalletManufacturers) {
-						return insufficientHardwareWalletManufacturerSupport(withoutRefs)
+						return insufficientHardwareWalletManufacturerSupport(
+							features.security.hardwareWalletSupport,
+						)
 					}
 
-					return comprehensiveHardwareWalletSupport(withoutRefs)
+					return comprehensiveHardwareWalletSupport(features.security.hardwareWalletSupport)
 			}
 		})()
 

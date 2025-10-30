@@ -6,6 +6,7 @@ import {
 	noDataExtraction,
 } from '@/schema/features/security/hardware-wallet-app-signing'
 import { License } from '@/schema/features/transparency/license'
+import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -36,16 +37,16 @@ export const ngrave: HardwareWallet = {
 	features: {
 		accountSupport: null,
 		license: {
-			license: License.PROPRIETARY,
 			ref: [
 				{
 					explanation: 'NGRAVE is not open source',
 					url: 'https://youtu.be/-m1jcBFS0dc?t=701',
 				},
 			],
+			license: License.PROPRIETARY,
 		},
 		monetization: {
-			ref: null,
+			ref: refTodo,
 			revenueBreakdownIsPublic: false,
 			strategies: {
 				donations: null,
@@ -71,6 +72,12 @@ export const ngrave: HardwareWallet = {
 			bugBountyProgram: null,
 			firmware: null,
 			hardwareWalletAppSigning: {
+				ref: [
+					{
+						explanation: 'Independent video demonstration of NGRAVE Zero signing issues',
+						url: 'https://youtu.be/-m1jcBFS0dc?t=701',
+					},
+				],
 				messageSigning: {
 					calldataDecoding: noCalldataDecoding,
 					details:
@@ -81,12 +88,6 @@ export const ngrave: HardwareWallet = {
 						[DataExtraction.QRCODE]: false,
 					},
 				},
-				ref: [
-					{
-						explanation: 'Independent video demonstration of NGRAVE Zero signing issues',
-						url: 'https://youtu.be/-m1jcBFS0dc?t=701',
-					},
-				],
 				transactionSigning: {
 					calldataDecoding: noCalldataDecoding,
 					calldataExtraction: noDataExtraction,

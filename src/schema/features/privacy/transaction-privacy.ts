@@ -86,7 +86,7 @@ export type TransactionPrivacy = {
 	>
 
 /** Support for ERC-5564 stealth addresses. */
-export interface StealthAddressSupport {
+export type StealthAddressSupport = WithRef<{
 	/**
 	 * When sending funds to a stealth meta-address, how is the resolution of
 	 * that stealth meta-address to a specific stealth address done?
@@ -198,7 +198,7 @@ export interface StealthAddressSupport {
 
 	/** When sending transactions, how are fees displayed? */
 	fees: FeeDisplay
-}
+}>
 
 /**
  * When funds are received to a new unlabeled address, and the user

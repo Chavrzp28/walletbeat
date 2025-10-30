@@ -10,6 +10,7 @@ import {
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
 import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
 import { notSupported, supported } from '@/schema/features/support'
+import { refNotNecessary, refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -35,6 +36,7 @@ export const phantom: SoftwareWallet = {
 			defaultAccountType: AccountType.eoa,
 			eip7702: notSupported,
 			eoa: supported({
+				ref: refTodo,
 				canExportPrivateKey: true,
 				keyDerivation: {
 					type: 'BIP32',
@@ -48,12 +50,12 @@ export const phantom: SoftwareWallet = {
 			safe: notSupported,
 		},
 		addressResolution: {
+			ref: refTodo,
 			chainSpecificAddressing: {
 				erc7828: null,
 				erc7831: null,
 			},
 			nonChainSpecificEnsResolution: null,
-			ref: null,
 		},
 		chainAbstraction: null,
 		chainConfigurability: null,
@@ -62,16 +64,16 @@ export const phantom: SoftwareWallet = {
 		},
 		integration: {
 			browser: {
+				ref: refTodo,
 				'1193': null,
 				'2700': null,
 				'6963': null,
-				ref: null,
 			},
 			walletCall: null,
 		},
 		license: null,
 		monetization: {
-			ref: null,
+			ref: refTodo,
 			revenueBreakdownIsPublic: false,
 			strategies: {
 				donations: null,
@@ -101,7 +103,7 @@ export const phantom: SoftwareWallet = {
 		security: {
 			bugBountyProgram: null,
 			hardwareWalletSupport: {
-				ref: null,
+				ref: refTodo,
 				wallets: {
 					[HardwareWalletType.LEDGER]: supported<SupportedHardwareWallet>({
 						connectionTypes: [HardwareWalletConnection.webUSB],
@@ -112,8 +114,8 @@ export const phantom: SoftwareWallet = {
 				ethereumL1: null,
 			},
 			passkeyVerification: {
+				ref: refNotNecessary,
 				library: PasskeyVerificationLibrary.NONE,
-				ref: null,
 			},
 			publicSecurityAudits: null,
 			scamAlerts: null,
@@ -121,10 +123,12 @@ export const phantom: SoftwareWallet = {
 		selfSovereignty: {
 			transactionSubmission: {
 				l1: {
+					ref: refTodo,
 					selfBroadcastViaDirectGossip: null,
 					selfBroadcastViaSelfHostedNode: null,
 				},
 				l2: {
+					ref: refTodo,
 					[TransactionSubmissionL2Type.arbitrum]: null,
 					[TransactionSubmissionL2Type.opStack]: null,
 				},

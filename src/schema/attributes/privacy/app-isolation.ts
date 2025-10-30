@@ -8,13 +8,20 @@ import {
 } from '@/schema/attributes'
 import { type ResolvedFeatures } from '@/schema/features'
 import {
+	appConnectionNotSupported,
 	type AppIsolation,
 	ExposedAccountsBehavior,
 	type ExposedAccountSet,
+	isAppConnectionSupportedInAppIsolation,
 	sameExposedAccountSet,
 } from '@/schema/features/privacy/app-isolation'
-import { featureSupported, isSupported, notSupported, supported } from '@/schema/features/support'
-import { type FullyQualifiedReference, mergeRefs } from '@/schema/reference'
+import {
+	featureSupportedNoRef,
+	isSupported,
+	notSupported,
+	supported,
+} from '@/schema/features/support'
+import { type FullyQualifiedReference, mergeRefs, refNotNecessary } from '@/schema/reference'
 import { WalletType } from '@/schema/wallet-types'
 import { markdown, mdParagraph, paragraph, sentence } from '@/types/content'
 
@@ -26,7 +33,9 @@ export type AppIsolationValue = Value & {
 	__brand: 'attributes.privacy.app_isolation'
 }
 
-function rateAppIsolation(appIsolation: AppIsolation): Evaluation<AppIsolationValue> {
+function rateAppIsolation(
+	appIsolation: Exclude<AppIsolation, typeof appConnectionNotSupported>,
+): Evaluation<AppIsolationValue> {
 	let references: FullyQualifiedReference[] = []
 
 	if (!isSupported(appIsolation.createInAppConnectionFlow)) {
@@ -278,13 +287,15 @@ export const appIsolation: Attribute<AppIsolationValue> = {
 				`),
 				rateAppIsolation({
 					ethAccounts: supported({
+						ref: refNotNecessary,
 						defaultBehavior: ExposedAccountsBehavior.ACTIVE_ACCOUNT_ONLY,
 					}),
 					erc7846WalletConnect: supported({
+						ref: refNotNecessary,
 						defaultBehavior: ExposedAccountsBehavior.ACTIVE_ACCOUNT_ONLY,
 					}),
 					createInAppConnectionFlow: notSupported,
-					useAppSpecificLastConnectedAddresses: featureSupported,
+					useAppSpecificLastConnectedAddresses: featureSupportedNoRef,
 				}),
 			),
 			exampleRating(
@@ -294,12 +305,14 @@ export const appIsolation: Attribute<AppIsolationValue> = {
 				`),
 				rateAppIsolation({
 					ethAccounts: supported({
+						ref: refNotNecessary,
 						defaultBehavior: ExposedAccountsBehavior.APP_SPECIFIC_ACCOUNT,
 					}),
 					erc7846WalletConnect: supported({
+						ref: refNotNecessary,
 						defaultBehavior: ExposedAccountsBehavior.APP_SPECIFIC_ACCOUNT,
 					}),
-					createInAppConnectionFlow: featureSupported,
+					createInAppConnectionFlow: featureSupportedNoRef,
 					useAppSpecificLastConnectedAddresses: notSupported,
 				}),
 			),
@@ -310,13 +323,15 @@ export const appIsolation: Attribute<AppIsolationValue> = {
 				`),
 				rateAppIsolation({
 					ethAccounts: supported({
+						ref: refNotNecessary,
 						defaultBehavior: ExposedAccountsBehavior.ACTIVE_ACCOUNT_ONLY,
 					}),
 					erc7846WalletConnect: supported({
+						ref: refNotNecessary,
 						defaultBehavior: ExposedAccountsBehavior.ACTIVE_ACCOUNT_ONLY,
 					}),
-					createInAppConnectionFlow: featureSupported,
-					useAppSpecificLastConnectedAddresses: featureSupported,
+					createInAppConnectionFlow: featureSupportedNoRef,
+					useAppSpecificLastConnectedAddresses: featureSupportedNoRef,
 				}),
 			),
 			exampleRating(
@@ -336,13 +351,15 @@ export const appIsolation: Attribute<AppIsolationValue> = {
 				`),
 				rateAppIsolation({
 					ethAccounts: supported({
+						ref: refNotNecessary,
 						defaultBehavior: ExposedAccountsBehavior.APP_SPECIFIC_ACCOUNT,
 					}),
 					erc7846WalletConnect: supported({
+						ref: refNotNecessary,
 						defaultBehavior: ExposedAccountsBehavior.APP_SPECIFIC_ACCOUNT,
 					}),
-					createInAppConnectionFlow: featureSupported,
-					useAppSpecificLastConnectedAddresses: featureSupported,
+					createInAppConnectionFlow: featureSupportedNoRef,
+					useAppSpecificLastConnectedAddresses: featureSupportedNoRef,
 				}),
 			),
 		],
@@ -361,7 +378,7 @@ export const appIsolation: Attribute<AppIsolationValue> = {
 			return unrated(appIsolation, brand, null)
 		}
 
-		if (features.privacy.appIsolation === 'APP_CONNECTION_NOT_SUPPORTED') {
+		if (isAppConnectionSupportedInAppIsolation(features.privacy.appIsolation)) {
 			return exempt(
 				appIsolation,
 				sentence('{{WALLET_NAME}} does not support connecting to apps.'),

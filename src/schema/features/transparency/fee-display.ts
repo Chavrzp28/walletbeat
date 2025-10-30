@@ -47,17 +47,19 @@ export interface FeeDisplay {
 }
 
 /** Shorthand for fees that are comprehensive by default. */
-export const comprehensiveFeesShownByDefault: FeeDisplay = {
+export const comprehensiveFeesShownByDefault: WithRef<FeeDisplay> = {
 	byDefault: FeeDisplayLevel.COMPREHENSIVE,
 	afterSingleAction: FeeDisplayLevel.COMPREHENSIVE,
 	fullySponsored: false,
+	ref: [],
 }
 
 /** Shorthand for fees that are fully sponsored and not shown. */
-export const fullySponsoredFees: FeeDisplay = {
+export const fullySponsoredFees: WithRef<FeeDisplay> = {
 	byDefault: FeeDisplayLevel.NONE,
 	afterSingleAction: FeeDisplayLevel.NONE,
 	fullySponsored: true,
+	ref: [],
 }
 
 /**

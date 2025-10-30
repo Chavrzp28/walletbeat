@@ -22,10 +22,11 @@ import {
 	featureSupported,
 	isSupported,
 	notSupported,
+	notSupportedWithRef,
 	type Support,
 	supported,
 } from '@/schema/features/support'
-import { mergeRefs, refs, type WithRef } from '@/schema/reference'
+import { mergeRefs, refNotNecessary, refs, type WithRef } from '@/schema/reference'
 import { WalletType } from '@/schema/wallet-types'
 import { markdown, mdParagraph, mdSentence, paragraph, sentence } from '@/types/content'
 
@@ -39,7 +40,7 @@ export type TransactionBatchingValue = Value & {
 
 function evaluateTransactionBatching(
 	accountSupport: AccountSupport,
-	walletCall: WithRef<Support<WalletCallIntegration>>,
+	walletCall: Support<WithRef<WalletCallIntegration>>,
 ): Evaluation<TransactionBatchingValue> {
 	if (
 		!isSupported<AccountType7702>(accountSupport.eip7702) &&
@@ -66,11 +67,14 @@ function evaluateTransactionBatching(
 				{{WALLET_NAME}} should support smart accounts, such as
 				${eipMarkdownLink(eip7702)} accounts.
 			`),
-			references: mergeRefs(refs(accountSupport.eip7702), refs(accountSupport.rawErc4337)),
+			references: mergeRefs(
+				isSupported(accountSupport.eip7702) ? refs(accountSupport.eip7702) : [],
+				isSupported(accountSupport.rawErc4337) ? refs(accountSupport.rawErc4337) : [],
+			),
 		}
 	}
 
-	let references = mergeRefs(refs(walletCall))
+	let references = mergeRefs(isSupported(walletCall) ? refs(walletCall) : [])
 
 	if (!isSupported<WalletCallIntegration>(walletCall)) {
 		return {
@@ -95,7 +99,7 @@ function evaluateTransactionBatching(
 		}
 	}
 
-	references = mergeRefs(references, refs(walletCall.atomicMultiTransactions))
+	references = mergeRefs(references, refs(walletCall))
 
 	if (!isSupported<Support>(walletCall.atomicMultiTransactions)) {
 		return {
@@ -193,11 +197,20 @@ export const transactionBatching: Attribute<TransactionBatchingValue> = {
 				sentence('The wallet does not support any type of smart account.'),
 				evaluateTransactionBatching(
 					{
-						eoa: notSupported,
-						mpc: notSupported,
+						eoa: supported({
+							canExportPrivateKey: true,
+							keyDerivation: {
+								type: 'BIP32',
+								derivationPath: 'BIP44',
+								seedPhrase: 'BIP39',
+								canExportSeedPhrase: true,
+							},
+							ref: refNotNecessary,
+						}),
 						safe: notSupported,
-						eip7702: notSupported,
-						rawErc4337: notSupported,
+						mpc: notSupportedWithRef({ ref: refNotNecessary }),
+						eip7702: notSupportedWithRef({ ref: refNotNecessary }),
+						rawErc4337: notSupportedWithRef({ ref: refNotNecessary }),
 						defaultAccountType: AccountType.eoa,
 					},
 					notSupported,
@@ -209,13 +222,14 @@ export const transactionBatching: Attribute<TransactionBatchingValue> = {
 				),
 				evaluateTransactionBatching(
 					{
-						eoa: notSupported,
-						mpc: notSupported,
+						eoa: notSupportedWithRef({ ref: refNotNecessary }),
+						mpc: notSupportedWithRef({ ref: refNotNecessary }),
 						safe: notSupported,
 						eip7702: supported({
+							ref: refNotNecessary,
 							contract: 'UNKNOWN',
 						}),
-						rawErc4337: notSupported,
+						rawErc4337: notSupportedWithRef({ ref: refNotNecessary }),
 						defaultAccountType: AccountType.eip7702,
 					},
 					notSupported,
@@ -228,16 +242,18 @@ export const transactionBatching: Attribute<TransactionBatchingValue> = {
 			),
 			evaluateTransactionBatching(
 				{
-					eoa: notSupported,
-					mpc: notSupported,
+					eoa: notSupportedWithRef({ ref: refNotNecessary }),
+					mpc: notSupportedWithRef({ ref: refNotNecessary }),
 					safe: notSupported,
 					eip7702: supported({
+						ref: refNotNecessary,
 						contract: 'UNKNOWN',
 					}),
-					rawErc4337: notSupported,
+					rawErc4337: notSupportedWithRef({ ref: refNotNecessary }),
 					defaultAccountType: AccountType.eip7702,
 				},
 				supported({
+					ref: refNotNecessary,
 					atomicMultiTransactions: notSupported,
 				}),
 			),
@@ -248,16 +264,18 @@ export const transactionBatching: Attribute<TransactionBatchingValue> = {
 			),
 			evaluateTransactionBatching(
 				{
-					eoa: notSupported,
-					mpc: notSupported,
+					eoa: notSupportedWithRef({ ref: refNotNecessary }),
+					mpc: notSupportedWithRef({ ref: refNotNecessary }),
 					safe: notSupported,
 					eip7702: supported({
+						ref: refNotNecessary,
 						contract: 'UNKNOWN',
 					}),
-					rawErc4337: notSupported,
+					rawErc4337: notSupportedWithRef({ ref: refNotNecessary }),
 					defaultAccountType: AccountType.eip7702,
 				},
 				supported({
+					ref: refNotNecessary,
 					atomicMultiTransactions: featureSupported,
 				}),
 			),

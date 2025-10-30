@@ -78,14 +78,33 @@ export type ReferenceArray = Reference[]
 /** An object that *must* be annotated with References. */
 export type MustRef<T> = T & { ref: References }
 
+/** Placeholder for references that are needed but not provided. */
+export const refTodo = { refTodo: true } as const
+
+/** Placeholder for references that are not necessary. */
+export const refNotNecessary = { refNotNecessary: true } as const
+
+/** No reference provided. */
+export type NoRef = typeof refTodo | typeof refNotNecessary
+
+/** Type predicate for `NoRef`. */
+export function isNoRef(obj: unknown): obj is NoRef {
+	return (
+		obj !== undefined &&
+		obj !== null &&
+		typeof obj === 'object' &&
+		(Object.hasOwn(obj, 'refTodo') || Object.hasOwn(obj, 'refNotNecessary'))
+	)
+}
+
 /** An object that *may or may not* be annotated with References. */
-export type WithRef<T> = MustRef<T> | (T & { ref?: null })
+export type WithRef<T> = T & { ref: References | Reference[] | NoRef }
 
 /** Fully qualify any number of `Reference`s in any supported type. */
 export function toFullyQualified(
-	reference: References | ReferenceArray | FullyQualifiedReference[] | null | undefined,
+	reference: NoRef | References | ReferenceArray | FullyQualifiedReference[] | undefined,
 ): FullyQualifiedReference[] {
-	if (reference === null || reference === undefined) {
+	if (reference === undefined || isNoRef(reference)) {
 		return []
 	}
 
@@ -190,7 +209,7 @@ export function toFullyQualified(
 
 /** Extract references out of `withRef`. */
 export function refs(withRef: WithRef<unknown>): FullyQualifiedReference[] {
-	if (withRef.ref === undefined || withRef.ref === null) {
+	if (isNoRef(withRef.ref)) {
 		return []
 	}
 
@@ -226,12 +245,12 @@ export function popRefs<T>(withRef: WithRef<T>): {
 
 /** Deduplicate and merge references in `refs`. */
 export function mergeRefs(
-	...refs: Array<References | ReferenceArray | FullyQualifiedReference | null | undefined>
+	...refs: Array<References | ReferenceArray | FullyQualifiedReference | NoRef | undefined>
 ): FullyQualifiedReference[] {
 	const qualifiedRefs = []
 
 	for (const ref of refs) {
-		if (ref === null || ref === undefined) {
+		if (ref === undefined || isNoRef(ref)) {
 			continue
 		}
 

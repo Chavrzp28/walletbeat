@@ -5,7 +5,6 @@ import {
 	type KeysHandlingSupport,
 	KeysHandlingType,
 } from '@/schema/features/security/keys-handling'
-import { popRefs } from '@/schema/reference'
 import type { AtLeastOneVariant } from '@/schema/variants'
 import { WalletType } from '@/schema/wallet-types'
 import { markdown, paragraph, sentence } from '@/types/content'
@@ -116,8 +115,7 @@ export const keysHandling: Attribute<KeysHandlingValue> = {
 			})
 		}
 
-		const { withoutRefs, refs: extractedRefs } = popRefs<KeysHandlingSupport>(keysHandlingFeature)
-		const rating = evaluateKeysHandling(withoutRefs)
+		const rating = evaluateKeysHandling(keysHandlingFeature)
 
 		return {
 			value: {
@@ -125,12 +123,12 @@ export const keysHandling: Attribute<KeysHandlingValue> = {
 				rating,
 				displayName: 'Keys Handling',
 				shortExplanation: sentence(`{{WALLET_NAME}} has ${rating.toLowerCase()} key handling.`),
-				...withoutRefs,
+				...keysHandlingFeature, // TODO: Filter fields.
 				__brand: brand,
 			},
 			details: paragraph(`{{WALLET_NAME}} key handling evaluation is ${rating.toLowerCase()}.`),
 			howToImprove: paragraph('{{WALLET_NAME}} should improve sub-criteria rated PARTIAL or FAIL.'),
-			...(extractedRefs.length > 0 && { references: extractedRefs }),
+			// TODO: Add references
 		}
 	},
 }

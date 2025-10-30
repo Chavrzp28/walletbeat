@@ -1,6 +1,7 @@
 import { exampleContributor } from '@/data/contributors/example'
 import { WalletProfile } from '@/schema/features/profile'
 import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
+import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -24,12 +25,12 @@ export const unratedTemplate: SoftwareWallet = {
 	features: {
 		accountSupport: null,
 		addressResolution: {
+			ref: refTodo,
 			chainSpecificAddressing: {
 				erc7828: null,
 				erc7831: null,
 			},
 			nonChainSpecificEnsResolution: null,
-			ref: null,
 		},
 		chainAbstraction: null,
 		chainConfigurability: null,
@@ -38,16 +39,16 @@ export const unratedTemplate: SoftwareWallet = {
 		},
 		integration: {
 			browser: {
+				ref: refTodo,
 				'1193': null,
 				'2700': null,
 				'6963': null,
-				ref: null,
 			},
 			walletCall: null,
 		},
 		license: null,
 		monetization: {
-			ref: null,
+			ref: refTodo,
 			revenueBreakdownIsPublic: false,
 			strategies: {
 				donations: null,
@@ -82,12 +83,14 @@ export const unratedTemplate: SoftwareWallet = {
 		selfSovereignty: {
 			transactionSubmission: {
 				l1: {
+					ref: refTodo,
 					selfBroadcastViaDirectGossip: null,
 					selfBroadcastViaSelfHostedNode: null,
 				},
 				l2: {
 					[TransactionSubmissionL2Type.arbitrum]: null,
 					[TransactionSubmissionL2Type.opStack]: null,
+					ref: refTodo,
 				},
 			},
 		},

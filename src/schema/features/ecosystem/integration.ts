@@ -38,13 +38,13 @@ export interface WalletIntegration {
 	 *  - wallet_showCallsStatus
 	 *  - wallet_getCapabilities
 	 */
-	walletCall: VariantFeature<WithRef<Support<WalletCallIntegration>>>
+	walletCall: VariantFeature<Support<WithRef<WalletCallIntegration>>>
 }
 
 /** Variant-specific resolution of `WalletIntegration`. */
 export interface ResolvedWalletIntegration {
 	browser: WalletIntegration['browser']
-	walletCall: ResolvedFeature<Support<WalletCallIntegration>>
+	walletCall: ResolvedFeature<Support<WithRef<WalletCallIntegration>>>
 }
 
 /** EIP-5792 Wallet Call API support. */
@@ -56,7 +56,7 @@ export interface WalletCallIntegration {
 	 * For the purpose of this attribute, we only look at support on L1.
 	 * A reported value of 'ready' or 'supported' qualifies as supported.
 	 */
-	atomicMultiTransactions: WithRef<Support>
+	atomicMultiTransactions: Support
 }
 
 /** A WalletIntegration stand-in used for non-software wallets. */

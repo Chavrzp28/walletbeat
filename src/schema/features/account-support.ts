@@ -9,7 +9,7 @@ import type { SmartWalletContract } from '../contracts'
 import type { WithRef } from '../reference'
 import { isSupported, type NotSupported, type Support, type Supported } from './support'
 
-export type AccountTypeSupport<T extends object> = WithRef<Support<T>>
+export type AccountTypeSupport<T extends object> = Support<WithRef<T>>
 
 /** Type predicate for AccountTypeSupported<T>. */
 export function isAccountTypeSupported<T extends object>(

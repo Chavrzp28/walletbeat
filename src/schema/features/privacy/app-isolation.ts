@@ -37,6 +37,10 @@ export function sameExposedAccountSet(
 	return exposedAccountSet1.defaultBehavior === exposedAccountSet2.defaultBehavior
 }
 
+export const appConnectionNotSupported = {
+	type: 'APP_CONNECTION_NOT_SUPPORTED',
+} as const
+
 /**
  * How the wallet isolates apps from getting data that other apps may also
  * gather.
@@ -71,8 +75,21 @@ interface BaseAppIsolation {
  * How the wallet isolates apps from getting data that other apps may also
  * gather.
  */
-export type AppIsolation = BaseAppIsolation &
-	// Either `eth_accounts` or `wallet_connect` must be supported.
-	(| { ethAccounts: Supported<WithRef<ExposedAccountSet>> }
-		| { erc7846WalletConnect: Supported<WithRef<ExposedAccountSet>> }
+export type AppIsolation =
+	| typeof appConnectionNotSupported
+	| (BaseAppIsolation &
+			// Either `eth_accounts` or `wallet_connect` must be supported.
+			(| { ethAccounts: Supported<WithRef<ExposedAccountSet>> }
+				| { erc7846WalletConnect: Supported<WithRef<ExposedAccountSet>> }
+			))
+
+/** Type predicate for `appConnectionNotSupported`. */
+export function isAppConnectionSupportedInAppIsolation(
+	appIsolation: AppIsolation,
+): appIsolation is typeof appConnectionNotSupported {
+	return (
+		Object.hasOwn(appIsolation, 'type') &&
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Safe because we just checked the `type` key exists.
+		(appIsolation as typeof appConnectionNotSupported).type === appConnectionNotSupported.type
 	)
+}

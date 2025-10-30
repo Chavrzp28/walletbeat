@@ -328,7 +328,7 @@ export const addressResolution: Attribute<AddressResolutionValue> = {
 							support: 'NOT_SUPPORTED',
 						},
 					},
-					refs({}),
+					[],
 				),
 			),
 		],

@@ -793,10 +793,12 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 		}
 
 		const allRefs = mergeRefs(
-			refs(features.accountSupport.eoa),
-			refs(features.accountSupport.mpc),
-			refs(features.accountSupport.rawErc4337),
-			refs(features.accountSupport.eip7702),
+			isSupported(features.accountSupport.eoa) ? refs(features.accountSupport.eoa) : [],
+			isSupported(features.accountSupport.mpc) ? refs(features.accountSupport.mpc) : [],
+			isSupported(features.accountSupport.rawErc4337)
+				? refs(features.accountSupport.rawErc4337)
+				: [],
+			isSupported(features.accountSupport.eip7702) ? refs(features.accountSupport.eip7702) : [],
 		)
 		const evaluations: Array<Evaluation<AccountPortabilityValue>> = []
 		let defaultEvaluation: Evaluation<AccountPortabilityValue> | null = null

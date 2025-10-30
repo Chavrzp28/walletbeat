@@ -1,5 +1,6 @@
 import type { SmartWalletContract } from '@/schema/contracts'
 import { featureSupported } from '@/schema/features/support'
+import { refTodo } from '@/schema/reference'
 
 export const metamask7702DelegatorContract: SmartWalletContract = {
 	name: 'MetaMask 7702 Delegator',
@@ -9,5 +10,8 @@ export const metamask7702DelegatorContract: SmartWalletContract = {
 		isValidSignature: featureSupported,
 		validateUserOp: featureSupported,
 	},
-	sourceCode: { available: true },
+	sourceCode: {
+		ref: refTodo,
+		available: true,
+	},
 }

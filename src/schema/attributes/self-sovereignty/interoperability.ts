@@ -5,7 +5,6 @@ import {
 	type InteroperabilitySupport,
 	InteroperabilityType,
 } from '@/schema/features/self-sovereignty/interoperability'
-import { popRefs } from '@/schema/reference'
 import type { AtLeastOneVariant } from '@/schema/variants'
 import { WalletType } from '@/schema/wallet-types'
 import { markdown, paragraph, sentence } from '@/types/content'
@@ -96,9 +95,7 @@ export const interoperability: Attribute<InteroperabilityValue> = {
 			})
 		}
 
-		const { withoutRefs, refs: extractedRefs } =
-			popRefs<InteroperabilitySupport>(interoperabilityFeature)
-		const rating = evaluateInteroperability(withoutRefs)
+		const rating = evaluateInteroperability(interoperabilityFeature)
 
 		return {
 			value: {
@@ -106,12 +103,12 @@ export const interoperability: Attribute<InteroperabilityValue> = {
 				rating,
 				displayName: 'Interoperability',
 				shortExplanation: sentence(`{{WALLET_NAME}} has ${rating.toLowerCase()} interoperability.`),
-				...withoutRefs,
+				...interoperabilityFeature, // TODO: Filter fields
 				__brand: brand,
 			},
 			details: paragraph(`{{WALLET_NAME}} interoperability evaluation is ${rating.toLowerCase()}.`),
 			howToImprove: paragraph('{{WALLET_NAME}} should improve sub-criteria rated PARTIAL or FAIL.'),
-			...(extractedRefs.length > 0 && { references: extractedRefs }),
+			// TODO: Add references
 		}
 	},
 }

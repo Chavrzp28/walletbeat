@@ -29,7 +29,13 @@ import { addressCorrelationDetailsContent } from '@/types/content/address-correl
 import { isNonEmptyArray, type NonEmptyArray, nonEmptyFirst } from '@/types/utils/non-empty'
 
 import type { Entity } from '../../entity'
-import { type FullyQualifiedReference, type ReferenceArray, refs } from '../../reference'
+import {
+	type FullyQualifiedReference,
+	type NoRef,
+	type ReferenceArray,
+	type References,
+	refs,
+} from '../../reference'
 import { pickWorstRating, unrated } from '../common'
 
 const brand = 'attributes.privacy.address_correlation'
@@ -167,6 +173,7 @@ function isSealedSecureEnclave(endpoint?: Endpoint): boolean {
 
 export function linkableToWalletAddress<T extends UserInfo>(
 	leaks: Collection<T>,
+	ref: References | ReferenceArray | NoRef,
 ): WalletAddressLinkableTo[] {
 	const qualLeaks = isWithEndpoint<T>(leaks)
 		? qualifiedDataCollectionWithEndpoint(leaks)
@@ -177,7 +184,7 @@ export function linkableToWalletAddress<T extends UserInfo>(
 	}
 
 	const linkables: WalletAddressLinkableTo[] = []
-	const qualRefs = refs(leaks)
+	const qualRefs = refs({ ref })
 
 	for (const info of personalInfo.items) {
 		if (!collectedByDefault(qualLeaks[info])) {
@@ -303,7 +310,7 @@ export const addressCorrelation: Attribute<AddressCorrelationValue> = {
 		for (const collected of allDataCollection) {
 			allRefs.push(...refs(collected))
 
-			for (const linkable of linkableToWalletAddress(collected.dataCollection)) {
+			for (const linkable of linkableToWalletAddress(collected.dataCollection, collected.ref)) {
 				linkables.push({ by: collected.byEntity, ...linkable })
 			}
 		}
@@ -313,11 +320,14 @@ export const addressCorrelation: Attribute<AddressCorrelationValue> = {
 		if (onboarding !== null && onboarding.publishedOnchain !== 'NO_DATA_PUBLISHED_ONCHAIN') {
 			allRefs.push(...refs(onboarding.publishedOnchain))
 
-			for (const linkable of linkableToWalletAddress({
-				...onboarding.publishedOnchain,
-				// Account address is inherently published onchain.
-				[WalletInfo.ACCOUNT_ADDRESS]: CollectionPolicy.ALWAYS,
-			})) {
+			for (const linkable of linkableToWalletAddress(
+				{
+					...onboarding.publishedOnchain,
+					// Account address is inherently published onchain.
+					[WalletInfo.ACCOUNT_ADDRESS]: CollectionPolicy.ALWAYS,
+				},
+				refs(onboarding.publishedOnchain),
+			)) {
 				linkables.push({ by: 'onchain', ...linkable })
 			}
 		}

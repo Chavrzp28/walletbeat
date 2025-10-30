@@ -5,7 +5,6 @@ import {
 	type HardwarePrivacySupport,
 	HardwarePrivacyType,
 } from '@/schema/features/privacy/hardware-privacy'
-import { popRefs } from '@/schema/reference'
 import type { AtLeastOneVariant } from '@/schema/variants'
 import { WalletType } from '@/schema/wallet-types'
 import { markdown, paragraph, sentence } from '@/types/content'
@@ -107,8 +106,7 @@ export const hardwarePrivacy: Attribute<HardwarePrivacyValue> = {
 			})
 		}
 
-		const { withoutRefs, refs: extractedRefs } = popRefs<HardwarePrivacySupport>(hwPrivacy)
-		const rating = evaluateHardwarePrivacy(withoutRefs)
+		const rating = evaluateHardwarePrivacy(hwPrivacy)
 
 		return {
 			value: {
@@ -116,12 +114,12 @@ export const hardwarePrivacy: Attribute<HardwarePrivacyValue> = {
 				rating,
 				displayName: 'Hardware Privacy',
 				shortExplanation: sentence(`{{WALLET_NAME}} has ${rating.toLowerCase()} hardware privacy.`),
-				...withoutRefs,
+				...hwPrivacy, // TODO: Filter fields
 				__brand: brand,
 			},
 			details: paragraph(`{{WALLET_NAME}} hardware privacy evaluation is ${rating.toLowerCase()}.`),
 			howToImprove: paragraph('{{WALLET_NAME}} should improve sub-criteria rated PARTIAL or FAIL.'),
-			...(extractedRefs.length > 0 && { references: extractedRefs }),
+			// TODO: Add references
 		}
 	},
 }

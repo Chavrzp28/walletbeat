@@ -18,6 +18,7 @@ import {
 	type SupportedHardwareWallet,
 } from '@/schema/features/security/hardware-wallet-support'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
+import { type ScamUrlWarning } from '@/schema/features/security/scam-alerts'
 import { RpcEndpointConfiguration } from '@/schema/features/self-sovereignty/chain-configurability'
 import {
 	TransactionSubmissionL2Support,
@@ -26,6 +27,7 @@ import {
 import { notSupported, supported } from '@/schema/features/support'
 import { FeeDisplayLevel } from '@/schema/features/transparency/fee-display'
 import { License } from '@/schema/features/transparency/license'
+import { refNotNecessary, refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -52,6 +54,7 @@ export const imtoken: SoftwareWallet = {
 			defaultAccountType: AccountType.eoa,
 			eip7702: notSupported,
 			eoa: supported({
+				ref: refTodo,
 				canExportPrivateKey: true,
 				keyDerivation: {
 					type: 'BIP32',
@@ -65,13 +68,6 @@ export const imtoken: SoftwareWallet = {
 			safe: notSupported,
 		},
 		addressResolution: {
-			chainSpecificAddressing: {
-				erc7828: notSupported,
-				erc7831: notSupported,
-			},
-			nonChainSpecificEnsResolution: supported<AddressResolutionData>({
-				medium: 'CHAIN_CLIENT',
-			}),
 			ref: [
 				{
 					explanation:
@@ -79,15 +75,17 @@ export const imtoken: SoftwareWallet = {
 					url: 'https://support.token.im/hc/articles/360039928813',
 				},
 			],
+			chainSpecificAddressing: {
+				erc7828: notSupported,
+				erc7831: notSupported,
+			},
+			nonChainSpecificEnsResolution: supported<AddressResolutionData>({
+				medium: 'CHAIN_CLIENT',
+			}),
 		},
 		chainAbstraction: {
 			bridging: {
 				builtInBridging: supported({
-					feesLargerThan1bps: {
-						afterSingleAction: FeeDisplayLevel.COMPREHENSIVE,
-						byDefault: FeeDisplayLevel.COMPREHENSIVE,
-						fullySponsored: false,
-					},
 					ref: [
 						{
 							explanation:
@@ -95,11 +93,17 @@ export const imtoken: SoftwareWallet = {
 							url: 'https://support.token.im/hc/en-us/articles/4404355206553-How-to-use-cBridge-with-imToken',
 						},
 					],
+					feesLargerThan1bps: {
+						afterSingleAction: FeeDisplayLevel.COMPREHENSIVE,
+						byDefault: FeeDisplayLevel.COMPREHENSIVE,
+						fullySponsored: false,
+					},
 					risksExplained: 'NOT_IN_UI',
 				}),
 				suggestedBridging: notSupported,
 			},
 			crossChainBalances: {
+				ref: refTodo,
 				ether: {
 					crossChainSumView: notSupported,
 					perChainBalanceViewAcrossMultipleChains: notSupported,
@@ -113,9 +117,6 @@ export const imtoken: SoftwareWallet = {
 			},
 		},
 		chainConfigurability: {
-			customChains: true,
-			l1RpcEndpoint: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
-			otherRpcEndpoints: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
 			ref: [
 				{
 					explanation:
@@ -123,6 +124,9 @@ export const imtoken: SoftwareWallet = {
 					url: 'https://support.token.im/hc/en-us/articles/900005324266-imToken-now-supports-custom-RPC-Experience-the-layer-2-ecosystem-today',
 				},
 			],
+			customChains: true,
+			l1RpcEndpoint: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
+			otherRpcEndpoints: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
 		},
 		ecosystem: {
 			delegation: null,
@@ -133,7 +137,6 @@ export const imtoken: SoftwareWallet = {
 		},
 		license: {
 			[Variant.MOBILE]: {
-				license: License.APACHE_2_0,
 				ref: [
 					{
 						explanation:
@@ -141,6 +144,7 @@ export const imtoken: SoftwareWallet = {
 						url: 'https://github.com/consenlabs/token-core-monorepo/blob/main/LICENSE',
 					},
 				],
+				license: License.APACHE_2_0,
 			},
 		},
 		monetization: {
@@ -185,6 +189,13 @@ export const imtoken: SoftwareWallet = {
 				[UserFlow.TRANSACTION]: {
 					collected: [
 						{
+							ref: [
+								{
+									explanation:
+										"imToken can associate your wallet address along with your mobile device's IP address, per its privacy policy. Each request only involves one active address.",
+									url: 'https://token.im/tos-en.html',
+								},
+							],
 							byEntity: imToken,
 							dataCollection: {
 								[WalletInfo.ACCOUNT_ADDRESS]: CollectionPolicy.ALWAYS,
@@ -194,13 +205,6 @@ export const imtoken: SoftwareWallet = {
 								},
 							},
 							purposes: [DataCollectionPurpose.CHAIN_DATA_LOOKUP],
-							ref: [
-								{
-									explanation:
-										"imToken can associate your wallet address along with your mobile device's IP address, per its privacy policy. Each request only involves one active address.",
-									url: 'https://token.im/tos-en.html',
-								},
-							],
 						},
 					],
 				},
@@ -224,8 +228,6 @@ export const imtoken: SoftwareWallet = {
 		security: {
 			bugBountyProgram: {
 				type: BugBountyProgramType.COMPREHENSIVE,
-				details:
-					'imToken operates a comprehensive bug bounty program through Bugrap platform, covering both the wallet and the website. The program has a wide scope, competitive rewards, and a responsive disclosure process.',
 				ref: [
 					{
 						explanation:
@@ -237,6 +239,8 @@ export const imtoken: SoftwareWallet = {
 						url: 'https://bugrap.io/bounties/imToken%20Website',
 					},
 				],
+				details:
+					'imToken operates a comprehensive bug bounty program through Bugrap platform, covering both the wallet and the website. The program has a wide scope, competitive rewards, and a responsive disclosure process.',
 				upgradePathAvailable: true,
 				url: 'https://bugrap.io/bounties/imToken%20Wallet',
 			},
@@ -264,14 +268,12 @@ export const imtoken: SoftwareWallet = {
 			},
 			passkeyVerification: {
 				[Variant.MOBILE]: {
+					ref: refNotNecessary,
 					library: PasskeyVerificationLibrary.NONE,
-					ref: null,
 				},
 			},
 			publicSecurityAudits: [
 				{
-					auditDate: '2018-05-07',
-					auditor: cure53,
 					ref: [
 						{
 							explanation:
@@ -279,18 +281,14 @@ export const imtoken: SoftwareWallet = {
 							url: 'https://cure53.de/pentest-report_imtoken.pdf',
 						},
 					],
+					auditDate: '2018-05-07',
+					auditor: cure53,
 					unpatchedFlaws: 'ALL_FIXED',
 					variantsScope: 'ALL_VARIANTS',
 				},
 			],
 			scamAlerts: {
 				contractTransactionWarning: supported({
-					contractRegistry: true,
-					leaksContractAddress: true,
-					leaksUserAddress: true,
-					leaksUserIp: true,
-					previousContractInteractionWarning: true,
-					recentContractWarning: false,
 					ref: [
 						{
 							explanation:
@@ -298,11 +296,14 @@ export const imtoken: SoftwareWallet = {
 							url: 'https://support.token.im/hc/en-us/articles/21850966355737-Revamped-imToken-signature-for-safer-and-more-intuitive-transactions',
 						},
 					],
+					contractRegistry: true,
+					leaksContractAddress: true,
+					leaksUserAddress: true,
+					leaksUserIp: true,
+					previousContractInteractionWarning: true,
+					recentContractWarning: false,
 				}),
-				scamUrlWarning: supported({
-					leaksIp: false,
-					leaksUserAddress: false,
-					leaksVisitedUrl: 'NO',
+				scamUrlWarning: supported<ScamUrlWarning>({
 					ref: [
 						{
 							explanation:
@@ -310,6 +311,9 @@ export const imtoken: SoftwareWallet = {
 							url: 'https://support.token.im/hc/en-us/articles/21850966355737-Revamped-imToken-signature-for-safer-and-more-intuitive-transactions',
 						},
 					],
+					leaksIp: false,
+					leaksUserAddress: false,
+					leaksVisitedUrl: 'NO',
 				}),
 				sendTransactionWarning: notSupported,
 			},
@@ -317,10 +321,12 @@ export const imtoken: SoftwareWallet = {
 		selfSovereignty: {
 			transactionSubmission: {
 				l1: {
+					ref: refTodo,
 					selfBroadcastViaDirectGossip: notSupported,
 					selfBroadcastViaSelfHostedNode: null,
 				},
 				l2: {
+					ref: refTodo,
 					[TransactionSubmissionL2Type.arbitrum]:
 						TransactionSubmissionL2Support.NOT_SUPPORTED_BY_WALLET_BY_DEFAULT,
 					[TransactionSubmissionL2Type.opStack]:

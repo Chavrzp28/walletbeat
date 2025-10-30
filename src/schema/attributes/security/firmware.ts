@@ -2,7 +2,6 @@ import { type Attribute, type Evaluation, Rating, type Value } from '@/schema/at
 import { exampleRating } from '@/schema/attributes'
 import type { ResolvedFeatures } from '@/schema/features'
 import { type FirmwareSupport, FirmwareType } from '@/schema/features/security/firmware'
-import { popRefs } from '@/schema/reference'
 import type { AtLeastOneVariant } from '@/schema/variants'
 import { WalletType } from '@/schema/wallet-types'
 import { markdown, paragraph, sentence } from '@/types/content'
@@ -113,8 +112,7 @@ export const firmware: Attribute<FirmwareValue> = {
 			})
 		}
 
-		const { withoutRefs, refs: extractedRefs } = popRefs<FirmwareSupport>(firmwareFeature)
-		const rating = evaluateFirmware(withoutRefs)
+		const rating = evaluateFirmware(firmwareFeature)
 
 		if (rating === Rating.UNRATED) {
 			return unrated(firmware, brand, {
@@ -131,12 +129,12 @@ export const firmware: Attribute<FirmwareValue> = {
 				rating,
 				displayName: 'Firmware',
 				shortExplanation: sentence(`{{WALLET_NAME}} has ${rating.toLowerCase()} firmware.`),
-				...withoutRefs,
+				...firmwareFeature, // TODO: Filter fields.
 				__brand: brand,
 			},
 			details: paragraph(`{{WALLET_NAME}} firmware evaluation is ${rating.toLowerCase()}.`),
 			howToImprove: paragraph('{{WALLET_NAME}} should improve sub-criteria rated PARTIAL or FAIL.'),
-			...(extractedRefs.length > 0 && { references: extractedRefs }),
+			// TODO: References.
 		}
 	},
 }

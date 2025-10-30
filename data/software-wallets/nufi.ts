@@ -11,6 +11,7 @@ import { RpcEndpointConfiguration } from '@/schema/features/self-sovereignty/cha
 import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
 import { featureSupported, notSupported, supported } from '@/schema/features/support'
 import { License } from '@/schema/features/transparency/license'
+import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -35,15 +36,16 @@ export const nufi: SoftwareWallet = {
 		accountSupport: {
 			defaultAccountType: AccountType.eoa,
 			eip7702: supported({
-				contract: metamask7702DelegatorContract,
 				ref: {
 					explanation:
 						'The NuFi FAQ mentions the use the MetaMask DeleGator contract as smart account implementation.',
 					label: 'NuFi support site',
 					url: 'https://support.nu.fi/support/solutions/articles/80001178239',
 				},
+				contract: metamask7702DelegatorContract,
 			}),
 			eoa: supported({
+				ref: refTodo,
 				canExportPrivateKey: false,
 				keyDerivation: {
 					type: 'BIP32',
@@ -57,6 +59,7 @@ export const nufi: SoftwareWallet = {
 			safe: notSupported,
 		},
 		addressResolution: {
+			ref: refTodo,
 			chainSpecificAddressing: {
 				erc7828: notSupported,
 				erc7831: notSupported,
@@ -65,6 +68,7 @@ export const nufi: SoftwareWallet = {
 		},
 		chainAbstraction: null,
 		chainConfigurability: {
+			ref: refTodo,
 			customChains: true,
 			l1RpcEndpoint: RpcEndpointConfiguration.NO,
 			otherRpcEndpoints: RpcEndpointConfiguration.NO,
@@ -85,18 +89,22 @@ export const nufi: SoftwareWallet = {
 		},
 		integration: {
 			browser: {
+				ref: refTodo,
 				'1193': featureSupported,
 				'2700': featureSupported,
 				'6963': featureSupported,
 			},
 			walletCall: supported({
+				ref: refTodo,
 				atomicMultiTransactions: featureSupported,
 			}),
 		},
 		license: {
+			ref: refTodo,
 			license: License.PROPRIETARY,
 		},
 		monetization: {
+			ref: refTodo,
 			revenueBreakdownIsPublic: false,
 			strategies: {
 				donations: false,
@@ -126,6 +134,7 @@ export const nufi: SoftwareWallet = {
 		security: {
 			bugBountyProgram: null,
 			hardwareWalletSupport: {
+				ref: refTodo,
 				wallets: {
 					[HardwareWalletType.LEDGER]: supported<SupportedHardwareWallet>({
 						connectionTypes: [HardwareWalletConnection.webUSB, HardwareWalletConnection.bluetooth],
@@ -157,10 +166,12 @@ export const nufi: SoftwareWallet = {
 		selfSovereignty: {
 			transactionSubmission: {
 				l1: {
+					ref: refTodo,
 					selfBroadcastViaDirectGossip: notSupported,
 					selfBroadcastViaSelfHostedNode: notSupported,
 				},
 				l2: {
+					ref: refTodo,
 					[TransactionSubmissionL2Type.arbitrum]: null,
 					[TransactionSubmissionL2Type.opStack]: null,
 				},

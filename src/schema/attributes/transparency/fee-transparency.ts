@@ -128,7 +128,7 @@ function feeDisplayLevelForType(
 					return notSupported
 				}
 
-				return supported(stealthAddr.fees)
+				return supported({ ...stealthAddr.fees, ref: stealthAddr.ref })
 			})()
 		case FeeType.TORNADO_CASH_NOVA_RELAYER:
 			return (() => {

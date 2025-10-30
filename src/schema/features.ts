@@ -1,4 +1,5 @@
 import { prefixError } from '@/types/errors'
+import { isNonNull, type Nullable, type NullableObject } from '@/types/utils/nullable'
 
 import type { AccountSupport } from './features/account-support'
 import type { ChainAbstraction } from './features/ecosystem/chain-abstraction'
@@ -107,7 +108,7 @@ export interface WalletBaseFeatures {
 	/** Transparency features. */
 	transparency: {
 		/** Information on how fees are displayed for basic operations. */
-		operationFees: VariantFeature<BasicOperationFees>
+		operationFees: VariantFeature<Nullable<BasicOperationFees>>
 	}
 
 	/** Which types of accounts the wallet supports. */
@@ -133,7 +134,7 @@ export interface WalletBaseFeatures {
 export type WalletSoftwareFeatures = WalletBaseFeatures & {
 	security: WalletBaseFeatures['security'] & {
 		/** Support for alerting the user about potential scams. */
-		scamAlerts: VariantFeature<ScamAlerts>
+		scamAlerts: VariantFeature<Nullable<ScamAlerts>>
 
 		/** Hardware wallet support */
 		hardwareWalletSupport: VariantFeature<HardwareWalletSupport>
@@ -145,13 +146,13 @@ export type WalletSoftwareFeatures = WalletBaseFeatures & {
 	/** Privacy features. */
 	privacy: WalletBaseFeatures['privacy'] & {
 		/** Does the wallet isolate data between apps? */
-		appIsolation: VariantFeature<'APP_CONNECTION_NOT_SUPPORTED' | AppIsolation>
+		appIsolation: VariantFeature<Nullable<AppIsolation>>
 	}
 
 	/** Self-sovereignty features. */
 	selfSovereignty: WalletBaseFeatures['selfSovereignty'] & {
 		/** Describes the set of options for submitting transactions. */
-		transactionSubmission: VariantFeature<TransactionSubmission>
+		transactionSubmission: VariantFeature<Nullable<TransactionSubmission>>
 	}
 
 	/** Ecosystem features. */
@@ -161,16 +162,16 @@ export type WalletSoftwareFeatures = WalletBaseFeatures & {
 	}
 
 	/** Level of configurability for chains. */
-	chainConfigurability: VariantFeature<ChainConfigurability>
+	chainConfigurability: VariantFeature<Nullable<ChainConfigurability>>
 
 	/** Integration inside browsers, mobile phones, etc. */
 	integration: WalletIntegration
 
 	/** How the wallet resolves Ethereum addresses. */
-	addressResolution: VariantFeature<WithRef<AddressResolution>>
+	addressResolution: VariantFeature<Nullable<WithRef<AddressResolution>>>
 
 	/** How well does the wallet abstract over chains? */
-	chainAbstraction: VariantFeature<ChainAbstraction>
+	chainAbstraction: VariantFeature<Nullable<ChainAbstraction>>
 }
 
 /**
@@ -271,7 +272,7 @@ export interface ResolvedFeatures {
 		privacyPolicy: ResolvedFeature<string>
 		hardwarePrivacy: ResolvedFeature<HardwarePrivacySupport>
 		transactionPrivacy: ResolvedFeature<TransactionPrivacy>
-		appIsolation: ResolvedFeature<'APP_CONNECTION_NOT_SUPPORTED' | AppIsolation>
+		appIsolation: ResolvedFeature<AppIsolation>
 	}
 	selfSovereignty: {
 		transactionSubmission: ResolvedFeature<TransactionSubmission>
@@ -310,6 +311,11 @@ export function resolveFeatures(
 			throw prefixError(`Feature ${featureName}`, e)
 		}
 	}
+	const nullable = <F extends NullableObject>(
+		obj: ResolvedFeature<Nullable<F>>,
+	): ResolvedFeature<F> => {
+		return isNonNull<F>(obj) ? obj : null
+	}
 	const baseFeat = <F>(
 		featureName: string,
 		featureFn: (baseFeatures: WalletBaseFeatures) => VariantFeature<F>,
@@ -342,7 +348,9 @@ export function resolveFeatures(
 		type: variantToWalletType(variant),
 		profile: features.profile,
 		security: {
-			scamAlerts: softwareFeat('security.scamAlerts', features => features.security.scamAlerts),
+			scamAlerts: nullable(
+				softwareFeat('security.scamAlerts', features => features.security.scamAlerts),
+			),
 			publicSecurityAudits:
 				features.security.publicSecurityAudits === null
 					? null
@@ -401,12 +409,16 @@ export function resolveFeatures(
 				'privacy.transactionPrivacy',
 				features => features.privacy.transactionPrivacy,
 			),
-			appIsolation: softwareFeat('privacy.appIsolation', features => features.privacy.appIsolation),
+			appIsolation: nullable(
+				softwareFeat('privacy.appIsolation', features => features.privacy.appIsolation),
+			),
 		},
 		selfSovereignty: {
-			transactionSubmission: softwareFeat(
-				'selfSovereignty.transactionSubmission',
-				features => features.selfSovereignty.transactionSubmission,
+			transactionSubmission: nullable(
+				softwareFeat(
+					'selfSovereignty.transactionSubmission',
+					features => features.selfSovereignty.transactionSubmission,
+				),
 			),
 			interoperability: hardwareFeat(
 				'selfSovereignty.interoperability',
@@ -414,9 +426,8 @@ export function resolveFeatures(
 			),
 		},
 		transparency: {
-			operationFees: baseFeat(
-				'transparency.operationFees',
-				features => features.transparency.operationFees,
+			operationFees: nullable(
+				baseFeat('transparency.operationFees', features => features.transparency.operationFees),
 			),
 			reputation: hardwareFeat(
 				'transparency.reputation',
@@ -427,10 +438,11 @@ export function resolveFeatures(
 				features => features.transparency.maintenance,
 			),
 		},
-		chainAbstraction: softwareFeat('chainAbstraction', features => features.chainAbstraction),
-		chainConfigurability: softwareFeat(
-			'chainConfigurability',
-			features => features.chainConfigurability,
+		chainAbstraction: nullable(
+			softwareFeat('chainAbstraction', features => features.chainAbstraction),
+		),
+		chainConfigurability: nullable(
+			softwareFeat('chainConfigurability', features => features.chainConfigurability),
 		),
 		accountSupport: baseFeat('accountSupport', features => features.accountSupport),
 		multiAddress: baseFeat('multiAddress', features => features.multiAddress),
@@ -439,7 +451,9 @@ export function resolveFeatures(
 			expectedVariants,
 			variant,
 		),
-		addressResolution: softwareFeat('addressResolution', features => features.addressResolution),
+		addressResolution: nullable(
+			softwareFeat('addressResolution', features => features.addressResolution),
+		),
 		license: baseFeat('license', features => features.license),
 		monetization: baseFeat('monetization', features => features.monetization),
 	}

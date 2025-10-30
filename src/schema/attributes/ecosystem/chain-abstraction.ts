@@ -10,12 +10,18 @@ import type {
 	ChainAbstraction,
 	CrossChainBalanceDisplay,
 } from '@/schema/features/ecosystem/chain-abstraction'
-import { featureSupported, isSupported, notSupported, supported } from '@/schema/features/support'
+import {
+	featureSupported,
+	featureSupportedNoRef,
+	isSupported,
+	notSupported,
+	supported,
+} from '@/schema/features/support'
 import {
 	comprehensiveFeesShownByDefault,
 	FeeDisplayLevel,
 } from '@/schema/features/transparency/fee-display'
-import { mergeRefs, refs } from '@/schema/reference'
+import { mergeRefs, refNotNecessary, refs } from '@/schema/reference'
 import { WalletType } from '@/schema/wallet-types'
 import { markdown, sentence } from '@/types/content'
 
@@ -330,18 +336,20 @@ const fullySupportedCrossChainBalanceDisplay: CrossChainBalanceDisplay = {
 }
 
 const fullySupportedCrossChainBalances: ChainAbstraction['crossChainBalances'] = {
-	globalAccountValue: featureSupported,
-	perChainAccountValue: featureSupported,
+	globalAccountValue: featureSupportedNoRef,
+	perChainAccountValue: featureSupportedNoRef,
 	ether: fullySupportedCrossChainBalanceDisplay,
 	usdc: fullySupportedCrossChainBalanceDisplay,
+	ref: refNotNecessary,
 }
 
 const fullySupportedBridging: ChainAbstraction['bridging'] = {
 	builtInBridging: supported({
+		ref: refNotNecessary,
 		risksExplained: 'VISIBLE_BY_DEFAULT',
 		feesLargerThan1bps: comprehensiveFeesShownByDefault,
 	}),
-	suggestedBridging: featureSupported,
+	suggestedBridging: featureSupportedNoRef,
 }
 
 export const chainAbstraction: Attribute<ChainAbstractionValue> = {
@@ -405,6 +413,7 @@ export const chainAbstraction: Attribute<ChainAbstractionValue> = {
 				),
 				evaluateChainAbstraction({
 					crossChainBalances: {
+						ref: refNotNecessary,
 						globalAccountValue: notSupported,
 						perChainAccountValue: notSupported,
 						ether: {
@@ -437,6 +446,7 @@ export const chainAbstraction: Attribute<ChainAbstractionValue> = {
 				),
 				evaluateChainAbstraction({
 					crossChainBalances: {
+						ref: refNotNecessary,
 						globalAccountValue: featureSupported,
 						perChainAccountValue: featureSupported,
 						ether: {
@@ -459,6 +469,7 @@ export const chainAbstraction: Attribute<ChainAbstractionValue> = {
 					crossChainBalances: fullySupportedCrossChainBalances,
 					bridging: {
 						builtInBridging: supported({
+							ref: refNotNecessary,
 							feesLargerThan1bps: {
 								byDefault: FeeDisplayLevel.NONE,
 								afterSingleAction: FeeDisplayLevel.NONE,
@@ -478,6 +489,7 @@ export const chainAbstraction: Attribute<ChainAbstractionValue> = {
 					crossChainBalances: fullySupportedCrossChainBalances,
 					bridging: {
 						builtInBridging: supported({
+							ref: refNotNecessary,
 							feesLargerThan1bps: comprehensiveFeesShownByDefault,
 							risksExplained: 'HIDDEN_BY_DEFAULT',
 						}),

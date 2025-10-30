@@ -12,7 +12,6 @@ import {
 	type SupplyChainFactorySupport,
 	SupplyChainFactoryType,
 } from '@/schema/features/security/supply-chain-factory'
-import { popRefs } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { WalletMetadata } from '@/schema/wallet'
 import { WalletType } from '@/schema/wallet-types'
@@ -166,8 +165,7 @@ export const supplyChainFactory: Attribute<SupplyChainFactoryValue> = {
 			})
 		}
 
-		const { withoutRefs, refs: extractedRefs } = popRefs<SupplyChainFactorySupport>(factoryFeature)
-		const rating = evaluateSupplyChainFactory(withoutRefs)
+		const rating = evaluateSupplyChainFactory(factoryFeature)
 
 		return {
 			value: {
@@ -177,14 +175,14 @@ export const supplyChainFactory: Attribute<SupplyChainFactoryValue> = {
 				shortExplanation: sentence(
 					`{{WALLET_NAME}} has ${rating.toLowerCase()} factory supply chain.`,
 				),
-				...withoutRefs,
+				...factoryFeature, // TODO: Filter fields
 				__brand: brand,
 			},
 			details: paragraph(
 				`{{WALLET_NAME}} factory supply chain evaluation is ${rating.toLowerCase()}.`,
 			),
 			howToImprove: paragraph('{{WALLET_NAME}} should improve sub-criteria rated PARTIAL or FAIL.'),
-			...(extractedRefs.length > 0 && { references: extractedRefs }),
+			// TODO: Add references
 		}
 	},
 }

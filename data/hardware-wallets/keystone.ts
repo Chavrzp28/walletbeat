@@ -7,6 +7,7 @@ import {
 	DataExtraction,
 	displaysFullTransactionDetails,
 } from '@/schema/features/security/hardware-wallet-app-signing'
+import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -39,7 +40,7 @@ export const keystoneWallet: HardwareWallet = {
 		accountSupport: null,
 		license: null,
 		monetization: {
-			ref: null,
+			ref: refTodo,
 			revenueBreakdownIsPublic: false,
 			strategies: {
 				donations: null,
@@ -64,8 +65,6 @@ export const keystoneWallet: HardwareWallet = {
 		security: {
 			bugBountyProgram: {
 				type: BugBountyProgramType.COMPREHENSIVE,
-				details:
-					'The Keystone Bug Bounty Program is designed to encourage security research in Keystone hardware and software to award them for their invaluable contribution to the security of all Keystone users.',
 				ref: [
 					{
 						explanation:
@@ -73,6 +72,8 @@ export const keystoneWallet: HardwareWallet = {
 						url: 'https://keyst.one/bug-bounty-program',
 					},
 				],
+				details:
+					'The Keystone Bug Bounty Program is designed to encourage security research in Keystone hardware and software to award them for their invaluable contribution to the security of all Keystone users.',
 				upgradePathAvailable: false,
 				url: 'https://keyst.one/bug-bounty-program',
 			},
@@ -84,6 +85,18 @@ export const keystoneWallet: HardwareWallet = {
 				silentUpdateProtection: FirmwareType.PASS,
 			},
 			hardwareWalletAppSigning: {
+				ref: [
+					{
+						explanation:
+							"Independent video demonstration of Keystone's signing implementation on a Safe.",
+						url: 'https://youtu.be/9YmPWxAvKYY?t=759',
+					},
+					{
+						explanation:
+							"Independent video demonstration of Keystone's transaction implementation on a Safe.",
+						url: 'https://youtube.com/shorts/Ly9lo4g5NpA',
+					},
+				],
 				messageSigning: {
 					calldataDecoding: {
 						[CalldataDecoding.ETH_USDC_TRANSFER]: true,
@@ -100,18 +113,6 @@ export const keystoneWallet: HardwareWallet = {
 						[DataExtraction.QRCODE]: true,
 					},
 				},
-				ref: [
-					{
-						explanation:
-							"Independent video demonstration of Keystone's signing implementation on a Safe.",
-						url: 'https://youtu.be/9YmPWxAvKYY?t=759',
-					},
-					{
-						explanation:
-							"Independent video demonstration of Keystone's transaction implementation on a Safe.",
-						url: 'https://youtube.com/shorts/Ly9lo4g5NpA',
-					},
-				],
 				transactionSigning: {
 					calldataDecoding: {
 						[CalldataDecoding.ETH_USDC_TRANSFER]: true,

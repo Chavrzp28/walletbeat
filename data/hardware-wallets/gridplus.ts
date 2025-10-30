@@ -6,6 +6,7 @@ import {
 	DataExtraction,
 	displaysFullTransactionDetails,
 } from '@/schema/features/security/hardware-wallet-app-signing'
+import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -38,7 +39,7 @@ export const gridplusWallet: HardwareWallet = {
 		accountSupport: null,
 		license: null,
 		monetization: {
-			ref: null,
+			ref: refTodo,
 			revenueBreakdownIsPublic: false,
 			strategies: {
 				donations: null,
@@ -63,8 +64,6 @@ export const gridplusWallet: HardwareWallet = {
 		security: {
 			bugBountyProgram: {
 				type: BugBountyProgramType.COMPREHENSIVE,
-				details:
-					'GridPlus pledges not to initiate legal action for security research conducted pursuant to all Bug Bounty Program policies, including good faith, accidental violations',
 				ref: [
 					{
 						explanation:
@@ -72,11 +71,25 @@ export const gridplusWallet: HardwareWallet = {
 						url: 'https://docs.gridplus.io/resources/bug-bounty-and-responsible-disclosure-policy',
 					},
 				],
+				details:
+					'GridPlus pledges not to initiate legal action for security research conducted pursuant to all Bug Bounty Program policies, including good faith, accidental violations',
 				upgradePathAvailable: true,
 				url: 'https://docs.gridplus.io/resources/bug-bounty-and-responsible-disclosure-policy',
 			},
 			firmware: null,
 			hardwareWalletAppSigning: {
+				ref: [
+					{
+						explanation:
+							"Independent video demonstration of GridPlus's clear signing implementation on Safe.",
+						url: 'https://youtu.be/9YmPWxAvKYY?t=2079',
+					},
+					{
+						explanation:
+							"Independent video demonstration of GridPlus's transaction implementation on Safe.",
+						url: 'https://youtube.com/shorts/_s5PjZhgBig',
+					},
+				],
 				messageSigning: {
 					calldataDecoding: {
 						[CalldataDecoding.ETH_USDC_TRANSFER]: true,
@@ -93,18 +106,6 @@ export const gridplusWallet: HardwareWallet = {
 						[DataExtraction.QRCODE]: false,
 					},
 				},
-				ref: [
-					{
-						explanation:
-							"Independent video demonstration of GridPlus's clear signing implementation on Safe.",
-						url: 'https://youtu.be/9YmPWxAvKYY?t=2079',
-					},
-					{
-						explanation:
-							"Independent video demonstration of GridPlus's transaction implementation on Safe.",
-						url: 'https://youtube.com/shorts/_s5PjZhgBig',
-					},
-				],
 				transactionSigning: {
 					calldataDecoding: {
 						[CalldataDecoding.ETH_USDC_TRANSFER]: true,

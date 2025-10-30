@@ -8,6 +8,7 @@ import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/
 import { featureSupported, notSupported, supported } from '@/schema/features/support'
 import { comprehensiveFeesShownByDefault } from '@/schema/features/transparency/fee-display'
 import { License } from '@/schema/features/transparency/license'
+import { refNotNecessary, refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -33,6 +34,7 @@ export const gemwallet: SoftwareWallet = {
 			defaultAccountType: AccountType.eoa,
 			eip7702: notSupported,
 			eoa: supported({
+				ref: refTodo,
 				canExportPrivateKey: true,
 				keyDerivation: {
 					type: 'BIP32',
@@ -46,13 +48,6 @@ export const gemwallet: SoftwareWallet = {
 			safe: notSupported,
 		},
 		addressResolution: {
-			chainSpecificAddressing: {
-				erc7828: notSupported,
-				erc7831: notSupported,
-			},
-			nonChainSpecificEnsResolution: supported<AddressResolutionData>({
-				medium: 'CHAIN_CLIENT',
-			}),
 			ref: [
 				{
 					explanation:
@@ -60,6 +55,13 @@ export const gemwallet: SoftwareWallet = {
 					url: 'https://gemwallet.com',
 				},
 			],
+			chainSpecificAddressing: {
+				erc7828: notSupported,
+				erc7831: notSupported,
+			},
+			nonChainSpecificEnsResolution: supported<AddressResolutionData>({
+				medium: 'CHAIN_CLIENT',
+			}),
 		},
 		chainAbstraction: null,
 		chainConfigurability: null,
@@ -71,13 +73,13 @@ export const gemwallet: SoftwareWallet = {
 			walletCall: null,
 		},
 		license: {
-			license: License.GPL_3_0,
 			ref: [
 				{
 					explanation: 'Gem Wallet is licensed under the GPL-3.0 license.',
 					url: 'https://github.com/gemwalletcom/gem-ios/blob/main/LICENSE',
 				},
 			],
+			license: License.GPL_3_0,
 		},
 		monetization: {
 			ref: [
@@ -120,18 +122,12 @@ export const gemwallet: SoftwareWallet = {
 				ethereumL1: notSupported,
 			},
 			passkeyVerification: {
+				ref: refNotNecessary,
 				library: PasskeyVerificationLibrary.NONE,
-				ref: null,
 			},
 			publicSecurityAudits: null,
 			scamAlerts: {
 				contractTransactionWarning: supported({
-					contractRegistry: true,
-					leaksContractAddress: true,
-					leaksUserAddress: true,
-					leaksUserIp: true,
-					previousContractInteractionWarning: false,
-					recentContractWarning: false,
 					ref: [
 						{
 							explanation:
@@ -139,13 +135,15 @@ export const gemwallet: SoftwareWallet = {
 							url: 'https://gemwallet.com',
 						},
 					],
+					contractRegistry: true,
+					leaksContractAddress: true,
+					leaksUserAddress: true,
+					leaksUserIp: true,
+					previousContractInteractionWarning: false,
+					recentContractWarning: false,
 				}),
 				scamUrlWarning: notSupported,
 				sendTransactionWarning: supported({
-					leaksRecipient: false,
-					leaksUserAddress: false,
-					leaksUserIp: false,
-					newRecipientWarning: true,
 					ref: [
 						{
 							explanation:
@@ -153,6 +151,10 @@ export const gemwallet: SoftwareWallet = {
 							url: 'https://gemwallet.com',
 						},
 					],
+					leaksRecipient: false,
+					leaksUserAddress: false,
+					leaksUserIp: false,
+					newRecipientWarning: true,
 					userWhitelist: false,
 				}),
 			},
@@ -160,12 +162,14 @@ export const gemwallet: SoftwareWallet = {
 		selfSovereignty: {
 			transactionSubmission: {
 				l1: {
+					ref: refTodo,
 					selfBroadcastViaDirectGossip: null,
 					selfBroadcastViaSelfHostedNode: null,
 				},
 				l2: {
 					[TransactionSubmissionL2Type.arbitrum]: null,
 					[TransactionSubmissionL2Type.opStack]: null,
+					ref: refTodo,
 				},
 			},
 		},

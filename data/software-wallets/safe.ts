@@ -10,6 +10,7 @@ import {
 	type SupportedHardwareWallet,
 } from '@/schema/features/security/hardware-wallet-support'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
+import { type ScamUrlWarning } from '@/schema/features/security/scam-alerts'
 import { RpcEndpointConfiguration } from '@/schema/features/self-sovereignty/chain-configurability'
 import {
 	TransactionSubmissionL2Support,
@@ -18,6 +19,7 @@ import {
 import { featureSupported, notSupported, supported } from '@/schema/features/support'
 import { FeeDisplayLevel } from '@/schema/features/transparency/fee-display' // for level
 import { License } from '@/schema/features/transparency/license' // assuming path
+import { refNotNecessary, refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -44,18 +46,19 @@ export const safe: SoftwareWallet = {
 			eoa: notSupported,
 			mpc: notSupported,
 			rawErc4337: supported({
-				contract: 'UNKNOWN',
-				controllingSharesInSelfCustodyByDefault: 'YES',
-				keyRotationTransactionGeneration:
-					TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
 				ref: {
 					explanation: 'Safe supports ERC-4337 via their 4337 module implementation',
 					url: 'https://github.com/safe-global/safe-modules/tree/master/4337',
 				},
+				contract: 'UNKNOWN',
+				controllingSharesInSelfCustodyByDefault: 'YES',
+				keyRotationTransactionGeneration:
+					TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
 				tokenTransferTransactionGeneration:
 					TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
 			}),
 			safe: supported({
+				ref: refNotNecessary, // It's Safe Wallet, duh.
 				canDeployNew: true,
 				controllingSharesInSelfCustodyByDefault: 'YES',
 				defaultConfig: {
@@ -77,15 +80,16 @@ export const safe: SoftwareWallet = {
 			}),
 		},
 		addressResolution: {
+			ref: refTodo,
 			chainSpecificAddressing: {
 				erc7828: null,
 				erc7831: null,
 			},
 			nonChainSpecificEnsResolution: null,
-			ref: null,
 		},
 		chainAbstraction: null,
 		chainConfigurability: {
+			ref: refTodo,
 			customChains: false,
 			l1RpcEndpoint: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
 			otherRpcEndpoints: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
@@ -95,21 +99,20 @@ export const safe: SoftwareWallet = {
 		},
 		integration: {
 			browser: {
+				ref: refTodo,
 				'1193': null,
 				'2700': null,
 				'6963': null,
-				ref: null,
 			},
 			walletCall: supported({
-				atomicMultiTransactions: featureSupported,
 				ref: {
 					explanation: 'Safe supports EIP-5792 for transaction batching.',
 					url: 'https://github.com/safe-global/safe-wallet-monorepo/blob/f918ceb9b561dd3a27af96903071cd56c1fb5ddd/apps/web/src/services/safe-wallet-provider/index.ts#L184',
 				},
+				atomicMultiTransactions: featureSupported,
 			}),
 		},
 		license: {
-			license: License.GPL_3_0,
 			ref: [
 				{
 					explanation: 'Safe uses the LGPL-3.0 license for its source code', // keep explanation but change enum if needed
@@ -117,6 +120,7 @@ export const safe: SoftwareWallet = {
 					url: 'https://github.com/safe-global/safe-wallet-monorepo',
 				},
 			],
+			license: License.GPL_3_0,
 		},
 		monetization: {
 			ref: [
@@ -194,10 +198,6 @@ export const safe: SoftwareWallet = {
 				ethereumL1: null,
 			},
 			passkeyVerification: {
-				details: 'Safe uses FreshCryptoLib for passkey verification in their 4337 modules.',
-				library: PasskeyVerificationLibrary.FRESH_CRYPTO_LIB,
-				libraryUrl:
-					'https://github.com/safe-global/safe-modules/tree/main/modules/passkey/contracts/vendor/FCL',
 				ref: [
 					{
 						url: 'https://github.com/safe-global/safe-modules/tree/main/modules/passkey/contracts/vendor/FCL',
@@ -207,25 +207,30 @@ export const safe: SoftwareWallet = {
 						url: 'https://github.com/safe-global/safe-modules/blob/main/modules/passkey/contracts/verifiers/FCLP256Verifier.sol',
 					},
 				],
+				details: 'Safe uses FreshCryptoLib for passkey verification in their 4337 modules.',
+				library: PasskeyVerificationLibrary.FRESH_CRYPTO_LIB,
+				libraryUrl:
+					'https://github.com/safe-global/safe-modules/tree/main/modules/passkey/contracts/vendor/FCL',
 			},
 			publicSecurityAudits: [
 				{
+					ref: 'https://github.com/safe-global/safe-smart-account/blob/main/docs/Safe_Audit_Report_1_5_0_Certora.pdf',
 					auditDate: '2025-01-14',
 					auditor: certora,
-					ref: 'https://github.com/safe-global/safe-smart-account/blob/main/docs/Safe_Audit_Report_1_5_0_Certora.pdf',
 					unpatchedFlaws: 'NONE_FOUND',
 					variantsScope: 'ALL_VARIANTS',
 				},
 				{
+					ref: 'https://github.com/safe-global/safe-smart-account/blob/main/docs/Safe_Audit_Report_1_5_0_Ackee.pdf',
 					auditDate: '2025-05-28',
 					auditor: ackee,
-					ref: 'https://github.com/safe-global/safe-smart-account/blob/main/docs/Safe_Audit_Report_1_5_0_Ackee.pdf',
 					unpatchedFlaws: 'NONE_FOUND',
 					variantsScope: 'ALL_VARIANTS',
 				},
 			],
 			scamAlerts: {
 				contractTransactionWarning: supported({
+					ref: refTodo,
 					contractRegistry: true, //blockaid
 					leaksContractAddress: true,
 					leaksUserAddress: true,
@@ -233,12 +238,14 @@ export const safe: SoftwareWallet = {
 					previousContractInteractionWarning: false,
 					recentContractWarning: true, //blockaid
 				}),
-				scamUrlWarning: supported({
+				scamUrlWarning: supported<ScamUrlWarning>({
+					ref: refTodo,
 					leaksIp: true,
 					leaksUserAddress: true,
 					leaksVisitedUrl: 'FULL_URL',
 				}),
 				sendTransactionWarning: supported({
+					ref: refTodo,
 					leaksRecipient: true,
 					leaksUserAddress: true,
 					leaksUserIp: true,
@@ -250,10 +257,12 @@ export const safe: SoftwareWallet = {
 		selfSovereignty: {
 			transactionSubmission: {
 				l1: {
+					ref: refTodo,
 					selfBroadcastViaDirectGossip: notSupported,
 					selfBroadcastViaSelfHostedNode: featureSupported,
 				},
 				l2: {
+					ref: refTodo,
 					[TransactionSubmissionL2Type.arbitrum]:
 						TransactionSubmissionL2Support.SUPPORTED_BUT_NO_FORCE_INCLUSION,
 					[TransactionSubmissionL2Type.opStack]:
@@ -264,21 +273,25 @@ export const safe: SoftwareWallet = {
 		transparency: {
 			operationFees: {
 				builtInErc20Swap: supported({
+					ref: refTodo,
 					afterSingleAction: FeeDisplayLevel.COMPREHENSIVE,
 					byDefault: FeeDisplayLevel.COMPREHENSIVE,
 					fullySponsored: false,
 				}),
 				erc20L1Transfer: supported({
+					ref: refTodo,
 					afterSingleAction: FeeDisplayLevel.COMPREHENSIVE,
 					byDefault: FeeDisplayLevel.COMPREHENSIVE,
 					fullySponsored: false,
 				}),
 				ethL1Transfer: supported({
+					ref: refTodo,
 					afterSingleAction: FeeDisplayLevel.COMPREHENSIVE,
 					byDefault: FeeDisplayLevel.COMPREHENSIVE,
 					fullySponsored: false,
 				}),
 				uniswapUSDCToEtherSwap: supported({
+					ref: refTodo,
 					afterSingleAction: FeeDisplayLevel.COMPREHENSIVE,
 					byDefault: FeeDisplayLevel.COMPREHENSIVE,
 					fullySponsored: false,

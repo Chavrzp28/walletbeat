@@ -7,7 +7,6 @@ import {
 } from '@/schema/attributes'
 import type { ResolvedFeatures } from '@/schema/features'
 import { type UserSafetySupport, UserSafetyType } from '@/schema/features/security/user-safety'
-import { popRefs } from '@/schema/reference'
 import type { AtLeastOneVariant } from '@/schema/variants'
 import { WalletType } from '@/schema/wallet-types'
 import { markdown, paragraph, sentence } from '@/types/content'
@@ -199,26 +198,25 @@ export const userSafety: Attribute<UserSafetyValue> = {
 			})
 		}
 
-		const { withoutRefs, refs: extractedRefs } = popRefs<UserSafetySupport>(userSafetyFeature)
-		const rating = evaluateUserSafety(withoutRefs)
+		const rating = evaluateUserSafety(userSafetyFeature)
 
 		const passCount = [
-			withoutRefs.readableAddress,
-			withoutRefs.contractLabeling,
-			withoutRefs.rawTxReview,
-			withoutRefs.readableTx,
-			withoutRefs.txCoverageExtensibility,
-			withoutRefs.txExpertMode,
-			withoutRefs.rawEip712,
-			withoutRefs.readableEip712,
-			withoutRefs.eip712CoverageExtensibility,
-			withoutRefs.eip712ExpertMode,
-			withoutRefs.riskAnalysis,
-			withoutRefs.riskAnalysisLocal,
-			withoutRefs.fullyLocalRiskAnalysis,
-			withoutRefs.txSimulation,
-			withoutRefs.txSimulationLocal,
-			withoutRefs.fullyLocalTxSimulation,
+			userSafetyFeature.readableAddress,
+			userSafetyFeature.contractLabeling,
+			userSafetyFeature.rawTxReview,
+			userSafetyFeature.readableTx,
+			userSafetyFeature.txCoverageExtensibility,
+			userSafetyFeature.txExpertMode,
+			userSafetyFeature.rawEip712,
+			userSafetyFeature.readableEip712,
+			userSafetyFeature.eip712CoverageExtensibility,
+			userSafetyFeature.eip712ExpertMode,
+			userSafetyFeature.riskAnalysis,
+			userSafetyFeature.riskAnalysisLocal,
+			userSafetyFeature.fullyLocalRiskAnalysis,
+			userSafetyFeature.txSimulation,
+			userSafetyFeature.txSimulationLocal,
+			userSafetyFeature.fullyLocalTxSimulation,
 		].filter(r => r === UserSafetyType.PASS).length
 
 		const detailsText = `{{WALLET_NAME}} user safety evaluation is ${rating.toLowerCase()}.${
@@ -236,11 +234,11 @@ export const userSafety: Attribute<UserSafetyValue> = {
 				rating,
 				displayName: 'User Safety',
 				shortExplanation: sentence(`{{WALLET_NAME}} has ${rating.toLowerCase()} user safety.`),
-				...withoutRefs,
+				...userSafetyFeature, // TODO: Filter fields
 				__brand: brand,
 			},
 			details: paragraph(detailsText),
-			references: extractedRefs,
+			// TODO: Add references
 			howToImprove:
 				rating === Rating.PASS || rating === Rating.EXEMPT
 					? undefined

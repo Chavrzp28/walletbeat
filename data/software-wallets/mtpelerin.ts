@@ -6,6 +6,7 @@ import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-v
 import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
 import { featureSupported, notSupported } from '@/schema/features/support'
 import { License } from '@/schema/features/transparency/license'
+import { refNotNecessary, refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -44,12 +45,12 @@ export const mtpelerin: SoftwareWallet = {
 		},*/
 		accountSupport: null,
 		addressResolution: {
+			ref: refTodo,
 			chainSpecificAddressing: {
 				erc7828: null,
 				erc7831: null,
 			},
 			nonChainSpecificEnsResolution: null,
-			ref: null,
 		},
 		chainAbstraction: null,
 		chainConfigurability: null,
@@ -58,14 +59,15 @@ export const mtpelerin: SoftwareWallet = {
 		},
 		integration: {
 			browser: {
+				ref: refTodo,
 				'1193': null,
 				'2700': null,
 				'6963': null,
-				ref: null,
 			},
 			walletCall: null,
 		},
 		license: {
+			ref: refTodo,
 			license: License.PROPRIETARY,
 		},
 		monetization: {
@@ -99,20 +101,21 @@ export const mtpelerin: SoftwareWallet = {
 		security: {
 			bugBountyProgram: {
 				type: BugBountyProgramType.COMPREHENSIVE,
+				ref: refTodo,
 				details: 'The wallet implements a comprehensive bug bounty program through Immunefi.',
 				upgradePathAvailable: true,
 				url: 'https://immunefi.com/bug-bounty/mtpelerin/',
 			},
 			hardwareWalletSupport: {
-				ref: null,
+				ref: refTodo,
 				wallets: {},
 			},
 			lightClient: {
 				ethereumL1: null,
 			},
 			passkeyVerification: {
+				ref: refNotNecessary,
 				library: PasskeyVerificationLibrary.NONE,
-				ref: null,
 			},
 			publicSecurityAudits: null,
 			scamAlerts: null,
@@ -120,12 +123,14 @@ export const mtpelerin: SoftwareWallet = {
 		selfSovereignty: {
 			transactionSubmission: {
 				l1: {
+					ref: refTodo,
 					selfBroadcastViaDirectGossip: null,
 					selfBroadcastViaSelfHostedNode: null,
 				},
 				l2: {
 					[TransactionSubmissionL2Type.arbitrum]: null,
 					[TransactionSubmissionL2Type.opStack]: null,
+					ref: refTodo,
 				},
 			},
 		},

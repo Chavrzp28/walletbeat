@@ -10,10 +10,10 @@ export const ambireAccountContract: SmartWalletContract = {
 		validateUserOp: featureSupported,
 	},
 	sourceCode: {
-		available: true,
 		ref: {
 			label: 'Ambire ERC-4337 smart contract',
 			url: 'https://github.com/AmbireTech/ambire-common/blob/v2/contracts/AmbireAccount.sol',
 		},
+		available: true,
 	},
 }

@@ -16,7 +16,7 @@ import {
 	notSupported,
 	type Support,
 } from '@/schema/features/support'
-import { popRefs, type WithRef } from '@/schema/reference'
+import { popRefs, refNotNecessary, type WithRef } from '@/schema/reference'
 import { WalletType } from '@/schema/wallet-types'
 import { markdown, paragraph, sentence } from '@/types/content'
 import { commaListFormat } from '@/types/utils/text'
@@ -141,6 +141,7 @@ export const browserIntegration: Attribute<BrowserIntegrationValue> = {
 		pass: exampleRating(
 			sentence('The wallet implements all listed web browser integration standards.'),
 			browserIntegrationSupport({
+				ref: refNotNecessary,
 				'1193': featureSupported,
 				'2700': featureSupported,
 				'6963': featureSupported,
@@ -149,6 +150,7 @@ export const browserIntegration: Attribute<BrowserIntegrationValue> = {
 		partial: exampleRating(
 			sentence('The wallet implements some but not all listed web browser integration standards.'),
 			browserIntegrationSupport({
+				ref: refNotNecessary,
 				'1193': featureSupported,
 				'2700': featureSupported,
 				'6963': notSupported,
@@ -157,6 +159,7 @@ export const browserIntegration: Attribute<BrowserIntegrationValue> = {
 		fail: exampleRating(
 			sentence('The wallet implements none of the listed web browser integration standards.'),
 			browserIntegrationSupport({
+				ref: refNotNecessary,
 				'1193': notSupported,
 				'2700': notSupported,
 				'6963': notSupported,

@@ -17,6 +17,7 @@ import {
 	noCalldataDecoding,
 } from '@/schema/features/security/hardware-wallet-app-signing'
 import { License } from '@/schema/features/transparency/license'
+import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -47,16 +48,16 @@ export const bitboxWallet: HardwareWallet = {
 	features: {
 		accountSupport: null,
 		license: {
-			license: License.APACHE_2_0,
 			ref: [
 				{
 					explanation: 'BitBox02 firmware is fully open source and verified by WalletScrutiny',
 					url: 'https://github.com/BitBoxSwiss/bitbox02-firmware',
 				},
 			],
+			license: License.APACHE_2_0,
 		},
 		monetization: {
-			ref: null,
+			ref: refTodo,
 			revenueBreakdownIsPublic: false,
 			strategies: {
 				donations: null,
@@ -76,6 +77,13 @@ export const bitboxWallet: HardwareWallet = {
 				[UserFlow.UNCLASSIFIED]: {
 					collected: [
 						{
+							ref: [
+								{
+									explanation:
+										'BitBoxApp sends IP address for update checks and uses BitBox backend servers for Bitcoin address lookups',
+									url: 'https://bitbox.swiss/policies/privacy-policy/',
+								},
+							],
 							byEntity: bitbox,
 							dataCollection: {
 								[PersonalInfo.IP_ADDRESS]: CollectionPolicy.BY_DEFAULT,
@@ -84,15 +92,15 @@ export const bitboxWallet: HardwareWallet = {
 								endpoint: RegularEndpoint,
 							},
 							purposes: [DataCollectionPurpose.ANALYTICS],
+						},
+						{
 							ref: [
 								{
 									explanation:
-										'BitBoxApp sends IP address for update checks and uses BitBox backend servers for Bitcoin address lookups',
+										'BitBoxApp uses Etherscan to query Ethereum and ERC20 token account information',
 									url: 'https://bitbox.swiss/policies/privacy-policy/',
 								},
 							],
-						},
-						{
 							byEntity: etherscan,
 							dataCollection: {
 								[PersonalInfo.IP_ADDRESS]: CollectionPolicy.BY_DEFAULT,
@@ -103,13 +111,6 @@ export const bitboxWallet: HardwareWallet = {
 							purposes: [
 								DataCollectionPurpose.CHAIN_DATA_LOOKUP,
 								DataCollectionPurpose.ASSET_METADATA,
-							],
-							ref: [
-								{
-									explanation:
-										'BitBoxApp uses Etherscan to query Ethereum and ERC20 token account information',
-									url: 'https://bitbox.swiss/policies/privacy-policy/',
-								},
 							],
 						},
 					],
@@ -135,13 +136,13 @@ export const bitboxWallet: HardwareWallet = {
 		security: {
 			bugBountyProgram: {
 				type: BugBountyProgramType.DISCLOSURE_ONLY,
-				details:
-					'BitBox maintains a comprehensive bug bounty program with a Hall of Thanks, clear disclosure process, and PGP-encrypted communication.',
 				ref: [
 					{
 						url: 'https://bitbox.swiss/bug-bounty-program/',
 					},
 				],
+				details:
+					'BitBox maintains a comprehensive bug bounty program with a Hall of Thanks, clear disclosure process, and PGP-encrypted communication.',
 				upgradePathAvailable: true,
 				url: 'https://bitbox.swiss/bug-bounty-program/',
 			},
@@ -153,6 +154,12 @@ export const bitboxWallet: HardwareWallet = {
 				silentUpdateProtection: FirmwareType.PASS,
 			},
 			hardwareWalletAppSigning: {
+				ref: [
+					{
+						explanation: 'Independent video demonstration of BitBox02 signing capabilities',
+						url: 'https://youtu.be/-m1jcBFS0dc?t=300',
+					},
+				],
 				messageSigning: {
 					calldataDecoding: noCalldataDecoding,
 					details:
@@ -163,12 +170,6 @@ export const bitboxWallet: HardwareWallet = {
 						[DataExtraction.QRCODE]: false,
 					},
 				},
-				ref: [
-					{
-						explanation: 'Independent video demonstration of BitBox02 signing capabilities',
-						url: 'https://youtu.be/-m1jcBFS0dc?t=300',
-					},
-				],
 				transactionSigning: {
 					calldataDecoding: noCalldataDecoding,
 					calldataExtraction: {

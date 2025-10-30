@@ -10,10 +10,10 @@ export const ambireDelegatorContract: SmartWalletContract = {
 		validateUserOp: featureSupported,
 	},
 	sourceCode: {
-		available: true,
 		ref: {
 			label: 'Ambire EIP-7702 smart contract code',
 			url: 'https://github.com/AmbireTech/ambire-common/blob/v2/contracts/AmbireAccount7702.sol',
 		},
+		available: true,
 	},
 }

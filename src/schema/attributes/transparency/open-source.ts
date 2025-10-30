@@ -13,7 +13,7 @@ import {
 	licenseName,
 	type LicenseWithRef,
 } from '@/schema/features/transparency/license'
-import { refs, toFullyQualified } from '@/schema/reference'
+import { refNotNecessary, refs, toFullyQualified } from '@/schema/reference'
 import { markdown, mdParagraph, paragraph, sentence } from '@/types/content'
 import { licenseDetailsContent } from '@/types/content/license-details'
 
@@ -137,7 +137,7 @@ export const openSource: Attribute<OpenSourceValue> = {
 		fail: [
 			exampleRating(
 				paragraph('The wallet is licensed under any non-FOSS (proprietary) license.'),
-				proprietary({ license: License.PROPRIETARY }),
+				proprietary({ license: License.PROPRIETARY, ref: refNotNecessary }),
 			),
 			exampleRating(
 				paragraph(

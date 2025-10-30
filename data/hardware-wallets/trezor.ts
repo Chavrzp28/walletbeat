@@ -7,6 +7,7 @@ import {
 	noCalldataDecoding,
 } from '@/schema/features/security/hardware-wallet-app-signing'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
+import { refNotNecessary, refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -57,7 +58,7 @@ export const trezorWallet: HardwareWallet = {
 		accountSupport: null,
 		license: null,
 		monetization: {
-			ref: null,
+			ref: refTodo,
 			revenueBreakdownIsPublic: false,
 			strategies: {
 				donations: null,
@@ -82,8 +83,6 @@ export const trezorWallet: HardwareWallet = {
 		security: {
 			bugBountyProgram: {
 				type: BugBountyProgramType.COMPREHENSIVE,
-				details:
-					'At SatoshiLabs and Trezor, the safety of our products and services is a top priority. If you have identified a security vulnerability, we would greatly appreciate your assistance in disclosing it to us in a responsible manner.',
 				ref: [
 					{
 						explanation:
@@ -91,21 +90,13 @@ export const trezorWallet: HardwareWallet = {
 						url: 'https://trezor.io/support/a/how-to-report-a-security-issue',
 					},
 				],
+				details:
+					'At SatoshiLabs and Trezor, the safety of our products and services is a top priority. If you have identified a security vulnerability, we would greatly appreciate your assistance in disclosing it to us in a responsible manner.',
 				upgradePathAvailable: true,
 				url: 'https://trezor.io/support/a/how-to-report-a-security-issue',
 			},
 			firmware: null,
 			hardwareWalletAppSigning: {
-				messageSigning: {
-					calldataDecoding: noCalldataDecoding,
-					details:
-						'Trezor provides basic message signing details when using hardware wallets, but some complex interactions may be difficult to verify off device.',
-					messageExtraction: {
-						[DataExtraction.EYES]: true,
-						[DataExtraction.HASHES]: false,
-						[DataExtraction.QRCODE]: false,
-					},
-				},
 				ref: [
 					{
 						explanation:
@@ -117,6 +108,16 @@ export const trezorWallet: HardwareWallet = {
 						url: 'https://youtube.com/shorts/4LayLrSuHNg',
 					},
 				],
+				messageSigning: {
+					calldataDecoding: noCalldataDecoding,
+					details:
+						'Trezor provides basic message signing details when using hardware wallets, but some complex interactions may be difficult to verify off device.',
+					messageExtraction: {
+						[DataExtraction.EYES]: true,
+						[DataExtraction.HASHES]: false,
+						[DataExtraction.QRCODE]: false,
+					},
+				},
 				transactionSigning: {
 					calldataDecoding: noCalldataDecoding,
 					calldataExtraction: {
@@ -138,8 +139,8 @@ export const trezorWallet: HardwareWallet = {
 				ethereumL1: null,
 			},
 			passkeyVerification: {
+				ref: refNotNecessary,
 				library: PasskeyVerificationLibrary.NONE,
-				ref: null,
 			},
 			publicSecurityAudits: null,
 			supplyChainDIY: null,

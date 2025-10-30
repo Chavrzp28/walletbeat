@@ -42,7 +42,7 @@ import { isNonEmptyArray, type NonEmptyArray, nonEmptyFirst } from '@/types/util
 import { commaListFormat, markdownListFormat } from '@/types/utils/text'
 
 import { entityMarkdownLink } from '../../entity'
-import { mergeRefs, type ReferenceArray, refs } from '../../reference'
+import { mergeRefs, type ReferenceArray, refNotNecessary, refs } from '../../reference'
 import { pickWorstRating, unrated } from '../common'
 
 const brand = 'attributes.privacy.private_transfers'
@@ -240,10 +240,11 @@ function rateStealthAddressSupport(
 	stealthAddresses: Supported<StealthAddressSupport>,
 ): Evaluation<PrivateTransfersValue> {
 	const references: ReferenceArray = mergeRefs(
+		stealthAddresses.ref,
 		stealthAddresses.recipientAddressResolution.ref,
 		stealthAddresses.balanceLookup.ref,
 		stealthAddresses.privateKeyDerivation.ref,
-		isSupported(stealthAddresses.userLabeling) ? stealthAddresses.userLabeling.ref : null,
+		isSupported(stealthAddresses.userLabeling) ? stealthAddresses.userLabeling.ref : undefined,
 	)
 	const { sendingPrivacy, sendingDetails, sendingImprovements } = ((): {
 		sendingPrivacy: PrivateTransfersPrivacyLevel
@@ -1306,7 +1307,9 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 				`),
 				rateStealthAddressSupport(
 					supported({
+						ref: refNotNecessary,
 						balanceLookup: {
+							ref: refNotNecessary,
 							type: 'EXTERNAL_SERVICE',
 							externalService: exampleNodeCompany,
 							learns: {
@@ -1315,6 +1318,7 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 							},
 						},
 						recipientAddressResolution: {
+							ref: refNotNecessary,
 							type: 'EXTERNAL_RESOLVER',
 							externalResolver: exampleNodeCompany,
 							learns: {
@@ -1325,6 +1329,7 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 							},
 						},
 						privateKeyDerivation: {
+							ref: refNotNecessary,
 							type: 'LOCALLY',
 						},
 						userLabeling: notSupported,
@@ -1341,7 +1346,9 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 				`),
 				rateStealthAddressSupport(
 					supported({
+						ref: refNotNecessary,
 						balanceLookup: {
+							ref: refNotNecessary,
 							type: 'EXTERNAL_SERVICE',
 							externalService: exampleNodeCompany,
 							learns: {
@@ -1350,6 +1357,7 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 							},
 						},
 						recipientAddressResolution: {
+							ref: refNotNecessary,
 							type: 'EXTERNAL_RESOLVER',
 							externalResolver: exampleNodeCompany,
 							learns: {
@@ -1360,9 +1368,11 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 							},
 						},
 						privateKeyDerivation: {
+							ref: refNotNecessary,
 							type: 'LOCALLY',
 						},
 						userLabeling: supported({
+							ref: refNotNecessary,
 							unlabeledBehavior: StealthAddressUnlabeledBehavior.MUST_LABEL_BEFORE_SPENDING,
 						}),
 						fees: fullySponsoredFees,
@@ -1377,7 +1387,9 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 				`),
 				rateStealthAddressSupport(
 					supported({
+						ref: refNotNecessary,
 						balanceLookup: {
+							ref: refNotNecessary,
 							type: 'EXTERNAL_SERVICE',
 							externalService: exampleNodeCompany,
 							learns: {
@@ -1386,6 +1398,7 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 							},
 						},
 						recipientAddressResolution: {
+							ref: refNotNecessary,
 							type: 'EXTERNAL_RESOLVER',
 							externalResolver: exampleNodeCompany,
 							learns: {
@@ -1396,9 +1409,11 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 							},
 						},
 						privateKeyDerivation: {
+							ref: refNotNecessary,
 							type: 'LOCALLY',
 						},
 						userLabeling: supported({
+							ref: refNotNecessary,
 							unlabeledBehavior: StealthAddressUnlabeledBehavior.MUST_LABEL_BEFORE_SPENDING,
 						}),
 						fees: fullySponsoredFees,
@@ -1414,7 +1429,9 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 				`),
 				rateStealthAddressSupport(
 					supported({
+						ref: refNotNecessary,
 						balanceLookup: {
+							ref: refNotNecessary,
 							type: 'EXTERNAL_SERVICE',
 							externalService: exampleNodeCompany,
 							learns: {
@@ -1423,6 +1440,7 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 							},
 						},
 						recipientAddressResolution: {
+							ref: refNotNecessary,
 							type: 'EXTERNAL_RESOLVER',
 							externalResolver: exampleNodeCompany,
 							learns: {
@@ -1433,9 +1451,11 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 							},
 						},
 						privateKeyDerivation: {
+							ref: refNotNecessary,
 							type: 'LOCALLY',
 						},
 						userLabeling: supported({
+							ref: refNotNecessary,
 							unlabeledBehavior: StealthAddressUnlabeledBehavior.MUST_LABEL_BEFORE_SPENDING,
 						}),
 						fees: fullySponsoredFees,
@@ -1456,7 +1476,9 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 				`),
 				rateStealthAddressSupport(
 					supported({
+						ref: refNotNecessary,
 						balanceLookup: {
+							ref: refNotNecessary,
 							type: 'EXTERNAL_SERVICE',
 							externalService: exampleNodeCompany,
 							learns: {
@@ -1465,6 +1487,7 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 							},
 						},
 						recipientAddressResolution: {
+							ref: refNotNecessary,
 							type: 'EXTERNAL_RESOLVER',
 							externalResolver: exampleNodeCompany,
 							learns: {
@@ -1475,9 +1498,11 @@ export const privateTransfers: Attribute<PrivateTransfersValue> = {
 							},
 						},
 						privateKeyDerivation: {
+							ref: refNotNecessary,
 							type: 'LOCALLY',
 						},
 						userLabeling: supported({
+							ref: refNotNecessary,
 							unlabeledBehavior: StealthAddressUnlabeledBehavior.MUST_LABEL_BEFORE_SPENDING,
 						}),
 						fees: fullySponsoredFees,

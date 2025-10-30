@@ -1,5 +1,3 @@
-import type { WithRef } from '@/schema/reference'
-
 export enum FirmwareType {
 	PASS = 'PASS',
 	PARTIAL = 'PARTIAL',
@@ -15,5 +13,3 @@ export interface FirmwareSupport {
 	reproducibleBuilds: FirmwareType | null
 	customFirmware: FirmwareType | null
 }
-
-export type FirmwareImplementation = WithRef<FirmwareSupport>

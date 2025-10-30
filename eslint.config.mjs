@@ -20,6 +20,7 @@ const firstOrderedKeys = [
 	'formalTitle',
 	'type',
 	'metadata',
+	'ref',
 ]
 
 export default [

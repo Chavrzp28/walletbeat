@@ -8,6 +8,7 @@ import {
 	noCalldataDecoding,
 } from '@/schema/features/security/hardware-wallet-app-signing'
 import { License } from '@/schema/features/transparency/license'
+import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -38,16 +39,16 @@ export const onekeyWallet: HardwareWallet = {
 	features: {
 		accountSupport: null,
 		license: {
-			license: License.GPL_3_0,
 			ref: [
 				{
 					explanation: 'OneKey has mixed licensing (GPLv3/LGPLv3/MIT)',
 					url: 'https://walletscrutiny.com/hardware/onekey.pro/',
 				},
 			],
+			license: License.GPL_3_0,
 		},
 		monetization: {
-			ref: null,
+			ref: refTodo,
 			revenueBreakdownIsPublic: false,
 			strategies: {
 				donations: null,
@@ -72,8 +73,6 @@ export const onekeyWallet: HardwareWallet = {
 		security: {
 			bugBountyProgram: {
 				type: BugBountyProgramType.COMPREHENSIVE,
-				details:
-					'OneKey offers a comprehensive bug bounty program covering app monorepo, firmware, hardware SDK, and websites. Rewards range from $100-$10,000 USDC based on severity, with higher rewards for firmware vulnerabilities.',
 				ref: [
 					{
 						explanation:
@@ -81,6 +80,8 @@ export const onekeyWallet: HardwareWallet = {
 						url: 'https://bugrap.io/bounties/OneKey',
 					},
 				],
+				details:
+					'OneKey offers a comprehensive bug bounty program covering app monorepo, firmware, hardware SDK, and websites. Rewards range from $100-$10,000 USDC based on severity, with higher rewards for firmware vulnerabilities.',
 				upgradePathAvailable: false,
 				url: 'https://bugrap.io/bounties/OneKey',
 			},
@@ -92,16 +93,6 @@ export const onekeyWallet: HardwareWallet = {
 				silentUpdateProtection: null,
 			},
 			hardwareWalletAppSigning: {
-				messageSigning: {
-					calldataDecoding: noCalldataDecoding,
-					details:
-						'OneKey Pro shows EIP-712 domain types and message data but does not display domain hash or message hash for easier verification.',
-					messageExtraction: {
-						[DataExtraction.EYES]: true,
-						[DataExtraction.HASHES]: false,
-						[DataExtraction.QRCODE]: false,
-					},
-				},
 				ref: [
 					{
 						explanation:
@@ -113,6 +104,16 @@ export const onekeyWallet: HardwareWallet = {
 						url: 'https://youtube.com/shorts/J_XG7cNOVhM',
 					},
 				],
+				messageSigning: {
+					calldataDecoding: noCalldataDecoding,
+					details:
+						'OneKey Pro shows EIP-712 domain types and message data but does not display domain hash or message hash for easier verification.',
+					messageExtraction: {
+						[DataExtraction.EYES]: true,
+						[DataExtraction.HASHES]: false,
+						[DataExtraction.QRCODE]: false,
+					},
+				},
 				transactionSigning: {
 					calldataDecoding: noCalldataDecoding,
 					calldataExtraction: {

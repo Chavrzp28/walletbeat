@@ -7,6 +7,7 @@ import {
 	noCalldataDecoding,
 } from '@/schema/features/security/hardware-wallet-app-signing'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
+import { refNotNecessary, refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -63,7 +64,7 @@ export const ledgerWallet: HardwareWallet = {
 		accountSupport: null,
 		license: null,
 		monetization: {
-			ref: null,
+			ref: refTodo,
 			revenueBreakdownIsPublic: false,
 			strategies: {
 				donations: null,
@@ -88,8 +89,6 @@ export const ledgerWallet: HardwareWallet = {
 		security: {
 			bugBountyProgram: {
 				type: BugBountyProgramType.COMPREHENSIVE,
-				details:
-					'Ledger offers a comprehensive bug bounty program through their Donjon security team. The program offers competitive rewards based on the severity of findings and has a clear disclosure process.',
 				ref: [
 					{
 						explanation:
@@ -97,11 +96,20 @@ export const ledgerWallet: HardwareWallet = {
 						url: 'https://donjon.ledger.com/bounty/',
 					},
 				],
+				details:
+					'Ledger offers a comprehensive bug bounty program through their Donjon security team. The program offers competitive rewards based on the severity of findings and has a clear disclosure process.',
 				upgradePathAvailable: true,
 				url: 'https://donjon.ledger.com/bounty/',
 			},
 			firmware: null,
 			hardwareWalletAppSigning: {
+				ref: [
+					{
+						explanation:
+							"Independent video demonstration of Ledger's signing implementation on a Safe.",
+						url: 'https://youtu.be/9YmPWxAvKYY?t=1722',
+					},
+				],
 				messageSigning: {
 					calldataDecoding: noCalldataDecoding,
 					details:
@@ -112,13 +120,6 @@ export const ledgerWallet: HardwareWallet = {
 						[DataExtraction.QRCODE]: false,
 					},
 				},
-				ref: [
-					{
-						explanation:
-							"Independent video demonstration of Ledger's signing implementation on a Safe.",
-						url: 'https://youtu.be/9YmPWxAvKYY?t=1722',
-					},
-				],
 				transactionSigning: {
 					calldataDecoding: noCalldataDecoding,
 					calldataExtraction: {
@@ -136,8 +137,8 @@ export const ledgerWallet: HardwareWallet = {
 				ethereumL1: null,
 			},
 			passkeyVerification: {
+				ref: refNotNecessary,
 				library: PasskeyVerificationLibrary.NONE,
-				ref: null,
 			},
 			publicSecurityAudits: null,
 			supplyChainDIY: null,

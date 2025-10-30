@@ -724,14 +724,12 @@ export function isWithEndpoint<T extends UserInfo>(
 }
 
 /** What data is collected by an entity; fully qualified. */
-export type QualifiedDataCollection = WithRef<
-	Record<UserInfo, CollectionPolicy> & {
-		/**
-		 * How multiple addresses are handled, if at all.
-		 */
-		multiAddress?: MultiAddressHandling
-	}
->
+export type QualifiedDataCollection = Record<UserInfo, CollectionPolicy> & {
+	/**
+	 * How multiple addresses are handled, if at all.
+	 */
+	multiAddress?: MultiAddressHandling
+}
 
 /**
  * Infer what info is derivable from a given partial set of known collected information.
@@ -743,7 +741,7 @@ export function qualifiedDataCollection<T extends UserInfo>(
 ): QualifiedDataCollection {
 	const get = (info: UserInfo): CollectionPolicy | undefined => {
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Safe because L is guaranteed to be non-empty.
-		return (userInfo as NonEmptyRecord<UserInfo, CollectionPolicy>)[info]
+		return (userInfo as WithRef<NonEmptyRecord<UserInfo, CollectionPolicy>>)[info]
 	}
 	const first = (...ls: Array<CollectionPolicy | undefined>): CollectionPolicy | undefined =>
 		ls.find(l => l !== undefined)

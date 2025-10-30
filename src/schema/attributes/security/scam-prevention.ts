@@ -14,7 +14,7 @@ import { scamAlertsDetailsContent } from '@/types/content/scam-alert-details'
 import { isNonEmptyArray, type NonEmptyArray } from '@/types/utils/non-empty'
 import { commaListFormat } from '@/types/utils/text'
 
-import { mergeRefs, type WithRef } from '../../reference'
+import { mergeRefs, refNotNecessary, type WithRef } from '../../reference'
 import { pickWorstRating, unrated } from '../common'
 
 export type ScamAlertSupport = WithRef<{
@@ -61,6 +61,7 @@ function rateSendTransactionWarning(scamAlerts: ScamAlerts): ScamAlertSupport & 
 		return {
 			supported: false,
 			privacyPreserving: true,
+			ref: refNotNecessary,
 			...baseProps,
 		}
 	}
@@ -102,6 +103,7 @@ function rateContractTransactionWarning(scamAlerts: ScamAlerts): ScamAlertSuppor
 		return {
 			supported: false,
 			privacyPreserving: true,
+			ref: refNotNecessary,
 			...baseProps,
 		}
 	}
@@ -145,6 +147,7 @@ function rateScamUrlWarning(scamAlerts: ScamAlerts): ScamAlertSupport & {
 		return {
 			supported: false,
 			privacyPreserving: true,
+			ref: refNotNecessary,
 			...baseProps,
 		}
 	}
@@ -462,6 +465,7 @@ export const scamPrevention: Attribute<ScamPreventionValue> = {
 				evaluateScamAlerts(WalletProfile.GENERIC, {
 					contractTransactionWarning: notSupported,
 					scamUrlWarning: supported({
+						ref: refNotNecessary,
 						leaksVisitedUrl: 'FULL_URL',
 						leaksUserAddress: false,
 						leaksIp: false,
@@ -476,11 +480,13 @@ export const scamPrevention: Attribute<ScamPreventionValue> = {
 				evaluateScamAlerts(WalletProfile.GENERIC, {
 					contractTransactionWarning: notSupported,
 					scamUrlWarning: supported({
+						ref: refNotNecessary,
 						leaksVisitedUrl: 'NO',
 						leaksUserAddress: false,
 						leaksIp: true,
 					}),
 					sendTransactionWarning: supported({
+						ref: refNotNecessary,
 						newRecipientWarning: true,
 						userWhitelist: false,
 						leaksRecipient: false,
@@ -495,6 +501,7 @@ export const scamPrevention: Attribute<ScamPreventionValue> = {
 				),
 				evaluateScamAlerts(WalletProfile.GENERIC, {
 					contractTransactionWarning: supported({
+						ref: refNotNecessary,
 						contractRegistry: true,
 						previousContractInteractionWarning: true,
 						recentContractWarning: false,
@@ -503,11 +510,13 @@ export const scamPrevention: Attribute<ScamPreventionValue> = {
 						leaksUserIp: true,
 					}),
 					scamUrlWarning: supported({
+						ref: refNotNecessary,
 						leaksVisitedUrl: 'NO',
 						leaksUserAddress: true,
 						leaksIp: true,
 					}),
 					sendTransactionWarning: supported({
+						ref: refNotNecessary,
 						newRecipientWarning: true,
 						userWhitelist: false,
 						leaksRecipient: false,
@@ -523,6 +532,7 @@ export const scamPrevention: Attribute<ScamPreventionValue> = {
 			),
 			evaluateScamAlerts(WalletProfile.GENERIC, {
 				contractTransactionWarning: supported({
+					ref: refNotNecessary,
 					contractRegistry: true,
 					previousContractInteractionWarning: true,
 					recentContractWarning: false,
@@ -531,11 +541,13 @@ export const scamPrevention: Attribute<ScamPreventionValue> = {
 					leaksUserIp: false,
 				}),
 				scamUrlWarning: supported({
+					ref: refNotNecessary,
 					leaksVisitedUrl: 'PARTIAL_HASH_OF_DOMAIN',
 					leaksUserAddress: false,
 					leaksIp: true,
 				}),
 				sendTransactionWarning: supported({
+					ref: refNotNecessary,
 					newRecipientWarning: true,
 					userWhitelist: false,
 					leaksRecipient: true,

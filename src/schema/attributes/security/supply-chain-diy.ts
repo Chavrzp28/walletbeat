@@ -12,7 +12,6 @@ import {
 	type SupplyChainDIYSupport,
 	SupplyChainDIYType,
 } from '@/schema/features/security/supply-chain-diy'
-import { popRefs } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { WalletMetadata } from '@/schema/wallet'
 import { WalletType } from '@/schema/wallet-types'
@@ -135,8 +134,7 @@ export const supplyChainDIY: Attribute<SupplyChainDIYValue> = {
 			})
 		}
 
-		const { withoutRefs, refs: extractedRefs } = popRefs<SupplyChainDIYSupport>(diyFeature)
-		const rating = evaluateSupplyChainDIY(withoutRefs)
+		const rating = evaluateSupplyChainDIY(diyFeature)
 
 		return {
 			value: {
@@ -144,12 +142,12 @@ export const supplyChainDIY: Attribute<SupplyChainDIYValue> = {
 				rating,
 				displayName: 'Supply Chain DIY',
 				shortExplanation: sentence(`{{WALLET_NAME}} has ${rating.toLowerCase()} DIY supply chain.`),
-				...withoutRefs,
+				...diyFeature, // TODO: Filter fields
 				__brand: brand,
 			},
 			details: paragraph(`{{WALLET_NAME}} DIY supply chain evaluation is ${rating.toLowerCase()}.`),
 			howToImprove: paragraph('{{WALLET_NAME}} should improve sub-criteria rated PARTIAL or FAIL.'),
-			...(extractedRefs.length > 0 && { references: extractedRefs }),
+			// TODO: Add references
 		}
 	},
 }

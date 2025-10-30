@@ -5,7 +5,6 @@ import {
 	type MaintenanceSupport,
 	MaintenanceType,
 } from '@/schema/features/transparency/maintenance'
-import { popRefs } from '@/schema/reference'
 import type { AtLeastOneVariant } from '@/schema/variants'
 import { WalletType } from '@/schema/wallet-types'
 import { markdown, paragraph, sentence } from '@/types/content'
@@ -124,8 +123,7 @@ export const maintenance: Attribute<MaintenanceValue> = {
 			})
 		}
 
-		const { withoutRefs, refs: extractedRefs } = popRefs<MaintenanceSupport>(maintenanceFeature)
-		const rating = evaluateMaintenance(withoutRefs)
+		const rating = evaluateMaintenance(maintenanceFeature)
 
 		return {
 			value: {
@@ -135,12 +133,12 @@ export const maintenance: Attribute<MaintenanceValue> = {
 				shortExplanation: sentence(
 					`{{WALLET_NAME}} has ${rating.toLowerCase()} maintenance practices.`,
 				),
-				...withoutRefs,
+				...maintenanceFeature, // TODO: Filter fields
 				__brand: brand,
 			},
 			details: paragraph(`{{WALLET_NAME}} maintenance evaluation is ${rating.toLowerCase()}.`),
 			howToImprove: paragraph('{{WALLET_NAME}} should improve sub-criteria rated PARTIAL or FAIL.'),
-			...(extractedRefs.length > 0 && { references: extractedRefs }),
+			// TODO: Add references
 		}
 	},
 }

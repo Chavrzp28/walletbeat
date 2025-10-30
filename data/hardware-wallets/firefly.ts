@@ -1,6 +1,7 @@
 import { nconsigny } from '@/data/contributors/nconsigny'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
 import { BugBountyProgramType } from '@/schema/features/security/bug-bounty-program'
+import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -33,7 +34,7 @@ export const fireflyWallet: HardwareWallet = {
 		accountSupport: null,
 		license: null,
 		monetization: {
-			ref: null,
+			ref: refTodo,
 			revenueBreakdownIsPublic: false,
 			strategies: {
 				donations: null,
@@ -58,20 +59,20 @@ export const fireflyWallet: HardwareWallet = {
 		security: {
 			bugBountyProgram: {
 				type: BugBountyProgramType.NONE,
+				ref: refTodo,
 				details: 'No formal bug bounty program has been established for the Firefly DIY wallet.',
-				ref: undefined,
 				upgradePathAvailable: false,
 				url: '',
 			},
 			firmware: null,
 			hardwareWalletAppSigning: {
+				ref: refTodo,
 				messageSigning: {
 					calldataDecoding: null,
 					details:
 						'Firefly currently does not provide message signing support as it is still in development.',
 					messageExtraction: null,
 				},
-				ref: null,
 				transactionSigning: {
 					calldataDecoding: null,
 					calldataExtraction: null,
