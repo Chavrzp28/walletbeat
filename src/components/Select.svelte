@@ -110,7 +110,7 @@
 				width: 0.75em;
 				height: 0.75em;
 				background-color: var(--icon-color);
-				mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 3'%3E%3Cpath d='m.5 1 1 1 1-1' fill='none' stroke='black' stroke-width='0.5' stroke-linecap='round' stroke-linejoin='round' /%3E%3C/svg%3E") no-repeat;
+				mask: var(--icon-chevron) no-repeat;
 				opacity: 0.66;
 				transform: perspective(100px) rotateX(0deg);
 				transition: transform 0.2s ease;
@@ -194,7 +194,7 @@
 		select {
 			appearance: none;
 			padding-right: 2.5em;
-			background: var(--background-primary) right 0.75rem center / 1rem no-repeat url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+			background: right 0.75rem center / 0.625rem no-repeat var(--icon-chevron);
 		}
 	}
 </style>

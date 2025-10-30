@@ -494,7 +494,7 @@
 								width: 1em;
 								height: 1em;
 								background-color: currentColor;
-								mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 3'%3E%3Cpath d='m.5 1 1 1 1-1' fill='none' stroke='black' stroke-width='0.5' stroke-linecap='round' stroke-linejoin='round' /%3E%3C/svg%3E");
+								mask-image: var(--icon-chevron);
 								transform: perspective(100px) rotateX(calc(var(--isExpanded) * -180deg));
 								transition-property: transform;
 							}
