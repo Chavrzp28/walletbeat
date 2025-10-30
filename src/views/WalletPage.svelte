@@ -683,7 +683,6 @@
 							<a
 								href={`/${model.brandId}/?model=${model.modelId}`}
 								data-badge="medium"
-								style="--accent: var(--accent-light)"
 							>
 								<img src={model.iconUrl} alt={model.brandName} />
 								{model.modelName}
@@ -1592,23 +1591,25 @@
 	}
 
 	.return-to-top {
+		z-index: 1;
 		position: fixed;
 		bottom: 2rem;
 		right: 2rem;
-		z-index: 10;
+
 		display: grid;
 		place-items: center;
 		width: 3rem;
 		height: 3rem;
+
 		background-color: var(--accent);
-		color: var(--text-inverse);
+		color: #ffffff;
 		border-radius: 50%;
 		text-decoration: none;
+
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-		font-weight: bold;
 
 		&:hover {
-			background-color: var(--accent-light);
+			filter: brightness(1.1);
 		}
 	}
 

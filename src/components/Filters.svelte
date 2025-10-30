@@ -351,7 +351,7 @@
 				}
 
 				&:has(input:checked) {
-					background-color: var(--accent-very-light);
+					background-color: var(--accent-backgroundColor);
 					border-color: var(--accent);
 					color: var(--accent);
 				}
@@ -376,7 +376,7 @@
 		align-items: center;
 		justify-content: center;
 
-		background-color: var(--accent-very-light);
+		background-color: var(--accent-backgroundColor);
 		color: var(--accent);
 		border-radius: 0.85em;
 		padding: 0.3em 0.5em;
@@ -385,7 +385,7 @@
 		label:has(input:checked) &,
 		option:checked & {
 			background-color: var(--accent);
-			color: var(--accent-very-light);
+			color: var(--accent-backgroundColor);
 		}
 	}
 

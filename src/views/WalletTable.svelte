@@ -1182,7 +1182,7 @@
 				transition-property: background-color, opacity;
 
 				&[data-selected] {
-					background-color: var(--accent-very-light);
+					background-color: var(--accent-backgroundColor);
 					border-color: light-dark(rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.33));
 				}
 

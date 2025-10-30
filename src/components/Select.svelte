@@ -102,14 +102,14 @@
 			}
 
 			&:focus {
-				box-shadow: 0 0 0 3px var(--accent-very-light);
+				box-shadow: 0 0 0 3px var(--accent-backgroundColor);
 			}
 
 			&::picker-icon {
 				content: '';
 				width: 0.75em;
 				height: 0.75em;
-				background-color: var(--icon-color);
+				background-color: currentColor;
 				mask: var(--icon-chevron) no-repeat;
 				opacity: 0.66;
 				transform: perspective(100px) rotateX(0deg);
@@ -143,7 +143,7 @@
 				}
 
 				&:checked {
-					background-color: var(--accent-very-light);
+					background-color: var(--accent-backgroundColor);
 					font-weight: 600;
 				}
 
