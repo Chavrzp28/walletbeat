@@ -3,7 +3,7 @@ import type { CorporateEntity, WalletDeveloper } from '@/schema/entity'
 export const imToken: CorporateEntity & WalletDeveloper = {
 	id: 'imtoken',
 	name: 'imToken',
-	legalName: { name: 'IMTOKEN PTE. LTD.', soundsDifferent: false },
+	legalName: { name: 'imToken Pte Ltd', soundsDifferent: false },
 	type: {
 		chainDataProvider: false,
 		corporate: true,

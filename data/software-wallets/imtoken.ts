@@ -24,10 +24,7 @@ import {
 	TransactionSubmissionL2Type,
 } from '@/schema/features/self-sovereignty/transaction-submission'
 import { notSupported, supported } from '@/schema/features/support'
-import {
-	comprehensiveFeesShownByDefault,
-	FeeDisplayLevel,
-} from '@/schema/features/transparency/fee-display'
+import { FeeDisplayLevel } from '@/schema/features/transparency/fee-display'
 import { License } from '@/schema/features/transparency/license'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
@@ -65,6 +62,7 @@ export const imtoken: SoftwareWallet = {
 			}),
 			mpc: notSupported,
 			rawErc4337: notSupported,
+			safe: notSupported,
 		},
 		addressResolution: {
 			chainSpecificAddressing: {
@@ -77,12 +75,12 @@ export const imtoken: SoftwareWallet = {
 			ref: [
 				{
 					explanation:
-						'imToken supports ENS human-readable names and resolves them on-chain before sending funds.',
+						'imToken supports ENS human-readable names and resolves them onchain before sending funds.',
 					url: 'https://support.token.im/hc/articles/360039928813',
 				},
 			],
 		},
-		chainAbstraction: supported({
+		chainAbstraction: {
 			bridging: {
 				builtInBridging: supported({
 					feesLargerThan1bps: {
@@ -93,11 +91,11 @@ export const imtoken: SoftwareWallet = {
 					ref: [
 						{
 							explanation:
-								'imToken provides built-in cross-chain bridging through cBridge and other bridge protocols, with clear risk explanations and fee breakdowns.',
+								'imToken provides built-in cross-chain bridging through cBridge and other bridge protocols, with clear fee breakdown. Scam risks are explained, but trust assumptions of the bridge are not.',
 							url: 'https://support.token.im/hc/en-us/articles/4404355206553-How-to-use-cBridge-with-imToken',
 						},
 					],
-					risksExplained: 'VISIBLE_BY_DEFAULT',
+					risksExplained: 'NOT_IN_UI',
 				}),
 				suggestedBridging: notSupported,
 			},
@@ -113,7 +111,7 @@ export const imtoken: SoftwareWallet = {
 					perChainBalanceViewAcrossMultipleChains: notSupported,
 				},
 			},
-		}),
+		},
 		chainConfigurability: {
 			customChains: true,
 			l1RpcEndpoint: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
@@ -139,7 +137,7 @@ export const imtoken: SoftwareWallet = {
 				ref: [
 					{
 						explanation:
-							'imToken publishes its core code under the Apache-2.0 open-source license.',
+							'imToken publishes its core code under the Apache 2.0 open-source license.',
 						url: 'https://github.com/consenlabs/token-core-monorepo/blob/main/LICENSE',
 					},
 				],
@@ -169,8 +167,7 @@ export const imtoken: SoftwareWallet = {
 		multiAddress: supported({
 			ref: [
 				{
-					explanation:
-						'Each request only involves one active address, preventing any correlation between multiple addresses.'
+					explanation: 'Each request only involves one active address.',
 				},
 			],
 		}),
@@ -200,7 +197,7 @@ export const imtoken: SoftwareWallet = {
 							ref: [
 								{
 									explanation:
-										"Technically, imToken could associate your wallet address with your mobile network’s dynamic IP address, but it strictly follows privacy principles and never collects personally identifiable information (PII). Each request only involves one active address, preventing any correlation between multiple addresses.",
+										"imToken can associate your wallet address along with your mobile device's IP address, per its privacy policy. Each request only involves one active address.",
 									url: 'https://token.im/tos-en.html',
 								},
 							],
@@ -248,7 +245,7 @@ export const imtoken: SoftwareWallet = {
 					ref: [
 						{
 							explanation:
-								'imToken works with the imKey Bluetooth hardware wallet and with Keystone via QR codes.',
+								'imToken works with the imKey Bluetooth hardware wallet, and with Keystone via QR codes.',
 							url: 'https://support.token.im/hc/en-us/articles/25985632007193-imToken-and-Hardware-Wallets-Uncompromised-Protection-Unparalleled-Convenience',
 						},
 					],
@@ -278,7 +275,7 @@ export const imtoken: SoftwareWallet = {
 					ref: [
 						{
 							explanation:
-								"imToken underwent a comprehensive security audit by Cure53 in 2018. While the core codebase has remained stable, the audit is now more than six years old. Since then, imToken has maintained a rigorous internal audit process for each release.",
+								'imToken underwent security audit by Cure53 in 2018. Since then, imToken has maintained internal audits for each release.',
 							url: 'https://cure53.de/pentest-report_imtoken.pdf',
 						},
 					],
@@ -309,7 +306,7 @@ export const imtoken: SoftwareWallet = {
 					ref: [
 						{
 							explanation:
-								'imToken warns about risky signatures such as eth_sign, non-standard EIP-712 Type signatures, and ENS security risks including zero-width characters. It also marks risky tokens, addresses, and DApps.',
+								'imToken warns about risky signatures such as eth_sign, non-standard EIP-712 type signatures, and ENS security risks including zero-width characters. It also marks risky tokens, addresses, and DApps. Processing happens on-device.',
 							url: 'https://support.token.im/hc/en-us/articles/21850966355737-Revamped-imToken-signature-for-safer-and-more-intuitive-transactions',
 						},
 					],
@@ -332,12 +329,13 @@ export const imtoken: SoftwareWallet = {
 			},
 		},
 		transparency: {
-			operationFees: {
+			operationFees: null,
+			/* TODO: Fill in; partial data: {
 				builtInErc20Swap: null,
 				erc20L1Transfer: supported(comprehensiveFeesShownByDefault),
 				ethL1Transfer: supported(comprehensiveFeesShownByDefault),
 				uniswapUSDCToEtherSwap: null,
-			},
+			},*/
 		},
 	},
 	variants: {
