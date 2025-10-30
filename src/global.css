@@ -137,6 +137,14 @@ a {
 	&:hover {
 		text-decoration: underline;
 	}
+
+	transition-property: opacity, scale;
+
+	&:active {
+		transition-duration: var(--active-transitionInDuration);
+		opacity: var(--active-opacity);
+		scale: var(--active-scale);
+	}
 }
 
 hr {
@@ -199,6 +207,14 @@ details {
 		align-items: center;
 		gap: 0.5rem;
 
+		transition-property: opacity, scale;
+
+		&:active {
+			transition-duration: var(--active-transitionInDuration);
+			opacity: var(--active-opacity);
+			scale: var(--active-scale);
+		}
+
 		&::-webkit-details-marker {
 			display: none;
 		}
@@ -243,10 +259,12 @@ label:has(> input:is([type="checkbox"], [type="radio"])) {
 	border: 1px solid var(--border-color);
 	border-radius: 0.5em;
 
-	transition-property: opacity;
+	transition-property: opacity, scale;
 
 	&:active {
-		opacity: 0.8;
+		transition-duration: var(--active-transitionInDuration);
+		opacity: var(--active-opacity);
+		scale: var(--active-scale);
 	}
 
 	:disabled {
@@ -257,6 +275,14 @@ label:has(> input:is([type="checkbox"], [type="radio"])) {
 option,
 label:has(> input:is([type="checkbox"], [type="radio"])) {
 	padding: 0.6em 0.8em;
+
+	transition-property: opacity, scale;
+
+	&:active {
+		transition-duration: var(--active-transitionInDuration);
+		opacity: var(--active-opacity);
+		scale: var(--active-scale);
+	}
 }
 
 code {
