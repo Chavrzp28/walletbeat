@@ -263,6 +263,10 @@
 		"node_modules/**",
 		"src/legacy/**",
 		"src/generated/**",
+		"**/*.css",
+		"**/*.astro",
+		"**/*.svelte",
+		"**/*.svelte.ts",
 		"pnpm-lock.yaml"
 	]
 }
