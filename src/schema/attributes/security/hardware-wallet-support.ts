@@ -97,9 +97,9 @@ function directHardwareWalletSupport(
 			hardwareWalletSupport,
 			__brand: brand,
 		},
-		details: mdParagraph(`
-			{{WALLET_NAME}} supports ${supportsHardwareWalletTypesMarkdown(hardwareWalletSupport.wallets, true)}
-		`),
+		details: mdParagraph(
+			`{{WALLET_NAME}} supports ${supportsHardwareWalletTypesMarkdown(hardwareWalletSupport.wallets, true)}`,
+		),
 	}
 }
 
