@@ -47,6 +47,14 @@ export enum Rating {
 	EXEMPT = 'EXEMPT',
 }
 
+export const ratingIcons = {
+	[Rating.PASS]: '✅',
+	[Rating.PARTIAL]: '⚠️',
+	[Rating.FAIL]: '❌',
+	[Rating.UNRATED]: '❔',
+	[Rating.EXEMPT]: '🆗',
+}
+
 /** Ratings enum. */
 export const ratingEnum = new Enum<Rating>({
 	[Rating.PASS]: true,
@@ -103,7 +111,9 @@ export function ratingToColor(rating: Rating): string {
 			return 'var(--rating-partial)'
 		case Rating.FAIL:
 			return 'var(--rating-fail)'
-		default:
+		case Rating.UNRATED:
+			return 'var(--rating-unrated)'
+		case Rating.EXEMPT:
 			return 'var(--rating-neutral)'
 	}
 }
@@ -190,7 +200,7 @@ export interface Value {
 }
 
 /** The numerical score corresponding to a rating by default. */
-export function defaultRatingScore(rating: Rating): Score | null {
+export function defaultRatingScore(rating: Rating): Score {
 	switch (rating) {
 		case Rating.FAIL:
 			return 0.0
@@ -198,10 +208,6 @@ export function defaultRatingScore(rating: Rating): Score | null {
 			return 0.5
 		case Rating.PASS:
 			return 1.0
-		case Rating.UNRATED:
-			return 0.0
-		case Rating.EXEMPT:
-			return null
 	}
 }
 

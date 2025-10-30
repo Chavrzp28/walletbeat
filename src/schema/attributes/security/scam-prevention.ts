@@ -296,18 +296,17 @@ function evaluateScamAlerts(
 				__brand: brand,
 			},
 			details: scamAlertsDetailsContent({}),
-			howToImprove: markdown(
-				`{{WALLET_NAME}} should implement the following features:
+			howToImprove: markdown(`
+				{{WALLET_NAME}} should implement the following features:
 
 				${unsupportedFeatures
 					.map(
 						sas => `
-						*	${sas.listFeature}
-					`,
+				*	${sas.listFeature}
+				`,
 					)
-					.join('\n')}
-			`,
-			),
+					.join('')}
+			`),
 			references: allRefs,
 		}
 	}
@@ -338,16 +337,16 @@ function evaluateScamAlerts(
 				${[
 					!needsImprovement(sendTransactionWarning) &&
 						`
-						* Sending a transaction should not allow an external service to learn a link between any of the sender's IP or Ethereum address and the recipient's address.
-					`,
+				* Sending a transaction should not allow an external service to learn a link between any of the sender's IP or Ethereum address and the recipient's address.
+				`,
 					!needsImprovement(contractTransactionWarning) &&
 						`
-						* Checking arbitrary transactions for potential scams should not allow an external service to link your IP or Ethereum address to the contract you are about to interact with or your upcoming transaction.
-					`,
+				* Checking arbitrary transactions for potential scams should not allow an external service to link your IP or Ethereum address to the contract you are about to interact with or your upcoming transaction.
+				`,
 					!needsImprovement(scamUrlWarning) &&
 						`
-						* Checking arbitrary transactions for potential scams should not allow an external service to link your browsing history with your IP or Ethereum address.
-					`,
+				* Checking arbitrary transactions for potential scams should not allow an external service to link your browsing history with your IP or Ethereum address.
+				`,
 				]
 					.filter(Boolean)
 					.join('\n\n')}

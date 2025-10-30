@@ -1,8 +1,8 @@
-/// <reference types="vitest/config" />
 import { getViteConfig } from 'astro/config'
 
 export default getViteConfig({
 	cacheDir: '.cache', // Vitest will append `/vitest` to this path already.
+	// @ts-expect-error - Astro's getViteConfig doesn't expose test config typing
 	test: {
 		environment: 'node',
 		typecheck: {

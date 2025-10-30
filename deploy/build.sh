@@ -28,11 +28,11 @@ has_tty() {
 do_build() {
 	if has_tty && hash script &>/dev/null; then
 		# Using `script` preserves terminal colors.
-		WALLETBEAT_BUILD_DO_NOT_RECURSE=true script -q -e -f -c 'pnpm astro build' /dev/null |& tee /dev/tty | sed -r "s/\x1B\[[0-9;]*[A-Za-z]//g"
+		WALLETBEAT_BUILD_DO_NOT_RECURSE=true script -q -e -f -c 'pnpm astro build' /dev/null 2>&1 | tee /dev/tty | sed -r "s/\x1B\[[0-9;]*[A-Za-z]//g"
 	elif has_tty; then
-		WALLETBEAT_BUILD_DO_NOT_RECURSE=true pnpm astro build |& tee /dev/tty
+		WALLETBEAT_BUILD_DO_NOT_RECURSE=true pnpm astro build 2>&1 | tee /dev/tty
 	else
-		WALLETBEAT_BUILD_DO_NOT_RECURSE=true pnpm astro build |& cat
+		WALLETBEAT_BUILD_DO_NOT_RECURSE=true pnpm astro build 2>&1 | cat
 	fi
 }
 

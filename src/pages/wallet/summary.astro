@@ -1,12 +1,41 @@
 ---
-import Layout from '../../layouts/Layout.astro'
-import { HomePage } from '../../components/HomePage'
+// Types/constants
+import { WalletType } from '@/schema/wallet-types'
+import { defaultNavigationItems } from '@/constants/navigation'
+import { allRatedWallets } from '@/data/wallets'
+import { attributeTree } from '@/schema/attribute-groups'
+
+const attributeGroups = Object.values(attributeTree)
+
+
+// Components
+import Layout from '@/layouts/Layout.astro'
+import Navigation from '@/views/Navigation.astro'
+import WalletTable from '@/views/WalletTable.svelte'
 ---
+
 
 <Layout
 	metadata={{
 		title: 'Walletbeat',
 	}}
 >
-	<HomePage client:load selectedGroupId='wallet' />
+	<Navigation
+		navigationItems={defaultNavigationItems}
+	/>
+
+	<main data-sticky-container>
+		<section data-sticky-container data-column="gap-6">
+			<WalletTable
+				client:load
+				title="Software Wallets"
+				wallets={
+					Object
+						.values(allRatedWallets)
+						.filter(wallet => wallet.types[WalletType.SOFTWARE])
+				}
+				{attributeGroups}
+			/>
+		</section>
+	</main>
 </Layout>

@@ -1,0 +1,114 @@
+<script lang="ts">
+	// Types/constants
+	import type { Snippet } from 'svelte'
+
+
+	// Props
+	let {
+		isExpanded = $bindable(false),
+		showAccordionMarker = false,
+
+		tooltipMaxWidth,
+
+		children,
+		ExpandedContent: ExpandedContent,
+	}: {
+		isExpanded: boolean
+		showAccordionMarker?: boolean
+
+		tooltipMaxWidth?: string
+
+		children: Snippet
+		ExpandedContent: Snippet<[{ isInTooltip?: boolean }]>
+	} = $props()
+
+
+	// Components
+	import BlockTransition from '@/components/BlockTransition.svelte'
+	import Tooltip from '@/components/Tooltip.svelte'
+
+
+	// Transitions/animations
+	import { expoOut } from 'svelte/easing'
+	import { fade } from 'svelte/transition'
+</script>
+
+
+<BlockTransition>
+	<details
+		class="with-expanded-content"
+		bind:open={isExpanded}
+	>
+		<summary
+			class:no-marker={!showAccordionMarker}
+		>
+			<Tooltip
+				isEnabled={!isExpanded}
+				style="
+					--popover-padding: 0;
+					--popover-backgroundColor: transparent;
+					--popover-borderColor: transparent;
+				"
+			>
+				{@render children()}
+
+				{#snippet TooltipContent()}
+					{#if !isExpanded}
+						<div
+							class="expanded-tooltip-content"
+							style:max-width={tooltipMaxWidth}
+						>
+							{@render ExpandedContent({ isInTooltip: true })}
+						</div>
+					{/if}
+				{/snippet}
+			</Tooltip>
+		</summary>
+
+		{#if isExpanded}
+			<div
+				class="expanded-content"
+				transition:fade={{ duration: 200, easing: expoOut }}
+			>
+				{@render ExpandedContent({ isInTooltip: false })}
+			</div>
+		{/if}
+	</details>
+</BlockTransition>
+
+
+<style>
+	details {
+		display: grid;
+
+		transition-property: gap;
+
+		&[open] {
+			gap: 0.75em;
+		}
+
+		summary {
+			&.no-marker {
+				&::after {
+					display: none;
+				}
+			}
+		}
+
+		.expanded-content {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr);
+
+			inline-size: 0;
+			min-inline-size: 100%;
+			min-inline-size: -webkit-fill-available;
+
+			font-size: 0.66em;
+			text-align: center;
+		}
+
+		.expanded-tooltip-content {
+			max-width: 16em;
+		}
+	}
+</style>

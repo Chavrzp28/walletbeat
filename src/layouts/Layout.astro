@@ -1,6 +1,7 @@
 ---
 // Global CSS
-import '../global.css'
+import '@/global.css'
+
 
 // Props
 import type { ComponentProps } from 'astro/types'
@@ -17,11 +18,11 @@ type Props = {
 
 const { metadata, rewriteUrlTo } = Astro.props
 
+
 // Components
-import Metadata from '@/components/Metadata.astro'
-import ThemeRegistry from '@/components/ThemeRegistry/ThemeRegistry'
-import { NavigationStateManager } from '@/components/NavigationStateManager'
+import Metadata from '@/layouts/Metadata.astro'
 ---
+
 
 <!doctype html>
 <html lang='en'>
@@ -30,49 +31,99 @@ import { NavigationStateManager } from '@/components/NavigationStateManager'
 		<meta name='viewport' content='width=device-width' />
 		<Metadata {metadata} />
 		<ClientRouter />
-		<!-- Theme initialization script -->
 		<script is:inline>
-			// Initialize theme from localStorage or system preference
-			function initializeTheme() {
-				// Check localStorage first
-				const storedTheme = localStorage.getItem('theme')
-
-				if (storedTheme) {
-					// Use stored preference
-					document.documentElement.classList.toggle('dark', storedTheme === 'dark')
-				} else {
-					// Check system preference
-					const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-					document.documentElement.classList.toggle('dark', prefersDark)
-					// Store the initial preference
-					localStorage.setItem('theme', prefersDark ? 'dark' : 'light')
-				}
-			}
-
-			// Run immediately
-			initializeTheme()
+			// `color-scheme` override
+			const colorScheme = localStorage.getItem('theme')
+			if (colorScheme) document.documentElement.style.colorScheme = colorScheme
 		</script>
+
+
 		{
 			rewriteUrlTo !== undefined && (
 				<script is:inline define:vars={{ rewriteUrlTo }}>
 					history.replaceState(null, '', rewriteUrlTo);
 				</script>
+
+
 			)
 		}
 	</head>
 	<body>
-		<ThemeRegistry>
-			<NavigationStateManager client:load />
+		<div
+			id="layout"
+			data-scroll-container data-sticky-container
+		>
 			<slot />
-		</ThemeRegistry>
+		</div>
 	</body>
 </html>
 
+
 <style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
+	#layout {
+		/* Constants */
+		--navigation-desktop-inlineSize: 20rem;
+		--navigation-mobile-blockSize: 4rem;
+
+		/* Rules */
+		width: 100dvw;
+		height: 100dvh;
+		display: grid;
+		align-items: start;
+		gap: var(--separator-width);
+
+		@media not (max-width: 1024px) {
+			grid-template:
+				'Nav Main' 100dvh
+				/ var(--navigation-desktop-inlineSize) minmax(0, 1fr)
+			;
+			&[data-sticky-container] {
+				--sticky-marginInlineStart: var(--separator-width);
+				--sticky-paddingInlineStart: var(--navigation-desktop-inlineSize);
+			}
+		}
+
+		@media (max-width: 1024px) {
+			grid-template:
+				'Nav' var(--navigation-mobile-blockSize)
+				'Main' 1fr
+				/ minmax(0, 1fr)
+			;
+
+			&[data-sticky-container] {
+				--sticky-marginBlockStart: var(--separator-width);
+				--sticky-paddingBlockStart: var(--navigation-mobile-blockSize);
+			}
+		}
+
+		> * {
+			box-shadow: 0 0 0 var(--separator-width) var(--border-color);
+		}
+
+		> nav {
+			grid-area: Nav;
+		}
+
+		> main {
+			--content-maxWidth: 86rem;
+
+			grid-area: Main;
+			min-inline-size: fit-content;
+
+			> section {
+				padding: clamp(1.5rem, (100cqi - var(--content-maxWidth)) / 2, 2rem) max(1.5rem, (100cqi - var(--content-maxWidth)) / 2);
+
+				&[data-sticky-container] {
+					--sticky-paddingInlineStart: clamp(1.5rem, 6cqi, 2rem);
+					--sticky-paddingInlineEnd: clamp(1.5rem, 6cqi, 2rem);
+
+					--sticky-paddingInlineStart: max(1.5rem, (100cqi - var(--content-maxWidth)) / 2);
+					--sticky-paddingInlineEnd: max(1.5rem, (100cqi - var(--content-maxWidth)) / 2);
+				}
+
+				gap: 1.5rem;
+				margin: 0 auto;
+			}
+		}
 	}
 </style>

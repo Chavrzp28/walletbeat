@@ -1,11 +1,10 @@
 import eslint from '@eslint/js'
+import eslintPluginEslintComments from '@eslint-community/eslint-plugin-eslint-comments/configs'
 import eslintPluginImport from 'eslint-plugin-import'
 import eslintPluginPrettier from 'eslint-plugin-prettier'
-import react from 'eslint-plugin-react'
 import eslintPluginSimpleImportSort from 'eslint-plugin-simple-import-sort'
 import eslintPluginSortKeysCustomOrder from 'eslint-plugin-sort-keys-custom-order'
 import eslintPluginUnusedImports from 'eslint-plugin-unused-imports'
-import eslintPluginEslintComments from '@eslint-community/eslint-plugin-eslint-comments/configs'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
@@ -23,30 +22,37 @@ const firstOrderedKeys = [
 	'metadata',
 ]
 
-export default tseslint.config(
-	// Ignore generated files
+export default [
 	{
-		ignores: ['src/generated/**'],
+		ignores: [
+			// Ignore generated files
+			'src/generated/**',
+
+			'**/*.css',
+			'**/*.astro',
+			'**/*.svelte',
+			'**/*.svelte.ts',
+		],
 	},
 	eslintPluginEslintComments.recommended,
 	eslint.configs.recommended,
-	process.env.WALLETBEAT_PRECOMMIT_FAST === 'true'
+	...(process.env.WALLETBEAT_PRECOMMIT_FAST === 'true'
 		? tseslint.configs.recommended
-		: tseslint.configs.recommendedTypeChecked,
-	process.env.WALLETBEAT_PRECOMMIT_FAST === 'true'
-		? {}
-		: {
-				languageOptions: {
-					parserOptions: {
-						projectService: true,
-						tsconfigRootDir: import.meta.dirname,
+		: tseslint.configs.recommendedTypeChecked),
+	...(process.env.WALLETBEAT_PRECOMMIT_FAST === 'true'
+		? []
+		: [
+				{
+					languageOptions: {
+						parserOptions: {
+							projectService: true,
+							tsconfigRootDir: import.meta.dirname,
+						},
 					},
 				},
-			},
-	react.configs.flat.recommended,
-	react.configs.flat['jsx-runtime'],
+			]),
 	{
-		files: ['**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
+		files: ['**/*.{js,mjs,cjs,ts}'],
 		languageOptions: {
 			globals: {
 				...globals.browser,
@@ -54,19 +60,12 @@ export default tseslint.config(
 			ecmaVersion: 'latest',
 			sourceType: 'module',
 		},
-		settings: {
-			react: {
-				version: 'detect',
-			},
-		},
 		plugins: {
 			import: eslintPluginImport,
 			'simple-import-sort': eslintPluginSimpleImportSort,
 			'unused-imports': eslintPluginUnusedImports,
 		},
 		rules: {
-			// React rules
-			'react/display-name': 'off',
 			'prefer-destructuring': 'off',
 
 			'no-unused-vars': 'off',
@@ -153,7 +152,7 @@ export default tseslint.config(
 		},
 	},
 	{
-		files: ['data/**/*.{js,mjs,cjs,jsx,mjsx,ts,tsx,mtsx}'],
+		files: ['data/**/*.{js,mjs,cjs,ts}'],
 		plugins: { 'sort-keys-custom-order': eslintPluginSortKeysCustomOrder },
 		rules: {
 			'sort-keys-custom-order/object-keys': [
@@ -179,4 +178,10 @@ export default tseslint.config(
 			quotes: ['error', 'single', { avoidEscape: true }],
 		},
 	},
-)
+	{
+		files: ['**/*.{css,astro,svelte,svelte.ts}'],
+		rules: {
+			'prettier/prettier': 'off',
+		},
+	},
+]
