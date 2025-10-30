@@ -53,23 +53,6 @@
 :nth-child(19) { --i: 18; }
 :nth-child(20) { --i: 29; }
 
-
-.text-accent {
-	color: var(--accent);
-}
-
-html.dark {
-	color-scheme: dark;
-}
-
-/*
-	This is a hacky way to get Noto Color Emoji emojis throughout the page,
-	without bundling all of that font inside the web bundle (which is huge
-	because it's a full emoji set).
-	There's probably a much better way to do this but I haven't spent the
-	time to figure it out yet.
-*/
-
 @font-face {
 	font-family: 'Noto Color Emoji';
 	src: local('Noto Color Emoji');
@@ -123,10 +106,6 @@ html.dark {
 	transition-duration: 0.25s;
 	transition-timing-function: var(--transition-easeOutExpo);
 	transition-behavior: allow-discrete;
-}
-
-[hidden] {
-	display: none !important;
 }
 
 a {
@@ -272,6 +251,7 @@ label:has(> input:is([type="checkbox"], [type="radio"])) {
 		opacity: 0.6;
 	}
 }
+
 option,
 label:has(> input:is([type="checkbox"], [type="radio"])) {
 	padding: 0.6em 0.8em;
@@ -283,11 +263,6 @@ label:has(> input:is([type="checkbox"], [type="radio"])) {
 		opacity: var(--active-opacity);
 		scale: var(--active-scale);
 	}
-}
-
-code {
-	/* Why monospace twice? See https://github.com/necolas/normalize.css/issues/519#issuecomment-197131966 */
-	font-family: monospace, monospace;
 }
 
 span svg {
