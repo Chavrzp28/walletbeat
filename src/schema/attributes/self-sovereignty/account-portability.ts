@@ -16,6 +16,7 @@ import {
 	type AccountTypeEoa,
 	type AccountTypeMpc,
 	type AccountTypeMutableMultifactor,
+	type AccountTypeSafe, // add this
 	TransactionGenerationCapability,
 } from '@/schema/features/account-support'
 import { isSupported } from '@/schema/features/support'
@@ -409,6 +410,52 @@ function evaluateMultifactor(
 	}
 }
 
+function evaluateSafe(
+	safe: AccountTypeSafe,
+	references: ReferenceArray,
+): Evaluation<AccountPortabilityValue> {
+	if (safe.keyRotationTransactionGeneration === TransactionGenerationCapability.IMPOSSIBLE) {
+		return {
+			value: {
+				id: 'safe_cannot_rotate_authority',
+				rating: Rating.FAIL,
+				icon: '\u{1faa4}', // Mouse trap
+				displayName: 'Not a self-custodial wallet',
+				shortExplanation: sentence(
+					'{{WALLET_NAME}} is not self-custodial, and cannot be converted to become self-custodial.',
+				),
+				__brand: brand,
+			},
+			details: mdParagraph(
+				'{{WALLET_NAME}} is a Safe multisig wallet. The account control logic cannot be updated to put the user fully in control of the account.',
+			),
+			impact: paragraph(
+				'{{WALLET_NAME}} is not a self-custodial wallet and users cannot update it into one. Users of {{WALLET_NAME}} are therefore not in control of their account.',
+			),
+			howToImprove: paragraph(
+				'{{WALLET_NAME}} should update the control logic to allow users to take full control of the account.',
+			),
+			references,
+		}
+	}
+
+	return {
+		value: {
+			id: 'safe_ok',
+			rating: Rating.PASS,
+			displayName: 'Self-custodial Safe wallet',
+			shortExplanation: sentence(
+				'{{WALLET_NAME}} is self-custodial and puts the user in control of their Safe wallet without lock-in.',
+			),
+			__brand: brand,
+		},
+		details: mdParagraph(
+			'{{WALLET_NAME}} is a Safe multisig wallet. By default, the user holds sufficient authority to generate and broadcast arbitrary transactions and can do so without relying on an external provider, including transactions which update the control logic (e.g., for owner changes).',
+		),
+		references,
+	}
+}
+
 function evaluateEip7702(
 	accountSupport: AccountSupport,
 	references: ReferenceArray,
@@ -790,6 +837,16 @@ export const accountPortability: Attribute<AccountPortabilityValue> = {
 			evaluations.push(evaluation)
 
 			if (features.accountSupport.defaultAccountType === AccountType.eip7702) {
+				defaultEvaluation = evaluation
+			}
+		}
+
+		if (isSupported<AccountTypeSafe>(features.accountSupport.safe)) {
+			const evaluation = evaluateSafe(features.accountSupport.safe, allRefs)
+
+			evaluations.push(evaluation)
+
+			if (features.accountSupport.defaultAccountType === AccountType.safe) {
 				defaultEvaluation = evaluation
 			}
 		}

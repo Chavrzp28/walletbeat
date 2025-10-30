@@ -60,6 +60,7 @@ export const metamask: SoftwareWallet = {
 			}),
 			mpc: notSupported,
 			rawErc4337: notSupported,
+			safe: notSupported,
 		},
 		addressResolution: {
 			chainSpecificAddressing: {

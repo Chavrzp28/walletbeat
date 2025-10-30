@@ -34,6 +34,8 @@ export enum AccountType {
 	 * smart contract code.
 	 */
 	rawErc4337 = 'rawErc4337',
+	/** Safe multisig smart contract account. */
+	safe = 'safe',
 }
 
 const allAccountTypes: NonEmptyArray<AccountType> = [
@@ -41,6 +43,7 @@ const allAccountTypes: NonEmptyArray<AccountType> = [
 	AccountType.mpc,
 	AccountType.rawErc4337,
 	AccountType.eip7702,
+	AccountType.safe,
 ]
 
 /** The ability (or lack thereof) to generate a transaction of a specific type. */
@@ -87,6 +90,8 @@ export type AccountSupport = Exclude<
 		 * address matches the contract code).
 		 */
 		rawErc4337: AccountTypeSupport<AccountType4337>
+		/** Support for Safe multisig accounts. */
+		safe: AccountTypeSupport<AccountTypeSafe>
 	},
 	// At least one account type must be supported.
 	Record<AccountType, NotSupported>
@@ -217,3 +222,34 @@ export type AccountType4337 = AccountTypeMutableMultifactor & SmartAccountType
  * Support information for EIP-7702 accounts.
  */
 export type AccountType7702 = SmartAccountType
+
+/** Support information for Safe multisig accounts. */
+export interface AccountTypeSafe extends AccountTypeMutableMultifactor {
+	/** Can the wallet deploy new Safe contracts? */
+	canDeployNew: boolean
+
+	/** Default configuration when creating a new Safe. */
+	defaultConfig: {
+		/** Number of owners by default. */
+		owners: number
+		/** Signature threshold by default. */
+		threshold: number
+		/** Enabled modules by default. */
+		modules: string[] // or more specific type if needed
+	}
+
+	/** Does the wallet support key rotation without additional modules? */
+	supportsKeyRotationWithoutModules: boolean
+
+	/** Supported configurations for existing Safes. */
+	supportedConfigs: {
+		/** Minimum number of owners supported. */
+		minOwners: number
+		/** Maximum number of owners supported (or 'unlimited'). */
+		maxOwners: number | 'unlimited'
+		/** Whether any threshold is supported. */
+		supportsAnyThreshold: boolean
+		/** Level of module support. */
+		moduleSupport: 'none' | 'partial' | 'full'
+	}
+}

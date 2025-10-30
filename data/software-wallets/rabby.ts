@@ -1,6 +1,6 @@
 import { nconsigny } from '@/data/contributors/nconsigny'
 import { polymutex } from '@/data/contributors/polymutex'
-import { AccountType } from '@/schema/features/account-support'
+import { AccountType, TransactionGenerationCapability } from '@/schema/features/account-support'
 import { ExposedAccountsBehavior } from '@/schema/features/privacy/app-isolation'
 import {
 	CollectionPolicy,
@@ -77,6 +77,26 @@ export const rabby: SoftwareWallet = {
 			}),
 			mpc: notSupported,
 			rawErc4337: notSupported,
+			safe: supported({
+				canDeployNew: false,
+				controllingSharesInSelfCustodyByDefault: 'YES',
+				defaultConfig: {
+					modules: [],
+					owners: 1,
+					threshold: 1,
+				},
+				keyRotationTransactionGeneration:
+					TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
+				supportedConfigs: {
+					maxOwners: 10,
+					minOwners: 1,
+					moduleSupport: 'partial',
+					supportsAnyThreshold: true,
+				},
+				supportsKeyRotationWithoutModules: true,
+				tokenTransferTransactionGeneration:
+					TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
+			}),
 		},
 		addressResolution: {
 			chainSpecificAddressing: {
