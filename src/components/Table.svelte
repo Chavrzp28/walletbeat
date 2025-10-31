@@ -353,7 +353,7 @@
 		border-collapse: separate;
 		border-spacing: var(--table-borderWidth);
 
-		thead {
+		:where(thead) {
 			font-size: 0.75em;
 			text-wrap: nowrap;
 
@@ -361,8 +361,8 @@
 			top: 0;
 			z-index: 1;
 
-			tr {
-				th {
+			:where(tr) {
+				:where(th) {
 					/* &:not(:empty) {
 						backdrop-filter: blur(20px);
 					} */
@@ -511,7 +511,7 @@
 					border-start-start-radius: var(--table-cornerRadius) !important;
 					border-start-end-radius: var(--table-cornerRadius) !important;
 
-					th {
+					:where(th) {
 						&:first-child {
 							border-start-start-radius: var(--table-cornerRadius) !important;
 						}
@@ -523,12 +523,12 @@
 			}
 		}
 
-		tbody {
+		:where(tbody) {
 			isolation: isolate;
 
 			counter-reset: TableRowCount;
 
-			tr {
+			:where(tr) {
 				--table-row-backgroundColor: light-dark(rgba(0, 0, 0, 0.03), rgba(255, 255, 255, 0.03));
 
 				&:not([data-disabled]) {
@@ -580,7 +580,7 @@
 					opacity: 0.3;
 				}
 
-				> td {
+				> :where(td) {
 					box-shadow: var(--table-borderWidth) 0 var(--table-row-backgroundColor);
 					vertical-align: var(--table-cell-verticalAlign);
 
@@ -594,11 +594,11 @@
 			}
 
 			&:last-child {
-				tr:last-child {
+				:where(tr):last-child {
 					border-end-start-radius: var(--table-cornerRadius) !important;
 					border-end-end-radius: var(--table-cornerRadius) !important;
 
-					td {
+					:where(td) {
 						&:first-child {
 							border-end-start-radius: var(--table-cornerRadius) !important;
 						}
@@ -610,8 +610,10 @@
 			}
 		}
 
-		th,
-		td {
+		:where(
+			th,
+			td
+		) {
 			&[data-align='start'] {
 				text-align: start;
 				align-items: start;
