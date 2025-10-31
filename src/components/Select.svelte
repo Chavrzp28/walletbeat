@@ -61,7 +61,12 @@
 	{/snippet}
 
 	{#each options as option}
-		<option value={option.value}>
+		<option
+			value={option.value}
+			onclick={e => {
+				e.preventDefault()
+			}}
+		>
 			{#if optionContent}
 				{@render optionContent(option)}
 			{:else}
