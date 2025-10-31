@@ -57,6 +57,7 @@
 
 	// State
 	import { SvelteURLSearchParams } from 'svelte/reactivity'
+	import { isLabeledUrl } from '@/schema/url'
 
 	let queryParams = $state<URLSearchParams>(
 		globalThis.location && new SvelteURLSearchParams(globalThis.location.search)
@@ -275,7 +276,7 @@
 
 					<nav data-row="gap-2 start wrap">
 						<a
-							href={typeof wallet.metadata.url === 'string' ? wallet.metadata.url : wallet.metadata.url?.url ?? '#'}
+							href={isLabeledUrl(wallet.metadata.url) ? wallet.metadata.url.url : wallet.metadata.url}
 							data-badge="medium"
 							target="_blank"
 							rel="noopener noreferrer"
@@ -286,13 +287,13 @@
 
 						{#if wallet.metadata.repoUrl}
 							<a
-								href={typeof wallet.metadata.repoUrl === 'string' ? wallet.metadata.repoUrl : wallet.metadata.repoUrl?.url ?? '#'}
+								href={isLabeledUrl(wallet.metadata.repoUrl) ? wallet.metadata.repoUrl.url : wallet.metadata.repoUrl}
 								data-badge="medium"
 								target="_blank"
 								rel="noopener noreferrer"
 							>
 								{@html Github}
-								GitHub Repository
+								Source Code
 							</a>
 						{/if}
 					</nav>
