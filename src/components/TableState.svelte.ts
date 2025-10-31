@@ -3,11 +3,7 @@
 // Types
 import type { Snippet } from 'svelte'
 
-export type Column<
-	RowValue = any,
-	CellValue = any,
-	ColumnId extends string = string
-> = {
+export type Column<RowValue = any, CellValue = any, ColumnId extends string = string> = {
 	id: ColumnId
 	name: string
 	value: (row: RowValue) => CellValue
@@ -20,15 +16,23 @@ export type Column<
 		compare?: (a: CellValue, b: CellValue, rowA: RowValue, rowB: RowValue) => number
 	}
 
-	HeaderTitle?: Snippet<[{
-		column: Column
-	}]>
+	HeaderTitle?: Snippet<
+		[
+			{
+				column: Column
+			},
+		]
+	>
 
-	Cell?: Snippet<[{
-		row: RowValue
-		column: Column
-		value: CellValue
-	}]>
+	Cell?: Snippet<
+		[
+			{
+				row: RowValue
+				column: Column
+				value: CellValue
+			},
+		]
+	>
 
 	subcolumns?: Column<RowValue, CellValue, ColumnId>[]
 	isDefaultExpanded?: boolean
@@ -36,179 +40,133 @@ export type Column<
 
 type SortDirection = 'asc' | 'desc'
 
-type SortState<
-	ColumnId extends string = string
-> = {
+type SortState<ColumnId extends string = string> = {
 	columnId: ColumnId
 	direction: SortDirection
 }
 
 import { SvelteSet, SvelteMap } from 'svelte/reactivity'
 
-
 // State
-export class TableState<
-	RowValue = any,
-	CellValue = any,
-	ColumnId extends string = string
-> {
-	columns: Column<RowValue, CellValue, ColumnId>[] = $state(
-		[]
-	)
+export class TableState<RowValue = any, CellValue = any, ColumnId extends string = string> {
+	columns: Column<RowValue, CellValue, ColumnId>[] = $state([])
 
 	#columnsById = $derived(
 		new SvelteMap(
 			this.columns
-				.flatMap(function flatten(column): typeof column[] {
-					return [
-						column,
-						...column.subcolumns?.flatMap(flatten) ?? [],
-					]
+				.flatMap(function flatten(column): (typeof column)[] {
+					return [column, ...(column.subcolumns?.flatMap(flatten) ?? [])]
 				})
-				.map(column => [
-					column.id,
-					column
-				])
-		)
+				.map(column => [column.id, column]),
+		),
 	)
 
-	#isColumnExpanded = $state(
-		new SvelteSet<ColumnId>()
-	)
+	#isColumnExpanded = $state(new SvelteSet<ColumnId>())
 
 	columnsVisible = $derived.by(() => {
-		const getVisibleColumns = (columns: Column<RowValue, CellValue, ColumnId>[]): Column<RowValue, CellValue, ColumnId>[] => (
-			columns.flatMap(column => (
-				column.subcolumns?.length && this.#isColumnExpanded.has(column.id) ?
-					getVisibleColumns(column.subcolumns)
-				:
-					[column]
-			))
-		)
+		const getVisibleColumns = (
+			columns: Column<RowValue, CellValue, ColumnId>[],
+		): Column<RowValue, CellValue, ColumnId>[] =>
+			columns.flatMap(column =>
+				column.subcolumns?.length && this.#isColumnExpanded.has(column.id)
+					? getVisibleColumns(column.subcolumns)
+					: [column],
+			)
 		return getVisibleColumns(this.columns)
 	})
 
 	#defaultColumnSort?: SortState<ColumnId>
 
-	sortState?: SortState<ColumnId> = $state(
-		this.#defaultColumnSort
-	)
+	sortState?: SortState<ColumnId> = $state(this.#defaultColumnSort)
 
 	sortedColumn = $derived(
-		this.sortState?.columnId && (
-			this.#columnsById.get(this.sortState.columnId)
-		)
+		this.sortState?.columnId && this.#columnsById.get(this.sortState.columnId),
 	)
 
 	maxHeaderLevel = $derived.by(() => {
-		const getMaxLevel = (columns: Column[]): number => (
+		const getMaxLevel = (columns: Column[]): number =>
 			Math.max(
 				1,
-				...columns.map(column => (
-					!column.subcolumns?.length ?
-						1
-					:
-						1 + getMaxLevel(column.subcolumns)
-				))
+				...columns.map(column =>
+					!column.subcolumns?.length ? 1 : 1 + getMaxLevel(column.subcolumns),
+				),
 			)
-		)
 
 		return getMaxLevel(this.columns)
 	})
 
-	rows = $state<RowValue[]>(
-		[]
-	)
+	rows = $state<RowValue[]>([])
 
 	#rowIsDisabled?: (row: RowValue, table: TableState<RowValue, CellValue, ColumnId>) => boolean
 
 	#displaceDisabledRows: boolean
 
 	rowsSorted = $derived.by(() => {
-		if(!this.sortState)
+		if (!this.sortState) {
 			return this.rows
+		}
 
 		const { columnId, direction } = this.sortState
 
 		const column = this.#columnsById.get(columnId)
 
-		return (
-			this.rows
-				.toSorted((a, b) => {
-					if (this.#displaceDisabledRows && this.#rowIsDisabled) {
-						const isRowADisplaced = this.#rowIsDisabled(a, this)
-						const isRowBDisplaced = this.#rowIsDisabled(b, this)
+		return this.rows.toSorted((a, b) => {
+			if (this.#displaceDisabledRows && this.#rowIsDisabled) {
+				const isRowADisplaced = this.#rowIsDisabled(a, this)
+				const isRowBDisplaced = this.#rowIsDisabled(b, this)
 
-						if(isRowADisplaced || isRowBDisplaced)
-							return (
-								isRowADisplaced && isRowBDisplaced ?
-									0
-								: isRowADisplaced ?
-									1
-								:
-									-1
-							)
-					}
+				if (isRowADisplaced || isRowBDisplaced) {
+					return isRowADisplaced && isRowBDisplaced ? 0 : isRowADisplaced ? 1 : -1
+				}
+			}
 
-					const aVal = column?.value(a)
-					const bVal = column?.value(b)
+			const aVal = column?.value(a)
+			const bVal = column?.value(b)
 
-					return (
-						aVal === undefined || aVal === null ?
-							direction === 'asc' ? 1 : -1
-
-						: bVal === undefined || bVal === null ?
-							direction === 'asc' ? -1 : 1
-
-						: column?.sort?.compare ?
-							direction === 'asc' ?
-								column.sort.compare(aVal, bVal, a, b)
-							:
-								column.sort.compare(bVal, aVal, b, a)
-
-						: typeof aVal === 'string' && typeof bVal === 'string' ?
-							direction === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal)
-
-						: aVal < bVal ?
-							direction === 'asc' ? -1 : 1
-
-						: aVal > bVal ?
-							direction === 'asc' ? 1 : -1
-
-						:
-							0
-					)
-				})
-		)
+			return aVal === undefined || aVal === null
+				? direction === 'asc'
+					? 1
+					: -1
+				: bVal === undefined || bVal === null
+					? direction === 'asc'
+						? -1
+						: 1
+					: column?.sort?.compare
+						? direction === 'asc'
+							? column.sort.compare(aVal, bVal, a, b)
+							: column.sort.compare(bVal, aVal, b, a)
+						: typeof aVal === 'string' && typeof bVal === 'string'
+							? direction === 'asc'
+								? aVal.localeCompare(bVal)
+								: bVal.localeCompare(aVal)
+							: aVal < bVal
+								? direction === 'asc'
+									? -1
+									: 1
+								: aVal > bVal
+									? direction === 'asc'
+										? 1
+										: -1
+									: 0
+		})
 	})
 
-	pageSize: number = $state(
-		Infinity
-	)
+	pageSize: number = $state(Infinity)
 
-	currentPage = $state(
-		1
-	)
+	currentPage = $state(1)
 
 	rowsVisible = $derived(
-		this.rowsSorted
-			.slice(
-				((this.currentPage - 1) * this.pageSize || 0),
-				((this.currentPage - 1) * this.pageSize || 0) + this.pageSize
-			)
+		this.rowsSorted.slice(
+			(this.currentPage - 1) * this.pageSize || 0,
+			((this.currentPage - 1) * this.pageSize || 0) + this.pageSize,
+		),
 	)
 
-	totalPages = $derived(
-		Math.max(1, Math.ceil(this.rows.length / this.pageSize))
-	)
+	totalPages = $derived(Math.max(1, Math.ceil(this.rows.length / this.pageSize)))
 
-	canGoBack = $derived(
-		this.rows.length > 0 && this.currentPage > 1
-	)
+	canGoBack = $derived(this.rows.length > 0 && this.currentPage > 1)
 
-	canGoForward = $derived(
-		this.rows.length > 0 && this.currentPage < this.totalPages
-	)
+	canGoForward = $derived(this.rows.length > 0 && this.currentPage < this.totalPages)
 
 	constructor({
 		data,
@@ -238,11 +196,13 @@ export class TableState<
 
 		const initializeIsColumnExpanded = (columns: Column<RowValue, CellValue, ColumnId>[]) => {
 			columns.forEach(column => {
-				if (column.isDefaultExpanded)
+				if (column.isDefaultExpanded) {
 					this.#isColumnExpanded.add(column.id)
+				}
 
-				if (column.subcolumns?.length)
+				if (column.subcolumns?.length) {
 					initializeIsColumnExpanded(column.subcolumns)
+				}
 			})
 		}
 		initializeIsColumnExpanded(columns)
@@ -251,35 +211,33 @@ export class TableState<
 	toggleColumnSort = (columnId: ColumnId) => {
 		const column = this.#columnsById.get(columnId)
 
-		if (!column?.sort)
+		if (!column?.sort) {
 			return false
+		}
 
-		this.sortState = (
-			this.sortState?.columnId !== columnId ?
-				{
-					columnId,
-					direction: column.sort.defaultDirection,
-				}
-			: this.sortState?.direction === column.sort.defaultDirection ?
-				{
-					columnId,
-					direction: column.sort.defaultDirection === 'asc' ? 'desc' : 'asc',
-				}
-			:
-				this.#defaultColumnSort
-		)
+		this.sortState =
+			this.sortState?.columnId !== columnId
+				? {
+						columnId,
+						direction: column.sort.defaultDirection,
+					}
+				: this.sortState?.direction === column.sort.defaultDirection
+					? {
+							columnId,
+							direction: column.sort.defaultDirection === 'asc' ? 'desc' : 'asc',
+						}
+					: this.#defaultColumnSort
 
 		return true
 	}
 
-	isColumnExpanded = (columnId: ColumnId): boolean => (
-		this.#isColumnExpanded.has(columnId)
-	)
+	isColumnExpanded = (columnId: ColumnId): boolean => this.#isColumnExpanded.has(columnId)
 
 	toggleIsColumnExpanded = (columnId: ColumnId) => {
-		if (this.#isColumnExpanded.has(columnId))
+		if (this.#isColumnExpanded.has(columnId)) {
 			this.#isColumnExpanded.delete(columnId)
-		else
+		} else {
 			this.#isColumnExpanded.add(columnId)
+		}
 	}
 }

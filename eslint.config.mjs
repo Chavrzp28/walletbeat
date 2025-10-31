@@ -178,10 +178,4 @@ export default [
 			quotes: ['error', 'single', { avoidEscape: true }],
 		},
 	},
-	{
-		files: ['**/*.{css,astro,svelte,svelte.ts}'],
-		rules: {
-			'prettier/prettier': 'off',
-		},
-	},
 ]

@@ -6,28 +6,24 @@ import { attributeTree } from '@/schema/attribute-groups'
 
 const attributeGroups = Object.values(attributeTree)
 
-
 // Components
 import Layout from '@/layouts/Layout.astro'
 import Navigation from '@/views/Navigation.astro'
 import WalletTable from '@/views/WalletTable.svelte'
 ---
 
-
 <Layout
 	metadata={{
 		title: 'Walletbeat',
 	}}
 >
-	<Navigation
-		navigationItems={defaultNavigationItems}
-	/>
+	<Navigation navigationItems={defaultNavigationItems} />
 
 	<main data-sticky-container>
-		<section data-sticky-container data-column="gap-6">
+		<section data-sticky-container data-column='gap-6'>
 			<WalletTable
 				client:load
-				title="Hardware Wallets"
+				title='Hardware Wallets'
 				wallets={Object.values(ratedHardwareWallets)}
 				{attributeGroups}
 			/>

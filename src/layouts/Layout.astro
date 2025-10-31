@@ -2,7 +2,6 @@
 // Global CSS
 import '@/global.css'
 
-
 // Props
 import type { ComponentProps } from 'astro/types'
 import { ClientRouter } from 'astro:transitions'
@@ -18,11 +17,9 @@ type Props = {
 
 const { metadata, rewriteUrlTo } = Astro.props
 
-
 // Components
 import Metadata from '@/layouts/Metadata.astro'
 ---
-
 
 <!doctype html>
 <html lang='en'>
@@ -37,27 +34,20 @@ import Metadata from '@/layouts/Metadata.astro'
 			if (colorScheme) document.documentElement.style.colorScheme = colorScheme
 		</script>
 
-
 		{
 			rewriteUrlTo !== undefined && (
 				<script is:inline define:vars={{ rewriteUrlTo }}>
 					history.replaceState(null, '', rewriteUrlTo);
 				</script>
-
-
 			)
 		}
 	</head>
 	<body>
-		<div
-			id="layout"
-			data-scroll-container data-sticky-container
-		>
+		<div id='layout' data-scroll-container data-sticky-container>
 			<slot />
 		</div>
 	</body>
 </html>
-
 
 <style>
 	#layout {
@@ -75,8 +65,7 @@ import Metadata from '@/layouts/Metadata.astro'
 		@media not (max-width: 1024px) {
 			grid-template:
 				'Nav Main' 100dvh
-				/ var(--navigation-desktop-inlineSize) minmax(0, 1fr)
-			;
+				/ var(--navigation-desktop-inlineSize) minmax(0, 1fr);
 			&[data-sticky-container] {
 				--sticky-marginInlineStart: var(--separator-width);
 				--sticky-paddingInlineStart: var(--navigation-desktop-inlineSize);
@@ -87,8 +76,7 @@ import Metadata from '@/layouts/Metadata.astro'
 			grid-template:
 				'Nav' var(--navigation-mobile-blockSize)
 				'Main' 1fr
-				/ minmax(0, 1fr)
-			;
+				/ minmax(0, 1fr);
 
 			&[data-sticky-container] {
 				--sticky-marginBlockStart: var(--separator-width);
@@ -111,7 +99,8 @@ import Metadata from '@/layouts/Metadata.astro'
 			min-inline-size: fit-content;
 
 			> section {
-				padding: clamp(1.5rem, (100cqi - var(--content-maxWidth)) / 2, 2rem) max(1.5rem, (100cqi - var(--content-maxWidth)) / 2);
+				padding: clamp(1.5rem, (100cqi - var(--content-maxWidth)) / 2, 2rem)
+					max(1.5rem, (100cqi - var(--content-maxWidth)) / 2);
 
 				&[data-sticky-container] {
 					--sticky-paddingInlineStart: clamp(1.5rem, 6cqi, 2rem);

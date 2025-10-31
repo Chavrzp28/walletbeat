@@ -3,10 +3,8 @@
 import { allRatedWallets } from '@/data/wallets'
 import { defaultNavigationItems } from '@/constants/navigation'
 
-
 // Functions
 import { nonEmptyKeys, nonEmptyMap } from '@/types/utils/non-empty.ts'
-
 
 // Routes
 export const prerender = true
@@ -19,17 +17,14 @@ export const getStaticPaths = () => [
 
 const { walletName } = Astro.params
 
-
 // Data
 const wallet = allRatedWallets[walletName]
-
 
 // Components
 import Layout from '@/layouts/Layout.astro'
 import Navigation from '@/views/Navigation.astro'
 import WalletPage from '@/views/WalletPage.svelte'
 ---
-
 
 <Layout
 	metadata={{

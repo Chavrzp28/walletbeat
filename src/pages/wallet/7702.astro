@@ -4,7 +4,6 @@ import { defaultNavigationItems } from '@/constants/navigation'
 import { repositoryUrl } from '@/constants'
 import { markdown } from '@/types/content'
 
-
 // Components
 import Layout from '@/layouts/Layout.astro'
 import Eip7702Table from '@/views/Eip7702Table.svelte'
@@ -13,46 +12,45 @@ import Typography from '@/components/Typography.svelte'
 import GitHubIcon from 'lucide-static/icons/github.svg?raw'
 ---
 
-
 <Layout
 	metadata={{
 		title: 'Walletbeat - EIP-7702 wallet adoption',
-		description: 'Which wallets implement EIP-7702? Track the adoption of EIP-7702 across the Ethereum wallet ecosystem.',
+		description:
+			'Which wallets implement EIP-7702? Track the adoption of EIP-7702 across the Ethereum wallet ecosystem.',
 	}}
 >
-	<Navigation
-		navigationItems={defaultNavigationItems}
-	/>
+	<Navigation navigationItems={defaultNavigationItems} />
 
 	<main data-sticky-container>
-		<header data-sticky="inline">
+		<header data-sticky='inline'>
 			{/* @ts-expect-error - Astro type checking doesn't fully support Svelte 5 generics yet */}
 			<Typography
-				content={
-					markdown(`
+				content={markdown(`
 						# EIP-7702 Adoption Tracker
 
 						Which wallets implement [EIP-7702](https://eip.tools/eip/7702)? How compliant and standardized is their implementation? Which new 7702-enabled features does each wallet support?
 
 						Inspired by [7702 Beat](https://swiss-knife.xyz/7702beat), from the great folks at [Swiss-Knife.xyz](https://swiss-knife.xyz). Also check out [BundleBear's EIP-7702 contract tracker](https://www.bundlebear.com/eip7702-authorized-contracts/all)!
-					`)
-				}
+					`)}
 			/>
 		</header>
 
-		<section data-sticky-container data-column="gap-6">
-			<Eip7702Table
-				title="Software Wallets by EIP-7702 Support"
-				client:load
-			/>
+		<section data-sticky-container data-column='gap-6'>
+			<Eip7702Table title='Software Wallets by EIP-7702 Support' client:load />
 
-			<footer data-sticky="inline">
-				<p>Incorrect data? Submit a PR: <a href={repositoryUrl} target="_blank" rel="noopener noreferrer" class="github-link" data-row="gap-2"><span set:html={GitHubIcon}></span>GitHub Repository</a></p>
+			<footer data-sticky='inline'>
+				<p>
+					Incorrect data? Submit a PR: <a
+						href={repositoryUrl}
+						target='_blank'
+						rel='noopener noreferrer'
+						class='github-link'
+						data-row='gap-2'><span set:html={GitHubIcon} />GitHub Repository</a>
+				</p>
 			</footer>
 		</section>
 	</main>
 </Layout>
-
 
 <style>
 	header {

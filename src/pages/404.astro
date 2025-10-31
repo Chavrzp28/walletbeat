@@ -2,33 +2,28 @@
 // Types/constants
 import { defaultNavigationItems } from '@/constants/navigation'
 
-
 // Components
 import Layout from '../layouts/Layout.astro'
 import Navigation from '@/views/Navigation.astro'
 ---
-
 
 <Layout
 	metadata={{
 		title: 'Page not found | Walletbeat',
 	}}
 >
-	<Navigation
-		navigationItems={defaultNavigationItems}
-	/>
+	<Navigation navigationItems={defaultNavigationItems} />
 
-	<main data-sticky-container data-column="gap-4">
+	<main data-sticky-container data-column='gap-4'>
 		<h1>404</h1>
 
 		<p>Page not found.</p>
 
 		<p>
-			<a href="/">Home</a>
+			<a href='/'>Home</a>
 		</p>
 	</main>
 </Layout>
-
 
 <style>
 	main {

@@ -2,7 +2,6 @@
 // Functions
 import { markdown } from '@/types/content'
 
-
 // Constants
 const frequentlyAskedQuestions = [
 	{
@@ -259,18 +258,21 @@ const frequentlyAskedQuestions = [
 	},
 ]
 
-
 // Components
 import Layout from '@/layouts/Layout.astro'
 import Navigation from '@/views/Navigation.astro'
 import Typography from '@/components/Typography.svelte'
 
-import { navigationAbout, navigationFarcasterChannel, navigationHome, navigationRepository } from '@/constants/navigation'
+import {
+	navigationAbout,
+	navigationFarcasterChannel,
+	navigationHome,
+	navigationRepository,
+} from '@/constants/navigation'
 
 import HelpCircleIcon from 'lucide-static/icons/circle-help.svg?raw'
 import HelpOutlineIcon from '@material-icons/svg/svg/help_outline/baseline.svg?raw'
 ---
-
 
 <Layout
 	metadata={{
@@ -301,31 +303,29 @@ import HelpOutlineIcon from '@material-icons/svg/svg/help_outline/baseline.svg?r
 	/>
 
 	<main data-sticky-container>
-		<header id="top">
+		<header id='top'>
 			<h1>Walletbeat FAQ</h1>
 		</header>
 
-		{frequentlyAskedQuestions.map((entry) => (
-			<>
-				<hr>
+		{
+			frequentlyAskedQuestions.map(entry => (
+				<>
+					<hr />
 
-				<section id={entry.anchor} data-column="gap-6">
-					<h2>
-						<span set:html={HelpOutlineIcon} />
-						{entry.question}
-				</h2>
+					<section id={entry.anchor} data-column='gap-6'>
+						<h2>
+							<span set:html={HelpOutlineIcon} />
+							{entry.question}
+						</h2>
 
-				{/* @ts-expect-error - Astro type checking doesn't fully support Svelte 5 generics yet */}
-				<Typography
-					client:load
-					content={entry.answer}
-				/>
-				</section>
-			</>
-		))}
+						{/* @ts-expect-error - Astro type checking doesn't fully support Svelte 5 generics yet */}
+						<Typography client:load content={entry.answer} />
+					</section>
+				</>
+			))
+		}
 	</main>
 </Layout>
-
 
 <style>
 	main {

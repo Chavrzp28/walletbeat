@@ -5,24 +5,19 @@ import { defaultNavigationItems } from '@/constants/navigation'
 import { representativeWalletForType } from '@/data/wallets'
 import { ratedHardwareWallets } from '@/data/hardware-wallets'
 
-
 // Functions
 import { getAttributeGroupById } from '@/schema/attribute-groups'
 import { displayedAttributeIdsForWalletType } from '@/schema/wallet-navigation'
 
-
 // Context
 export const prerender = true
 
-export const getStaticPaths = () => (
-	displayedAttributeIdsForWalletType(WalletType.HARDWARE)
-		.map(attrGroupId => ({
-			params: { attrGroupId },
-		}))
-)
+export const getStaticPaths = () =>
+	displayedAttributeIdsForWalletType(WalletType.HARDWARE).map(attrGroupId => ({
+		params: { attrGroupId },
+	}))
 
 const { attrGroupId } = Astro.params
-
 
 // Data
 const attrGroup = getAttributeGroupById(
@@ -30,16 +25,13 @@ const attrGroup = getAttributeGroupById(
 	representativeWalletForType(WalletType.HARDWARE).overall,
 )
 
-if (!attrGroup)
-	throw new Error('Invalid attribute group')
-
+if (!attrGroup) throw new Error('Invalid attribute group')
 
 // Components
 import Layout from '@/layouts/Layout.astro'
 import Navigation from '@/views/Navigation.astro'
 import WalletTable from '@/views/WalletTable.svelte'
 ---
-
 
 <Layout
 	metadata={{
@@ -48,15 +40,13 @@ import WalletTable from '@/views/WalletTable.svelte'
 		keywordsBefore: [`Ethereum ${attrGroup.displayName}`],
 	}}
 >
-	<Navigation
-		navigationItems={defaultNavigationItems}
-	/>
+	<Navigation navigationItems={defaultNavigationItems} />
 
 	<main data-sticky-container>
-		<section data-sticky-container data-column="gap-6">
+		<section data-sticky-container data-column='gap-6'>
 			<WalletTable
 				client:load
-				title="Hardware Wallets"
+				title='Hardware Wallets'
 				wallets={Object.values(ratedHardwareWallets)}
 				attributeGroups={[attrGroup]}
 				expandByDefault={true}

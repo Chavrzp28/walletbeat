@@ -29,7 +29,6 @@ const defaultIcons: Icon[] = [
 ]
 const locale = 'en-US'
 
-
 // Functions
 const generateBasicMetadata = ({
 	title,
@@ -53,7 +52,6 @@ const generateBasicMetadata = ({
 	},
 })
 
-
 // Props
 type Props = {
 	metadata: MetadataConfig
@@ -63,7 +61,6 @@ const { metadata: rawMetadata } = Astro.props
 
 const metadata = generateBasicMetadata(rawMetadata)
 ---
-
 
 <title>{metadata.title}</title>
 <meta name='application-name' content={metadata.applicationName} />
