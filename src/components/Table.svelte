@@ -202,7 +202,7 @@
 
 						<div data-sticky-container>
 							{#if isSortable}
-								<label class="sort-label">
+								<label class="sort-label" data-pressable="to-containing">
 									<span data-sticky="no-backdrop">
 										{@render HeaderTitle()}
 
@@ -246,7 +246,8 @@
 				{@const rowId = getRowId?.(row, index)}
 
 				<tr
-					tabIndex={0}
+					tabIndex={onRowClick ? 0 : undefined}
+					data-pressable={onRowClick ? '' : undefined}
 					onclick={e => {
 						// e.stopPropagation()
 						onRowClick?.(row, rowId)
@@ -345,7 +346,7 @@
 		);
 	}
 
-	table {
+	:where(table) {
 		min-width: 100%;
 		width: max-content;
 		/* margin-inline: calc(-1 * var(--table-borderWidth)); */
@@ -353,7 +354,7 @@
 		border-collapse: separate;
 		border-spacing: var(--table-borderWidth);
 
-		thead {
+		:where(thead) {
 			font-size: 0.75em;
 			text-wrap: nowrap;
 
@@ -361,8 +362,8 @@
 			top: 0;
 			z-index: 1;
 
-			tr {
-				th {
+			:where(tr) {
+				:where(th) {
 					/* &:not(:empty) {
 						backdrop-filter: blur(20px);
 					} */
@@ -429,6 +430,8 @@
 							justify-content: center;
 							cursor: pointer;
 
+							padding: var(--table-cell-padding);
+
 							.sort-button {
 								margin-inline-start: 0.5em;
 								display: inline-block;
@@ -476,13 +479,15 @@
 						}
 
 						.expansion-button {
+							margin: var(--table-cell-padding);
+							margin-inline-start: calc(-2 * var(--table-cell-padding));
+
 							background-color: transparent;
 
 							flex: 0 0 auto;
 							font-size: 0.75em;
 							padding: 0.33em;
 							border: none;
-							margin-inline-end: -0.25em;
 
 							transition-property: background-color, transform, opacity;
 
@@ -507,7 +512,7 @@
 					border-start-start-radius: var(--table-cornerRadius) !important;
 					border-start-end-radius: var(--table-cornerRadius) !important;
 
-					th {
+					:where(th) {
 						&:first-child {
 							border-start-start-radius: var(--table-cornerRadius) !important;
 						}
@@ -519,12 +524,12 @@
 			}
 		}
 
-		tbody {
+		:where(tbody) {
 			isolation: isolate;
 
 			counter-reset: TableRowCount;
 
-			tr {
+			:where(tr) {
 				--table-row-backgroundColor: light-dark(rgba(0, 0, 0, 0.03), rgba(255, 255, 255, 0.03));
 
 				&:not([data-disabled]) {
@@ -541,13 +546,11 @@
 					background-color: var(--table-row-backgroundColor);
 				}
 
-				&[tabIndex='0'] {
+				&[data-pressable] {
 					cursor: pointer;
 
-					transition: var(--active-transitionOutDuration) var(--transition-easeOutExpo);
-
 					& td.sticky {
-						transition: var(--active-transitionOutDuration) var(--active-transitionOutDuration)
+						transition: var(--pressable-transitionOutDuration) var(--pressable-transitionOutDuration)
 							var(--transition-easeOutExpo);
 					}
 
@@ -556,10 +559,6 @@
 					}
 
 					&:active:not(:has([tabindex='0']:active)) {
-						transition-duration: var(--active-transitionInDuration);
-						opacity: var(--active-opacity);
-						scale: var(--active-scale);
-
 						&:active {
 							--borderColor: transparent;
 						}
@@ -582,7 +581,7 @@
 					opacity: 0.3;
 				}
 
-				> td {
+				> :where(td) {
 					box-shadow: var(--table-borderWidth) 0 var(--table-row-backgroundColor);
 					vertical-align: var(--table-cell-verticalAlign);
 
@@ -596,11 +595,11 @@
 			}
 
 			&:last-child {
-				tr:last-child {
+				:where(tr):last-child {
 					border-end-start-radius: var(--table-cornerRadius) !important;
 					border-end-end-radius: var(--table-cornerRadius) !important;
 
-					td {
+					:where(td) {
 						&:first-child {
 							border-end-start-radius: var(--table-cornerRadius) !important;
 						}
@@ -612,10 +611,10 @@
 			}
 		}
 
-		th,
-		td {
-			padding: var(--table-cell-padding);
-
+		:where(
+			th,
+			td
+		) {
 			&[data-align='start'] {
 				text-align: start;
 				align-items: start;
@@ -636,6 +635,14 @@
 				inset-inline-start: 0;
 				inset-inline-end: 0;
 			} */
+		}
+
+		:where(th) {
+			position: relative;
+		}
+
+		:where(td) {
+			padding: var(--table-cell-padding);
 		}
 	}
 </style>

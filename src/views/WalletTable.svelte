@@ -424,6 +424,8 @@
 					() => isExpanded,
 					setIsExpanded
 				}
+				tooltipButtonTriggerPlacement="behind"
+				tooltipHoverTriggerPlacement="around"
 				showAccordionMarker
 				tooltipMaxWidth="18rem"
 			>

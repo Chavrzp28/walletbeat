@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Types/constants
-	import type { Snippet } from 'svelte'
+	import type { Snippet, ComponentProps } from 'svelte'
 
 
 	// Props
@@ -12,6 +12,8 @@
 
 		// eslint-disable-next-line prefer-const -- Other prop must be mutable.
 		tooltipMaxWidth,
+		tooltipButtonTriggerPlacement = 'around',
+		tooltipHoverTriggerPlacement = 'around',
 
 		// eslint-disable-next-line prefer-const -- Other prop must be mutable.
 		children,
@@ -23,6 +25,8 @@
 		showAccordionMarker?: boolean
 
 		tooltipMaxWidth?: string
+		tooltipButtonTriggerPlacement?: ComponentProps<typeof Tooltip>['buttonTriggerPlacement']
+		tooltipHoverTriggerPlacement?: ComponentProps<typeof Tooltip>['hoverTriggerPlacement']
 
 		children: Snippet
 		ExpandedContent: Snippet<[{ isInTooltip?: boolean }]>
@@ -49,6 +53,8 @@
 		>
 			<Tooltip
 				isEnabled={!isExpanded}
+				buttonTriggerPlacement={tooltipButtonTriggerPlacement}
+				hoverTriggerPlacement={tooltipHoverTriggerPlacement}
 				style="
 					--popover-padding: 0;
 					--popover-backgroundColor: transparent;
@@ -94,6 +100,8 @@
 
 		summary {
 			&.no-marker {
+				gap: 0;
+
 				&::after {
 					display: none;
 				}

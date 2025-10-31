@@ -28,7 +28,10 @@
 
 	// Props
 	let {
+		title,
 		placement = 'block-end',
+		buttonTriggerPlacement = 'around',
+		hoverTriggerPlacement = 'around',
 		offset = 8,
 		TooltipContent,
 		hideDelay = 200,
@@ -36,7 +39,10 @@
 		children,
 		...restProps
 	}: {
+		title?: string
 		placement?: 'block-start' | 'block-end' | 'inline-start' | 'inline-end'
+		buttonTriggerPlacement?: 'around' | 'behind'
+		hoverTriggerPlacement?: 'around' | 'button'
 		offset?: number
 		hideDelay?: number
 		TooltipContent: Snippet
@@ -45,84 +51,83 @@
 	} & Record<string, any> = $props()
 
 
-	// Functions
+	// State
+	let isTriggerHovered = $state(false)
+	let isPopoverHovered = $state(false)
+
+	const hoverTriggerEvents = {
+		onmouseenter: () => {
+			isTriggerHovered = true
+		},
+		onmouseleave: () => {
+			isTriggerHovered = false
+		},
+		onfocus: () => {
+			isTriggerHovered = true
+		},
+		onblur: () => {
+			isTriggerHovered = false
+		},
+	}
+			
 	const supportsAnchorPositioning = (
 		globalThis.CSS?.supports('anchor-name: --test')
 	)
 
+	const useButtonTrigger = async (node: HTMLElement & { popoverTargetElement: HTMLElement }) => {
+		$effect(() => {
+			if(hoverTriggerPlacement === 'around')
+				node.style.setProperty('position', 'static')
+			else
+				node.style.removeProperty('position')
+		})
 
-	// State
-	let isTriggerHovered = $state(false)
-	let isPopoverHovered = $state(false)
+		if (supportsAnchorPositioning) return
+
+		const {
+			computePosition,
+			offset: offsetMiddleware,
+			flip,
+			shift,
+			autoUpdate,
+		} = await import('@floating-ui/dom')
+
+		const updatePosition = async () => {
+			const {x, y} = await computePosition(
+				node,
+				node.popoverTargetElement,
+				{
+					placement: ({
+						'block-start': 'top',
+						'block-end': 'bottom',
+						'inline-start': 'left',
+						'inline-end': 'right',
+					} as const)[placement],
+					middleware: [
+						offsetMiddleware(offset),
+						flip(),
+						shift(),
+					],
+				}
+			)
+
+			node.popoverTargetElement.style.left = `${x}px`
+			node.popoverTargetElement.style.top = `${y}px`
+		}
+
+		updatePosition()
+
+		return autoUpdate(
+			node,
+			node.popoverTargetElement,
+			updatePosition
+		)
+	}
 </script>
 
 
 {#if isEnabled}
-	<button
-		type="button"
-		data-tooltip-trigger
-		style:anchor-name={anchorName}
-		popovertarget={popoverId}
-
-		onmouseenter={() => {
-			isTriggerHovered = true
-		}}
-		onmouseleave={() => {
-			isTriggerHovered = false
-		}}
-		onfocus={() => {
-			isTriggerHovered = true
-		}}
-		onblur={() => {
-			isTriggerHovered = false
-		}}
-
-		{@attach async node => {
-			if (supportsAnchorPositioning) return
-
-			const {
-				computePosition,
-				offset: offsetMiddleware,
-				flip,
-				shift,
-				autoUpdate,
-			} = await import('@floating-ui/dom')
-
-			const updatePosition = async () => {
-				const {x, y} = await computePosition(
-					node,
-					node.popoverTargetElement,
-					{
-						placement: {
-							'block-start': 'top',
-							'block-end': 'bottom',
-							'inline-start': 'left',
-							'inline-end': 'right',
-						}[placement],
-						middleware: [
-							offsetMiddleware(offset),
-							flip(),
-							shift(),
-						],
-					}
-				)
-
-				node.popoverTargetElement.style.left = `${x}px`
-				node.popoverTargetElement.style.top = `${y}px`
-			}
-
-			updatePosition()
-
-			return autoUpdate(
-				node,
-				node.popoverTargetElement,
-				updatePosition
-			)
-		}}
-	>
-		{@render children()}
-
-		<!-- svelte-ignore a11y_no_static_element_interactions -->
+	{#snippet Popover()}
 		<div
 			popover="auto"
 			id={popoverId}
@@ -155,7 +160,45 @@
 		>
 			{@render TooltipContent()}
 		</div>
-	</button>
+	{/snippet}
+
+	{#if buttonTriggerPlacement === 'behind'}
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
+		<div
+			data-stack
+			{...hoverTriggerPlacement === 'around' && hoverTriggerEvents}
+		>
+			<button
+				type="button"
+				{title}
+				data-tooltip-trigger
+				style:anchor-name={anchorName}
+				popovertarget={popoverId}
+				
+				{...hoverTriggerPlacement === 'button' && hoverTriggerEvents}
+				{@attach useButtonTrigger}
+			></button>
+
+			{@render children()}
+		</div>
+
+		{@render Popover()}
+
+	{:else if buttonTriggerPlacement === 'around'}
+		<button
+			type="button"
+			data-tooltip-trigger
+			style:anchor-name={anchorName}
+			popovertarget={popoverId}
+
+			{...hoverTriggerEvents}
+			{@attach useButtonTrigger}
+		>
+			{@render children()}
+
+			{@render Popover()}
+		</button>
+	{/if}
 {:else}
 	{@render children()}
 {/if}

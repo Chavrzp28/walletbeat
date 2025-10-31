@@ -1,7 +1,7 @@
 // Types
 import type { Snippet } from 'svelte'
 
-export type Column<RowValue, CellValue, ColumnId extends string = string> = {
+export type Column<RowValue = any, CellValue = any, ColumnId extends string = string> = {
 	id: ColumnId
 	name: string
 	value: (row: RowValue) => CellValue
@@ -46,7 +46,7 @@ type SortState<ColumnId extends string = string> = {
 import { SvelteMap, SvelteSet } from 'svelte/reactivity'
 
 // State
-export class TableState<RowValue, CellValue, ColumnId extends string = string> {
+export class TableState<RowValue = any, CellValue = any, ColumnId extends string = string> {
 	columns: Column<RowValue, CellValue, ColumnId>[] = $state([])
 
 	#columnsById = $derived(
