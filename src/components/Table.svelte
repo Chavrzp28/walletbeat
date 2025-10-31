@@ -201,7 +201,7 @@
 
 						<div data-sticky-container>
 							{#if isSortable}
-								<label class="sort-label">
+								<label class="sort-label" data-pressable="to-containing">
 									<span data-sticky="no-backdrop">
 										{@render HeaderTitle()}
 
@@ -345,7 +345,7 @@
 		);
 	}
 
-	table {
+	:where(table) {
 		min-width: 100%;
 		width: max-content;
 		/* margin-inline: calc(-1 * var(--table-borderWidth)); */
@@ -630,6 +630,10 @@
 				inset-inline-start: 0;
 				inset-inline-end: 0;
 			} */
+		}
+
+		:where(th) {
+			position: relative;
 		}
 	}
 </style>

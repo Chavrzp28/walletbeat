@@ -285,6 +285,16 @@ label:has(> input:is([type='checkbox'], [type='radio'])) {
 ) {
 	position: relative;
 
+	&[data-pressable='to-containing'] {
+		position: static;
+
+		&::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+		}
+	}
+
 	transition-property: opacity, scale;
 	transition-duration: var(--pressable-transitionOutDuration);
 
