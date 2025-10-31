@@ -419,6 +419,8 @@
 					.filter(variant => variant in wallet.variants)
 			}
 
+			{@const walletUrl = `/${wallet.metadata.id}/${selectedVariant ? `?variant=${selectedVariant}` : ''}`}
+
 			<TooltipOrAccordion
 				bind:isExpanded={
 					() => isExpanded,
@@ -442,7 +444,9 @@
 					<div class="name-and-tags" data-column="gap-2">
 						<div class="name" data-column="gap-1">
 							<div data-row="gap-3 start wrap">
-								<h3>{displayName}</h3>
+								<h3>
+									<a href={walletUrl}>{displayName}</a>
+								</h3>
 
 								{#if 'hardware' in wallet.variants}
 									{@const brandModels = allHardwareModels.filter(m => m.brandId === wallet.metadata.id)}
@@ -464,7 +468,7 @@
 
 							{#if selectedVariant && selectedVariant in wallet.variants}
 								<div class="variant">
-									{variants[selectedVariant].label}
+									<a href={walletUrl}>{variants[selectedVariant].label}</a>
 								</div>
 							{/if}
 						</div>
@@ -613,7 +617,7 @@
 
 						<div class="links" data-row="gap-2 start wrap">
 							<a
-								href={`/${wallet.metadata.id}/${selectedVariant ? `?variant=${selectedVariant}` : ''}`}
+								href={walletUrl}
 								class="info-link"
 							>
 								<span aria-hidden="true">{@html InfoIcon}</span>
