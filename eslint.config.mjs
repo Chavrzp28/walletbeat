@@ -27,11 +27,6 @@ export default [
 		ignores: [
 			// Ignore generated files
 			'src/generated/**',
-
-			'**/*.css',
-			'**/*.astro',
-			'**/*.svelte',
-			'**/*.svelte.ts',
 		],
 	},
 	eslintPluginEslintComments.recommended,

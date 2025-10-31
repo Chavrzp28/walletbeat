@@ -1,9 +1,7 @@
-/* eslint-disable */
-
 // Types
 import type { Snippet } from 'svelte'
 
-export type Column<RowValue = any, CellValue = any, ColumnId extends string = string> = {
+export type Column<RowValue, CellValue, ColumnId extends string = string> = {
 	id: ColumnId
 	name: string
 	value: (row: RowValue) => CellValue
@@ -19,7 +17,7 @@ export type Column<RowValue = any, CellValue = any, ColumnId extends string = st
 	HeaderTitle?: Snippet<
 		[
 			{
-				column: Column
+				column: Column<RowValue, CellValue, ColumnId>
 			},
 		]
 	>
@@ -28,7 +26,7 @@ export type Column<RowValue = any, CellValue = any, ColumnId extends string = st
 		[
 			{
 				row: RowValue
-				column: Column
+				column: Column<RowValue, CellValue, ColumnId>
 				value: CellValue
 			},
 		]
@@ -45,10 +43,10 @@ type SortState<ColumnId extends string = string> = {
 	direction: SortDirection
 }
 
-import { SvelteSet, SvelteMap } from 'svelte/reactivity'
+import { SvelteMap, SvelteSet } from 'svelte/reactivity'
 
 // State
-export class TableState<RowValue = any, CellValue = any, ColumnId extends string = string> {
+export class TableState<RowValue, CellValue, ColumnId extends string = string> {
 	columns: Column<RowValue, CellValue, ColumnId>[] = $state([])
 
 	#columnsById = $derived(
@@ -72,6 +70,7 @@ export class TableState<RowValue = any, CellValue = any, ColumnId extends string
 					? getVisibleColumns(column.subcolumns)
 					: [column],
 			)
+
 		return getVisibleColumns(this.columns)
 	})
 
@@ -84,7 +83,7 @@ export class TableState<RowValue = any, CellValue = any, ColumnId extends string
 	)
 
 	maxHeaderLevel = $derived.by(() => {
-		const getMaxLevel = (columns: Column[]): number =>
+		const getMaxLevel = (columns: Column<RowValue, CellValue, ColumnId>[]): number =>
 			Math.max(
 				1,
 				...columns.map(column =>
@@ -186,6 +185,7 @@ export class TableState<RowValue = any, CellValue = any, ColumnId extends string
 		this.pageSize = pageSize || Infinity
 
 		const defaultSortedColumn = this.columns.find(column => column.sort?.isDefault)
+
 		this.#defaultColumnSort = this.sortState = defaultSortedColumn && {
 			columnId: defaultSortedColumn.id,
 			direction: defaultSortedColumn.sort?.defaultDirection ?? 'asc',
@@ -205,6 +205,7 @@ export class TableState<RowValue = any, CellValue = any, ColumnId extends string
 				}
 			})
 		}
+
 		initializeIsColumnExpanded(columns)
 	}
 
