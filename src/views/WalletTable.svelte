@@ -445,7 +445,7 @@
 						<div class="name" data-column="gap-1">
 							<div data-row="gap-3 start wrap">
 								<h3>
-									<a href={walletUrl}>{displayName}</a>
+									<a data-link="camouflaged" href={walletUrl}>{displayName}</a>
 								</h3>
 
 								{#if 'hardware' in wallet.variants}
@@ -468,7 +468,7 @@
 
 							{#if selectedVariant && selectedVariant in wallet.variants}
 								<div class="variant">
-									<a href={walletUrl}>{variants[selectedVariant].label}</a>
+									<a data-link="camouflaged" href={walletUrl}>{variants[selectedVariant].label}</a>
 								</div>
 							{/if}
 						</div>
