@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Types/constants
-	import type { Snippet } from 'svelte'
+	import type { Snippet, ComponentProps } from 'svelte'
 
 
 	// Props
@@ -9,6 +9,7 @@
 		showAccordionMarker = false,
 
 		tooltipMaxWidth,
+		tooltipTriggerPosition = 'around',
 
 		children,
 		ExpandedContent: ExpandedContent,
@@ -17,6 +18,7 @@
 		showAccordionMarker?: boolean
 
 		tooltipMaxWidth?: string
+		tooltipTriggerPosition?: ComponentProps<typeof Tooltip>['triggerPosition']
 
 		children: Snippet
 		ExpandedContent: Snippet<[{ isInTooltip?: boolean }]>
@@ -44,6 +46,7 @@
 		>
 			<Tooltip
 				isEnabled={!isExpanded}
+				triggerPosition={tooltipTriggerPosition}
 				style="
 					--popover-padding: 0;
 					--popover-backgroundColor: transparent;
