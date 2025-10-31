@@ -89,6 +89,8 @@
 
 		summary {
 			&.no-marker {
+				gap: 0;
+
 				&::after {
 					display: none;
 				}
