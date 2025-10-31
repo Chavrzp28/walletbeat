@@ -9,7 +9,8 @@
 		showAccordionMarker = false,
 
 		tooltipMaxWidth,
-		tooltipTriggerPosition = 'around',
+		tooltipButtonTriggerPlacement = 'around',
+		tooltipHoverTriggerPlacement = 'around',
 
 		children,
 		ExpandedContent: ExpandedContent,
@@ -18,7 +19,8 @@
 		showAccordionMarker?: boolean
 
 		tooltipMaxWidth?: string
-		tooltipTriggerPosition?: ComponentProps<typeof Tooltip>['triggerPosition']
+		tooltipButtonTriggerPlacement?: ComponentProps<typeof Tooltip>['buttonTriggerPlacement']
+		tooltipHoverTriggerPlacement?: ComponentProps<typeof Tooltip>['hoverTriggerPlacement']
 
 		children: Snippet
 		ExpandedContent: Snippet<[{ isInTooltip?: boolean }]>
@@ -46,7 +48,8 @@
 		>
 			<Tooltip
 				isEnabled={!isExpanded}
-				triggerPosition={tooltipTriggerPosition}
+				buttonTriggerPlacement={tooltipButtonTriggerPlacement}
+				hoverTriggerPlacement={tooltipHoverTriggerPlacement}
 				style="
 					--popover-padding: 0;
 					--popover-backgroundColor: transparent;

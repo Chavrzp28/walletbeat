@@ -30,7 +30,8 @@
 	let {
 		title,
 		placement = 'block-end',
-		triggerPosition = 'around',
+		buttonTriggerPlacement = 'around',
+		hoverTriggerPlacement = 'around',
 		offset = 8,
 		TooltipContent,
 		hideDelay = 200,
@@ -40,7 +41,8 @@
 	}: {
 		title?: string
 		placement?: 'block-start' | 'block-end' | 'inline-start' | 'inline-end'
-		triggerPosition?: 'around' | 'behind'
+		buttonTriggerPlacement?: 'around' | 'behind'
+		hoverTriggerPlacement?: 'around' | 'button'
 		offset?: number
 		hideDelay?: number
 		TooltipContent: Snippet
@@ -49,12 +51,37 @@
 	} & Record<string, any> = $props()
 
 
-	// Functions
+	// State
+	let isTriggerHovered = $state(false)
+	let isPopoverHovered = $state(false)
+
+	const hoverTriggerEvents = {
+		onmouseenter: () => {
+			isTriggerHovered = true
+		},
+		onmouseleave: () => {
+			isTriggerHovered = false
+		},
+		onfocus: () => {
+			isTriggerHovered = true
+		},
+		onblur: () => {
+			isTriggerHovered = false
+		},
+	}
+			
 	const supportsAnchorPositioning = (
 		globalThis.CSS?.supports('anchor-name: --test')
 	)
 
-	const useTrigger = async (node: HTMLElement & { popoverTargetElement: HTMLElement }) => {
+	const useButtonTrigger = async (node: HTMLElement & { popoverTargetElement: HTMLElement }) => {
+		$effect(() => {
+			if(hoverTriggerPlacement === 'around')
+				node.style.setProperty('position', 'static')
+			else
+				node.style.removeProperty('position')
+		})
+
 		if (supportsAnchorPositioning) return
 
 		const {
@@ -96,11 +123,6 @@
 			updatePosition
 		)
 	}
-
-
-	// State
-	let isTriggerHovered = $state(false)
-	let isPopoverHovered = $state(false)
 </script>
 
 
@@ -140,29 +162,21 @@
 		</div>
 	{/snippet}
 
-	{#if triggerPosition === 'behind'}
-		<div data-stack>
+	{#if buttonTriggerPlacement === 'behind'}
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
+		<div
+			data-stack
+			{...hoverTriggerPlacement === 'around' && hoverTriggerEvents}
+		>
 			<button
 				type="button"
+				{title}
 				data-tooltip-trigger
 				style:anchor-name={anchorName}
 				popovertarget={popoverId}
-
-				onmouseenter={() => {
-					isTriggerHovered = true
-				}}
-				onmouseleave={() => {
-					isTriggerHovered = false
-				}}
-				onfocus={() => {
-					isTriggerHovered = true
-				}}
-				onblur={() => {
-					isTriggerHovered = false
-				}}
-
-				{@attach useTrigger}
-				{title}
+				
+				{...hoverTriggerPlacement === 'button' && hoverTriggerEvents}
+				{@attach useButtonTrigger}
 			></button>
 
 			{@render children()}
@@ -170,27 +184,15 @@
 
 		{@render Popover()}
 
-	{:else if triggerPosition === 'around'}
+	{:else if buttonTriggerPlacement === 'around'}
 		<button
 			type="button"
 			data-tooltip-trigger
 			style:anchor-name={anchorName}
 			popovertarget={popoverId}
 
-			onmouseenter={() => {
-				isTriggerHovered = true
-			}}
-			onmouseleave={() => {
-				isTriggerHovered = false
-			}}
-			onfocus={() => {
-				isTriggerHovered = true
-			}}
-			onblur={() => {
-				isTriggerHovered = false
-			}}
-
-			{@attach useTrigger}
+			{...hoverTriggerEvents}
+			{@attach useButtonTrigger}
 		>
 			{@render children()}
 
