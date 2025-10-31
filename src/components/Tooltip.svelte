@@ -94,14 +94,14 @@
 				const updatePosition = async () => {
 					const {x, y} = await computePosition(
 						node,
-						node.popoverTargetElement,
+						node.popoverTargetElement!,
 						{
-							placement: {
+							placement: ({
 								'block-start': 'top',
 								'block-end': 'bottom',
 								'inline-start': 'left',
 								'inline-end': 'right',
-							}[placement],
+							} as const)[placement],
 							middleware: [
 								offsetMiddleware(offset),
 								flip(),
@@ -110,8 +110,8 @@
 						}
 					)
 
-					node.popoverTargetElement.style.left = `${x}px`
-					node.popoverTargetElement.style.top = `${y}px`
+					node.popoverTargetElement!.style.left = `${x}px`
+					node.popoverTargetElement!.style.top = `${y}px`
 				}
 
 				updatePosition()
