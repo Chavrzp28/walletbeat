@@ -429,6 +429,8 @@
 							justify-content: center;
 							cursor: pointer;
 
+							padding: var(--table-cell-padding);
+
 							.sort-button {
 								margin-inline-start: 0.5em;
 								display: inline-block;
@@ -476,13 +478,15 @@
 						}
 
 						.expansion-button {
+							margin: var(--table-cell-padding);
+							margin-inline-start: calc(-2 * var(--table-cell-padding));
+
 							background-color: transparent;
 
 							flex: 0 0 auto;
 							font-size: 0.75em;
 							padding: 0.33em;
 							border: none;
-							margin-inline-end: -0.25em;
 
 							transition-property: background-color, transform, opacity;
 
@@ -608,8 +612,6 @@
 
 		th,
 		td {
-			padding: var(--table-cell-padding);
-
 			&[data-align='start'] {
 				text-align: start;
 				align-items: start;
@@ -634,6 +636,10 @@
 
 		:where(th) {
 			position: relative;
+		}
+
+		:where(td) {
+			padding: var(--table-cell-padding);
 		}
 	}
 </style>
