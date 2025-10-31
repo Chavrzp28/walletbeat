@@ -30,6 +30,7 @@
 	let {
 		title,
 		placement = 'block-end',
+		triggerPosition = 'around',
 		offset = 8,
 		TooltipContent,
 		hideDelay = 200,
@@ -39,6 +40,7 @@
 	}: {
 		title?: string
 		placement?: 'block-start' | 'block-end' | 'inline-start' | 'inline-end'
+		triggerPosition?: 'around' | 'behind'
 		offset?: number
 		hideDelay?: number
 		TooltipContent: Snippet
@@ -52,6 +54,49 @@
 		globalThis.CSS?.supports('anchor-name: --test')
 	)
 
+	const useTrigger = async (node: HTMLElement & { popoverTargetElement: HTMLElement }) => {
+		if (supportsAnchorPositioning) return
+
+		const {
+			computePosition,
+			offset: offsetMiddleware,
+			flip,
+			shift,
+			autoUpdate,
+		} = await import('@floating-ui/dom')
+
+		const updatePosition = async () => {
+			const {x, y} = await computePosition(
+				node,
+				node.popoverTargetElement,
+				{
+					placement: ({
+						'block-start': 'top',
+						'block-end': 'bottom',
+						'inline-start': 'left',
+						'inline-end': 'right',
+					} as const)[placement],
+					middleware: [
+						offsetMiddleware(offset),
+						flip(),
+						shift(),
+					],
+				}
+			)
+
+			node.popoverTargetElement.style.left = `${x}px`
+			node.popoverTargetElement.style.top = `${y}px`
+		}
+
+		updatePosition()
+
+		return autoUpdate(
+			node,
+			node.popoverTargetElement,
+			updatePosition
+		)
+	}
+
 
 	// State
 	let isTriggerHovered = $state(false)
@@ -60,7 +105,72 @@
 
 
 {#if isEnabled}
-	<div data-stack>
+	{#snippet Popover()}
+		<div
+			popover="auto"
+			id={popoverId}
+
+			onmouseenter={() => {
+				isPopoverHovered = true
+			}}
+			onmouseleave={() => {
+				isPopoverHovered = false
+			}}
+			{@attach node => {
+				if (isTriggerHovered || isPopoverHovered) {
+					node.showPopover()
+				} else {
+					const timeoutId = setTimeout(() => {
+						node.hidePopover()
+					}, hideDelay)
+
+					return () => {
+						clearTimeout(timeoutId)
+					}
+				}
+			}}
+
+			style:position-area={placement}
+			style:position-anchor={anchorName}
+			style:--offset={`${offset}px`}
+
+			{...restProps}
+		>
+			{@render TooltipContent()}
+		</div>
+	{/snippet}
+
+	{#if triggerPosition === 'behind'}
+		<div data-stack>
+			<button
+				type="button"
+				data-tooltip-trigger
+				style:anchor-name={anchorName}
+				popovertarget={popoverId}
+
+				onmouseenter={() => {
+					isTriggerHovered = true
+				}}
+				onmouseleave={() => {
+					isTriggerHovered = false
+				}}
+				onfocus={() => {
+					isTriggerHovered = true
+				}}
+				onblur={() => {
+					isTriggerHovered = false
+				}}
+
+				{@attach useTrigger}
+				{title}
+			></button>
+
+			{@render children()}
+		</div>
+
+		{@render Popover()}
+
+	{:else if triggerPosition === 'around'}
 		<button
 			type="button"
 			data-tooltip-trigger
@@ -80,86 +190,13 @@
 				isTriggerHovered = false
 			}}
 
-			{@attach async node => {
-				if (supportsAnchorPositioning) return
+			{@attach useTrigger}
+		>
+			{@render children()}
 
-				const {
-					computePosition,
-					offset: offsetMiddleware,
-					flip,
-					shift,
-					autoUpdate,
-				} = await import('@floating-ui/dom')
-
-				const updatePosition = async () => {
-					const {x, y} = await computePosition(
-						node,
-						node.popoverTargetElement!,
-						{
-							placement: ({
-								'block-start': 'top',
-								'block-end': 'bottom',
-								'inline-start': 'left',
-								'inline-end': 'right',
-							} as const)[placement],
-							middleware: [
-								offsetMiddleware(offset),
-								flip(),
-								shift(),
-							],
-						}
-					)
-
-					node.popoverTargetElement!.style.left = `${x}px`
-					node.popoverTargetElement!.style.top = `${y}px`
-				}
-
-				updatePosition()
-
-				return autoUpdate(
-					node,
-					node.popoverTargetElement!,
-					updatePosition
-				)
-			}}
-			{title}
-		></button>
-
-		{@render children()}
-	</div>
-
-	<div
-		popover="auto"
-		id={popoverId}
-
-		onmouseenter={() => {
-			isPopoverHovered = true
-		}}
-		onmouseleave={() => {
-			isPopoverHovered = false
-		}}
-		{@attach node => {
-			if (isTriggerHovered || isPopoverHovered) {
-				node.showPopover()
-			} else {
-				const timeoutId = setTimeout(() => {
-					node.hidePopover()
-				}, hideDelay)
-
-				return () => {
-					clearTimeout(timeoutId)
-				}
-			}
-		}}
-
-		style:position-area={placement}
-		style:position-anchor={anchorName}
-		style:--offset={`${offset}px`}
-
-		{...restProps}
-	>
-		{@render TooltipContent()}
-	</div>
+			{@render Popover()}
+		</button>
+	{/if}
 {:else}
 	{@render children()}
 {/if}
