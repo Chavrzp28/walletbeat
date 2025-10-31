@@ -22,7 +22,6 @@
 		"dev": "pnpm run astro dev",
 		"lint": "pnpm run check:syntax --write && pnpm run check:lint --fix && pnpm run check:spelling:reorder && cspell lint .",
 		"preview": "pnpm run astro preview",
-		"prepare": "test -d .git && pnpm husky || true",
 		"fix": "pnpm run lint",
 		"ipfs": "deploy/ipfs/ipfs.sh",
 		"helios": "deploy/helios/helios.sh",
