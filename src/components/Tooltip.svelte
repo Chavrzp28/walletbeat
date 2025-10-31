@@ -28,6 +28,7 @@
 
 	// Props
 	let {
+		title,
 		placement = 'block-end',
 		offset = 8,
 		TooltipContent,
@@ -36,6 +37,7 @@
 		children,
 		...restProps
 	}: {
+		title?: string
 		placement?: 'block-start' | 'block-end' | 'inline-start' | 'inline-end'
 		offset?: number
 		hideDelay?: number
@@ -58,104 +60,106 @@
 
 
 {#if isEnabled}
-	<button
-		type="button"
-		data-tooltip-trigger
-		style:anchor-name={anchorName}
-		popovertarget={popoverId}
-
-		onmouseenter={() => {
-			isTriggerHovered = true
-		}}
-		onmouseleave={() => {
-			isTriggerHovered = false
-		}}
-		onfocus={() => {
-			isTriggerHovered = true
-		}}
-		onblur={() => {
-			isTriggerHovered = false
-		}}
-
-		{@attach async node => {
-			if (supportsAnchorPositioning) return
-
-			const {
-				computePosition,
-				offset: offsetMiddleware,
-				flip,
-				shift,
-				autoUpdate,
-			} = await import('@floating-ui/dom')
-
-			const updatePosition = async () => {
-				const {x, y} = await computePosition(
-					node,
-					node.popoverTargetElement,
-					{
-						placement: {
-							'block-start': 'top',
-							'block-end': 'bottom',
-							'inline-start': 'left',
-							'inline-end': 'right',
-						}[placement],
-						middleware: [
-							offsetMiddleware(offset),
-							flip(),
-							shift(),
-						],
-					}
-				)
-
-				node.popoverTargetElement.style.left = `${x}px`
-				node.popoverTargetElement.style.top = `${y}px`
-			}
-
-			updatePosition()
-
-			return autoUpdate(
-				node,
-				node.popoverTargetElement,
-				updatePosition
-			)
-		}}
-	>
-		{@render children()}
-
-		<!-- svelte-ignore a11y_no_static_element_interactions -->
-		<div
-			popover="auto"
-			id={popoverId}
+	<div data-stack>
+		<button
+			type="button"
+			data-tooltip-trigger
+			style:anchor-name={anchorName}
+			popovertarget={popoverId}
 
 			onmouseenter={() => {
-				isPopoverHovered = true
+				isTriggerHovered = true
 			}}
 			onmouseleave={() => {
-				isPopoverHovered = false
+				isTriggerHovered = false
 			}}
-			{@attach node => {
-				if (isTriggerHovered || isPopoverHovered) {
-					node.showPopover()
-				} else {
-					const timeoutId = setTimeout(() => {
-						node.hidePopover()
-					}, hideDelay)
+			onfocus={() => {
+				isTriggerHovered = true
+			}}
+			onblur={() => {
+				isTriggerHovered = false
+			}}
 
-					return () => {
-						clearTimeout(timeoutId)
-					}
+			{@attach async node => {
+				if (supportsAnchorPositioning) return
+
+				const {
+					computePosition,
+					offset: offsetMiddleware,
+					flip,
+					shift,
+					autoUpdate,
+				} = await import('@floating-ui/dom')
+
+				const updatePosition = async () => {
+					const {x, y} = await computePosition(
+						node,
+						node.popoverTargetElement,
+						{
+							placement: {
+								'block-start': 'top',
+								'block-end': 'bottom',
+								'inline-start': 'left',
+								'inline-end': 'right',
+							}[placement],
+							middleware: [
+								offsetMiddleware(offset),
+								flip(),
+								shift(),
+							],
+						}
+					)
+
+					node.popoverTargetElement.style.left = `${x}px`
+					node.popoverTargetElement.style.top = `${y}px`
 				}
+
+				updatePosition()
+
+				return autoUpdate(
+					node,
+					node.popoverTargetElement!,
+					updatePosition
+				)
 			}}
+			{title}
+		></button>
 
-			style:position-area={placement}
-			style:position-anchor={anchorName}
-			style:--offset={`${offset}px`}
+		{@render children()}
+	</div>
 
-			{...restProps}
-		>
-			{@render TooltipContent()}
-		</div>
-	</button>
+	<div
+		popover="auto"
+		id={popoverId}
+
+		onmouseenter={() => {
+			isPopoverHovered = true
+		}}
+		onmouseleave={() => {
+			isPopoverHovered = false
+		}}
+		{@attach node => {
+			if (isTriggerHovered || isPopoverHovered) {
+				node.showPopover()
+			} else {
+				const timeoutId = setTimeout(() => {
+					node.hidePopover()
+				}, hideDelay)
+
+				return () => {
+					clearTimeout(timeoutId)
+				}
+			}
+		}}
+
+		style:position-area={placement}
+		style:position-anchor={anchorName}
+		style:--offset={`${offset}px`}
+
+		{...restProps}
+	>
+		{@render TooltipContent()}
+	</div>
 {:else}
 	{@render children()}
 {/if}
