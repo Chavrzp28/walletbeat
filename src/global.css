@@ -206,7 +206,7 @@ details {
 	}
 
 	> summary {
-		cursor: pointer;
+		cursor: zoom-in;
 
 		display: grid;
 		grid-template-columns: 1fr auto;
@@ -233,8 +233,12 @@ details {
 		}
 	}
 
-	&[open] > summary::after {
-		transform: perspective(100px) rotateX(180deg);
+	&[open] > summary {
+		cursor: zoom-out;
+
+		&::after {
+			transform: perspective(100px) rotateX(180deg);
+		}
 	}
 }
 
