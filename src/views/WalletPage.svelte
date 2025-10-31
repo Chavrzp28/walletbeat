@@ -220,6 +220,7 @@
 			<div data-row="wrap">
 				<div data-row="wrap">
 					<a
+						data-link="camouflaged"
 						class="wallet-name"
 						href="#top"
 					>
@@ -385,7 +386,7 @@
 			style:--accent={scoreColor}
 		>
 			<header data-sticky data-row>
-				<a href={`#${slugifyCamelCase(attrGroup.id)}`}>
+				<a data-link="camouflaged" href={`#${slugifyCamelCase(attrGroup.id)}`}>
 					<h2>
 						{attrGroup.displayName}
 					</h2>
@@ -461,6 +462,7 @@
 								{@const attributeUrl = `#${slugifyCamelCase(attribute.id)}`}
 								<li>
 									<a
+										data-link="camouflaged"
 										href={attributeUrl}
 										style:--accent={ratingToColor(evalAttr.evaluation.value.rating)}
 										data-card="secondary padding-3"
@@ -544,7 +546,7 @@
 				<header data-row>
 					<div>
 						<div data-row="start gap-2">
-							<a href={`#${slugifyCamelCase(attribute.id)}`}>
+							<a data-link="camouflaged" href={`#${slugifyCamelCase(attribute.id)}`}>
 								<h3 data-icon={attribute.icon}>
 									{attribute.displayName}
 								</h3>
@@ -960,13 +962,6 @@
 		display: flex;
 		align-items: center;
 
-		color: inherit;
-		text-decoration: none;
-
-		&:hover {
-			color: var(--accent);
-		}
-
 		&::before {
 			content: '# ';
 			display: inline-flex;
@@ -1296,8 +1291,6 @@
 					gap: 0.5rem;
 					align-items: center;
 					padding: 0.5rem;
-					color: var(--text-primary);
-					text-decoration: none;
 					font-size: 0.875rem;
 
 					&:hover,
