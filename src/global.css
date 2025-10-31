@@ -149,13 +149,25 @@
 	transition-behavior: allow-discrete;
 }
 
+[data-link],
 a {
 	color: color-mix(in oklch, var(--text-primary) 33%, var(--accent));
 	text-decoration: none;
 	font-weight: 600;
 
+	transition-property: color, text-decoration;
+
 	&:hover {
 		text-decoration: underline;
+	}
+
+	&[data-link='camouflaged'] {
+		color: inherit;
+
+		&:hover {
+			color: color-mix(in oklch, var(--text-primary) 33%, var(--accent));
+			text-decoration: none;
+		}
 	}
 }
 
