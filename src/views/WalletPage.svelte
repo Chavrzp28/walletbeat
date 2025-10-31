@@ -1182,7 +1182,7 @@
 				var(--background-secondary)
 			;
 
-			transition-property: background-color, color, outline;
+			transition-property: opacity, scale, background-color, color, outline;
 		}
 
 		&::scroll-marker:hover:not(:target-current) {
@@ -1482,8 +1482,7 @@
 			font-weight: 500;
 			text-decoration: none;
 
-
-			transition-property: background-color, color, outline;
+			transition-property: opacity, scale, background-color, color, outline;
 		}
 
 		&::scroll-marker:hover:not(:target-current) {

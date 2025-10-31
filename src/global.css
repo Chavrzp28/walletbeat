@@ -5,10 +5,10 @@
 	--transition-easeOutExpo: cubic-bezier(0.16, 1, 0.3, 1);
 	--transition-easeInOutExpo: cubic-bezier(0.87, 0, 0.13, 1);
 
-	--active-transitionInDuration: 0.125s;
-	--active-transitionOutDuration: 0.2s;
-	--active-scale: 0.99;
-	--active-opacity: 0.8;
+	--pressable-transitionInDuration: 0.125s;
+	--pressable-transitionOutDuration: 0.2s;
+	--pressable-pressed-scale: 0.99;
+	--pressable-pressed-opacity: 0.8;
 
 	--separator-width: 1px;
 
@@ -142,7 +142,8 @@
 }
 
 ::details-content,
-::picker(select) {
+::picker(select),
+::scroll-marker {
 	transition-duration: 0.25s;
 	transition-timing-function: var(--transition-easeOutExpo);
 	transition-behavior: allow-discrete;
@@ -155,14 +156,6 @@ a {
 
 	&:hover {
 		text-decoration: underline;
-	}
-
-	transition-property: opacity, scale;
-
-	&:active {
-		transition-duration: var(--active-transitionInDuration);
-		opacity: var(--active-opacity);
-		scale: var(--active-scale);
 	}
 }
 
@@ -220,14 +213,6 @@ details {
 		align-items: center;
 		gap: 0.5rem;
 
-		transition-property: opacity, scale;
-
-		&:active {
-			transition-duration: var(--active-transitionInDuration);
-			opacity: var(--active-opacity);
-			scale: var(--active-scale);
-		}
-
 		&::-webkit-details-marker {
 			display: none;
 		}
@@ -259,10 +244,6 @@ input,
 label:has(> input:is([type='checkbox'], [type='radio'])) {
 	cursor: pointer;
 
-	font: inherit;
-	font-size: smaller;
-	line-height: 1;
-
 	display: flex;
 	align-items: center;
 	padding: 0.66em;
@@ -272,13 +253,9 @@ label:has(> input:is([type='checkbox'], [type='radio'])) {
 	border: 1px solid var(--border-color);
 	border-radius: 0.5em;
 
-	transition-property: opacity, scale;
-
-	&:active {
-		transition-duration: var(--active-transitionInDuration);
-		opacity: var(--active-opacity);
-		scale: var(--active-scale);
-	}
+	font: inherit;
+	font-size: smaller;
+	line-height: 1;
 
 	:disabled {
 		cursor: not-allowed;
@@ -289,14 +266,63 @@ label:has(> input:is([type='checkbox'], [type='radio'])) {
 option,
 label:has(> input:is([type='checkbox'], [type='radio'])) {
 	padding: 0.6em 0.8em;
+}
+
+[data-pressable],
+[role='button'],
+:where(
+	summary,
+	a,
+	select,
+	option,
+	button,
+	input,
+	label:has(
+		> input:is([type='checkbox'], [type='radio']),
+		button
+	),
+	::scroll-marker
+) {
+	position: relative;
 
 	transition-property: opacity, scale;
+	transition-duration: var(--pressable-transitionOutDuration);
 
-	&:active {
-		transition-duration: var(--active-transitionInDuration);
-		opacity: var(--active-opacity);
-		scale: var(--active-scale);
+	&:active:is(
+		label:has(
+			> input:is([type='checkbox'], [type='radio']),
+			button
+		),
+		:not(
+			:has(
+				:where(
+					[data-pressable],
+					[role='button'],
+					:where(
+						summary,
+						a,
+						select,
+						option,
+						button,
+						input,
+						label:has(
+							> input:is([type='checkbox'], [type='radio']),
+							button
+						)
+					)
+				):active
+			)
+		)
+	) {
+		transition-duration: var(--pressable-transitionInDuration);
+		opacity: var(--pressable-pressed-opacity);
+		scale: var(--pressable-pressed-scale);
 	}
+}
+::scroll-marker:active {
+	transition-duration: var(--pressable-transitionInDuration);
+	opacity: var(--pressable-pressed-opacity);
+	scale: var(--pressable-pressed-scale);
 }
 
 span svg {

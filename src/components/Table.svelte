@@ -245,7 +245,8 @@
 				{@const rowId = getRowId?.(row, index)}
 
 				<tr
-					tabIndex={0}
+					tabIndex={onRowClick ? 0 : undefined}
+					data-pressable={onRowClick ? '' : undefined}
 					onclick={e => {
 						// e.stopPropagation()
 						onRowClick?.(row, rowId)
@@ -540,13 +541,11 @@
 					background-color: var(--table-row-backgroundColor);
 				}
 
-				&[tabIndex='0'] {
+				&[data-pressable] {
 					cursor: pointer;
 
-					transition: var(--active-transitionOutDuration) var(--transition-easeOutExpo);
-
 					& td.sticky {
-						transition: var(--active-transitionOutDuration) var(--active-transitionOutDuration)
+						transition: var(--pressable-transitionOutDuration) var(--pressable-transitionOutDuration)
 							var(--transition-easeOutExpo);
 					}
 
@@ -555,10 +554,6 @@
 					}
 
 					&:active:not(:has([tabindex='0']:active)) {
-						transition-duration: var(--active-transitionInDuration);
-						opacity: var(--active-opacity);
-						scale: var(--active-scale);
-
 						&:active {
 							--borderColor: transparent;
 						}
