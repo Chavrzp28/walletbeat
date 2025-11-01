@@ -36,7 +36,11 @@ import {
 	comprehensiveFeesShownByDefault,
 	FeeDisplayLevel,
 } from '@/schema/features/transparency/fee-display'
-import { License } from '@/schema/features/transparency/license'
+import {
+	FOSSLicense,
+	LicensingType,
+	SourceAvailableNonFOSSLicense,
+} from '@/schema/features/transparency/license'
 import { refNotNecessary, refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
@@ -169,14 +173,51 @@ export const rabby: SoftwareWallet = {
 				ref: 'https://github.com/RabbyHub/Rabby/blob/fa9d0988e944f67e70da67d852cf3041d3b162da/src/background/controller/provider/controller.ts#L402-L407',
 			}),
 		},
-		license: {
-			ref: [
-				{
-					explanation: 'Rabby is licensed under the MIT license.',
-					url: 'https://github.com/RabbyHub/Rabby/blob/develop/LICENSE',
+		licensing: {
+			type: LicensingType.SEPARATE_CORE_CODE_LICENSE_VS_WALLET_CODE_LICENSE,
+			coreLicense: {
+				ref: [
+					{
+						explanation: "Rabby's rabby-api package is unlicensed.",
+						url: 'https://www.npmjs.com/package/@rabby-wallet/rabby-api?activeTab=code',
+					},
+					{
+						explanation:
+							"Other than its rabby-api package, Rabby's core code is licensed under the MIT license.",
+						url: 'https://github.com/RabbyHub/Rabby/blob/develop/LICENSE',
+					},
+				],
+				license: SourceAvailableNonFOSSLicense.UNLICENSED_VISIBLE,
+			},
+			walletAppLicense: {
+				[Variant.BROWSER]: {
+					ref: [
+						{
+							explanation: "Rabby's browser extension is licensed under the MIT license.",
+							url: 'https://github.com/RabbyHub/Rabby/blob/develop/LICENSE',
+						},
+					],
+					license: FOSSLicense.MIT,
 				},
-			],
-			license: License.MIT,
+				[Variant.MOBILE]: {
+					ref: [
+						{
+							explanation: "Rabby's mobile app is unlicensed.",
+							url: 'https://github.com/RabbyHub/rabby-mobile',
+						},
+					],
+					license: SourceAvailableNonFOSSLicense.UNLICENSED_VISIBLE,
+				},
+				[Variant.DESKTOP]: {
+					ref: [
+						{
+							explanation: "Rabby's desktop app is licensed under the MIT license.",
+							url: 'https://github.com/RabbyHub/RabbyDesktop/blob/publish/prod/LICENSE',
+						},
+					],
+					license: FOSSLicense.MIT,
+				},
+			},
 		},
 		monetization: {
 			ref: [

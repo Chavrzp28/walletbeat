@@ -42,8 +42,6 @@
 	import SecurityAuditsDetails from '@/views/attributes/security/SecurityAuditsDetails.svelte'
 	import TransactionInclusionDetails from '@/views/attributes/self-sovereignty/TransactionInclusionDetails.svelte'
 	import FundingDetails from '@/views/attributes/transparency/FundingDetails.svelte'
-	import LicenseDetails from '@/views/attributes/transparency/LicenseDetails.svelte'
-	import SourceVisibilityDetails from '@/views/attributes/transparency/SourceVisibilityDetails.svelte'
 	import UnratedAttribute from '@/views/attributes/UnratedAttribute.svelte'
 	import ReferenceLinks from '@/views/ReferenceLinks.svelte'
 	import ScoreBadge from '@/views/ScoreBadge.svelte'
@@ -624,10 +622,6 @@
 								<TransactionInclusionDetails {...componentProps} {wallet} {value} {references} />
 							{:else if componentName === 'FundingDetails'}
 								<FundingDetails {...componentProps} {wallet} {value} {references} />
-							{:else if componentName === 'LicenseDetails'}
-								<LicenseDetails {...componentProps} {wallet} {value} {references} />
-							{:else if componentName === 'SourceVisibilityDetails'}
-								<SourceVisibilityDetails {...componentProps} {wallet} {value} {references} />
 							{:else if componentName === 'UnratedAttribute'}
 								<UnratedAttribute {...componentProps} {wallet} {value} {references} />
 							{/if}

@@ -26,7 +26,7 @@ import { RpcEndpointConfiguration } from '@/schema/features/self-sovereignty/cha
 import { TransactionSubmissionL2Support } from '@/schema/features/self-sovereignty/transaction-submission'
 import { featureSupported, notSupported, supported } from '@/schema/features/support'
 import { comprehensiveFeesShownByDefault } from '@/schema/features/transparency/fee-display'
-import { License } from '@/schema/features/transparency/license'
+import { FOSSLicense, LicensingType } from '@/schema/features/transparency/license'
 import { type References, refNotNecessary, refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
@@ -280,9 +280,12 @@ export const ambire: SoftwareWallet = {
 				atomicMultiTransactions: featureSupported,
 			}),
 		},
-		license: {
-			ref: 'https://github.com/AmbireTech/extension/blob/main/LICENSE',
-			license: License.GPL_3_0,
+		licensing: {
+			type: LicensingType.SINGLE_WALLET_REPO_AND_LICENSE,
+			walletAppLicense: {
+				ref: 'https://github.com/AmbireTech/extension/blob/main/LICENSE',
+				license: FOSSLicense.GPL_3_0,
+			},
 		},
 		monetization: {
 			ref: refTodo,

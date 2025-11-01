@@ -207,6 +207,16 @@ export function toFullyQualified(
 	})
 }
 
+/** Type predicate for `WithRef`. */
+export function hasRefs(maybeWithRef: unknown): maybeWithRef is WithRef<unknown> {
+	return (
+		maybeWithRef !== undefined &&
+		maybeWithRef !== null &&
+		typeof maybeWithRef === 'object' &&
+		Object.hasOwn(maybeWithRef, 'ref')
+	)
+}
+
 /** Extract references out of `withRef`. */
 export function refs(withRef: WithRef<unknown>): FullyQualifiedReference[] {
 	if (isNoRef(withRef.ref)) {

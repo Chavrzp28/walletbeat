@@ -11,7 +11,7 @@ import {
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
 import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
 import { notSupported, supported } from '@/schema/features/support'
-import { License } from '@/schema/features/transparency/license'
+import { FOSSLicense, LicensingType } from '@/schema/features/transparency/license'
 import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
@@ -93,17 +93,20 @@ export const coinbase: SoftwareWallet = {
 			},
 			walletCall: null,
 		},
-		license: {
-			ref: {
-				explanation: 'Coinbase Wallet uses the BSD-3-Clause license for its source code',
-				urls: [
-					{
-						label: 'Coinbase Wallet License File',
-						url: 'https://github.com/coinbase/wallet-mobile/blob/master/LICENSE.md',
-					},
-				],
+		licensing: {
+			type: LicensingType.SINGLE_WALLET_REPO_AND_LICENSE,
+			walletAppLicense: {
+				ref: {
+					explanation: 'Coinbase Wallet uses the BSD-3-Clause license for its source code',
+					urls: [
+						{
+							label: 'Coinbase Wallet License File',
+							url: 'https://github.com/coinbase/wallet-mobile/blob/master/LICENSE.md',
+						},
+					],
+				},
+				license: FOSSLicense.BSD_3_CLAUSE,
 			},
-			license: License.BSD_3_CLAUSE,
 		},
 		monetization: {
 			ref: refTodo,

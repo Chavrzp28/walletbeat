@@ -18,7 +18,7 @@ import {
 } from '@/schema/features/self-sovereignty/transaction-submission'
 import { featureSupported, notSupported, supported } from '@/schema/features/support'
 import { FeeDisplayLevel } from '@/schema/features/transparency/fee-display' // for level
-import { License } from '@/schema/features/transparency/license' // assuming path
+import { FOSSLicense, LicensingType } from '@/schema/features/transparency/license' // assuming path
 import { refNotNecessary, refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
@@ -112,15 +112,18 @@ export const safe: SoftwareWallet = {
 				atomicMultiTransactions: featureSupported,
 			}),
 		},
-		license: {
-			ref: [
-				{
-					explanation: 'Safe uses the LGPL-3.0 license for its source code', // keep explanation but change enum if needed
-					label: 'Safe License File',
-					url: 'https://github.com/safe-global/safe-wallet-monorepo',
-				},
-			],
-			license: License.GPL_3_0,
+		licensing: {
+			type: LicensingType.SINGLE_WALLET_REPO_AND_LICENSE,
+			walletAppLicense: {
+				ref: [
+					{
+						explanation: 'Safe uses the LGPL-3.0 license for its source code', // keep explanation but change enum if needed
+						label: 'Safe License File',
+						url: 'https://github.com/safe-global/safe-wallet-monorepo',
+					},
+				],
+				license: FOSSLicense.GPL_3_0,
+			},
 		},
 		monetization: {
 			ref: [

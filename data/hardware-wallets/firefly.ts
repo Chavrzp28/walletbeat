@@ -32,7 +32,7 @@ export const fireflyWallet: HardwareWallet = {
 	},
 	features: {
 		accountSupport: null,
-		license: null,
+		licensing: null,
 		monetization: {
 			ref: refTodo,
 			revenueBreakdownIsPublic: false,
