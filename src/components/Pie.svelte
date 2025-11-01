@@ -44,6 +44,7 @@
 <script lang="ts">
 	// Types
 	import type { Snippet } from 'svelte'
+	import type { SvelteHTMLElements } from 'svelte/elements'
 
 
 	// Props
@@ -85,7 +86,7 @@
 		centerContentSnippet,
 
 		...restProps
-	}: {
+	}: SvelteHTMLElements['div'] & {
 		// Content
 		slices: Slice[]
 		centerLabel?: string

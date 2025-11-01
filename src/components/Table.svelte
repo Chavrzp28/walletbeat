@@ -3,6 +3,7 @@
 	RowId
 ">
 	// Types
+	import type { SvelteHTMLElements } from 'svelte/elements'
 	import type { Snippet } from 'svelte'
 
 	import { type Column,TableState } from '@/components/TableState.svelte'
@@ -36,7 +37,7 @@
 		Cell,
 
 		...restProps
-	}: {
+	}: SvelteHTMLElements['div'] & {
 		tableId?: string
 
 		rows: _RowValue[]
@@ -116,7 +117,7 @@
 <div
 	{...restProps}
 	id={tableId}
-	 class="container {'class' in restProps ? restProps.class : ''}"
+	class="container {'class' in restProps ? restProps.class : ''}"
 >
 	<table>
 		<colgroup>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	// Types/constants
 	import type { Snippet, ComponentProps } from 'svelte'
-	import type { HTMLDetailsAttributes } from 'svelte/elements'
+	import type { SvelteHTMLElements } from 'svelte/elements'
 
 
 	// Props
@@ -19,7 +19,7 @@
 		ExpandedContent: ExpandedContent,
 
 		...restProps
-	}: {
+	}: SvelteHTMLElements['details'] & {
 		isExpanded: boolean
 		showAccordionMarker?: boolean
 
@@ -29,7 +29,7 @@
 
 		children: Snippet
 		ExpandedContent: Snippet<[{ isInTooltip?: boolean }]>
-	} & HTMLDetailsAttributes = $props()
+	} = $props()
 
 
 	// Components
