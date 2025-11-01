@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Types/constants
-	import type { Snippet, ComponentProps } from 'svelte'
+	import type { Snippet } from 'svelte'
 
 
 	// Props
@@ -12,7 +12,11 @@
 
 		// eslint-disable-next-line prefer-const -- Other prop must be mutable.
 		tooltipMaxWidth,
+
+		// eslint-disable-next-line prefer-const -- Other prop must be mutable.
 		tooltipButtonTriggerPlacement = 'around',
+
+		// eslint-disable-next-line prefer-const -- Other prop must be mutable.
 		tooltipHoverTriggerPlacement = 'around',
 
 		// eslint-disable-next-line prefer-const -- Other prop must be mutable.
@@ -25,8 +29,8 @@
 		showAccordionMarker?: boolean
 
 		tooltipMaxWidth?: string
-		tooltipButtonTriggerPlacement?: ComponentProps<typeof Tooltip>['buttonTriggerPlacement']
-		tooltipHoverTriggerPlacement?: ComponentProps<typeof Tooltip>['hoverTriggerPlacement']
+		tooltipButtonTriggerPlacement?: 'around' | 'behind'
+		tooltipHoverTriggerPlacement?: 'around' | 'button'
 
 		children: Snippet
 		ExpandedContent: Snippet<[{ isInTooltip?: boolean }]>
