@@ -1,8 +1,8 @@
 <script lang="ts">
 	// Types/constants
+	import { calculateAttributeGroupScore } from '@/schema/attribute-groups'
 	import type { AttributeGroup } from '@/schema/attributes'
 	import type { RatedWallet } from '@/schema/wallet'
-	import { calculateAttributeGroupScore } from '@/schema/attribute-groups'
 	import { scoreToColor } from '@/utils/colors'
 
 

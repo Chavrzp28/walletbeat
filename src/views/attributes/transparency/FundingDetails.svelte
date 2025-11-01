@@ -1,14 +1,14 @@
 <script lang="ts">
 	// Types/constants
 	import type { FundingValue } from '@/schema/attributes/transparency/funding'
-	import type { RatedWallet } from '@/schema/wallet'
 	import {
 		type Monetization,
 		monetizationStrategies,
 		monetizationStrategyName
 	} from '@/schema/features/transparency/monetization'
-	import { ContentType } from '@/types/content'
 	import { refs } from '@/schema/reference'
+	import type { RatedWallet } from '@/schema/wallet'
+	import { ContentType } from '@/types/content'
 
 
 	// Props
@@ -24,8 +24,8 @@
 
 
 	// Components
-	import ReferenceLinks from '@/views/ReferenceLinks.svelte'
 	import Typography from '@/components/Typography.svelte'
+	import ReferenceLinks from '@/views/ReferenceLinks.svelte'
 </script>
 
 

@@ -7,6 +7,8 @@ import eslintPluginSortKeysCustomOrder from 'eslint-plugin-sort-keys-custom-orde
 import eslintPluginUnusedImports from 'eslint-plugin-unused-imports'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
+import svelte from 'eslint-plugin-svelte'
+import svelteConfig from './svelte.config.js'
 
 // Note: If you want to use eslint-comments rules, you need to install and import eslint-plugin-eslint-comments
 
@@ -47,6 +49,7 @@ export default [
 					},
 				},
 			]),
+	...svelte.configs.recommended,
 	{
 		files: ['**/*.{js,mjs,cjs,ts}'],
 		languageOptions: {
@@ -141,6 +144,21 @@ export default [
 		},
 	},
 	{
+		files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js'],
+		languageOptions: {
+			parserOptions: {
+				projectService: true,
+				extraFileExtensions: ['.svelte'],
+				parser: {
+					ts: tseslint.parser,
+					typescript: tseslint.parser,
+					svelte: tseslint.parser,
+				},
+				svelteConfig,
+			},
+		},
+	},
+	{
 		plugins: { 'simple-import-sort': eslintPluginSimpleImportSort },
 		rules: {
 			'simple-import-sort/imports': 'error',
@@ -168,6 +186,7 @@ export default [
 		},
 	},
 	{
+		files: ['**/*.{js,mjs,cjs,ts}'],
 		plugins: { prettier: eslintPluginPrettier },
 		rules: {
 			'prettier/prettier': ['error', { singleQuote: true, useTabs: true, semi: false }],

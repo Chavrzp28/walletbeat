@@ -27,7 +27,7 @@
 			wallet.metadata.repoUrl === null ?
 				'Source code visibility information is not available.'
 			:
-				`The source code for **{{WALLET_NAME}}** is publicly viewable here.`
+				'The source code for **{{WALLET_NAME}}** is publicly viewable here.'
 		)
 	}}
 	strings={{ WALLET_NAME: wallet.metadata.displayName }}

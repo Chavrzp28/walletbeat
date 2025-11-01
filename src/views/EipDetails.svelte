@@ -12,13 +12,11 @@
 
 
 	// Functions
-	import { eipEthereumDotOrgUrl } from '@/schema/eips'
-	import { trimWhitespacePrefix } from '@/types/utils/text'
-
-
 	// Components
 	import Typography from '@/components/Typography.svelte'
+	import { eipEthereumDotOrgUrl } from '@/schema/eips'
 	import { ContentType } from '@/types/content'
+	import { trimWhitespacePrefix } from '@/types/utils/text'
 </script>
 
 

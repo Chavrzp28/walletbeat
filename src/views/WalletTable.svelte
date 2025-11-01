@@ -9,17 +9,17 @@
 
 <script lang="ts">
 	// Types/constants
-	import type { Column } from '@/components/TableState.svelte'
 	import type { Filter } from '@/components/Filters.svelte'
-	import type { RatedWallet } from '@/schema/wallet'
-	import { type AttributeGroup, Rating, ratingIcons } from '@/schema/attributes'
-	import { Variant } from '@/schema/variants'
+	import type { Column } from '@/components/TableState.svelte'
 	import { variants } from '@/constants/variants'
+	import { eip7702 } from '@/data/eips/eip-7702'
+	import { erc4337 } from '@/data/eips/erc-4337'
+	import { allHardwareModels } from '@/data/hardware-wallets'
+	import { type AttributeGroup, Rating, ratingIcons } from '@/schema/attributes'
 	import { AccountType } from '@/schema/features/account-support'
 	import { HardwareWalletManufactureType } from '@/schema/features/profile'
-	import { erc4337 } from '@/data/eips/erc-4337'
-	import { eip7702 } from '@/data/eips/eip-7702'
-	import { allHardwareModels } from '@/data/hardware-wallets'
+	import { Variant } from '@/schema/variants'
+	import type { RatedWallet } from '@/schema/wallet'
 
 
 	// Props
@@ -62,7 +62,7 @@
 
 
 	// State
-	import { SvelteSet, SvelteMap } from 'svelte/reactivity'
+	import { SvelteMap,SvelteSet } from 'svelte/reactivity'
 
 	let activeFilters = $state(
 		new Set<Filter<RatedWallet>>()
@@ -113,11 +113,11 @@
 
 	// Functions
 	import { variantToName } from '@/constants/variants'
-	import { hasVariant } from '@/schema/variants'
-	import { walletSupportedAccountTypes, attributeVariantSpecificity, VariantSpecificity } from '@/schema/wallet'
 	import { calculateAttributeGroupScore, calculateOverallScore } from '@/schema/attribute-groups'
-	import { isLabeledUrl } from '@/schema/url'
 	import { evaluatedAttributesEntries, ratingToColor } from '@/schema/attributes'
+	import { isLabeledUrl } from '@/schema/url'
+	import { hasVariant } from '@/schema/variants'
+	import { attributeVariantSpecificity, VariantSpecificity,walletSupportedAccountTypes } from '@/schema/wallet'
 	import { isNonEmptyArray, nonEmptyMap } from '@/types/utils/non-empty'
 
 
@@ -138,30 +138,26 @@
 
 
 	// Components
-	import EipDetails from '@/views/EipDetails.svelte'
-	import Filters from '@/components/Filters.svelte'
-	import WalletOverallSummary from '@/views/WalletOverallSummary.svelte'
-	import WalletAttributeGroupSummary from '@/views/WalletAttributeGroupSummary.svelte'
-	import WalletAttributeSummary from '@/views/WalletAttributeSummary.svelte'
+	import HardwareIcon from '@material-icons/svg/svg/hardware/baseline.svg?raw'
+	import InfoIcon from '@material-icons/svg/svg/info/baseline.svg?raw'
+	import OpenInNewRoundedIcon from '@material-icons/svg/svg/open_in_new//baseline.svg?raw'
+	import AppWindowIcon from 'lucide-static/icons/app-window.svg?raw'
+	import KeyIcon from 'lucide-static/icons/key.svg?raw'
+	import WalletIcon from 'lucide-static/icons/wallet.svg?raw'
 
+	import Filters from '@/components/Filters.svelte'
 	import Pie, { PieLayout } from '@/components/Pie.svelte'
 	import Select from '@/components/Select.svelte'
 	import Table from '@/components/Table.svelte'
 	import Tooltip from '@/components/Tooltip.svelte'
 	import TooltipOrAccordion from '@/components/TooltipOrAccordion.svelte'
 	import Typography from '@/components/Typography.svelte'
-
-	import WalletIcon from 'lucide-static/icons/wallet.svg?raw'
-	import AppWindowIcon from 'lucide-static/icons/app-window.svg?raw'
-	import KeyIcon from 'lucide-static/icons/key.svg?raw'
-	import HardwareIcon from '@material-icons/svg/svg/hardware/baseline.svg?raw'
-
-	import InfoIcon from '@material-icons/svg/svg/info/baseline.svg?raw'
-	import OpenInNewRoundedIcon from '@material-icons/svg/svg/open_in_new//baseline.svg?raw'
-
-
 	// Styles
 	import { scoreToColor } from '@/utils/colors'
+	import EipDetails from '@/views/EipDetails.svelte'
+	import WalletAttributeGroupSummary from '@/views/WalletAttributeGroupSummary.svelte'
+	import WalletAttributeSummary from '@/views/WalletAttributeSummary.svelte'
+	import WalletOverallSummary from '@/views/WalletOverallSummary.svelte'
 </script>
 
 
@@ -325,7 +321,7 @@
 
 	columns={
 		(() => {
-			const attrGroupColumns = (
+			const attrGroupColumns =
 				displayedAttributeGroups
 					.map(attrGroup => ({
 						id: attrGroup.id,
@@ -352,7 +348,6 @@
 						),
 						isDefaultExpanded: false,
 					} satisfies Column<RatedWallet>))
-			)
 
 			return [
 				{
@@ -419,10 +414,10 @@
 		{#if column.id === 'displayName'}
 			{@const displayName = value}
 			{@const accountTypes = walletSupportedAccountTypes(wallet, selectedVariant ?? 'ALL_VARIANTS')}
-			{@const supportedVariants = (
+			{@const supportedVariants =
 				[Variant.BROWSER, Variant.MOBILE, Variant.DESKTOP, Variant.EMBEDDED, Variant.HARDWARE]
 					.filter(variant => variant in wallet.variants)
-			)}
+			}
 
 			<TooltipOrAccordion
 				bind:isExpanded={
@@ -653,7 +648,7 @@
 			</TooltipOrAccordion>
 
 		{:else}
-			{@const selectedSliceId = (
+			{@const selectedSliceId =
 				selectedAttribute ?
 					attributeGroups.find(g => g.id in wallet.overall && selectedAttribute in wallet.overall[g.id]) ?
 						`attrGroup_${attributeGroups.find(g => g.id in wallet.overall && selectedAttribute in wallet.overall[g.id])!.id}__attr_${selectedAttribute}`
@@ -661,9 +656,9 @@
 						undefined
 				:
 					undefined
-			)}
+			}
 
-			{@const activeSliceId = (
+			{@const activeSliceId =
 				activeEntityId?.walletId === wallet.metadata.id ?
 					activeEntityId.attributeId ?
 						`attrGroup_${activeEntityId.attributeGroupId}__attr_${activeEntityId.attributeId}`
@@ -671,18 +666,18 @@
 						`attrGroup_${activeEntityId.attributeGroupId}`
 				:
 					undefined
-			)}
+			}
 
 			{@const highlightedSliceId = selectedSliceId ?? activeSliceId}
 
 			<!-- Overall rating -->
 			{#if column.id === 'overall'}
-				{@const score = (
+				{@const score =
 					calculateOverallScore(
 						wallet.overall,
 						ag => displayedAttributeGroups.some(attrGroup => attrGroup.id === ag.id),
 					)
-				)}
+				}
 
 				<TooltipOrAccordion
 					bind:isExpanded={
@@ -757,9 +752,7 @@
 						onSliceClick={sliceId => {
 							const [attributeGroupId, attributeId] = sliceId.split('__').map(part => part.split('_')[1])
 
-							selectedAttribute = (
-								attributeId && selectedAttribute === attributeId ? undefined : attributeId
-							)
+							selectedAttribute = attributeId && selectedAttribute === attributeId ? undefined : attributeId
 
 							if (!isExpanded)
 								toggleRowExpanded(wallet.metadata.id)
@@ -815,8 +808,7 @@
 					</Pie>
 
 					{#snippet ExpandedContent({ isInTooltip }: { isInTooltip?: boolean })}
-						{@const displayedAttribute = (
-							activeEntityId?.walletId === wallet.metadata.id ?
+						{@const displayedAttribute = activeEntityId?.walletId === wallet.metadata.id ?
 								activeEntityId.attributeId ?
 									wallet.overall[activeEntityId.attributeGroupId]?.[activeEntityId.attributeId]
 								:
@@ -828,16 +820,16 @@
 									undefined
 							:
 								undefined
-						)}
+						}
 
-						{@const displayedGroup = (
+						{@const displayedGroup =
 							activeEntityId?.walletId === wallet.metadata.id ?
 								attributeGroups.find(g => g.id === activeEntityId.attributeGroupId)
 							: selectedAttribute ?
 								attributeGroups.find(g => g.id in wallet.overall && selectedAttribute in wallet.overall[g.id])
 							:
 								undefined
-						)}
+						}
 
 						{#if displayedAttribute}
 							<WalletAttributeSummary
@@ -876,14 +868,14 @@
 
 				{@const hasActiveAttribute = activeEntityId?.walletId === wallet.metadata.id && activeEntityId?.attributeGroupId === attrGroup.id}
 
-				{@const currentAttribute = (
+				{@const currentAttribute =
 					hasActiveAttribute && activeEntityId ?
 						evalGroup[activeEntityId.attributeId]
 											: selectedAttribute ?
 							evalGroup[selectedAttribute]
 					:
 						undefined
-				)}
+				}
 
 				<TooltipOrAccordion
 					bind:isExpanded={
@@ -946,9 +938,7 @@
 							const [attributeGroupId, attributeId] = sliceId.split('__').map(part => part.split('_')[1])
 
 							if (attributeId) {
-								selectedAttribute = (
-									selectedAttribute === attributeId ? undefined : attributeId
-								)
+								selectedAttribute = selectedAttribute === attributeId ? undefined : attributeId
 
 								if (!isExpanded)
 									toggleRowExpanded(wallet.metadata.id)
@@ -1016,14 +1006,14 @@
 					</Pie>
 
 					{#snippet ExpandedContent({ isInTooltip }: { isInTooltip?: boolean })}
-						{@const displayedAttribute = (
+						{@const displayedAttribute =
 							activeEntityId?.walletId === wallet.metadata.id && activeEntityId?.attributeGroupId === attrGroup.id ?
 								evalGroup[activeEntityId.attributeId]
 							: selectedAttribute ?
 								evalGroup[selectedAttribute]
 							:
 								undefined
-						)}
+						}
 
 						{#if displayedAttribute}
 							<WalletAttributeSummary

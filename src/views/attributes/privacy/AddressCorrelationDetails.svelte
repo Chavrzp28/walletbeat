@@ -4,8 +4,8 @@
 	import type { WalletAddressLinkableBy } from '@/schema/attributes/privacy/address-correlation'
 	import type { FullyQualifiedReference } from '@/schema/reference'
 	import type { RatedWallet } from '@/schema/wallet'
-	import type { NonEmptyArray } from '@/types/utils/non-empty'
 	import { ContentType } from '@/types/content'
+	import type { NonEmptyArray } from '@/types/utils/non-empty'
 
 	type LeakInfo = {
 		key: string

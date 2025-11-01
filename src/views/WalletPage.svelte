@@ -1,44 +1,41 @@
 <script lang="ts">
 	// Types/constants
-	import {
-		ratingToColor,
-		Rating,
-		type EvaluatedAttribute,
-		type AttributeGroup,
-		type Attribute,
-		type EvaluatedGroup,
-		ratingIcons,
-	} from '@/schema/attributes'
-	import { VariantSpecificity } from '@/schema/wallet'
-	import { type Variant, hasSingleVariant } from '@/schema/variants'
-	import { allRatedWallets, type WalletName } from '@/data/wallets'
-	import { ContentType, isTypographicContent } from '@/types/content'
-	import { objectEntries, objectKeys } from '@/types/utils/object'
+	import { Github, Globe } from 'lucide-static'
 
-
+	import Pie, { PieLayout } from '@/components/Pie.svelte'
+	import Select from '@/components/Select.svelte'
+	// Components
+	import Typography from '@/components/Typography.svelte'
 	// Functions
 	import {
 		variants,
 		variantToName,
 		variantToRunsOn,
 	} from '@/constants/variants'
+	import { allHardwareModels } from '@/data/hardware-wallets'
+	import { allRatedWallets, type WalletName } from '@/data/wallets'
 	import {
 		attributeTree,
 		calculateAttributeGroupScore,
 		calculateOverallScore,
 	} from '@/schema/attribute-groups'
-	import { renderStrings, slugifyCamelCase } from '@/types/utils/text'
+	import {
+		type Attribute,
+		type AttributeGroup,
+		type EvaluatedAttribute,
+		type EvaluatedGroup,
+		Rating,
+		ratingIcons,
+		ratingToColor,
+	} from '@/schema/attributes'
 	import { toFullyQualified } from '@/schema/reference'
+	import { hasSingleVariant,type Variant } from '@/schema/variants'
+	import { VariantSpecificity } from '@/schema/wallet'
 	import { getAttributeOverride } from '@/schema/wallet'
+	import { ContentType, isTypographicContent } from '@/types/content'
+	import { objectEntries, objectKeys } from '@/types/utils/object'
+	import { renderStrings, slugifyCamelCase } from '@/types/utils/text'
 	import { scoreToColor } from '@/utils/colors'
-	import { allHardwareModels } from '@/data/hardware-wallets'
-
-
-	// Components
-	import Typography from '@/components/Typography.svelte'
-	import Pie, { PieLayout } from '@/components/Pie.svelte'
-	import ReferenceLinks from '@/views/ReferenceLinks.svelte'
-	import ScoreBadge from '@/views/ScoreBadge.svelte'
 	import AddressCorrelationDetails from '@/views/attributes/privacy/AddressCorrelationDetails.svelte'
 	import ChainVerificationDetails from '@/views/attributes/security/ChainVerificationDetails.svelte'
 	import ScamAlertDetails from '@/views/attributes/security/ScamAlertDetails.svelte'
@@ -48,8 +45,8 @@
 	import LicenseDetails from '@/views/attributes/transparency/LicenseDetails.svelte'
 	import SourceVisibilityDetails from '@/views/attributes/transparency/SourceVisibilityDetails.svelte'
 	import UnratedAttribute from '@/views/attributes/UnratedAttribute.svelte'
-	import Select from '@/components/Select.svelte'
-	import { Github, Globe } from 'lucide-static'
+	import ReferenceLinks from '@/views/ReferenceLinks.svelte'
+	import ScoreBadge from '@/views/ScoreBadge.svelte'
 
 
 	// Props
@@ -143,12 +140,12 @@
 
 
 <svelte:head>
-	{@html `<script type="application/ld+json">${JSON.stringify({
+	{@html `<script type="application/ld+json">` + JSON.stringify({
 		'@context': 'https://schema.org',
 		'@type': 'FAQPage',
 		mainEntity: evalTree
 			? objectEntries(attributeTree).flatMap(([attrGroupId, attrGroup]) =>
-					objectEntries(attrGroup.attributes as AttributeGroup<any>['attributes'])
+					objectEntries(attrGroup.attributes)
 						.map(([attrId, attribute]) => ({
 							evalAttr: evalTree[attrGroupId][
 								attrId as keyof (typeof evalTree)[typeof attrGroupId]
@@ -190,9 +187,7 @@
 			'@type': 'SoftwareApplication',
 			name: wallet.metadata.displayName,
 			description: renderStrings(
-				wallet.metadata.blurb.contentType === ContentType.TEXT
-					? wallet.metadata.blurb.text
-					: `${wallet.metadata.displayName} wallet`,
+				wallet.metadata.blurb.contentType === ContentType.TEXT ? wallet.metadata.blurb.text : wallet.metadata.displayName + ' wallet',
 				{
 					WALLET_NAME: wallet.metadata.displayName,
 				},
@@ -203,7 +198,7 @@
 				.map(variant => variantToRunsOn(variant))
 				.join(', '),
 		},
-	})}</script>`}
+	}) + `</script>`}
 </svelte:head>
 
 
@@ -363,7 +358,7 @@
 	attrGroup: AttributeGroup<any>
 	evalGroup: EvaluatedGroup<any>
 })}
-	{@const attributes = objectEntries(attrGroup.attributes as AttributeGroup<any>['attributes'])
+	{@const attributes = objectEntries(attrGroup.attributes)
 		.map(([attrId, attribute]) => ({
 			attribute,
 			evalAttr: evalGroup[attrId] as EvaluatedAttribute<any> | undefined,
@@ -671,11 +666,11 @@
 			{#if attribute.id === 'hardwareWalletSupport' && evalAttr.evaluation.value && typeof evalAttr.evaluation.value === 'object' && 'supportedHardwareWallets' in evalAttr.evaluation.value && Array.isArray(evalAttr.evaluation.value.supportedHardwareWallets) && evalAttr.evaluation.value.supportedHardwareWallets.length > 0}
 				{@const supportedBrands = evalAttr.evaluation.value.supportedHardwareWallets}
 
-				{@const supportedModels = (
+				{@const supportedModels =
 					allHardwareModels.filter(m => (
 						supportedBrands.includes(m.brandId.toUpperCase())
 					))
-				)}
+				}
 
 				<div class="supported-hardware-wallets" data-card="secondary padding-6">
 					<h4>Supported hardware wallets:</h4>

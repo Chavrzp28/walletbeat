@@ -1,8 +1,8 @@
 <script lang="ts">
 	// Types/constants
 	import type { L1BroadcastSupport, TransactionInclusionValue } from '@/schema/attributes/self-sovereignty/transaction-inclusion'
-	import type { RatedWallet } from '@/schema/wallet'
 	import type { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
+	import type { RatedWallet } from '@/schema/wallet'
 	import { ContentType } from '@/types/content'
 
 
@@ -25,22 +25,17 @@
 
 
 	// Functions
-	import { transactionSubmissionL2TypeName } from '@/schema/features/self-sovereignty/transaction-submission'
-
-
 	// Components
 	import Typography from '@/components/Typography.svelte'
+	import { transactionSubmissionL2TypeName } from '@/schema/features/self-sovereignty/transaction-submission'
 </script>
 
 
 {#if supportAnyL2Transactions.length || supportForceWithdrawal.length || unsupportedL2s.length}
-	{@const allSupportedForceWithdrawals = (
-		[
+	{@const allSupportedForceWithdrawals = [
 			...supportAnyL2Transactions,
 			...supportForceWithdrawal,
-		]
-			.toSorted()
-	)}
+		].toSorted()}
 
 	{#if allSupportedForceWithdrawals.length}
 		<Typography

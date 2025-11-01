@@ -3,8 +3,9 @@
 	RowId
 ">
 	// Types
-	import { TableState, type Column } from '@/components/TableState.svelte'
 	import type { Snippet } from 'svelte'
+
+	import { type Column,TableState } from '@/components/TableState.svelte'
 
 	type _RowValue = _TableState extends TableState<infer RowValue, any, any> ? RowValue : any
 	type _CellValue = _TableState extends TableState<any, infer CellValue, any> ? CellValue : any
@@ -107,8 +108,8 @@
 
 	// Transitions/animations
 	import { flip } from 'svelte/animate'
-	import { fade, fly } from 'svelte/transition'
 	import { expoOut } from 'svelte/easing'
+	import { fade, fly } from 'svelte/transition'
 </script>
 
 
@@ -135,7 +136,7 @@
 			{@render headerRows(table.columns, 0)}
 
 			{#snippet headerRows(columns: (_Column | undefined)[], level: number)}
-				{@const nextLevelColumns = (
+				{@const nextLevelColumns =
 					columns
 						.flatMap(column => (
 							!column ?
@@ -145,7 +146,7 @@
 							:
 								Array.from({ length: getColumnSpan(column) }, () => undefined)
 						))
-				)}
+				}
 
 				<tr in:fly={{ y: '-50%', duration: 300, easing: expoOut }}>
 					{#each columns as column, index (column?.id ?? `blank-${level}-${index}`)}

@@ -1,8 +1,8 @@
 <script lang="ts">
 	// Types/constants
 	import type { OpenSourceValue } from '@/schema/attributes/transparency/open-source'
+	import { FOSS, License, licenseIsFOSS, licenseName, licenseUrl } from '@/schema/features/transparency/license'
 	import type { RatedWallet } from '@/schema/wallet'
-	import { License, FOSS, licenseIsFOSS, licenseName, licenseUrl } from '@/schema/features/transparency/license'
 	import { ContentType } from '@/types/content'
 
 
@@ -26,11 +26,11 @@
 		contentType: ContentType.MARKDOWN,
 		markdown: (
 			value.license === License.PROPRIETARY ?
-				`**{{WALLET_NAME}}** is licensed under a proprietary non-open-source license.`
+				'**{{WALLET_NAME}}** is licensed under a proprietary non-open-source license.'
 			: value.license === License.PROPRIETARY_SOURCE_AVAILABLE ?
-				`**{{WALLET_NAME}}** is licensed under a proprietary source-available non-FOSS license.`
+				'**{{WALLET_NAME}}** is licensed under a proprietary source-available non-FOSS license.'
 			: value.license === License.UNLICENSED_VISIBLE ?
-				`**{{WALLET_NAME}}** has no visible license information. Consequently, it should be assumed to be proprietary (not open-source).`
+				'**{{WALLET_NAME}}** has no visible license information. Consequently, it should be assumed to be proprietary (not open-source).'
 			:
 				(() => {
 					const url = licenseUrl(value.license)

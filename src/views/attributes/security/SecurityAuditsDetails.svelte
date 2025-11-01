@@ -4,7 +4,6 @@
 	import type { RatedWallet } from '@/schema/wallet'
 	import { ContentType } from '@/types/content'
 
-
 	// Props
 	let {
 		wallet,
@@ -18,33 +17,26 @@
 		hasUnaddressedFlaws?: boolean
 	} = $props()
 
-
 	// Functions
-	import { isUrl } from '@/schema/url'
+	import Typography from '@/components/Typography.svelte'
 	import { securityFlawSeverityName } from '@/schema/features/security/security-audits'
 	import { toFullyQualified } from '@/schema/reference'
-
-
+	import { isUrl } from '@/schema/url'
 	// Components
 	import ReferenceLinks from '@/views/ReferenceLinks.svelte'
-	import Typography from '@/components/Typography.svelte'
 </script>
-
 
 {#if value.securityAudits.length === 0}
 	<Typography
 		content={{
 			contentType: ContentType.MARKDOWN,
-			markdown: `**{{WALLET_NAME}}** has not undergone any security audits.`
+			markdown: `**{{WALLET_NAME}}** has not undergone any security audits.`,
 		}}
 		strings={{ WALLET_NAME: wallet.metadata.displayName }}
 	/>
 {:else}
-	{@const securityAuditsSorted = (
-		value.securityAudits
-			.toSorted((a, b) => (
-				new Date(b.auditDate).getTime() - new Date(a.auditDate).getTime()
-			))
+	{@const securityAuditsSorted = value.securityAudits.toSorted(
+		(a, b) => new Date(b.auditDate).getTime() - new Date(a.auditDate).getTime(),
 	)}
 
 	{@const mostRecentAudit = securityAuditsSorted[0]}
@@ -58,9 +50,7 @@
 	/>
 
 	{#if mostRecentAudit?.ref}
-		<ReferenceLinks
-			references={toFullyQualified(mostRecentAudit.ref)}
-		/>
+		<ReferenceLinks references={toFullyQualified(mostRecentAudit.ref)} />
 	{/if}
 
 	<div class="audits-container" data-card="secondary padding-6">
@@ -87,13 +77,17 @@
 								<cite>{audit.auditor.name}</cite>
 							{/if}
 
-							<strong><time datetime={audit.auditDate}>{Intl.DateTimeFormat(undefined, { dateStyle: 'long' }).format(new Date(audit.auditDate))}</time></strong>
+							<strong
+								><time datetime={audit.auditDate}
+									>{Intl.DateTimeFormat(undefined, { dateStyle: 'long' }).format(
+										new Date(audit.auditDate),
+									)}</time
+								></strong
+							>
 						</header>
 
 						{#if audit.ref}
-							<ReferenceLinks
-								references={toFullyQualified(audit.ref)}
-							/>
+							<ReferenceLinks references={toFullyQualified(audit.ref)} />
 						{/if}
 
 						<p>
@@ -116,7 +110,8 @@
 												<span class="fixed-flaw">{flaw.name}</span>
 												<strong class="fixed-label">(Fixed)</strong>
 											{:else}
-												<span>{flaw.name}</span> <strong class="not-fixed-label">(Not fixed)</strong>
+												<span>{flaw.name}</span>
+												<strong class="not-fixed-label">(Not fixed)</strong>
 											{/if}
 										</li>
 									{/each}
@@ -129,7 +124,6 @@
 		</ul>
 	</div>
 {/if}
-
 
 <style>
 	.audits-container {
