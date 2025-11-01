@@ -394,8 +394,7 @@
 		})()
 	}
 	bind:sortedColumn
-
-	cellVerticalAlign={() => 'top'}
+	style="--table-cell-verticalAlign: top;"
 >
 	{#snippet Cell({
 		row: wallet,
