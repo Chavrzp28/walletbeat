@@ -205,9 +205,28 @@ export default [
 		files: ['**/*.{js,mjs,cjs,ts}'],
 		plugins: { prettier: eslintPluginPrettier },
 		rules: {
-			'prettier/prettier': ['error', { singleQuote: true, useTabs: true, semi: false }],
+			'prettier/prettier': [
+				'error',
+				{
+					singleQuote: true,
+					useTabs: true,
+					semi: false,
+					proseWrap: 'preserve',
+				},
+			],
 			quotes: ['error', 'single', { avoidEscape: true }],
 		},
 	},
 	...svelte.configs.prettier,
+	{
+		files: ['**/*.svelte'],
+		rules: {
+			// Respect import groupings.
+			'simple-import-sort/imports': 'off',
+			'simple-import-sort/exports': 'off',
+
+			// Not useful for props.
+			'prefer-const': 'off',
+		},
+	},
 ]
