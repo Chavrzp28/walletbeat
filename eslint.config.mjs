@@ -30,10 +30,26 @@ export default [
 		ignores: [
 			// Ignore generated files
 			'src/generated/**',
+
+			// Issue #329: Remove these ignored files as errors are fixed.
+			'src/views/WalletTable.svelte',
+			'src/views/WalletPage.svelte',
+			'src/views/NavigationItems.svelte',
+			'src/views/Eip7702Table.svelte',
+			'src/components/Typography.svelte',
+			'src/components/Tooltip.svelte',
+			'src/components/Table.svelte',
+			'src/components/Select.svelte',
+			'src/components/Filters.svelte',
+			'src/components/BlockTransition.svelte',
+			'src/views/WalletAttributeSummary.svelte',
 		],
 	},
 	eslintPluginEslintComments.recommended,
-	eslint.configs.recommended,
+	{
+		...eslint.configs.recommended,
+		files: ['**/*.{js,mjs,cjs,ts,svelte}'],
+	},
 	...(process.env.WALLETBEAT_PRECOMMIT_FAST === 'true'
 		? tseslint.configs.recommended
 		: tseslint.configs.recommendedTypeChecked),
@@ -51,7 +67,22 @@ export default [
 			]),
 	...svelte.configs.recommended,
 	{
-		files: ['**/*.{js,mjs,cjs,ts}'],
+		files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js'],
+		languageOptions: {
+			parserOptions: {
+				projectService: true,
+				extraFileExtensions: ['.svelte'],
+				parser: {
+					ts: tseslint.parser,
+					typescript: tseslint.parser,
+					svelte: tseslint.parser,
+				},
+				svelteConfig,
+			},
+		},
+	},
+	{
+		files: ['**/*.{js,mjs,cjs,ts,svelte}'],
 		languageOptions: {
 			globals: {
 				...globals.browser,
@@ -144,21 +175,6 @@ export default [
 		},
 	},
 	{
-		files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js'],
-		languageOptions: {
-			parserOptions: {
-				projectService: true,
-				extraFileExtensions: ['.svelte'],
-				parser: {
-					ts: tseslint.parser,
-					typescript: tseslint.parser,
-					svelte: tseslint.parser,
-				},
-				svelteConfig,
-			},
-		},
-	},
-	{
 		plugins: { 'simple-import-sort': eslintPluginSimpleImportSort },
 		rules: {
 			'simple-import-sort/imports': 'error',
@@ -193,4 +209,5 @@ export default [
 			quotes: ['error', 'single', { avoidEscape: true }],
 		},
 	},
+	...svelte.configs.prettier,
 ]

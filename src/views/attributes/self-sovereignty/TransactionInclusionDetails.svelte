@@ -8,7 +8,7 @@
 
 	// Props
 	// eslint-disable-next-line svelte/no-unused-props -- Consistent prop types for all content components.
-	let {
+	const {
 		wallet,
 		supportsL1Broadcast,
 		supportAnyL2Transactions = [],
@@ -62,11 +62,11 @@
 		contentType: ContentType.MARKDOWN,
 		markdown: (
 			supportsL1Broadcast === 'NO' ?
-				`**{{WALLET_NAME}}** does not support Ethereum peer-to-peer gossiping nor connecting to a user's self-hosted Ethereum node.\n\nTherefore, L1 transactions are subject to censorship by intermediaries.`
+				'**{{WALLET_NAME}}** does not support Ethereum peer-to-peer gossiping nor connecting to a user\'s self-hosted Ethereum node.\n\nTherefore, L1 transactions are subject to censorship by intermediaries.'
 			: supportsL1Broadcast === 'OWN_NODE' ?
-				`**{{WALLET_NAME}}** supports connecting to a user's self-hosted Ethereum node, which can be used to broadcast L1 transactions without trusting intermediaries.`
+				'**{{WALLET_NAME}}** supports connecting to a user\'s self-hosted Ethereum node, which can be used to broadcast L1 transactions without trusting intermediaries.'
 			: supportsL1Broadcast === 'SELF_GOSSIP' ?
-				`**{{WALLET_NAME}}** supports directly gossipping over Ethereum's peer-to-peer network, allowing L1 transactions to be reliably included without trusting intermediaries.`
+				'**{{WALLET_NAME}}** supports directly gossipping over Ethereum\'s peer-to-peer network, allowing L1 transactions to be reliably included without trusting intermediaries.'
 			:
 				''
 		),

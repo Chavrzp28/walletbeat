@@ -7,7 +7,7 @@
 
 
 	// Props
-	let {
+	const {
 		wallet,
 		value,
 	}: {
@@ -46,6 +46,7 @@
 								return 'an unknown license type.'
 						}
 					})()
+
 					return (
 						url === null ?
 							`Invalid license: **${value.license}**`

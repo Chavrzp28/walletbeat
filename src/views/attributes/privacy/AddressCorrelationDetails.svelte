@@ -1,7 +1,6 @@
 <script lang="ts">
 	// Types/constants
-	import type { AddressCorrelationValue } from '@/schema/attributes/privacy/address-correlation'
-	import type { WalletAddressLinkableBy } from '@/schema/attributes/privacy/address-correlation'
+	import type { AddressCorrelationValue, WalletAddressLinkableBy } from '@/schema/attributes/privacy/address-correlation'
 	import type { FullyQualifiedReference } from '@/schema/reference'
 	import type { RatedWallet } from '@/schema/wallet'
 	import { ContentType } from '@/types/content'
@@ -23,7 +22,7 @@
 
 	// Props
 	// eslint-disable-next-line svelte/no-unused-props -- Consistent prop types for all content components.
-	let {
+	const {
 		wallet,
 		linkables,
 	}: {
@@ -96,6 +95,7 @@
 		for (const linkable of sortedLinkables) {
 			const sourceName = typeof linkable.by === 'string' ? linkable.by : linkable.by.name
 			const forSource = map.get(sourceName)
+
 			if (forSource === undefined) {
 				map.set(sourceName, [linkable] as NonEmptyArray<WalletAddressLinkableBy>)
 			} else {
@@ -140,6 +140,7 @@
 					:
 						''
 				)
+
 				return `- **${leak.entity.name}**${privacyPolicyText} may link your wallet address to your **${joinedListText(leak.linkableInfos)}**.`
 			})()
 	)).join('\n')}

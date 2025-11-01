@@ -8,7 +8,7 @@
 	import { commaListFormat } from '@/types/utils/text'
 
 	// Props
-	let {
+	const {
 		wallet,
 		value,
 	}: {
@@ -41,7 +41,7 @@
 						'the full URL of the app',
 					value.scamAlerts.scamUrlWarning.leaksVisitedUrl === 'DOMAIN_ONLY' &&
 						'the domain name of the app',
-				].filter(Boolean) as string[])}
+				].filter(s => s !== ''))}
 
 	<ul class="features-list">
 		{#if value.sendTransactionWarning?.required}
@@ -68,11 +68,11 @@
 														'your Ethereum address',
 													value.scamAlerts.sendTransactionWarning.leaksRecipient &&
 														"the recipient's Ethereum address",
-												].filter(Boolean) as string[],
+												].filter(s => s !== ''),
 											)} to an external provider which can correlate them.`
 										: ''
 								}`
-							: `**{{WALLET_NAME}}** does not warn you when sending funds to suspicious addresses.`,
+							: '**{{WALLET_NAME}}** does not warn you when sending funds to suspicious addresses.',
 					}}
 					strings={{ WALLET_NAME: wallet.metadata.displayName }}
 				/>
@@ -105,14 +105,14 @@
 									contractFeatures.length > 1
 										? `:${[
 												value.scamAlerts.contractTransactionWarning.contractRegistry &&
-													`Checking the contract or transaction data against a database of known scams`,
+													'Checking the contract or transaction data against a database of known scams',
 												value.scamAlerts.contractTransactionWarning
 													.previousContractInteractionWarning &&
-													`Warning you when interacting with a contract you have not interacted with before`,
+													'Warning you when interacting with a contract you have not interacted with before',
 												value.scamAlerts.contractTransactionWarning.recentContractWarning &&
-													`Warning you when interacting with a contract that has only recently been created onchain`,
+													'Warning you when interacting with a contract that has only recently been created onchain',
 											]
-												.filter(Boolean)
+												.filter(s => s !== '')
 												.map(listItem => `\n* ${listItem}`)
 												.join('')}`
 										: value.scamAlerts.contractTransactionWarning.contractRegistry
@@ -132,11 +132,11 @@
 														'your Ethereum address',
 													value.scamAlerts.contractTransactionWarning.leaksContractAddress &&
 														'the contract address',
-												].filter(Boolean) as string[],
+												].filter(s => s !== ''),
 											)} to an external provider which can correlate them ahead of the transaction being submitted.`
 										: ''
 								}`
-							: `**{{WALLET_NAME}}** does not warn you when making arbitrary onchain transactions.`,
+							: '**{{WALLET_NAME}}** does not warn you when making arbitrary onchain transactions.',
 					}}
 					strings={{ WALLET_NAME: wallet.metadata.displayName }}
 				/>
@@ -164,7 +164,7 @@
 											}.`
 										: ''
 								}`
-							: `**{{WALLET_NAME}}** does not check URLs against known scam sites.`,
+							: '**{{WALLET_NAME}}** does not check URLs against known scam sites.',
 					}}
 					strings={{ WALLET_NAME: wallet.metadata.displayName }}
 				/>

@@ -5,7 +5,7 @@
 	import { ContentType } from '@/types/content'
 
 	// Props
-	let {
+	const {
 		wallet,
 		value,
 		auditedInLastYear,
@@ -19,7 +19,7 @@
 
 	// Functions
 	import Typography from '@/components/Typography.svelte'
-	import { securityFlawSeverityName, UnpatchedSecurityFlaw } from '@/schema/features/security/security-audits'
+	import { securityFlawSeverityName, type UnpatchedSecurityFlaw } from '@/schema/features/security/security-audits'
 	import { toFullyQualified } from '@/schema/reference'
 	import { isUrl } from '@/schema/url'
 	// Components
@@ -30,7 +30,7 @@
 	<Typography
 		content={{
 			contentType: ContentType.MARKDOWN,
-			markdown: `**{{WALLET_NAME}}** has not undergone any security audits.`,
+			markdown: '**{{WALLET_NAME}}** has not undergone any security audits.',
 		}}
 		strings={{ WALLET_NAME: wallet.metadata.displayName }}
 	/>

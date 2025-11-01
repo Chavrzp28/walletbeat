@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Types/constants
-	import { type EvaluatedAttribute, ratingIcons, ratingToColor } from '@/schema/attributes'
+	import { type EvaluatedAttribute, ratingIcons, ratingToColor, type Value } from '@/schema/attributes'
 	import type { Variant } from '@/schema/variants'
 	import { attributeVariantSpecificity, type RatedWallet,VariantSpecificity } from '@/schema/wallet'
 
@@ -14,7 +14,7 @@
 		isInTooltip = false,
 	}: {
 		wallet: RatedWallet
-		attribute: EvaluatedAttribute<any>
+		attribute: EvaluatedAttribute<Value>
 		variant?: Variant
 		showRating?: boolean
 		isInTooltip?: boolean

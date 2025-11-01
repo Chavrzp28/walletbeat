@@ -12,7 +12,7 @@
 
 	// Props
 	// eslint-disable-next-line svelte/no-unused-props -- Consistent prop types for all content components.
-		let {
+		const {
 		wallet,
 		lightClients,
 		refs,
@@ -39,6 +39,7 @@
 			:
 				`**{{WALLET_NAME}}** performs L1 chain state verification using ${lightClients.map((client: EthereumL1LightClient, i: number) => {
 					const clientUrl = ethereumL1LightClientUrl(client)
+
 					return `${commaListPrefix(i, lightClients.length)}[${client}](${typeof clientUrl === 'string' ? clientUrl : clientUrl.url})`
 				}).join('')}${lightClients.length === 1 ? ' light client.' : ' light clients.'}`
 		)

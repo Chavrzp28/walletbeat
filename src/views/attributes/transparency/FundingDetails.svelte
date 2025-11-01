@@ -13,7 +13,7 @@
 
 	// Props
 	// eslint-disable-next-line svelte/no-unused-props -- Consistent prop types for all content components.
-	let {
+	const {
 		wallet,
 		monetization,
 	}: {
@@ -39,10 +39,11 @@
 						.filter(({ value }) => value === true)
 						.map(({ strategy }) => strategy)
 					const strategiesText = strategies.length === 0 ? 'unknown sources' : strategies.map(strategy => monetizationStrategyName(strategy)).join(', ')
+
 					return `**{{WALLET_NAME}}** is funded by **${strategiesText}**.`
 				})()
 			:
-				`**{{WALLET_NAME}}** is funded by **unknown sources**.`
+				'**{{WALLET_NAME}}** is funded by **unknown sources**.'
 		)
 	}}
 	strings={{ WALLET_NAME: wallet.metadata.displayName }}

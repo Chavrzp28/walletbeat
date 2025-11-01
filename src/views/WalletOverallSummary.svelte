@@ -6,7 +6,7 @@
 
 
 	// Props
-	let {
+	const {
 		wallet,
 		score,
 		isInTooltip = false,

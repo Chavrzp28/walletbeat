@@ -53,7 +53,7 @@ export const ratingIcons = {
 	[Rating.FAIL]: '❌',
 	[Rating.UNRATED]: '❔',
 	[Rating.EXEMPT]: '🆗',
-}
+} as const
 
 /** Ratings enum. */
 export const ratingEnum = new Enum<Rating>({

@@ -6,11 +6,17 @@
 	// Props
 	let {
 		isExpanded = $bindable(false),
+
+		// eslint-disable-next-line prefer-const -- Other prop must be mutable.
 		showAccordionMarker = false,
 
+		// eslint-disable-next-line prefer-const -- Other prop must be mutable.
 		tooltipMaxWidth,
 
+		// eslint-disable-next-line prefer-const -- Other prop must be mutable.
 		children,
+
+		// eslint-disable-next-line prefer-const -- Other prop must be mutable.
 		ExpandedContent: ExpandedContent,
 	}: {
 		isExpanded: boolean
