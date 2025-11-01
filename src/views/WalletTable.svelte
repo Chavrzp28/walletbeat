@@ -138,6 +138,8 @@
 
 
 	// Components
+	import FactoryIcon from '@material-icons/svg/svg/factory/baseline.svg?raw'
+	import HandymanIcon from '@material-icons/svg/svg/handyman/baseline.svg?raw'
 	import HardwareIcon from '@material-icons/svg/svg/hardware/baseline.svg?raw'
 
 	import AppWindowIcon from 'lucide-static/icons/app-window.svg?raw'
@@ -217,7 +219,7 @@
 						{
 							id: `manufactureType-${HardwareWalletManufactureType.FACTORY_MADE}`,
 							label: 'Factory-Made',
-							icon: HardwareIcon,
+							icon: FactoryIcon,
 							filterFunction: wallet => (
 								hasVariant(wallet.variants, Variant.HARDWARE) &&
 								wallet.metadata.hardwareWalletManufactureType === HardwareWalletManufactureType.FACTORY_MADE
@@ -226,7 +228,7 @@
 						{
 							id: `manufactureType-${HardwareWalletManufactureType.DIY}`,
 							label: 'DIY',
-							icon: HardwareIcon,
+							icon: HandymanIcon,
 							filterFunction: wallet => (
 								hasVariant(wallet.variants, Variant.HARDWARE) &&
 								wallet.metadata.hardwareWalletManufactureType === HardwareWalletManufactureType.DIY
