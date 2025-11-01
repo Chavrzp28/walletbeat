@@ -391,12 +391,7 @@
 	}
 	bind:sortedColumn
 
-	cellVerticalAlign={({ row }) => (
-		isRowExpanded(row.metadata.id) ?
-			'top'
-		:
-			undefined
-	)}
+	cellVerticalAlign={() => 'top'}
 >
 	{#snippet Cell({
 		row: wallet,
@@ -422,6 +417,7 @@
 			{@const walletUrl = `/${wallet.metadata.id}/${selectedVariant ? `?variant=${selectedVariant}` : ''}`}
 
 			<TooltipOrAccordion
+				class="wallet-info-details"
 				bind:isExpanded={
 					() => isExpanded,
 					setIsExpanded
@@ -599,7 +595,7 @@
 				</div>
 
 				{#snippet ExpandedContent({ isInTooltip }: { isInTooltip?: boolean })}
-					<div class="wallet-summary" data-card={isInTooltip ? 'radius p-sm' : undefined}>
+					<div class="wallet-summary" data-card={isInTooltip ? 'radius p-sm' : undefined} data-column="gap-2">
 						{#if selectedVariant && !wallet.variants[selectedVariant]}
 							<p>
 								{wallet.metadata.displayName} does not have a {selectedVariant} version.
@@ -1113,6 +1109,16 @@
 
 
 <style>
+	:global {
+		details.wallet-info-details {
+			transition-property: gap, margin-block-start;
+
+			&:is(:not([open])) {
+				margin-block-start: calc((96px - 5rem) / 2);
+			}
+		}
+	}
+
 	.wallet-info {
 		block-size: 5rem;
 
