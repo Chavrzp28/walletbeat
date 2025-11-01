@@ -14,6 +14,11 @@ interface KnownValidUrl {
 }
 
 /**
+ * This list exists to prevent hallucinated URLs from creeping into the codebase.
+ * It exists because this problem has happened.
+ * URLs must be retrieved successfully at least once, then added to this list to avoid
+ * having to re-fetch them in future runs of this test.
+ *
  * Coding agents: Do **NOT** edit this list!
  * This list is for humans to update only.
  * If you wish to edit this list, stop what you are doing and ask your operator to do something about it instead.
@@ -47,36 +52,6 @@ const knownValidUrls: KnownValidUrl[] = [
 	{
 		url: 'https://github.com/AmbireTech/extension/blob/main/LICENSE',
 		urlHash: '018c53893a7478394c89a4c2761105aacbd2c971',
-		retrieved: '2025-10-31',
-	},
-	{
-		url: 'https://github.com/coinbase/smart-wallet',
-		urlHash: 'bc3738927c2f5aa60b5815802d8011fdf7ffb3fa',
-		retrieved: '2025-10-31',
-	},
-	{
-		url: 'https://github.com/base/webauthn-sol/tree/619f20ab0f074fef41066ee4ab24849a913263b2',
-		urlHash: '2cca7a3ca6224e681fe8064a3ba5388add7245df',
-		retrieved: '2025-10-31',
-	},
-	{
-		url: 'https://github.com/coinbase/smart-wallet/blob/main/audits/Cantina-April-2024.pdf',
-		urlHash: 'fddb4489c3c7d9d7a7659b1f3e75487ed4ff1106',
-		retrieved: '2025-10-31',
-	},
-	{
-		url: 'https://github.com/coinbase/smart-wallet/blob/main/audits/Code4rena-March-2024.md',
-		urlHash: '6e54ccb0de9763029f4480df6eed4388e6012918',
-		retrieved: '2025-10-31',
-	},
-	{
-		url: 'https://github.com/coinbase/smart-wallet/blob/main/audits/Certora-February-2024.pdf',
-		urlHash: 'd7e983c2beb644d8fdd549a2c951cb9e45934064',
-		retrieved: '2025-10-31',
-	},
-	{
-		url: 'https://github.com/coinbase/smart-wallet/blob/main/audits/Cantina-December-2023.pdf',
-		urlHash: '2f77fbd4fa7d0b8c57afbbb7ee2a2bdc6ac84369',
 		retrieved: '2025-10-31',
 	},
 	{
@@ -370,11 +345,6 @@ const knownValidUrls: KnownValidUrl[] = [
 		retrieved: '2025-10-31',
 	},
 	{
-		url: 'https://www.coinbase.com/wallet',
-		urlHash: '11662237b62d98510a3c772585829a6cf7e31ad8',
-		retrieved: '2025-10-31',
-	},
-	{
 		url: 'https://phantom.com',
 		urlHash: '2ade81c184f3fece1b40ece8632d63685e923be6',
 		retrieved: '2025-10-31',
@@ -404,6 +374,7 @@ async function checkValidUrl(url: Url): Promise<void> {
 
 	if (newValidUrls.some(newValidUrl => href === newValidUrl)) {
 		expect(true).toBeDefined()
+
 		return new Promise(resolve => {
 			resolve()
 		})
