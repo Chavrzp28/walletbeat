@@ -11,7 +11,6 @@ import {
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
 import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
 import { notSupported, supported } from '@/schema/features/support'
-import { FOSSLicense, LicensingType } from '@/schema/features/transparency/license'
 import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
@@ -40,10 +39,7 @@ export const coinbase: SoftwareWallet = {
 		accountSupport: {
 			defaultAccountType: AccountType.eip7702,
 			eip7702: supported({
-				ref: {
-					explanation: 'Coinbase Wallet announced support for EIP-7702.',
-					url: 'https://www.coinbase.com/blog/coinbase-wallet-introduces-support-for-eip-7702',
-				},
+				ref: refTodo,
 				contract: 'UNKNOWN',
 			}),
 			eoa: supported({
@@ -93,21 +89,7 @@ export const coinbase: SoftwareWallet = {
 			},
 			walletCall: null,
 		},
-		licensing: {
-			type: LicensingType.SINGLE_WALLET_REPO_AND_LICENSE,
-			walletAppLicense: {
-				ref: {
-					explanation: 'Coinbase Wallet uses the BSD-3-Clause license for its source code',
-					urls: [
-						{
-							label: 'Coinbase Wallet License File',
-							url: 'https://github.com/coinbase/wallet-mobile/blob/master/LICENSE.md',
-						},
-					],
-				},
-				license: FOSSLicense.BSD_3_CLAUSE,
-			},
-		},
+		licensing: null,
 		monetization: {
 			ref: refTodo,
 			revenueBreakdownIsPublic: false,
