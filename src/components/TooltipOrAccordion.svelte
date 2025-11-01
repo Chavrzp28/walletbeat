@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Types/constants
 	import type { Snippet, ComponentProps } from 'svelte'
+	import type { HTMLDetailsAttributes } from 'svelte/elements'
 
 
 	// Props
@@ -18,8 +19,9 @@
 		// eslint-disable-next-line prefer-const -- Other prop must be mutable.
 		children,
 
-		// eslint-disable-next-line prefer-const -- Other prop must be mutable.
 		ExpandedContent: ExpandedContent,
+
+		...restProps
 	}: {
 		isExpanded: boolean
 		showAccordionMarker?: boolean
@@ -30,7 +32,7 @@
 
 		children: Snippet
 		ExpandedContent: Snippet<[{ isInTooltip?: boolean }]>
-	} = $props()
+	} & HTMLDetailsAttributes = $props()
 
 
 	// Components
@@ -47,6 +49,7 @@
 	<details
 		class="with-expanded-content"
 		bind:open={isExpanded}
+		{...restProps}
 	>
 		<summary
 			class:no-marker={!showAccordionMarker}
