@@ -137,7 +137,7 @@
 	})
 
 	const overallScore = $derived(
-		calculateOverallScore(wallet.overall)
+		calculateOverallScore(wallet.overall, () => true),
 	)
 </script>
 
@@ -376,7 +376,8 @@
 
 	{#if attributes.length > 0}
 		{@const score = evalGroup ? calculateAttributeGroupScore(attrGroup.attributeWeights, evalGroup) : null}
-		{@const scoreLevel = score?.score ? score.score >= 0.7 ? 'high' : score.score >= 0.4 ? 'medium' : 'low' : undefined}
+		{@const scoreLevel = score === null || score.score === null ? null : (score.score >= 0.7 ? 'high' : score.score >= 0.4 ? 'medium' : 'low')}
+		{@const scoreColor = scoreToColor(score === null ? null : score.score)}
 
 		<hr />
 
@@ -388,7 +389,7 @@
 			data-score={scoreLevel}
 			data-icon={attrGroup.icon}
 			style:--attributeGroup-icon={`'${attrGroup.icon}'`}
-			style:--accent={scoreToColor(score?.score)}
+			style:--accent={scoreColor}
 		>
 			<header data-sticky data-row>
 				<a href={`#${slugifyCamelCase(attrGroup.id)}`}>
@@ -447,7 +448,7 @@
 							{#snippet centerContentSnippet()}
 								<circle
 									r="8"
-									fill={scoreToColor(score?.score)}
+									fill={scoreColor}
 								>
 									{#if score?.hasUnratedComponent}
 										<title>

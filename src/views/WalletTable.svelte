@@ -115,7 +115,7 @@
 	import { variantToName } from '@/constants/variants'
 	import { hasVariant } from '@/schema/variants'
 	import { walletSupportedAccountTypes, attributeVariantSpecificity, VariantSpecificity } from '@/schema/wallet'
-	import { calculateAttributeGroupScore, calculateOverallScore, filterEvaluationTree } from '@/schema/attribute-groups'
+	import { calculateAttributeGroupScore, calculateOverallScore } from '@/schema/attribute-groups'
 	import { isLabeledUrl } from '@/schema/url'
 	import { evaluatedAttributesEntries, ratingToColor } from '@/schema/attributes'
 	import { isNonEmptyArray, nonEmptyMap } from '@/types/utils/non-empty'
@@ -330,10 +330,10 @@
 					.map(attrGroup => ({
 						id: attrGroup.id,
 						name: attrGroup.displayName,
-						value: wallet => (
-							calculateAttributeGroupScore(attrGroup.attributeWeights, wallet.overall[attrGroup.id])?.score ?? undefined
-						),
-
+						value: (wallet: RatedWallet) => {
+							const attrGroupScore = calculateAttributeGroupScore(attrGroup.attributeWeights, wallet.overall[attrGroup.id])
+							return attrGroupScore === null ? null : attrGroupScore.score
+						},
 						sort: {
 							defaultDirection: 'desc',
 						},
@@ -343,7 +343,7 @@
 								.map(([attributeId, attribute]) => ({
 									id: `${attrGroup.id}.${attributeId}`,
 									name: attribute.displayName,
-									value: wallet => {
+									value: (wallet: RatedWallet) => {
 										const attribute = wallet.overall[attrGroup.id]?.[attributeId]
 										return attribute?.evaluation?.value?.rating || undefined
 									},
@@ -358,7 +358,7 @@
 				{
 					id: 'displayName',
 					name: 'Wallet',
-					value: wallet => wallet.metadata.displayName,
+					value: (wallet: RatedWallet) => wallet.metadata.displayName,
 
 					sort: {
 						defaultDirection: 'asc',
@@ -372,15 +372,13 @@
 						{
 							id: 'overall',
 							name: 'Rating',
-							value: wallet => (
-								calculateOverallScore(
-									filterEvaluationTree(
-										wallet.overall,
-										displayedAttributeGroups
-									)
+							value: (wallet: RatedWallet) => {
+								const overallScore = calculateOverallScore(
+									wallet.overall,
+									ag => displayedAttributeGroups.some(attrGroup => attrGroup.id === ag.id),
 								)
-									?.score
-							),
+								return overallScore === null ? null : overallScore.score
+							},
 
 							sort: {
 								isDefault: true,
@@ -681,10 +679,8 @@
 			{#if column.id === 'overall'}
 				{@const score = (
 					calculateOverallScore(
-						filterEvaluationTree(
-							wallet.overall,
-							displayedAttributeGroups
-						)
+						wallet.overall,
+						ag => displayedAttributeGroups.some(attrGroup => attrGroup.id === ag.id),
 					)
 				)}
 
@@ -702,16 +698,16 @@
 
 								return {
 									id: `attrGroup_${attrGroup.id}`,
-									arcLabel: `${attrGroup.icon}${groupScore?.hasUnratedComponent ? '*' : ''}`,
+									arcLabel: `${attrGroup.icon}${(groupScore !== null && groupScore.hasUnratedComponent) ? '*' : ''}`,
 									color: (
-										groupScore ?
+										groupScore !== null ?
 											scoreToColor(groupScore.score)
 										:
 											'var(--rating-unrated)'
 									),
 									tooltip: attrGroup.displayName,
 									tooltipValue: (
-										groupScore ?
+										groupScore !== null && groupScore.score !== null ?
 											`${
 												(groupScore.score * 100).toFixed(0)
 											}%${
@@ -785,7 +781,7 @@
 							{#if summaryVisualization === SummaryVisualization.Score}
 								<text>
 									{
-										score?.score !== undefined ?
+										score !== null && score.score !== null ?
 											`${
 												score.score === 0 ?
 													'\u{1f480}'
@@ -794,7 +790,7 @@
 												:
 													(score.score * 100).toFixed(0)
 											}${
-												score?.hasUnratedComponent ?
+												score !== null && score.hasUnratedComponent ?
 													'*'
 												:
 													''
@@ -806,9 +802,9 @@
 							{:else if summaryVisualization === SummaryVisualization.Dot}
 								<circle
 									r="4"
-									fill={scoreToColor(score?.score)}
+									fill={scoreToColor(score === null ? null : score.score)}
 								>
-									{#if score?.hasUnratedComponent}
+									{#if score !== null && score.hasUnratedComponent}
 										<title>
 											*contains unrated components
 										</title>
@@ -991,7 +987,7 @@
 							{#if summaryVisualization === SummaryVisualization.Score}
 								<text>
 									{
-										groupScore?.score !== undefined ?
+										groupScore !== null && groupScore.score !== null ?
 											`${
 												groupScore.score === 0 ?
 													'\u{1f480}'
@@ -1007,9 +1003,9 @@
 							{:else if summaryVisualization === SummaryVisualization.Dot}
 								<circle
 									r="4"
-									fill={scoreToColor(groupScore?.score)}
+									fill={scoreToColor(groupScore === null ? null : groupScore.score)}
 								>
-									{#if groupScore?.hasUnratedComponent}
+									{#if groupScore !== null && groupScore.hasUnratedComponent}
 										<title>
 											*contains unrated components
 										</title>
