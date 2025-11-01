@@ -1538,6 +1538,7 @@
 
 			.rating-display {
 				grid-template-columns: auto 1fr;
+				gap: 1rem;
 				font-weight: 500;
 				background-color: color-mix(in srgb, var(--accent) 5%, var(--background-secondary));
 				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);

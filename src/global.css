@@ -384,7 +384,7 @@ span svg {
 	display: grid;
 	grid-template-columns: 1fr;
 	/* grid-template-columns: minmax(0, 1fr); */
-	gap: 1em;
+	row-gap: 1em;
 	align-content: start;
 
 	&[data-column~='start'] {
@@ -428,7 +428,7 @@ span svg {
 	display: inline flex;
 	justify-content: space-between;
 	align-items: center;
-	gap: 1em;
+	column-gap: 1em;
 
 	&[data-row~='wrap'] {
 		flex-wrap: wrap;
