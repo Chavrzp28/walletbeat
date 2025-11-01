@@ -7,9 +7,9 @@
 
 
 	// Props
+	// eslint-disable-next-line svelte/no-unused-props -- Consistent prop types for all content components.
 	let {
 		wallet,
-		value,
 		supportsL1Broadcast,
 		supportAnyL2Transactions = [],
 		supportForceWithdrawal = [],

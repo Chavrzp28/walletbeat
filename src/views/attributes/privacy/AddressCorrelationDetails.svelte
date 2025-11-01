@@ -22,9 +22,9 @@
 
 
 	// Props
+	// eslint-disable-next-line svelte/no-unused-props -- Consistent prop types for all content components.
 	let {
 		wallet,
-		value,
 		linkables,
 	}: {
 		wallet: RatedWallet
@@ -132,7 +132,7 @@
 	{@const leaksText = leaksList.map(leak => (
 		leak.entity === 'onchain' ?
 			`- An onchain record permanently associates your **${joinedListText(leak.linkableInfos)}** with your wallet address.`
-		: typeof leak.entity !== 'string' ?
+		:
 			(() => {
 				const privacyPolicyText = (
 					isUrl(leak.entity.privacyPolicy) ?
@@ -142,8 +142,6 @@
 				)
 				return `- **${leak.entity.name}**${privacyPolicyText} may link your wallet address to your **${joinedListText(leak.linkableInfos)}**.`
 			})()
-		:
-			`- **${leak.entity}** may link your wallet address to your **${joinedListText(leak.linkableInfos)}**.`
 	)).join('\n')}
 
 	<Typography

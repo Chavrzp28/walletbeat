@@ -11,9 +11,9 @@
 
 
 	// Props
-	let {
+	// eslint-disable-next-line svelte/no-unused-props -- Consistent prop types for all content components.
+		let {
 		wallet,
-		value,
 		lightClients,
 		refs,
 	}: {

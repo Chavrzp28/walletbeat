@@ -19,7 +19,7 @@
 
 	// Functions
 	import Typography from '@/components/Typography.svelte'
-	import { securityFlawSeverityName } from '@/schema/features/security/security-audits'
+	import { securityFlawSeverityName, UnpatchedSecurityFlaw } from '@/schema/features/security/security-audits'
 	import { toFullyQualified } from '@/schema/reference'
 	import { isUrl } from '@/schema/url'
 	// Components
@@ -57,7 +57,7 @@
 		<h4>Audits</h4>
 
 		<ul class="audits-list">
-			{#each securityAuditsSorted as audit}
+			{#each securityAuditsSorted as audit (audit.auditDate)}
 				<li>
 					<article data-column>
 						<header data-row="wrap">
@@ -90,34 +90,32 @@
 							<ReferenceLinks references={toFullyQualified(audit.ref)} />
 						{/if}
 
-						<p>
-							{#if audit.unpatchedFlaws === 'NONE_FOUND'}
-								<span>No security flaws of severity level medium or higher were found.</span>
-							{:else if audit.unpatchedFlaws === 'ALL_FIXED'}
-								<span>All security flaws of severity level medium or higher were addressed.</span>
-							{:else if Array.isArray(audit.unpatchedFlaws) && audit.unpatchedFlaws.length > 0}
-								<span>
-									The following security flaws were identified
-									{!audit.unpatchedFlaws.some((flaw: any) => flaw.presentStatus === 'NOT_FIXED')
-										? ' and have all been addressed since'
-										: ''}:
-								</span>
-								<ul class="flaws-list">
-									{#each audit.unpatchedFlaws as flaw}
-										<li>
-											<strong>{securityFlawSeverityName(flaw.severityAtAuditPublication)}</strong>:
-											{#if flaw.presentStatus === 'FIXED'}
-												<span class="fixed-flaw">{flaw.name}</span>
-												<strong class="fixed-label">(Fixed)</strong>
-											{:else}
-												<span>{flaw.name}</span>
-												<strong class="not-fixed-label">(Not fixed)</strong>
-											{/if}
-										</li>
-									{/each}
-								</ul>
-							{/if}
-						</p>
+						{#if audit.unpatchedFlaws === 'NONE_FOUND'}
+							<p>No security flaws of severity level medium or higher were found.</p>
+						{:else if audit.unpatchedFlaws === 'ALL_FIXED'}
+							<p>All security flaws of severity level medium or higher were addressed.</p>
+						{:else if Array.isArray(audit.unpatchedFlaws) && audit.unpatchedFlaws.length > 0}
+							<p>
+								The following security flaws were identified
+								{!audit.unpatchedFlaws.some((flaw: UnpatchedSecurityFlaw) => flaw.presentStatus === 'NOT_FIXED')
+									? ' and have all been addressed since'
+									: ''}:
+							</p>
+							<ul class="flaws-list">
+								{#each audit.unpatchedFlaws as flaw (flaw.name)}
+									<li>
+										<strong>{securityFlawSeverityName(flaw.severityAtAuditPublication)}</strong>:
+										{#if flaw.presentStatus === 'FIXED'}
+											<span class="fixed-flaw">{flaw.name}</span>
+											<strong class="fixed-label">(Fixed)</strong>
+										{:else}
+											<span>{flaw.name}</span>
+											<strong class="not-fixed-label">(Not fixed)</strong>
+										{/if}
+									</li>
+								{/each}
+							</ul>
+						{/if}
 					</article>
 				</li>
 			{/each}
