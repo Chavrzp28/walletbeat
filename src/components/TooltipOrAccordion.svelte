@@ -8,15 +8,12 @@
 	let {
 		isExpanded = $bindable(false),
 
-		// eslint-disable-next-line prefer-const -- Other prop must be mutable.
 		showAccordionMarker = false,
 
-		// eslint-disable-next-line prefer-const -- Other prop must be mutable.
 		tooltipMaxWidth,
 		tooltipButtonTriggerPlacement = 'around',
 		tooltipHoverTriggerPlacement = 'around',
 
-		// eslint-disable-next-line prefer-const -- Other prop must be mutable.
 		children,
 
 		ExpandedContent: ExpandedContent,
@@ -45,50 +42,50 @@
 </script>
 
 
-<BlockTransition>
-	<details
-		class="with-expanded-content"
-		bind:open={isExpanded}
-		{...restProps}
+<details
+	class="with-expanded-content"
+	bind:open={isExpanded}
+	{...restProps}
+>
+	<summary
+		class:no-marker={!showAccordionMarker}
 	>
-		<summary
-			class:no-marker={!showAccordionMarker}
+		<Tooltip
+			isEnabled={!isExpanded}
+			buttonTriggerPlacement={tooltipButtonTriggerPlacement}
+			hoverTriggerPlacement={tooltipHoverTriggerPlacement}
+			style="
+				--popover-padding: 0;
+				--popover-backgroundColor: transparent;
+				--popover-borderColor: transparent;
+			"
 		>
-			<Tooltip
-				isEnabled={!isExpanded}
-				buttonTriggerPlacement={tooltipButtonTriggerPlacement}
-				hoverTriggerPlacement={tooltipHoverTriggerPlacement}
-				style="
-					--popover-padding: 0;
-					--popover-backgroundColor: transparent;
-					--popover-borderColor: transparent;
-				"
-			>
-				{@render children()}
+			{@render children()}
 
-				{#snippet TooltipContent()}
-					{#if !isExpanded}
-						<div
-							class="expanded-tooltip-content"
-							style:max-width={tooltipMaxWidth}
-						>
-							{@render ExpandedContent({ isInTooltip: true })}
-						</div>
-					{/if}
-				{/snippet}
-			</Tooltip>
-		</summary>
+			{#snippet TooltipContent()}
+				{#if !isExpanded}
+					<div
+						class="expanded-tooltip-content"
+						style:max-width={tooltipMaxWidth}
+					>
+						{@render ExpandedContent({ isInTooltip: true })}
+					</div>
+				{/if}
+			{/snippet}
+		</Tooltip>
+	</summary>
 
-		{#if isExpanded}
-			<div
-				class="expanded-content"
-				transition:fade={{ duration: 200, easing: expoOut }}
-			>
+	{#if isExpanded}
+		<div
+			class="expanded-content"
+			transition:fade={{ duration: 200, easing: expoOut }}
+		>
+			<BlockTransition>
 				{@render ExpandedContent({ isInTooltip: false })}
-			</div>
-		{/if}
-	</details>
-</BlockTransition>
+			</BlockTransition>
+		</div>
+	{/if}
+</details>
 
 
 <style>
