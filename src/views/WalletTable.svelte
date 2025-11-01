@@ -139,9 +139,11 @@
 
 	// Components
 	import HardwareIcon from '@material-icons/svg/svg/hardware/baseline.svg?raw'
-	import InfoIcon from '@material-icons/svg/svg/info/baseline.svg?raw'
-	import OpenInNewRoundedIcon from '@material-icons/svg/svg/open_in_new//baseline.svg?raw'
+
 	import AppWindowIcon from 'lucide-static/icons/app-window.svg?raw'
+	import ChartPieIcon from 'lucide-static/icons/chart-pie.svg?raw'
+	import GithubIcon from 'lucide-static/icons/github.svg?raw'
+	import GlobeIcon from 'lucide-static/icons/globe.svg?raw'
 	import KeyIcon from 'lucide-static/icons/key.svg?raw'
 	import WalletIcon from 'lucide-static/icons/wallet.svg?raw'
 
@@ -152,6 +154,8 @@
 	import Tooltip from '@/components/Tooltip.svelte'
 	import TooltipOrAccordion from '@/components/TooltipOrAccordion.svelte'
 	import Typography from '@/components/Typography.svelte'
+
+
 	// Styles
 	import { scoreToColor } from '@/utils/colors'
 	import EipDetails from '@/views/EipDetails.svelte'
@@ -425,7 +429,7 @@
 				tooltipButtonTriggerPlacement="behind"
 				tooltipHoverTriggerPlacement="around"
 				showAccordionMarker
-				tooltipMaxWidth="18rem"
+				tooltipMaxWidth="20rem"
 			>
 				<div class="wallet-info" data-row="start">
 					<span class="row-count" data-row="center"></span>
@@ -595,7 +599,7 @@
 				</div>
 
 				{#snippet ExpandedContent({ isInTooltip }: { isInTooltip?: boolean })}
-					<div class="wallet-summary" data-card={isInTooltip ? 'radius p-sm' : undefined} data-column="gap-2">
+					<div class="wallet-summary" data-card={isInTooltip ? 'radius p-sm' : undefined} data-column="gap-4">
 						{#if selectedVariant && !wallet.variants[selectedVariant]}
 							<p>
 								{wallet.metadata.displayName} does not have a {selectedVariant} version.
@@ -611,13 +615,13 @@
 							/>
 						{/if}
 
-						<div class="links" data-row="gap-2 start wrap">
+						<div class="links" data-row="gap-3 start wrap">
 							<a
 								href={walletUrl}
 								class="info-link"
 							>
-								<span aria-hidden="true">{@html InfoIcon}</span>
-								Learn more
+								<span aria-hidden="true">{@html ChartPieIcon}</span>
+								View report
 							</a>
 
 							<hr>
@@ -626,9 +630,9 @@
 								href={isLabeledUrl(wallet.metadata.url) ? wallet.metadata.url.url : wallet.metadata.url}
 								target="_blank"
 								rel="noopener noreferrer"
-								class="external-link"
 							>
-								{wallet.metadata.displayName} website
+								<span aria-hidden="true">{@html GlobeIcon}</span>
+								Website
 							</a>
 
 							{#if wallet.metadata.repoUrl}
@@ -638,10 +642,9 @@
 									href={isLabeledUrl(wallet.metadata.repoUrl) ? wallet.metadata.repoUrl.url : wallet.metadata.repoUrl}
 									target="_blank"
 									rel="noopener noreferrer"
-									class="external-link"
 								>
-									Code
-									<span aria-hidden="true">{@html OpenInNewRoundedIcon}</span>
+									<span aria-hidden="true">{@html GithubIcon}</span>
+									Source Code
 								</a>
 							{/if}
 						</div>
