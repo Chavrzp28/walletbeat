@@ -253,7 +253,7 @@
 					outerRadius,
 					innerRadius,
 					level,
-					offset: levelConfig.offset,
+					offset: levelConfig.offset ?? 0,
 					gap: levelConfig.gap,
 				},
 				...children && {
