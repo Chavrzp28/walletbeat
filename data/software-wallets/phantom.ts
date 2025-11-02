@@ -30,7 +30,7 @@ export const phantom: SoftwareWallet = {
 		iconExtension: 'svg',
 		lastUpdated: '2025-02-08',
 		repoUrl: null,
-		url: 'https://www.phantom.com',
+		url: 'https://phantom.com',
 	},
 	features: {
 		accountSupport: {
@@ -98,7 +98,7 @@ export const phantom: SoftwareWallet = {
 		privacy: {
 			appIsolation: null,
 			dataCollection: null,
-			privacyPolicy: 'https://www.phantom.com/privacy',
+			privacyPolicy: 'https://phantom.com/privacy',
 			transactionPrivacy: {
 				defaultFungibleTokenTransferMode: 'PUBLIC',
 				[PrivateTransferTechnology.STEALTH_ADDRESSES]: notSupported,

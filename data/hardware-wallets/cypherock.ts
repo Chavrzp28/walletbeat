@@ -34,7 +34,7 @@ export const cypherockWallet: HardwareWallet = {
 		iconExtension: 'svg',
 		lastUpdated: '2025-01-06',
 		repoUrl: 'https://github.com/Cypherock',
-		url: 'https://cypherock.com/',
+		url: 'https://www.cypherock.com',
 	},
 	features: {
 		accountSupport: null,
@@ -80,13 +80,13 @@ export const cypherockWallet: HardwareWallet = {
 					{
 						explanation:
 							'Bug bounty program with responsible disclosure policy and discretionary rewards',
-						url: 'https://cypherock.com/bug-bounty',
+						url: 'https://www.cypherock.com/bug-bounty',
 					},
 				],
 				details:
 					'Cypherock provides legal protection for security researchers and discretionary rewards for valid security issues affecting X1 Wallet and X1 Card.',
 				upgradePathAvailable: true,
-				url: 'https://cypherock.com/bug-bounty',
+				url: 'https://www.cypherock.com/bug-bounty',
 			},
 			firmware: {
 				type: FirmwareType.PASS,

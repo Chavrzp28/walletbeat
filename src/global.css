@@ -293,10 +293,7 @@ label:has(> input:is([type='checkbox'], [type='radio'])) {
 	option,
 	button,
 	input,
-	label:has(
-		> input:is([type='checkbox'], [type='radio']),
-		button
-	),
+	label:has(> input:is([type='checkbox'], [type='radio']), button),
 	::scroll-marker
 ) {
 	position: relative;
@@ -315,31 +312,25 @@ label:has(> input:is([type='checkbox'], [type='radio'])) {
 	transition-duration: var(--pressable-transitionOutDuration);
 
 	&:active:is(
-		label:has(
-			> input:is([type='checkbox'], [type='radio']),
-			button
-		),
-		:not(
-			:has(
-				:where(
-					[data-pressable],
-					[role='button'],
+			label:has(> input:is([type='checkbox'], [type='radio']), button),
+			:not(
+				:has(
 					:where(
-						summary,
-						a,
-						select,
-						option,
-						button,
-						input,
-						label:has(
-							> input:is([type='checkbox'], [type='radio']),
-							button
+						[data-pressable],
+						[role='button'],
+						:where(
+							summary,
+							a,
+							select,
+							option,
+							button,
+							input,
+							label:has(> input:is([type='checkbox'], [type='radio']), button)
 						)
-					)
-				):active
+					):active
+				)
 			)
-		)
-	) {
+		) {
 		transition-duration: var(--pressable-transitionInDuration);
 		opacity: var(--pressable-pressed-opacity);
 		scale: var(--pressable-pressed-scale);

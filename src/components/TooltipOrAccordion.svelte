@@ -7,7 +7,6 @@
 	// Props
 	let {
 		isExpanded = $bindable(false),
-
 		showAccordionMarker = false,
 
 		tooltipMaxWidth,
@@ -15,7 +14,6 @@
 		tooltipHoverTriggerPlacement = 'around',
 
 		children,
-
 		ExpandedContent: ExpandedContent,
 
 		...restProps
@@ -24,8 +22,8 @@
 		showAccordionMarker?: boolean
 
 		tooltipMaxWidth?: string
-		tooltipButtonTriggerPlacement?: ComponentProps<typeof Tooltip>['buttonTriggerPlacement']
-		tooltipHoverTriggerPlacement?: ComponentProps<typeof Tooltip>['hoverTriggerPlacement']
+		tooltipButtonTriggerPlacement?: 'around' | 'behind'
+		tooltipHoverTriggerPlacement?: 'around' | 'button'
 
 		children: Snippet
 		ExpandedContent: Snippet<[{ isInTooltip?: boolean }]>
@@ -33,12 +31,14 @@
 
 
 	// Components
+	import BlockTransition from '@/components/BlockTransition.svelte'
+	import Tooltip from '@/components/Tooltip.svelte'
+
+
 	// Transitions/animations
 	import { expoOut } from 'svelte/easing'
 	import { fade } from 'svelte/transition'
 
-	import BlockTransition from '@/components/BlockTransition.svelte'
-	import Tooltip from '@/components/Tooltip.svelte'
 </script>
 
 
