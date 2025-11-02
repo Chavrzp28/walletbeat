@@ -4,7 +4,6 @@
 ">
 	// Types
 	import type { Snippet } from 'svelte'
-
 	import { type Column,TableState } from '@/components/TableState.svelte'
 
 	type _RowValue = _TableState extends TableState<infer RowValue, any, any> ? RowValue : any
