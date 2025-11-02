@@ -22,8 +22,8 @@
 		showAccordionMarker?: boolean
 
 		tooltipMaxWidth?: string
-		tooltipButtonTriggerPlacement?: 'around' | 'behind'
-		tooltipHoverTriggerPlacement?: 'around' | 'button'
+		tooltipButtonTriggerPlacement?: ComponentProps<typeof Tooltip>['buttonTriggerPlacement']
+		tooltipHoverTriggerPlacement?: ComponentProps<typeof Tooltip>['hoverTriggerPlacement']
 
 		children: Snippet
 		ExpandedContent: Snippet<[{ isInTooltip?: boolean }]>
