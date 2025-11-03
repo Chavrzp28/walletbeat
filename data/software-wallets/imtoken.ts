@@ -11,7 +11,6 @@ import {
 } from '@/schema/features/privacy/data-collection'
 import { PrivateTransferTechnology } from '@/schema/features/privacy/transaction-privacy'
 import { WalletProfile } from '@/schema/features/profile'
-import { BugBountyProgramType } from '@/schema/features/security/bug-bounty-program'
 import {
 	HardwareWalletConnection,
 	HardwareWalletType,
@@ -238,7 +237,6 @@ export const imtoken: SoftwareWallet = {
 		profile: WalletProfile.GENERIC,
 		security: {
 			bugBountyProgram: {
-				type: BugBountyProgramType.COMPREHENSIVE,
 				ref: [
 					{
 						explanation:

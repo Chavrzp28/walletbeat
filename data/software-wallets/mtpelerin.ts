@@ -1,7 +1,6 @@
 import { sigri } from '@/data/contributors/sigri'
 import { PrivateTransferTechnology } from '@/schema/features/privacy/transaction-privacy'
 import { WalletProfile } from '@/schema/features/profile'
-import { BugBountyProgramType } from '@/schema/features/security/bug-bounty-program'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
 import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
 import { featureSupported, notSupported } from '@/schema/features/support'
@@ -103,7 +102,6 @@ export const mtpelerin: SoftwareWallet = {
 		profile: WalletProfile.GENERIC,
 		security: {
 			bugBountyProgram: {
-				type: BugBountyProgramType.COMPREHENSIVE,
 				ref: refTodo,
 				details: 'The wallet implements a comprehensive bug bounty program through Immunefi.',
 				upgradePathAvailable: true,

@@ -1,6 +1,5 @@
 import { nconsigny } from '@/data/contributors/nconsigny'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
-import { BugBountyProgramType } from '@/schema/features/security/bug-bounty-program'
 import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
@@ -58,7 +57,6 @@ export const fireflyWallet: HardwareWallet = {
 		profile: WalletProfile.GENERIC,
 		security: {
 			bugBountyProgram: {
-				type: BugBountyProgramType.NONE,
 				ref: refTodo,
 				details: 'No formal bug bounty program has been established for the Firefly DIY wallet.',
 				upgradePathAvailable: false,

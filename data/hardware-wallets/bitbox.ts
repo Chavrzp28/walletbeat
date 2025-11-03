@@ -10,7 +10,6 @@ import {
 	WalletInfo,
 } from '@/schema/features/privacy/data-collection'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
-import { BugBountyProgramType } from '@/schema/features/security/bug-bounty-program'
 import { FirmwareType } from '@/schema/features/security/firmware'
 import {
 	DataExtraction,
@@ -138,7 +137,6 @@ export const bitboxWallet: HardwareWallet = {
 		profile: WalletProfile.GENERIC,
 		security: {
 			bugBountyProgram: {
-				type: BugBountyProgramType.DISCLOSURE_ONLY,
 				ref: [
 					{
 						url: 'https://bitbox.swiss/bug-bounty-program/',

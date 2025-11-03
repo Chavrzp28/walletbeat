@@ -40,10 +40,6 @@ export interface BugBountyProgramSupport {
 	 */
 	dateStarted?: Date
 
-	/**
-	 * The type of bug bounty program implemented
-	 */
-	type: BugBountyProgramType
 
 	/**
 	 * The availability of the bug bounty program
