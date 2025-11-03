@@ -80,20 +80,18 @@ function noBugBountyProgram(): Evaluation<BugBountyProgramValue> {
 	}
 }
 
-function bugBountyAvailable(
-	support: BugBountyProgramSupport,
-): Evaluation<BugBountyProgramValue> {
+function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBountyProgramValue> {
 	const rewardInfo = getRewardDescription(support)
-	const coverageInfo = support.coverageBreadth 
+	const coverageInfo = support.coverageBreadth
 		? getCoverageDescription(support.coverageBreadth)
 		: ''
-	
+
 	const isActive = support.availability === BugBountyProgramAvailability.ACTIVE
 	const availabilityInfo = isActive
 		? 'The program is currently active and accepting vulnerability reports.'
 		: support.availability === BugBountyProgramAvailability.INACTIVE
-		? 'Note that the program is currently inactive and not accepting new reports.'
-		: ''
+			? 'Note that the program is currently inactive and not accepting new reports.'
+			: ''
 
 	return {
 		value: {

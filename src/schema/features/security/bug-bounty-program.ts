@@ -14,16 +14,16 @@ export enum BugBountyProgramType {
  * The availability of the bug bounty program
  */
 export enum BugBountyProgramAvailability {
-  ACTIVE = 'ACTIVE', // Running now, accepting reports
-  INACTIVE = 'INACTIVE', // Temporarily paused
-  NEVER = 'NEVER', // Never existed
+	ACTIVE = 'ACTIVE', // Running now, accepting reports
+	INACTIVE = 'INACTIVE', // Temporarily paused
+	NEVER = 'NEVER', // Never existed
 }
 
 /**
  * The coverage breadth of the bug bounty program
  */
 export enum CoverageBreadth {
-  FULL = 'FULL',
+	FULL = 'FULL',
 	PARTIAL = 'PARTIAL',
 	APP_ONLY = 'APP_ONLY',
 	FIRMWARE_ONLY = 'FIRMWARE_ONLY',
@@ -39,7 +39,6 @@ export interface BugBountyProgramSupport {
 	 * The date the bug bounty program started
 	 */
 	dateStarted?: Date
-
 
 	/**
 	 * The availability of the bug bounty program
