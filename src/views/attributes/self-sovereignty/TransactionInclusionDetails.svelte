@@ -25,9 +25,11 @@
 
 
 	// Functions
+	import { transactionSubmissionL2TypeName } from '@/schema/features/self-sovereignty/transaction-submission'
+
+
 	// Components
 	import Typography from '@/components/Typography.svelte'
-	import { transactionSubmissionL2TypeName } from '@/schema/features/self-sovereignty/transaction-submission'
 </script>
 
 

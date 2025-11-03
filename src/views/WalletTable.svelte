@@ -37,6 +37,7 @@
 		summaryVisualization?: SummaryVisualization
 	} = $props()
 
+
 	// (Derived)
 	const displayedAttributeGroups = $derived(
 		wallets.find(w => w.variants.browser || w.variants.desktop || w.variants.mobile) ?
@@ -152,12 +153,14 @@
 	import Tooltip from '@/components/Tooltip.svelte'
 	import TooltipOrAccordion from '@/components/TooltipOrAccordion.svelte'
 	import Typography from '@/components/Typography.svelte'
-	// Styles
-	import { scoreToColor } from '@/utils/colors'
 	import EipDetails from '@/views/EipDetails.svelte'
 	import WalletAttributeGroupSummary from '@/views/WalletAttributeGroupSummary.svelte'
 	import WalletAttributeSummary from '@/views/WalletAttributeSummary.svelte'
 	import WalletOverallSummary from '@/views/WalletOverallSummary.svelte'
+
+
+	// Styles
+	import { scoreToColor } from '@/utils/colors'
 </script>
 
 

@@ -22,12 +22,12 @@
 
 
 	// Functions
-	import InfoIcon from '@material-icons/svg/svg/info/baseline.svg?raw'
-
 	import { variantToName } from '@/constants/variants'
 	import { slugifyCamelCase } from '@/types/utils/text'
 
+
 	// Components
+	import InfoIcon from '@material-icons/svg/svg/info/baseline.svg?raw'
 	import Typography from '../components/Typography.svelte'
 </script>
 

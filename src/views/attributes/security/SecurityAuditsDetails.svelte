@@ -4,6 +4,7 @@
 	import type { RatedWallet } from '@/schema/wallet'
 	import { ContentType } from '@/types/content'
 
+
 	// Props
 	const {
 		wallet,
@@ -17,12 +18,15 @@
 		hasUnaddressedFlaws?: boolean
 	} = $props()
 
+
 	// Functions
-	import Typography from '@/components/Typography.svelte'
 	import { securityFlawSeverityName, type UnpatchedSecurityFlaw } from '@/schema/features/security/security-audits'
 	import { toFullyQualified } from '@/schema/reference'
 	import { isUrl } from '@/schema/url'
+
+
 	// Components
+	import Typography from '@/components/Typography.svelte'
 	import ReferenceLinks from '@/views/ReferenceLinks.svelte'
 </script>
 

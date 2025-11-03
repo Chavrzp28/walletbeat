@@ -1,24 +1,6 @@
 <script lang="ts">
 	// Types/constants
-	import { Github, Globe } from 'lucide-static'
-
-	import Pie, { PieLayout } from '@/components/Pie.svelte'
-	import Select from '@/components/Select.svelte'
-	// Components
-	import Typography from '@/components/Typography.svelte'
-	// Functions
-	import {
-		variants,
-		variantToName,
-		variantToRunsOn,
-	} from '@/constants/variants'
-	import { allHardwareModels } from '@/data/hardware-wallets'
 	import { allRatedWallets, type WalletName } from '@/data/wallets'
-	import {
-		attributeTree,
-		calculateAttributeGroupScore,
-		calculateOverallScore,
-	} from '@/schema/attribute-groups'
 	import {
 		type Attribute,
 		type AttributeGroup,
@@ -28,14 +10,16 @@
 		ratingIcons,
 		ratingToColor,
 	} from '@/schema/attributes'
-	import { toFullyQualified } from '@/schema/reference'
 	import { hasSingleVariant,type Variant } from '@/schema/variants'
 	import { VariantSpecificity } from '@/schema/wallet'
-	import { getAttributeOverride } from '@/schema/wallet'
 	import { ContentType, isTypographicContent } from '@/types/content'
 	import { objectEntries, objectKeys } from '@/types/utils/object'
-	import { renderStrings, slugifyCamelCase } from '@/types/utils/text'
-	import { scoreToColor } from '@/utils/colors'
+
+
+	// Components
+	import { Github, Globe } from 'lucide-static'
+	import Pie, { PieLayout } from '@/components/Pie.svelte'
+	import Select from '@/components/Select.svelte'
 	import AddressCorrelationDetails from '@/views/attributes/privacy/AddressCorrelationDetails.svelte'
 	import ChainVerificationDetails from '@/views/attributes/security/ChainVerificationDetails.svelte'
 	import ScamAlertDetails from '@/views/attributes/security/ScamAlertDetails.svelte'
@@ -45,6 +29,25 @@
 	import UnratedAttribute from '@/views/attributes/UnratedAttribute.svelte'
 	import ReferenceLinks from '@/views/ReferenceLinks.svelte'
 	import ScoreBadge from '@/views/ScoreBadge.svelte'
+	import Typography from '@/components/Typography.svelte'
+
+
+	// Functions
+	import {
+		variants,
+		variantToName,
+		variantToRunsOn,
+	} from '@/constants/variants'
+	import { allHardwareModels } from '@/data/hardware-wallets'
+	import {
+		attributeTree,
+		calculateAttributeGroupScore,
+		calculateOverallScore,
+	} from '@/schema/attribute-groups'
+	import { toFullyQualified } from '@/schema/reference'
+	import { getAttributeOverride } from '@/schema/wallet'
+	import { renderStrings, slugifyCamelCase } from '@/types/utils/text'
+	import { scoreToColor } from '@/utils/colors'
 
 
 	// Props
@@ -70,6 +73,7 @@
 	let highlightedAttributeId = $state<string | null>(
 		null
 	)
+
 
 	// (Derived)
 	const wallet = $derived(

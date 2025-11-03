@@ -28,12 +28,14 @@
 
 
 	// Components
+	import BlockTransition from '@/components/BlockTransition.svelte'
+	import Tooltip from '@/components/Tooltip.svelte'
+
+
 	// Transitions/animations
 	import { expoOut } from 'svelte/easing'
 	import { fade } from 'svelte/transition'
 
-	import BlockTransition from '@/components/BlockTransition.svelte'
-	import Tooltip from '@/components/Tooltip.svelte'
 </script>
 
 
