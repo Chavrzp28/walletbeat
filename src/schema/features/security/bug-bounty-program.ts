@@ -1,16 +1,14 @@
 import type { WithRef } from '@/schema/reference'
 
-
 /**
  * Platforms of bug bounty programs
  */
 export enum BugBountyPlatform {
 	SELF_HOSTED = 'Self-hosted',
 	HACKER_ONE = 'Hacker One',
-	BUG_CROWD = 'Bugcrowd',	
+	BUG_CROWD = 'Bugcrowd',
 	INTIGRITI = 'Intigriti',
 }
-
 
 /**
  * Types of legal protection provided to security researchers
@@ -45,8 +43,6 @@ export interface LegalProtection {
 	 */
 	standardizedLanguage?: boolean
 }
-
-
 
 /**
  * The availability of the bug bounty program
