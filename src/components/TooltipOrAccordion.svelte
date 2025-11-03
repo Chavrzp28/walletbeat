@@ -9,6 +9,8 @@
 		showAccordionMarker = false,
 
 		tooltipMaxWidth,
+		tooltipButtonTriggerPlacement = 'around',
+		tooltipHoverTriggerPlacement = 'around',
 
 		children,
 		ExpandedContent: ExpandedContent,
@@ -17,6 +19,8 @@
 		showAccordionMarker?: boolean
 
 		tooltipMaxWidth?: string
+		tooltipButtonTriggerPlacement?: 'around' | 'behind'
+		tooltipHoverTriggerPlacement?: 'around' | 'button'
 
 		children: Snippet
 		ExpandedContent: Snippet<[{ isInTooltip?: boolean }]>
@@ -31,6 +35,7 @@
 	// Transitions/animations
 	import { expoOut } from 'svelte/easing'
 	import { fade } from 'svelte/transition'
+
 </script>
 
 
@@ -44,6 +49,8 @@
 		>
 			<Tooltip
 				isEnabled={!isExpanded}
+				buttonTriggerPlacement={tooltipButtonTriggerPlacement}
+				hoverTriggerPlacement={tooltipHoverTriggerPlacement}
 				style="
 					--popover-padding: 0;
 					--popover-backgroundColor: transparent;
@@ -89,6 +96,8 @@
 
 		summary {
 			&.no-marker {
+				gap: 0;
+
 				&::after {
 					display: none;
 				}
