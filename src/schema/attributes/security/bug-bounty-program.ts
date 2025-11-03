@@ -9,7 +9,10 @@ import type { ResolvedFeatures } from '@/schema/features'
 import {
 	BugBountyProgramAvailability,
 	type BugBountyProgramSupport,
+	type LegalProtection,
 	CoverageBreadth,
+	BugBountyPlatform,
+	LegalProtectionType,
 } from '@/schema/features/security/bug-bounty-program'
 import { popRefs } from '@/schema/reference'
 import { type AtLeastOneVariant } from '@/schema/variants'
@@ -21,9 +24,12 @@ import { exempt, pickWorstRating, unrated } from '../common'
 const brand = 'attributes.security.bug_bounty_program'
 
 export type BugBountyProgramValue = Value & {
-	availability: BugBountyProgramAvailability
-	coverageBreadth: CoverageBreadth
-	upgradePathAvailable: boolean
+	availability?: BugBountyProgramAvailability
+	coverageBreadth?: CoverageBreadth
+	upgradePathAvailable?: boolean
+	platform?: BugBountyPlatform
+	platformUrl?: string
+	legalProtections?: LegalProtection
 	__brand: 'attributes.security.bug_bounty_program'
 }
 
@@ -86,19 +92,22 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 	const coverageInfo = support.coverageBreadth
 		? getCoverageDescription(support.coverageBreadth)
 		: ''
+	const legalProtectionInfo = support.legalProtections ? getLegalProtectionDescription(support.legalProtections) : ''
 
 	const hasRewards = support.minimumReward != null && support.maximumReward != null && support.minimumReward !== 0 && support.maximumReward !== 0
 	const hasFullCoverage = support.coverageBreadth === CoverageBreadth.FULL
+	const hasLegalProtection = support.legalProtections?.type !== LegalProtectionType.NONE && support.legalProtections?.type != null
 	const isActive = support.availability === BugBountyProgramAvailability.ACTIVE
 
 	const passesAll =
 		isActive &&
 		hasFullCoverage &&
-		hasRewards
+		hasRewards &&
+		hasLegalProtection
 
 	const rating = passesAll
 		? Rating.PASS
-		: isActive || hasRewards || hasFullCoverage
+		: isActive || hasRewards || hasFullCoverage || hasLegalProtection
 			? Rating.PARTIAL
 			: Rating.FAIL
 
@@ -119,10 +128,11 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 				`{{WALLET_NAME}} has a bug bounty program ${rewardInfo}${isActive ? '' : ', but it is currently inactive'}.`,
 			),
 			availability: support.availability || BugBountyProgramAvailability.NEVER,
-			coverageBreadth: support.coverageBreadth || CoverageBreadth.NONE,
+			coverageBreadth: support.coverageBreadth || CoverageBreadth.NONE,	
 			upgradePathAvailable: support.upgradePathAvailable,
 			platform: support.platform,
 			platformUrl: support.platformUrl,
+			legalProtections: support.legalProtections,
 			__brand: brand,
 		},
 		details: markdown(`
@@ -131,6 +141,8 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 			${availabilityInfo}
 
 			${support.platform ? `The program is hosted ${platformInfo}${support.platformUrl ? ` at [${support.platform}](${support.platformUrl})` : ''}.` : ''}
+
+			${legalProtectionInfo}
 
 			${support.url ? `For more information, visit their [bug bounty program page](${support.url}).` : ''}
 
@@ -147,10 +159,33 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 			${!isActive ? '- Activate or relaunch their bug bounty program to encourage vulnerability reporting' : ''}
 			${!hasRewards ? '- Clearly define the reward range (minimum and maximum) to attract more security researchers' : ''}
 			${!hasFullCoverage ? '- Expand coverage to include all hardware and software components' : ''}
+			${!hasLegalProtection ? '- Implement Safe Harbor or legal assurance language to protect security researchers from legal action' : ''}
 			${!support.upgradePathAvailable ? '- Establish or improve a clear upgrade path for users after vulnerabilities are fixed' : ''}
 			${passesAll ? '- Continue maintaining and improving the bug bounty program’s transparency and responsiveness' : ''}
 		`),
 	}
+}
+
+
+
+function getLegalProtectionDescription(legalProtection: LegalProtection): string {
+	if (legalProtection.type === LegalProtectionType.NONE) {
+		return 'Legal Protection: The program does not provide explicit legal protections for security researchers. This may discourage responsible disclosure.'
+	}
+
+	const protectionType = legalProtection.type === LegalProtectionType.SAFE_HARBOR
+		? 'Safe Harbor'
+		: 'Legal Assurance'
+
+	const standardization = legalProtection.standardizedLanguage
+		? ' The program participates in standardized legal protection initiatives.'
+		: ''
+
+	const referenceLink = legalProtection.reference
+		? ` [View legal protection policy](${legalProtection?.reference})`
+		: ''
+
+	return `Legal Protection: The program provides ${protectionType} protections for security researchers conducting good faith security research.${standardization}${referenceLink}`
 }
 
 

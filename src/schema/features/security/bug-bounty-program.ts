@@ -1,11 +1,52 @@
 import type { WithRef } from '@/schema/reference'
 
+
+/**
+ * Platforms of bug bounty programs
+ */
 export enum BugBountyPlatform {
 	SELF_HOSTED = 'Self-hosted',
 	HACKER_ONE = 'Hacker One',
 	BUG_CROWD = 'Bugcrowd',	
 	INTIGRITI = 'Intigriti',
 }
+
+
+/**
+ * Types of legal protection provided to security researchers
+ */
+export enum LegalProtectionType {
+	SAFE_HARBOR = 'SAFE_HARBOR', // Explicit Safe Harbor language
+	LEGAL_ASSURANCE = 'LEGAL_ASSURANCE', // Pledges not to sue, similar protections
+	NONE = 'NONE', // No legal protections mentioned
+}
+
+/**
+ * Information about legal protections for security researchers
+ */
+export interface LegalProtection {
+	/**
+	 * The type of legal protection provided
+	 */
+	type: LegalProtectionType
+
+	/**
+	 * URL or reference to the legal protection language
+	 */
+	reference?: string
+
+	/**
+	 * Specific details or excerpt of the legal protection language
+	 */
+	details?: string
+
+	/**
+	 * Whether they participate in #legalbugbounty or similar standardization
+	 */
+	standardizedLanguage?: boolean
+}
+
+
 
 /**
  * The availability of the bug bounty program
@@ -87,6 +128,11 @@ export interface BugBountyProgramSupport {
 	 * Whether the wallet offers an upgrade path for security issues
 	 */
 	upgradePathAvailable: boolean
+
+	/**
+	 * The legal protections offered to security researchers
+	 */
+	legalProtections?: LegalProtection
 }
 
 /**
