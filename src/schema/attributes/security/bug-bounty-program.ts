@@ -153,7 +153,7 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 		),
 	},
 	question: sentence(
-		'Does {{WALLET_NAME}} implement a bug bounty program and provide security updates?',
+		'Does {{WALLET_NAME}} maintain an active bug bounty program with a clear disclosure and upgrade process for security issues?',
 	),
 	why: markdown(`
 		Hardware wallets manage sensitive cryptographic keys and access to users' funds, making them high-value targets for attackers.
