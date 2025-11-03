@@ -1,16 +1,6 @@
 import type { WithRef } from '@/schema/reference'
 
 /**
- * Types of bug bounty programs that can be implemented
- */
-export enum BugBountyProgramType {
-	COMPREHENSIVE = 'COMPREHENSIVE',
-	BASIC = 'BASIC',
-	DISCLOSURE_ONLY = 'DISCLOSURE_ONLY',
-	NONE = 'NONE',
-}
-
-/**
  * The availability of the bug bounty program
  */
 export enum BugBountyProgramAvailability {
