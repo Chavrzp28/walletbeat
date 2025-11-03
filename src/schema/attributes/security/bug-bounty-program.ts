@@ -87,17 +87,33 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 		? getCoverageDescription(support.coverageBreadth)
 		: ''
 
+	const hasRewards = support.minimumReward != null && support.maximumReward != null && support.minimumReward !== 0 && support.maximumReward !== 0
+	const hasFullCoverage = support.coverageBreadth === CoverageBreadth.FULL
 	const isActive = support.availability === BugBountyProgramAvailability.ACTIVE
+
+	const passesAll =
+		isActive &&
+		hasFullCoverage &&
+		hasRewards
+
+	const rating = passesAll
+		? Rating.PASS
+		: isActive || hasRewards || hasFullCoverage
+			? Rating.PARTIAL
+			: Rating.FAIL
+
+
+
 	const availabilityInfo = isActive
 		? 'The program is currently active and accepting vulnerability reports.'
 		: support.availability === BugBountyProgramAvailability.INACTIVE
 			? 'Note that the program is currently inactive and not accepting new reports.'
-			: ''
+			: 'No bug bounty program has been announced or is publicly available.'
 
 	return {
 		value: {
 			id: 'bug_bounty_available',
-			rating: isActive ? Rating.PASS : Rating.PARTIAL,
+			rating: rating,
 			displayName: isActive ? 'Bug bounty program available' : 'Bug bounty program inactive',
 			shortExplanation: mdSentence(
 				`{{WALLET_NAME}} has a bug bounty program ${rewardInfo}${isActive ? '' : ', but it is currently inactive'}.`,
@@ -108,8 +124,6 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 			__brand: brand,
 		},
 		details: markdown(`
-			{{WALLET_NAME}} has implemented a bug bounty program ${rewardInfo} that provides incentives for security researchers to find and report vulnerabilities.
-
 			${coverageInfo}
 
 			${availabilityInfo}
@@ -126,17 +140,19 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 		`),
 		howToImprove: markdown(`
 			{{WALLET_NAME}} should:
-			${!isActive ? '- Reactivate their bug bounty program to continue accepting vulnerability reports' : ''}
-			${!support.upgradePathAvailable ? '- Establish a clear upgrade path for users when security vulnerabilities are discovered' : ''}
-			${support.coverageBreadth && support.coverageBreadth !== CoverageBreadth.FULL ? '- Expand coverage to all wallet components' : ''}
-			${isActive && support.upgradePathAvailable && support.coverageBreadth === CoverageBreadth.FULL ? '- Continue maintaining and improving the bug bounty program' : ''}
+			${!isActive ? '- Activate or relaunch their bug bounty program to encourage vulnerability reporting' : ''}
+			${!hasRewards ? '- Clearly define the reward range (minimum and maximum) to attract more security researchers' : ''}
+			${!hasFullCoverage ? '- Expand coverage to include all hardware and software components' : ''}
+			${!support.upgradePathAvailable ? '- Establish or improve a clear upgrade path for users after vulnerabilities are fixed' : ''}
+			${passesAll ? '- Continue maintaining and improving the bug bounty program’s transparency and responsiveness' : ''}
 		`),
 	}
 }
 
+
 function determineRating(support: BugBountyProgramSupport): Evaluation<BugBountyProgramValue> {
 	// Has financial rewards = bug bounty program exists
-	const hasBugBounty = support.minimumReward !== undefined || support.maximumReward !== undefined
+	const hasBugBounty = support.availability !== BugBountyProgramAvailability.NEVER
 
 	// No bug bounty program at all
 	if (!hasBugBounty) {
