@@ -102,7 +102,7 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 			? Rating.PARTIAL
 			: Rating.FAIL
 
-
+	const platformInfo = support.platform ? `on ${support.platform}` : ''
 
 	const availabilityInfo = isActive
 		? 'The program is currently active and accepting vulnerability reports.'
@@ -121,12 +121,16 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 			availability: support.availability || BugBountyProgramAvailability.NEVER,
 			coverageBreadth: support.coverageBreadth || CoverageBreadth.NONE,
 			upgradePathAvailable: support.upgradePathAvailable,
+			platform: support.platform,
+			platformUrl: support.platformUrl,
 			__brand: brand,
 		},
 		details: markdown(`
 			${coverageInfo}
 
 			${availabilityInfo}
+
+			${support.platform ? `The program is hosted ${platformInfo}${support.platformUrl ? ` at [${support.platform}](${support.platformUrl})` : ''}.` : ''}
 
 			${support.url ? `For more information, visit their [bug bounty program page](${support.url}).` : ''}
 

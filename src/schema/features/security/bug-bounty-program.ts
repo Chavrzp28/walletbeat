@@ -1,5 +1,12 @@
 import type { WithRef } from '@/schema/reference'
 
+export enum BugBountyPlatform {
+	SELF_HOSTED = 'Self-hosted',
+	HACKER_ONE = 'Hacker One',
+	BUG_CROWD = 'Bugcrowd',	
+	INTIGRITI = 'Intigriti',
+}
+
 /**
  * The availability of the bug bounty program
  */
@@ -54,6 +61,16 @@ export interface BugBountyProgramSupport {
 	 * URL to the bug bounty program details
 	 */
 	url?: string
+
+	/**
+	 * The platform of the bug bounty program
+	 */
+	platform?: BugBountyPlatform
+
+	/**
+	 * The URL to the bug bounty program
+	 */
+	platformUrl?: string
 
 	/**
 	 * Additional details about the bug bounty program implementation
