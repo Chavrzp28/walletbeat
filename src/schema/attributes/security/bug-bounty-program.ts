@@ -7,8 +7,8 @@ import {
 } from '@/schema/attributes'
 import type { ResolvedFeatures } from '@/schema/features'
 import {
-	type BugBountyProgramSupport,
 	BugBountyProgramAvailability,
+	type BugBountyProgramSupport,
 	CoverageBreadth,
 } from '@/schema/features/security/bug-bounty-program'
 import { popRefs } from '@/schema/reference'
@@ -54,6 +54,7 @@ function getRewardDescription(support: BugBountyProgramSupport): string {
 	} else if (support.minimumReward) {
 		return `with rewards starting at $${support.minimumReward.toLocaleString()}`
 	}
+
 	return ''
 }
 
