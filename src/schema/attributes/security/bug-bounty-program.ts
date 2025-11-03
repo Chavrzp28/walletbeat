@@ -8,7 +8,8 @@ import {
 import type { ResolvedFeatures } from '@/schema/features'
 import {
 	type BugBountyProgramSupport,
-	BugBountyProgramType,
+	BugBountyProgramAvailability,
+	CoverageBreadth,
 } from '@/schema/features/security/bug-bounty-program'
 import { popRefs } from '@/schema/reference'
 import { type AtLeastOneVariant } from '@/schema/variants'
@@ -20,9 +21,40 @@ import { exempt, pickWorstRating, unrated } from '../common'
 const brand = 'attributes.security.bug_bounty_program'
 
 export type BugBountyProgramValue = Value & {
-	programType: BugBountyProgramType
+	availability: BugBountyProgramAvailability
+	coverageBreadth: CoverageBreadth
 	upgradePathAvailable: boolean
 	__brand: 'attributes.security.bug_bounty_program'
+}
+
+function getCoverageDescription(breadth: CoverageBreadth): string {
+	switch (breadth) {
+		case CoverageBreadth.FULL:
+			return 'The program covers all aspects of the wallet including hardware, firmware, and software.'
+		case CoverageBreadth.PARTIAL:
+			return 'The program has partial coverage of wallet components.'
+		case CoverageBreadth.APP_ONLY:
+			return 'The program covers only the application layer.'
+		case CoverageBreadth.FIRMWARE_ONLY:
+			return 'The program covers only firmware vulnerabilities.'
+		case CoverageBreadth.HARDWARE_ONLY:
+			return 'The program covers only hardware vulnerabilities.'
+		case CoverageBreadth.NONE:
+			return 'The program has no defined coverage scope.'
+		default:
+			return ''
+	}
+}
+
+function getRewardDescription(support: BugBountyProgramSupport): string {
+	if (support.minimumReward && support.maximumReward) {
+		return `with rewards ranging from $${support.minimumReward.toLocaleString()} to $${support.maximumReward.toLocaleString()}`
+	} else if (support.maximumReward) {
+		return `with rewards up to $${support.maximumReward.toLocaleString()}`
+	} else if (support.minimumReward) {
+		return `with rewards starting at $${support.minimumReward.toLocaleString()}`
+	}
+	return ''
 }
 
 function noBugBountyProgram(): Evaluation<BugBountyProgramValue> {
@@ -34,7 +66,8 @@ function noBugBountyProgram(): Evaluation<BugBountyProgramValue> {
 			shortExplanation: sentence(
 				"{{WALLET_NAME}} does not implement a bug bounty program and doesn't provide security updates.",
 			),
-			programType: BugBountyProgramType.NONE,
+			availability: BugBountyProgramAvailability.NEVER,
+			coverageBreadth: CoverageBreadth.NONE,
 			upgradePathAvailable: false,
 			__brand: brand,
 		},
@@ -47,23 +80,44 @@ function noBugBountyProgram(): Evaluation<BugBountyProgramValue> {
 	}
 }
 
-function disclosureOnlyProgram(
+function bugBountyAvailable(
 	support: BugBountyProgramSupport,
 ): Evaluation<BugBountyProgramValue> {
+	const rewardInfo = getRewardDescription(support)
+	const coverageInfo = support.coverageBreadth 
+		? getCoverageDescription(support.coverageBreadth)
+		: ''
+	
+	const isActive = support.availability === BugBountyProgramAvailability.ACTIVE
+	const availabilityInfo = isActive
+		? 'The program is currently active and accepting vulnerability reports.'
+		: support.availability === BugBountyProgramAvailability.INACTIVE
+		? 'Note that the program is currently inactive and not accepting new reports.'
+		: ''
+
 	return {
 		value: {
-			id: 'disclosure_only_program',
-			rating: Rating.PARTIAL,
-			displayName: 'Basic disclosure policy',
+			id: 'bug_bounty_available',
+			rating: isActive ? Rating.PASS : Rating.PARTIAL,
+			displayName: isActive ? 'Bug bounty program available' : 'Bug bounty program inactive',
 			shortExplanation: mdSentence(
-				'{{WALLET_NAME}} implements a basic vulnerability disclosure policy but no formal bounty program.',
+				`{{WALLET_NAME}} has a bug bounty program ${rewardInfo}${isActive ? '' : ', but it is currently inactive'}.`,
 			),
-			programType: BugBountyProgramType.DISCLOSURE_ONLY,
+			availability: support.availability || BugBountyProgramAvailability.NEVER,
+			coverageBreadth: support.coverageBreadth || CoverageBreadth.NONE,
 			upgradePathAvailable: support.upgradePathAvailable,
 			__brand: brand,
 		},
 		details: markdown(`
-			{{WALLET_NAME}} implements a basic vulnerability disclosure policy, allowing security researchers to report issues. However, it does not offer financial incentives or a formal bug bounty program, which may limit the motivation for researchers to find and report vulnerabilities.
+			{{WALLET_NAME}} has implemented a bug bounty program ${rewardInfo} that provides incentives for security researchers to find and report vulnerabilities.
+
+			${coverageInfo}
+
+			${availabilityInfo}
+
+			${support.url ? `For more information, visit their [bug bounty program page](${support.url}).` : ''}
+
+			${support.disclosureProcess ? `**Disclosure Process**: ${support.disclosureProcess}` : ''}
 
 			${
 				support.upgradePathAvailable
@@ -73,72 +127,25 @@ function disclosureOnlyProgram(
 		`),
 		howToImprove: markdown(`
 			{{WALLET_NAME}} should:
-			- Implement a formal bug bounty program with clear rewards to incentivize security researchers
+			${!isActive ? '- Reactivate their bug bounty program to continue accepting vulnerability reports' : ''}
 			${!support.upgradePathAvailable ? '- Establish a clear upgrade path for users when security vulnerabilities are discovered' : ''}
-			- Provide transparent communication about security issues and their resolutions
+			${support.coverageBreadth && support.coverageBreadth !== CoverageBreadth.FULL ? '- Expand coverage to all wallet components' : ''}
+			${isActive && support.upgradePathAvailable && support.coverageBreadth === CoverageBreadth.FULL ? '- Continue maintaining and improving the bug bounty program' : ''}
 		`),
 	}
 }
 
-function basicBugBountyProgram(
-	support: BugBountyProgramSupport,
-): Evaluation<BugBountyProgramValue> {
-	return {
-		value: {
-			id: 'basic_bug_bounty_program',
-			rating: Rating.PARTIAL,
-			displayName: 'Basic bug bounty program',
-			shortExplanation: mdSentence(
-				'{{WALLET_NAME}} implements a basic bug bounty program but with limited scope or rewards.',
-			),
-			programType: BugBountyProgramType.BASIC,
-			upgradePathAvailable: support.upgradePathAvailable,
-			__brand: brand,
-		},
-		details: markdown(`
-			{{WALLET_NAME}} implements a basic bug bounty program that offers some incentives for security researchers to find and report vulnerabilities. However, the program has limitations in terms of scope, reward size, or responsiveness.
+function determineRating(support: BugBountyProgramSupport): Evaluation<BugBountyProgramValue> {
+	// Has financial rewards = bug bounty program exists
+	const hasBugBounty = support.minimumReward !== undefined || support.maximumReward !== undefined
 
-			${support.upgradePathAvailable ? 'Positively, the wallet provides an upgrade path for users when security issues are identified.' : 'Unfortunately, the wallet does not provide a clear upgrade path for users when security issues are identified.'}
-		`),
-		howToImprove: markdown(`
-			{{WALLET_NAME}} should:
-			- Expand the scope and increase rewards for their bug bounty program
-			${!support.upgradePathAvailable ? '- Establish a clear upgrade path for users when security vulnerabilities are discovered' : ''}
-			- Improve response times and transparency in the vulnerability handling process
-		`),
+	// No bug bounty program at all
+	if (!hasBugBounty) {
+		return noBugBountyProgram()
 	}
-}
 
-function comprehensiveBugBountyProgram(
-	support: BugBountyProgramSupport,
-): Evaluation<BugBountyProgramValue> {
-	return {
-		value: {
-			id: 'comprehensive_bug_bounty_program',
-			rating: Rating.PASS,
-			displayName: 'Comprehensive bug bounty program',
-			shortExplanation: mdSentence(
-				'{{WALLET_NAME}} implements a comprehensive bug bounty program with clear incentives and processes.',
-			),
-			programType: BugBountyProgramType.COMPREHENSIVE,
-			upgradePathAvailable: support.upgradePathAvailable,
-			__brand: brand,
-		},
-		details: markdown(`
-			{{WALLET_NAME}} implements a comprehensive bug bounty program that offers strong incentives for security researchers to find and report vulnerabilities. The program has a wide scope, competitive rewards, and a responsive disclosure process.
-
-			${
-				support.upgradePathAvailable
-					? 'Additionally, the wallet provides a clear upgrade path for users when security issues are identified.'
-					: 'However, the wallet should still improve by providing a clearer upgrade path for users when security issues are identified.'
-			}
-		`),
-		howToImprove: support.upgradePathAvailable
-			? undefined
-			: mdParagraph(`
-				{{WALLET_NAME}} should establish a clearer upgrade path for users when security vulnerabilities are discovered, such as offering discounted replacements or firmware updates when possible.
-			`),
-	}
+	// Has bug bounty program
+	return bugBountyAvailable(support)
 }
 
 export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
@@ -172,17 +179,20 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 		Hardware wallets are assessed based on the comprehensiveness of their bug bounty program:
 
 		1. **Pass (Best)**: Implements a comprehensive bug bounty program with:
-			- Clear scope and guidelines
-			- Competitive rewards based on severity
+			- Active program accepting vulnerability reports
+			- Full coverage of hardware, firmware, and software components
+			- Competitive financial rewards based on severity
 			- Responsive disclosure process
 			- Transparent communication about fixes
-			- Offers upgrade paths for users when needed
+			- Clear upgrade paths for users when needed
 
 		2. **Partial**: Implements a basic bug bounty program with limitations:
-			- Basic vulnerability disclosure policy but no formal rewards
-			- Limited scope or small rewards
+			- May have limited coverage (only certain components)
+			- Smaller or unclear rewards
+			- Basic vulnerability disclosure policy without formal rewards
 			- Slower response times
 			- Unclear upgrade paths for users
+			- Inactive or temporarily paused programs
 
 		3. **Fail**: No bug bounty program or security update process:
 			- No formal process for reporting vulnerabilities
@@ -196,11 +206,14 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 		pass: [
 			exampleRating(
 				mdParagraph(`
-					The hardware wallet implements a comprehensive bug bounty program with clear incentives and responsive processes.
-					It offers competitive rewards based on severity, has a transparent disclosure process, and provides upgrade paths for users.
+					The hardware wallet has an active bug bounty program with competitive rewards (e.g., up to $50,000),
+					full coverage of all components, and provides upgrade paths for users.
 				`),
-				comprehensiveBugBountyProgram({
-					type: BugBountyProgramType.COMPREHENSIVE,
+				bugBountyAvailable({
+					availability: BugBountyProgramAvailability.ACTIVE,
+					coverageBreadth: CoverageBreadth.FULL,
+					maximumReward: 50000,
+					minimumReward: 1000,
 					upgradePathAvailable: true,
 				}),
 			),
@@ -208,22 +221,14 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 		partial: [
 			exampleRating(
 				mdParagraph(`
-					The hardware wallet implements a basic bug bounty program with limited scope or rewards.
-					However, it does provide a clear upgrade path for users when security issues are discovered.
+					The hardware wallet has a bug bounty program with rewards (e.g., up to $5,000),
+					but it is currently inactive and not accepting new reports.
 				`),
-				basicBugBountyProgram({
-					type: BugBountyProgramType.BASIC,
+				bugBountyAvailable({
+					availability: BugBountyProgramAvailability.INACTIVE,
+					coverageBreadth: CoverageBreadth.PARTIAL,
+					maximumReward: 5000,
 					upgradePathAvailable: true,
-				}),
-			),
-			exampleRating(
-				mdParagraph(`
-					The hardware wallet implements a vulnerability disclosure policy but does not offer formal rewards.
-					It also lacks a clear upgrade path for users when security issues are discovered.
-				`),
-				disclosureOnlyProgram({
-					type: BugBountyProgramType.DISCLOSURE_ONLY,
-					upgradePathAvailable: false,
 				}),
 			),
 		],
@@ -248,7 +253,8 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 				sentence('This attribute is only applicable for hardware wallets.'),
 				brand,
 				{
-					programType: BugBountyProgramType.NONE,
+					availability: BugBountyProgramAvailability.NEVER,
+					coverageBreadth: CoverageBreadth.NONE,
 					upgradePathAvailable: false,
 				},
 			)
@@ -256,7 +262,8 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 
 		if (features.security.bugBountyProgram === null) {
 			return unrated(bugBountyProgram, brand, {
-				programType: BugBountyProgramType.NONE,
+				availability: BugBountyProgramAvailability.NEVER,
+				coverageBreadth: CoverageBreadth.NONE,
 				upgradePathAvailable: false,
 			})
 		}
@@ -265,23 +272,7 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 			features.security.bugBountyProgram,
 		)
 
-		// Initialize result with a default value
-		let result: Evaluation<BugBountyProgramValue> = noBugBountyProgram()
-
-		switch (withoutRefs.type) {
-			case BugBountyProgramType.COMPREHENSIVE:
-				result = comprehensiveBugBountyProgram(withoutRefs)
-				break
-			case BugBountyProgramType.BASIC:
-				result = basicBugBountyProgram(withoutRefs)
-				break
-			case BugBountyProgramType.DISCLOSURE_ONLY:
-				result = disclosureOnlyProgram(withoutRefs)
-				break
-			case BugBountyProgramType.NONE:
-				result = noBugBountyProgram()
-				break
-		}
+		const result = determineRating(withoutRefs)
 
 		// Return result with references if any
 		return {
