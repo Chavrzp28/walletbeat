@@ -1,6 +1,11 @@
 import { nconsigny, patrickalphac } from '@/data/contributors'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
 import {
+	BugBountyProgramAvailability,
+	CoverageBreadth,
+	LegalProtectionType,
+} from '@/schema/features/security/bug-bounty-program'
+import {
 	CalldataDecoding,
 	DataExtraction,
 	displaysFullTransactionDetails,
@@ -69,8 +74,18 @@ export const gridplusWallet: HardwareWallet = {
 						url: 'https://docs.gridplus.io/resources/bug-bounty-and-responsible-disclosure-policy',
 					},
 				],
+				availability: BugBountyProgramAvailability.ACTIVE,
+				coverageBreadth: CoverageBreadth.FULL,
 				details:
 					'GridPlus pledges not to initiate legal action for security research conducted pursuant to all Bug Bounty Program policies, including good faith, accidental violations',
+				legalProtections: {
+					type: LegalProtectionType.LEGAL_ASSURANCE,
+					details:
+						'GridPlus pledges not to initiate legal action for security research conducted pursuant to all Bug Bounty Program policies...',
+					reference:
+						'https://docs.gridplus.io/resources/bug-bounty-and-responsible-disclosure-policy#program-policies',
+					standardizedLanguage: true,
+				},
 				upgradePathAvailable: true,
 				url: 'https://docs.gridplus.io/resources/bug-bounty-and-responsible-disclosure-policy',
 			},
