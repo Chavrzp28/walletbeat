@@ -15,7 +15,7 @@
 	)
 
 
-	// Inputs
+	// Props
 	let {
 		key,
 		value,
@@ -41,7 +41,7 @@
 	} = $props()
 
 
-	// Internal state
+	// State
 	let borderBoxSize: ResizeObserverSize[] | undefined = $state()
 
 	// (Computed)
@@ -96,8 +96,8 @@
 				<div
 					data-content
 					bind:borderBoxSize
-				data-column
-				class={`align-${align}`}
+					data-column
+					class={`align-${align}`}
 					in:inTransition={inParams}
 				>
 					{#if children}
