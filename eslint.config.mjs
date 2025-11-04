@@ -229,6 +229,14 @@ export default [
 
 			// Prevent crashes due to duplicate keys.
 			'svelte/require-each-key': 'warn',
+
+			// ESLint's type checker doesn't perfectly match TypeScript's, especially for Svelte-specific syntax (e.g., {@attach pattern, $bindable inference).
+			// These rules have false positives when TypeScript compiler is happy.
+			'@typescript-eslint/no-unsafe-argument': 'warn',
+			'@typescript-eslint/no-unsafe-assignment': 'warn',
+			'@typescript-eslint/no-unsafe-call': 'warn',
+			'@typescript-eslint/no-unsafe-member-access': 'warn',
+			'@typescript-eslint/no-unsafe-return': 'warn',
 		},
 	},
 ]
