@@ -187,8 +187,8 @@
 					alt={wallet.metadata.displayName}
 					class="wallet-icon"
 					onerror={e => {
-						const target = e.target as HTMLImageElement
-						if (target) target.src = '/images/wallets/default.svg'
+						if (e.currentTarget)
+							e.currentTarget.src = '/images/wallets/default.svg'
 					}}
 				/>
 
