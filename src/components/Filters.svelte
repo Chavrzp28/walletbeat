@@ -125,7 +125,7 @@
 						.filter(filter => filterItems(new Set([filter])).length > 0)
 				)
 			}))
-			.filter(({ group, visibleFilters }) => (
+			.filter(({ visibleFilters }) => (
 				visibleFilters.filter(filter => filter.id).length > 1
 			))
 	) as { group, visibleFilters } (group.id)}
