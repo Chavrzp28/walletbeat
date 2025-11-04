@@ -93,8 +93,8 @@
 			autoUpdate,
 		} = await import('@floating-ui/dom')
 
-		const updatePosition = async () => {
-			const { x, y } = await computePosition(
+		const updatePosition = () => {
+			void computePosition(
 				node,
 				node.popoverTargetElement,
 				{
@@ -111,9 +111,10 @@
 					],
 				}
 			)
-
-			node.popoverTargetElement.style.left = `${x}px`
-			node.popoverTargetElement.style.top = `${y}px`
+				.then(({ x, y }) => {
+					node.popoverTargetElement.style.left = `${x}px`
+					node.popoverTargetElement.style.top = `${y}px`
+				})
 		}
 
 		updatePosition()
