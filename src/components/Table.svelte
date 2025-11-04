@@ -239,13 +239,11 @@
 				<tr
 					tabIndex={onRowClick ? 0 : undefined}
 					data-pressable={onRowClick ? '' : undefined}
-					onclick={e => {
-						// e.stopPropagation()
+					onclick={() => {
 						onRowClick?.(row, rowId)
 					}}
 					onkeypress={e => {
 						if(e.code === 'Enter' || e.code === 'Space'){
-							// e.stopPropagation()
 							onRowClick?.(row, rowId)
 						}
 					}}
