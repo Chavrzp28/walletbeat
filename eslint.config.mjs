@@ -217,6 +217,9 @@ export default [
 
 			// {@html} is used for inline SVG icons.
 			'svelte/no-at-html-tags': 'off',
+
+			// Prefer explicit `$state()` wrapping for `SvelteMap` / `SvelteSet`.
+			'svelte/no-unnecessary-state-wrap': 'off',
 		},
 	},
 ]
