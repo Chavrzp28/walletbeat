@@ -65,7 +65,7 @@
 
 
 	// State
-	let table = $state(
+	let table = $derived(
 		new TableState({
 			data: rows,
 			columns,
@@ -73,15 +73,6 @@
 			displaceDisabledRows,
 		})
 	)
-
-	$effect(() => {
-		table = new TableState({
-			data: rows,
-			columns,
-			rowIsDisabled,
-			displaceDisabledRows,
-		})
-	})
 
 	$effect(() => {
 		sortedColumn = table.sortedColumn
