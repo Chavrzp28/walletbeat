@@ -1,4 +1,5 @@
-import type { WithRef } from '@/schema/reference'
+import type { WithRef, MustRef } from '@/schema/reference'
+import type { Support } from '../support'
 
 /**
  * Platforms of bug bounty programs
@@ -12,37 +13,28 @@ export enum BugBountyPlatform {
 
 /**
  * Types of legal protection provided to security researchers
+ * SAFE_HARBOR: Explicit Safe Harbor language
+ * LEGAL_ASSURANCE: Pledges not to sue, similar protections
  */
 export enum LegalProtectionType {
-	SAFE_HARBOR = 'SAFE_HARBOR', // Explicit Safe Harbor language
-	LEGAL_ASSURANCE = 'LEGAL_ASSURANCE', // Pledges not to sue, similar protections
-	NONE = 'NONE', // No legal protections mentioned
+	SAFE_HARBOR = 'SAFE_HARBOR',
+	LEGAL_ASSURANCE = 'LEGAL_ASSURANCE',
 }
 
 /**
  * Information about legal protections for security researchers
  */
-export interface LegalProtection {
+export type LegalProtection = MustRef<{
 	/**
 	 * The type of legal protection provided
 	 */
 	type: LegalProtectionType
 
 	/**
-	 * URL or reference to the legal protection language
-	 */
-	reference?: string
-
-	/**
 	 * Specific details or excerpt of the legal protection language
 	 */
 	details?: string
-
-	/**
-	 * Whether they participate in #legalbugbounty or similar standardization
-	 */
-	standardizedLanguage?: boolean
-}
+}>
 
 /**
  * The availability of the bug bounty program
@@ -68,36 +60,31 @@ export enum CoverageBreadth {
 /**
  * Information about the bug bounty program implementation
  */
-export interface BugBountyProgramSupport {
+export type BugBountyProgramSupport = WithRef<{
 	/**
 	 * The date the bug bounty program started
 	 */
-	dateStarted?: Date
+	dateStarted: Date
 
 	/**
 	 * The availability of the bug bounty program
 	 */
-	availability?: BugBountyProgramAvailability
+	availability: BugBountyProgramAvailability
 
 	/**
 	 * The coverage breadth of the bug bounty program
 	 */
-	coverageBreadth?: CoverageBreadth
+	coverageBreadth: CoverageBreadth
 
 	/**
-	 * The maximum reward for a bug bounty program
+	 * The rewards for the bug bounty program
 	 */
-	maximumReward?: number
+	rewards: Support<{
+		minimum: number
+		maximum: number
+		currency: string
+	}>
 
-	/**
-	 * The minimum reward for a bug bounty program
-	 */
-	minimumReward?: number
-
-	/**
-	 * URL to the bug bounty program details
-	 */
-	url?: string
 
 	/**
 	 * The platform of the bug bounty program
@@ -105,20 +92,12 @@ export interface BugBountyProgramSupport {
 	platform?: BugBountyPlatform
 
 	/**
-	 * The URL to the bug bounty program
-	 */
-	platformUrl?: string
-
-	/**
-	 * Additional details about the bug bounty program implementation
-	 */
-	details?: string
-
-	/**
 	 * The disclosure process of the bug bounty program;
 	 * number of days, privacy of reports, etc.
 	 */
-	disclosureProcess?: string
+	disclouse: Support<{
+		numberOfDays: number
+	}>
 
 	/**
 	 * Whether the wallet offers an upgrade path for security issues
@@ -128,8 +107,8 @@ export interface BugBountyProgramSupport {
 	/**
 	 * The legal protections offered to security researchers
 	 */
-	legalProtections?: LegalProtection
-}
+	legalProtections: Support<LegalProtection>
+}>
 
 /**
  * A record of bug bounty program support
