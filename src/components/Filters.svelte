@@ -230,7 +230,7 @@
 						}
 						aria-label="Filter by {group.label.toLowerCase()}"
 					>
-						{#each visibleFilters as filter (option.value)}
+						{#each visibleFilters as filter (filter.id)}
 							{@const count = filterItems(activeFilters.difference(filters).union(new Set([filter]))).length}
 
 							<option
