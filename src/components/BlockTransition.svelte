@@ -1,7 +1,6 @@
 <script lang="ts">
 	// Types
 	import type { Snippet } from 'svelte'
-	import type { SvelteHTMLElements } from 'svelte/elements'
 	import type { EasingFunction } from 'svelte/transition'
 	import type { TransitionConfig } from 'svelte/transition'
 

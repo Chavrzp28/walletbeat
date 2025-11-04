@@ -29,7 +29,6 @@
 ">
 	// Types/constants
 	import type { SvelteHTMLElements } from 'svelte/elements'
-	import type { Snippet } from 'svelte'
 
 
 	// Props
