@@ -60,6 +60,7 @@
 
 	// State
 	import { SvelteURLSearchParams } from 'svelte/reactivity'
+	import { isLabeledUrl } from '@/schema/url'
 
 	let queryParams = $state<URLSearchParams>(
 		globalThis.location && new SvelteURLSearchParams(globalThis.location.search)
@@ -224,6 +225,7 @@
 			<div data-row="wrap">
 				<div data-row="wrap">
 					<a
+						data-link="camouflaged"
 						class="wallet-name"
 						href="#top"
 					>
@@ -278,7 +280,7 @@
 
 					<nav data-row="gap-2 start wrap">
 						<a
-							href={typeof wallet.metadata.url === 'string' ? wallet.metadata.url : wallet.metadata.url?.url ?? '#'}
+							href={isLabeledUrl(wallet.metadata.url) ? wallet.metadata.url.url : wallet.metadata.url}
 							data-badge="medium"
 							target="_blank"
 							rel="noopener noreferrer"
@@ -289,13 +291,13 @@
 
 						{#if wallet.metadata.repoUrl}
 							<a
-								href={typeof wallet.metadata.repoUrl === 'string' ? wallet.metadata.repoUrl : wallet.metadata.repoUrl?.url ?? '#'}
+								href={isLabeledUrl(wallet.metadata.repoUrl) ? wallet.metadata.repoUrl.url : wallet.metadata.repoUrl}
 								data-badge="medium"
 								target="_blank"
 								rel="noopener noreferrer"
 							>
 								{@html Github}
-								GitHub Repository
+								Source Code
 							</a>
 						{/if}
 					</nav>
@@ -389,7 +391,7 @@
 			style:--accent={scoreColor}
 		>
 			<header data-sticky data-row>
-				<a href={`#${slugifyCamelCase(attrGroup.id)}`}>
+				<a data-link="camouflaged" href={`#${slugifyCamelCase(attrGroup.id)}`}>
 					<h2>
 						{attrGroup.displayName}
 					</h2>
@@ -465,6 +467,7 @@
 								{@const attributeUrl = `#${slugifyCamelCase(attribute.id)}`}
 								<li>
 									<a
+										data-link="camouflaged"
 										href={attributeUrl}
 										style:--accent={ratingToColor(evalAttr.evaluation.value.rating)}
 										data-card="secondary padding-3"
@@ -548,7 +551,7 @@
 				<header data-row>
 					<div>
 						<div data-row="start gap-2">
-							<a href={`#${slugifyCamelCase(attribute.id)}`}>
+							<a data-link="camouflaged" href={`#${slugifyCamelCase(attribute.id)}`}>
 								<h3 data-icon={attribute.icon}>
 									{attribute.displayName}
 								</h3>
@@ -964,13 +967,6 @@
 		display: flex;
 		align-items: center;
 
-		color: inherit;
-		text-decoration: none;
-
-		&:hover {
-			color: var(--accent);
-		}
-
 		&::before {
 			content: '# ';
 			display: inline-flex;
@@ -1300,8 +1296,6 @@
 					gap: 0.5rem;
 					align-items: center;
 					padding: 0.5rem;
-					color: var(--text-primary);
-					text-decoration: none;
 					font-size: 0.875rem;
 
 					&:hover,
@@ -1548,6 +1542,7 @@
 
 			.rating-display {
 				grid-template-columns: auto 1fr;
+				gap: 1rem;
 				font-weight: 500;
 				background-color: color-mix(in srgb, var(--accent) 5%, var(--background-secondary));
 				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);

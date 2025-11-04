@@ -17,6 +17,7 @@
 
 <script lang="ts">
 	// Types/constants
+	import type { SvelteHTMLElements } from 'svelte/elements'
 	import type { Snippet } from 'svelte'
 
 
@@ -38,7 +39,7 @@
 		isEnabled = true,
 		children,
 		...restProps
-	}: {
+	}: SvelteHTMLElements['div'] & {
 		title?: string
 		placement?: 'block-start' | 'block-end' | 'inline-start' | 'inline-end'
 		buttonTriggerPlacement?: 'around' | 'behind'
@@ -48,7 +49,7 @@
 		TooltipContent: Snippet
 		isEnabled?: boolean
 		children: Snippet
-	} & Record<string, any> = $props()
+	} = $props()
 
 
 	// State
