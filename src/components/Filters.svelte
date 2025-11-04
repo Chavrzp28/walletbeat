@@ -29,14 +29,20 @@
 ">
 	// Types/constants
 	import type { SvelteHTMLElements } from 'svelte/elements'
-
-
+	
+	
 	// Props
+	import { SvelteSet } from 'svelte/reactivity'
+
 	let {
 		items,
 		filterGroups,
-		activeFilters = $bindable(new Set<Filter<Item>>()),
-		filteredItems = $bindable(items),
+		activeFilters = $bindable(
+			new SvelteSet<Filter<Item>>()
+		),
+		filteredItems = $bindable(
+			items
+		),
 		toggleFilter = $bindable(),
 		toggleFilterById = $bindable(),
 		...restProps
@@ -262,16 +268,14 @@
 									type="checkbox"
 									defaultChecked={group.defaultFilters?.includes(filter.id)}
 									bind:checked={
-										() => activeFilters.has(filter),
-
+										() => (
+											activeFilters.has(filter)
+										),
 										(checked) => {
-											const newActiveFilters = new Set(activeFilters)
-											if (checked) {
-												newActiveFilters.add(filter)
-											} else {
-												newActiveFilters.delete(filter)
-											}
-											activeFilters = newActiveFilters
+											if (checked)
+												activeFilters.add(filter)
+											else
+												activeFilters.delete(filter)
 										}
 									}
 									disabled={count === 0 && !isChecked}
