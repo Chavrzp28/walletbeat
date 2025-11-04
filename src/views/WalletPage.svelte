@@ -109,8 +109,10 @@
 						map.set(evalAttrId, [variant as Variant])
 						break
 					default:
-						const relevantVariants = map.get(evalAttrId)
-						relevantVariants ? relevantVariants.push(variant as Variant) : map.set(evalAttrId, [variant as Variant])
+						if(map.has(evalAttrId))
+							map.get(evalAttrId)!.push(variant as Variant)
+						else
+							map.set(evalAttrId, [variant as Variant])
 				}
 			}
 		}
