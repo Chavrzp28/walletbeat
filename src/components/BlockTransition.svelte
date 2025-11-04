@@ -1,12 +1,10 @@
 <script lang="ts">
 	// Types
 	import type { Snippet } from 'svelte'
-	import type { EasingFunction } from 'svelte/transition'
 	import type { TransitionConfig } from 'svelte/transition'
 
 	type Key = $$Generic<any>
 	type Value = $$Generic<any>
-	type TransitionParams = $$Generic<{delay?: number; duration?: number; easing?: EasingFunction}>
 
 	type TransitionFnAndParams<
 		Fn extends (node: Element, _?: any) => TransitionConfig = any
