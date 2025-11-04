@@ -134,8 +134,10 @@
 
 
 	// Actions
-	let toggleFilterById: Filters<RatedWallet>['$$prop_def']['toggleFilterById'] = $state()
-	let toggleFilter: Filters<RatedWallet>['$$prop_def']['toggleFilter'] = $state()
+	import type { ComponentProps } from 'svelte'
+
+	let toggleFilterById: ComponentProps<typeof Filters<RatedWallet>>['toggleFilterById'] = $state()
+	let toggleFilter: ComponentProps<typeof Filters<RatedWallet>>['toggleFilter'] = $state()
 
 	const toggleRowExpanded = (id: string) => {
 		if (expandedRowIds.has(id))
