@@ -16,22 +16,6 @@
 	import { objectEntries, objectKeys } from '@/types/utils/object'
 
 
-	// Components
-	import { Github, Globe } from 'lucide-static'
-	import Pie, { PieLayout } from '@/components/Pie.svelte'
-	import Select from '@/components/Select.svelte'
-	import AddressCorrelationDetails from '@/views/attributes/privacy/AddressCorrelationDetails.svelte'
-	import ChainVerificationDetails from '@/views/attributes/security/ChainVerificationDetails.svelte'
-	import ScamAlertDetails from '@/views/attributes/security/ScamAlertDetails.svelte'
-	import SecurityAuditsDetails from '@/views/attributes/security/SecurityAuditsDetails.svelte'
-	import TransactionInclusionDetails from '@/views/attributes/self-sovereignty/TransactionInclusionDetails.svelte'
-	import FundingDetails from '@/views/attributes/transparency/FundingDetails.svelte'
-	import UnratedAttribute from '@/views/attributes/UnratedAttribute.svelte'
-	import ReferenceLinks from '@/views/ReferenceLinks.svelte'
-	import ScoreBadge from '@/views/ScoreBadge.svelte'
-	import Typography from '@/components/Typography.svelte'
-
-
 	// Functions
 	import {
 		variants,
@@ -74,7 +58,6 @@
 	let highlightedAttributeId = $state<string | null>(
 		null
 	)
-
 
 	// (Derived)
 	const wallet = $derived(
@@ -139,6 +122,22 @@
 	const overallScore = $derived(
 		calculateOverallScore(wallet.overall, () => true),
 	)
+
+
+	// Components
+	import { Github, Globe } from 'lucide-static'
+	import Pie, { PieLayout } from '@/components/Pie.svelte'
+	import Select from '@/components/Select.svelte'
+	import AddressCorrelationDetails from '@/views/attributes/privacy/AddressCorrelationDetails.svelte'
+	import ChainVerificationDetails from '@/views/attributes/security/ChainVerificationDetails.svelte'
+	import ScamAlertDetails from '@/views/attributes/security/ScamAlertDetails.svelte'
+	import SecurityAuditsDetails from '@/views/attributes/security/SecurityAuditsDetails.svelte'
+	import TransactionInclusionDetails from '@/views/attributes/self-sovereignty/TransactionInclusionDetails.svelte'
+	import FundingDetails from '@/views/attributes/transparency/FundingDetails.svelte'
+	import UnratedAttribute from '@/views/attributes/UnratedAttribute.svelte'
+	import ReferenceLinks from '@/views/ReferenceLinks.svelte'
+	import ScoreBadge from '@/views/ScoreBadge.svelte'
+	import Typography from '@/components/Typography.svelte'
 </script>
 
 
