@@ -143,65 +143,91 @@
 
 
 <svelte:head>
-	{@html `<script type="application/ld+json">` + JSON.stringify({
-		'@context': 'https://schema.org',
-		'@type': 'FAQPage',
-		mainEntity: evalTree
-			? objectEntries(attributeTree).flatMap(([attrGroupId, attrGroup]) =>
-					objectEntries(attrGroup.attributes)
-						.map(([attrId, attribute]) => ({
-							evalAttr: evalTree[attrGroupId][
-								attrId as keyof (typeof evalTree)[typeof attrGroupId]
-							] as EvaluatedAttribute<any> | undefined,
-							attribute,
-						}))
-						.filter(
-							({ evalAttr }) => evalAttr && evalAttr.evaluation.value.rating !== Rating.EXEMPT,
-						)
-						.map(({ attribute }) => ({
-							'@type': 'Question',
-							name: renderStrings(
-								attribute.question.contentType === ContentType.MARKDOWN
-									? attribute.question.markdown
-									: attribute.question.contentType === ContentType.TEXT
-										? attribute.question.text
-										: attribute.displayName,
-								{
-									WALLET_NAME: wallet.metadata.displayName,
-								},
-							),
-							acceptedAnswer: {
-								'@type': 'Answer',
-								text: renderStrings(
-									attribute.why.contentType === ContentType.MARKDOWN
-										? attribute.why.markdown
-										: attribute.why.contentType === ContentType.TEXT
-											? attribute.why.text
-											: 'No explanation available',
-									{
-										WALLET_NAME: wallet.metadata.displayName,
+	{@html `<script type="application/ld+json">${
+		JSON.stringify({
+			'@context': 'https://schema.org',
+			'@type': 'FAQPage',
+			mainEntity: (
+				evalTree ?
+					objectEntries(attributeTree)
+						.flatMap(([attrGroupId, attrGroup]) => (
+							objectEntries(attrGroup.attributes)
+								.map(([attrId, attribute]) => ({
+									evalAttr: (
+										evalTree[attrGroupId][
+											attrId as keyof (typeof evalTree)[typeof attrGroupId]
+										] as EvaluatedAttribute<any> | undefined
+									),
+									attribute,
+								}))
+								.filter(({ evalAttr }) => (
+									evalAttr && evalAttr.evaluation.value.rating !== Rating.EXEMPT
+								))
+								.map(({ attribute }) => ({
+									'@type': 'Question',
+									name: renderStrings(
+										(
+											attribute.question.contentType === ContentType.MARKDOWN ?
+												attribute.question.markdown
+											: attribute.question.contentType === ContentType.TEXT ?
+												attribute.question.text
+											:
+												attribute.displayName
+										),
+										{
+											WALLET_NAME: wallet.metadata.displayName,
+										},
+									),
+									acceptedAnswer: {
+										'@type': 'Answer',
+										text: renderStrings(
+											(
+												attribute.why.contentType === ContentType.MARKDOWN ?
+													attribute.why.markdown
+												: attribute.why.contentType === ContentType.TEXT ?
+													attribute.why.text
+												:
+													'No explanation available'
+											),
+											{
+												WALLET_NAME: wallet.metadata.displayName,
+											},
+										),
 									},
-								),
-							},
-						})),
-				)
-			: [],
-		about: {
-			'@type': 'SoftwareApplication',
-			name: wallet.metadata.displayName,
-			description: renderStrings(
-				wallet.metadata.blurb.contentType === ContentType.TEXT ? wallet.metadata.blurb.text : wallet.metadata.displayName + ' wallet',
-				{
-					WALLET_NAME: wallet.metadata.displayName,
-				},
+								}))
+						))
+					:
+						[]
 			),
-			url: typeof wallet.metadata.url === 'string' ? wallet.metadata.url : wallet.metadata.url?.url,
-			applicationCategory: 'Cryptocurrency Wallet',
-			operatingSystem: objectKeys(wallet.variants)
-				.map(variant => variantToRunsOn(variant))
-				.join(', '),
-		},
-	}) + `</script>`}
+			about: {
+				'@type': 'SoftwareApplication',
+				name: wallet.metadata.displayName,
+				description: renderStrings(
+					(
+						wallet.metadata.blurb.contentType === ContentType.TEXT ?
+							wallet.metadata.blurb.text
+						:
+							wallet.metadata.displayName + ' wallet'
+					),
+					{
+						WALLET_NAME: wallet.metadata.displayName
+					},
+				),
+				url: (
+					typeof wallet.metadata.url === 'string' ?
+						wallet.metadata.url
+					:
+						wallet.metadata.url?.url
+				),
+				applicationCategory: 'Cryptocurrency Wallet',
+				operatingSystem: (
+					objectKeys(wallet.variants)
+						.map(variant => variantToRunsOn(variant))
+						.join(', ')
+				),
+			},
+		})
+	}</script>`}
 </svelte:head>
 
 
