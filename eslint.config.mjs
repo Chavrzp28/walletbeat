@@ -220,6 +220,9 @@ export default [
 
 			// Prefer explicit `$state()` wrapping for `SvelteMap` / `SvelteSet`.
 			'svelte/no-unnecessary-state-wrap': 'off',
+
+			// Prevent crashes due to duplicate keys.
+			'svelte/require-each-key': 'warn',
 		},
 	},
 ]
