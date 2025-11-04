@@ -1,7 +1,7 @@
 <script
 	lang="ts"
 	generics="
-		TypographicContent extends _TypographicContent<any> = _TypographicContent<any>
+		TypographicContent extends _TypographicContent = _TypographicContent
 	"
 >
 	// Types
