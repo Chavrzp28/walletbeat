@@ -17,7 +17,7 @@
 	const id = $props.id()
 
 
-	// Inputs
+	// Props
 	let {
 		tableId = `table_${id}`,
 
