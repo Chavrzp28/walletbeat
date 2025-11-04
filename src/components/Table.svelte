@@ -252,6 +252,7 @@
 							e.preventDefault()
 
 							const row = e.currentTarget.previousElementSibling ?? e.currentTarget.parentElement?.lastElementChild
+
 							if(row instanceof HTMLElement)
 								row.focus()
 						}
@@ -259,6 +260,7 @@
 							e.preventDefault()
 
 							const row = e.currentTarget.nextElementSibling ?? e.currentTarget.parentElement?.firstElementChild
+
 							if(row instanceof HTMLElement)
 								row.focus()
 						}
