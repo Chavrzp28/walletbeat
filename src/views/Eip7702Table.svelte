@@ -314,9 +314,9 @@
 			{/if}
 
 		{:else if column.id === 'batching'}
-			{@const contract = getWalletContract(wallet)}
+			<!-- {@const contract = getWalletContract(wallet)} -->
 
-		<span class="muted-text">Coming soon</span>
+			<span class="muted-text">Coming soon</span>
 
 		{:else}
 			{value}
