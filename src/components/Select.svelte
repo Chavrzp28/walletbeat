@@ -26,7 +26,7 @@
 		optionContent,
 		selectedOption = $bindable(),
 		...restProps
-	}: SvelteHTMLElements['select'] & {
+	}: Omit<SvelteHTMLElements['select'], 'value'> & {
 		id?: string
 		value?: _SelectValue
 		options: _SelectOption[]
