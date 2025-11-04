@@ -64,12 +64,13 @@
 		allRatedWallets[walletName]
 	)
 
-	let selectedVariant = $state<Variant | undefined>(
-		undefined
+	let selectedVariant = $derived<Variant | undefined>(
+		hasSingleVariant(wallet.variants) ?
+			undefined
+		:
+			queryParams.get('variant') as Variant ?? undefined
 	)
-	$effect(() => {
-		selectedVariant = hasSingleVariant(wallet.variants) ? undefined : queryParams.get('variant') as Variant ?? undefined
-	})
+
 	$effect(() => {
 		if(!hasSingleVariant(wallet.variants) && selectedVariant)
 			queryParams.set('variant', selectedVariant)
@@ -77,12 +78,10 @@
 			queryParams.delete('variant')
 	})
 
-	let selectedModel = $state<string | undefined>(
-		undefined
+	let selectedModel = $derived(
+		queryParams.get('model') ?? undefined
 	)
-	$effect(() => {
-		selectedModel = queryParams.get('model') ?? undefined
-	})
+
 	$effect(() => {
 		if(!selectedModel)
 			queryParams.delete('model')
