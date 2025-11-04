@@ -46,12 +46,12 @@
 	import { SvelteURLSearchParams } from 'svelte/reactivity'
 	import { isLabeledUrl } from '@/schema/url'
 
-	let queryParams = $state<URLSearchParams>(
+	let queryParams = $state<URLSearchParams | undefined>(
 		globalThis.location && new SvelteURLSearchParams(globalThis.location.search)
 	)
 
 	$effect(() => {
-		if(queryParams.toString() !== globalThis.location.search)
+		if(queryParams && queryParams.toString() !== globalThis.location.search)
 			globalThis.history.replaceState(null, '', `${globalThis.location.pathname}?${queryParams.toString()}`)
 	})
 
@@ -68,25 +68,25 @@
 		hasSingleVariant(wallet.variants) ?
 			undefined
 		:
-			queryParams.get('variant') as Variant ?? undefined
+			queryParams?.get('variant') as Variant ?? undefined
 	)
 
 	$effect(() => {
 		if(!hasSingleVariant(wallet.variants) && selectedVariant)
-			queryParams.set('variant', selectedVariant)
+			queryParams?.set('variant', selectedVariant)
 		else
-			queryParams.delete('variant')
+			queryParams?.delete('variant')
 	})
 
 	let selectedModel = $derived(
-		queryParams.get('model') ?? undefined
+		queryParams?.get('model') ?? undefined
 	)
 
 	$effect(() => {
 		if(!selectedModel)
-			queryParams.delete('model')
+			queryParams?.delete('model')
 		else
-			queryParams.set('model', selectedModel)
+			queryParams?.set('model', selectedModel)
 	})
 
 	const evalTree = $derived(
