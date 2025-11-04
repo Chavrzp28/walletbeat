@@ -1,5 +1,6 @@
 import type { WithRef, MustRef } from '@/schema/reference'
 import type { Support } from '../support'
+import type { CalendarDate } from '@/types/date'
 
 /**
  * Platforms of bug bounty programs
@@ -38,11 +39,14 @@ export type LegalProtection = MustRef<{
 
 /**
  * The availability of the bug bounty program
+ * Active - Running now, accepting reports
+ * Inactive - Temporarily paused
+ * Never - Never existed
  */
 export enum BugBountyProgramAvailability {
-	ACTIVE = 'ACTIVE', // Running now, accepting reports
-	INACTIVE = 'INACTIVE', // Temporarily paused
-	NEVER = 'NEVER', // Never existed
+	ACTIVE = 'ACTIVE',
+	INACTIVE = 'INACTIVE',
+	NEVER = 'NEVER', 
 }
 
 /**
@@ -64,7 +68,7 @@ export type BugBountyProgramSupport = WithRef<{
 	/**
 	 * The date the bug bounty program started
 	 */
-	dateStarted: Date
+	dateStarted: CalendarDate
 
 	/**
 	 * The availability of the bug bounty program
@@ -89,7 +93,7 @@ export type BugBountyProgramSupport = WithRef<{
 	/**
 	 * The platform of the bug bounty program
 	 */
-	platform?: BugBountyPlatform
+	platform: BugBountyPlatform
 
 	/**
 	 * The disclosure process of the bug bounty program;
