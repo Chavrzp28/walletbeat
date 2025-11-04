@@ -148,11 +148,10 @@
 				{#if group.displayType === 'select'}
 					<!-- Single Select -->
 					<Select
-						defaultValue={group.defaultFilter ?? ''}
+						defaultValue={group.defaultFilter}
 						bind:value={
 							() => (
 								Array.from(activeFilters.intersection(filters))[0]?.id
-								|| ''
 							),
 
 							(filterId) => {
@@ -213,7 +212,6 @@
 					<!-- Multiple Select -->
 					<select
 						multiple
-						defaultValue={group.defaultFilters ?? []}
 						bind:value={
 							() => (
 								Array.from(
@@ -241,6 +239,7 @@
 
 							<option
 								value={filter.id}
+								selected={group.defaultFilters?.includes(filter.id)}
 							>
 								{@render filterItemContent(filter, count)}
 							</option>
