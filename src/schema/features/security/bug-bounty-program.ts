@@ -95,7 +95,7 @@ export type BugBountyProgramSupport = WithRef<{
 	 * The disclosure process of the bug bounty program;
 	 * number of days, privacy of reports, etc.
 	 */
-	disclouse: Support<{
+	disclosure: Support<{
 		numberOfDays: number
 	}>
 
