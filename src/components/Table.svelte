@@ -3,6 +3,7 @@
 	RowId
 ">
 	// Types
+	import type { SvelteHTMLElements } from 'svelte/elements'
 	import type { Snippet } from 'svelte'
 	import { type Column,TableState } from '@/components/TableState.svelte'
 
@@ -35,7 +36,7 @@
 		Cell,
 
 		...restProps
-	}: {
+	}: SvelteHTMLElements['div'] & {
 		tableId?: string
 
 		rows: _RowValue[]
@@ -115,7 +116,7 @@
 <div
 	{...restProps}
 	id={tableId}
-	 class="container {'class' in restProps ? restProps.class : ''}"
+	class="container {'class' in restProps ? restProps.class : ''}"
 >
 	<table>
 		<colgroup>
@@ -325,23 +326,21 @@
 		--table-backgroundColor: light-dark(#fdfdfd, #22242b);
 		--table-outerBorderColor: var(--border-color);
 		--table-innerBorderColor: color-mix(in oklch, var(--border-color) 50%, transparent);
-		--table-borderWidth: 1px;
+		--table-outerBorderWidth: 1px;
+		--table-innerBorderWidth: 1px;
 		--table-cornerRadius: 1rem;
 		--table-cell-verticalAlign: middle;
 		--table-cell-padding: 0.75em;
 
-		scroll-padding: var(--table-borderWidth);
+		scroll-padding: var(--table-outerBorderWidth);
 
 		background-color: var(--table-backgroundColor);
-		box-shadow: 0 0 0 var(--table-borderWidth) var(--table-outerBorderColor) inset;
-		border-radius: calc(var(--table-cornerRadius) + var(--table-borderWidth));
+		box-shadow: 0 0 0 var(--table-outerBorderWidth) var(--table-outerBorderColor) inset;
+		border-radius: calc(var(--table-cornerRadius) + var(--table-outerBorderWidth));
 
 		clip-path: inset(
-			calc(-1 * var(--table-borderWidth))
-			calc(-1 * var(--table-borderWidth))
-			calc(-1 * var(--table-borderWidth))
-			calc(-1 * var(--table-borderWidth))
-			round var(--table-cornerRadius)
+			0 0 0 0
+			round calc(var(--table-cornerRadius) + var(--table-outerBorderWidth))
 		);
 	}
 
@@ -351,7 +350,7 @@
 		/* margin-inline: calc(-1 * var(--table-borderWidth)); */
 
 		border-collapse: separate;
-		border-spacing: var(--table-borderWidth);
+		border-spacing: var(--table-innerBorderWidth);
 
 		:where(thead) {
 			font-size: 0.75em;
@@ -360,6 +359,14 @@
 			position: sticky;
 			top: 0;
 			z-index: 1;
+
+			border-start-start-radius: calc(var(--table-cornerRadius) + var(--table-outerBorderWidth));
+			border-start-end-radius: calc(var(--table-cornerRadius) + var(--table-outerBorderWidth));
+
+			@container not scroll-state(stuck: none) {
+				border-start-start-radius: 0;
+				border-start-end-radius: 0;
+			}
 
 			:where(tr) {
 				:where(th) {
@@ -456,7 +463,8 @@
 						}
 
 						&:has(.sort-button:focus) {
-							outline: 1px solid var(--accent);
+							outline: var(--table-outerBorderWidth) solid var(--accent);
+							outline-offset: calc(-1 * var(--table-outerBorderWidth));
 							border-radius: 0.5em;
 						}
 
@@ -520,11 +528,30 @@
 						}
 					}
 				}
+
+				@container not scroll-state(stuck: none) {
+					&:first-child {
+						border-start-start-radius: 0.5em !important;
+						border-start-end-radius: 0.5em !important;
+
+						:where(th) {
+							&:first-child {
+								border-start-start-radius: 0.5em !important;
+							}
+							&:last-child {
+								border-start-end-radius: 0.5em !important;
+							}
+						}
+					}
+				}
 			}
 		}
 
 		:where(tbody) {
 			isolation: isolate;
+
+			border-end-start-radius: calc(var(--table-cornerRadius) + var(--table-outerBorderWidth));
+			border-end-end-radius: calc(var(--table-cornerRadius) + var(--table-outerBorderWidth));
 
 			counter-reset: TableRowCount;
 
@@ -538,8 +565,8 @@
 				counter-reset: TableColumnCount;
 
 				box-shadow:
-					0 var(--table-borderWidth) var(--table-outerBorderColor),
-					0 calc(-1 * var(--table-borderWidth)) var(--table-outerBorderColor);
+					0 var(--table-innerBorderWidth) var(--table-innerBorderColor),
+					0 calc(-1 * var(--table-innerBorderWidth)) var(--table-innerBorderColor);
 
 				&:nth-of-type(odd) {
 					background-color: var(--table-row-backgroundColor);
@@ -581,7 +608,7 @@
 				}
 
 				> :where(td) {
-					box-shadow: var(--table-borderWidth) 0 var(--table-row-backgroundColor);
+					box-shadow: var(--table-innerBorderWidth) 0 var(--table-row-backgroundColor);
 					vertical-align: var(--table-cell-verticalAlign);
 
 					counter-increment: TableColumnCount;
@@ -593,21 +620,21 @@
 				}
 			}
 
-			&:last-child {
+			/* &:last-child {
 				:where(tr):last-child {
-					border-end-start-radius: var(--table-cornerRadius) !important;
-					border-end-end-radius: var(--table-cornerRadius) !important;
+					border-end-start-radius: var(--table-cornerRadius);
+					border-end-end-radius: var(--table-cornerRadius);
 
 					:where(td) {
 						&:first-child {
-							border-end-start-radius: var(--table-cornerRadius) !important;
+							border-end-start-radius: var(--table-cornerRadius);
 						}
 						&:last-child {
-							border-end-end-radius: var(--table-cornerRadius) !important;
+							border-end-end-radius: var(--table-cornerRadius);
 						}
 					}
 				}
-			}
+			} */
 		}
 
 		:where(

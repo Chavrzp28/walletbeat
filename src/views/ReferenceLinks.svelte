@@ -19,7 +19,7 @@
 		<!-- <h5>{totalUrls > 1 ? 'Sources' : 'Source'}</h5> -->
 
 		<ul class="references">
-			{#each references as ref (ref.urls.map(url => url.url).toSorted().join('|'))}
+			{#each references as ref, index (index + '::' + ref.urls.map(url => url.url).toSorted().join('|'))}
 				<li data-card="secondary padding-3">
 					{#if ref.explanation}
 						<p>{ref.explanation}</p>
