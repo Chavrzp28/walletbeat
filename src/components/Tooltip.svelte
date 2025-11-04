@@ -94,7 +94,7 @@
 		} = await import('@floating-ui/dom')
 
 		const updatePosition = async () => {
-			const {x, y} = await computePosition(
+			const { x, y } = await computePosition(
 				node,
 				node.popoverTargetElement,
 				{
