@@ -1,10 +1,10 @@
-<script lang="ts">
+<script lang="ts" generics="
+	Key extends string | number | undefined = undefined,
+	Value extends any = any
+">
 	// Types
 	import type { Snippet } from 'svelte'
 	import type { TransitionConfig } from 'svelte/transition'
-
-	type Key = $$Generic<any>
-	type Value = $$Generic<any>
 
 	type TransitionFnAndParams<
 		Fn extends (node: Element, _?: any) => TransitionConfig = any
@@ -33,7 +33,7 @@
 		clip?: boolean
 
 		// Snippets
-		children?: Snippet<[{ key?: Key, value: any }]>
+		children?: Snippet<[{ key?: Key, value: Value }]>
 
 		// View options
 		align?: 'top' | 'center' | 'bottom'
