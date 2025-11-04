@@ -208,12 +208,15 @@ export default [
 	{
 		files: ['**/*.svelte'],
 		rules: {
-			// Respect import groupings.
-			'simple-import-sort/imports': 'off',
-			'simple-import-sort/exports': 'off',
+			// Allow imports from the same file across multiple groups.
+			'import/no-duplicates': 'warn',
 
 			// Not useful for props.
 			'prefer-const': 'off',
+
+			// Respect import groupings.
+			'simple-import-sort/imports': 'off',
+			'simple-import-sort/exports': 'off',
 
 			// {@html} is used for inline SVG icons.
 			'svelte/no-at-html-tags': 'off',
