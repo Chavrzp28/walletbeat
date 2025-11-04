@@ -214,6 +214,9 @@ export default [
 
 			// Not useful for props.
 			'prefer-const': 'off',
+
+			// {@html} is used for inline SVG icons.
+			'svelte/no-at-html-tags': 'off',
 		},
 	},
 ]
