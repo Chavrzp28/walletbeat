@@ -99,20 +99,20 @@
 	const attrToRelevantVariants = $derived.by(() => {
 		const map = new Map<string, Variant[]>()
 
-		for (const [variant, variantSpecificityMap] of Object.entries(wallet.variantSpecificity)) {
+		for (const [variant, variantSpecificityMap] of Object.entries(wallet.variantSpecificity) as [Variant, Map<string, VariantSpecificity>][]) {
 			for (const [evalAttrId, variantSpecificity] of variantSpecificityMap) {
 				switch (variantSpecificity) {
 					case VariantSpecificity.ALL_SAME:
 					case VariantSpecificity.EXEMPT_FOR_THIS_VARIANT:
 						break
 					case VariantSpecificity.ONLY_ASSESSED_FOR_THIS_VARIANT:
-						map.set(evalAttrId, [variant as Variant])
+						map.set(evalAttrId, [variant])
 						break
 					default:
 						if(map.has(evalAttrId))
-							map.get(evalAttrId)!.push(variant as Variant)
+							map.get(evalAttrId)!.push(variant)
 						else
-							map.set(evalAttrId, [variant as Variant])
+							map.set(evalAttrId, [variant])
 				}
 			}
 		}
