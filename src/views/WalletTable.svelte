@@ -63,29 +63,39 @@
 
 
 	// State
-	import { SvelteMap,SvelteSet } from 'svelte/reactivity'
+	import { SvelteMap, SvelteSet } from 'svelte/reactivity'
 
 	let activeFilters = $state(
-		new Set<Filter<RatedWallet>>()
+		new SvelteSet<Filter<RatedWallet>>()
 	)
 
 	let filteredWallets = $state(
 		wallets
 	)
 
-	let selectedAttribute: string | undefined = $state(undefined)
+	let selectedAttribute: string | undefined = $state(
+		undefined
+	)
 
-	let expandedRowIds = $state(new SvelteSet<string>())
+	let expandedRowIds = $state(
+		new SvelteSet<string>()
+	)
 
 	let activeEntityId: {
 		walletId: string
 		attributeGroupId: string
 		attributeId?: string
-	} | undefined = $state(undefined)
+	} | undefined = $state(
+		undefined
+	)
 
-	let sortedColumn: Column<RatedWallet> | undefined = $state(undefined)
+	let sortedColumn: Column<RatedWallet> | undefined = $state(
+		undefined
+	)
 
-	let selectedModels = $state(new SvelteMap<string, string>())
+	let selectedModels = $state(
+		new SvelteMap<string, string>()
+	)
 
 
 	// (Derived)
