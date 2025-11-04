@@ -30,19 +30,6 @@ export default [
 		ignores: [
 			// Ignore generated files
 			'src/generated/**',
-
-			// Issue #329: Remove these ignored files as errors are fixed.
-			'src/views/WalletTable.svelte',
-			'src/views/WalletPage.svelte',
-			'src/views/NavigationItems.svelte',
-			'src/views/Eip7702Table.svelte',
-			'src/components/Typography.svelte',
-			'src/components/Tooltip.svelte',
-			'src/components/Table.svelte',
-			'src/components/Select.svelte',
-			'src/components/Filters.svelte',
-			'src/components/BlockTransition.svelte',
-			'src/views/WalletAttributeSummary.svelte',
 		],
 	},
 	eslintPluginEslintComments.recommended,
