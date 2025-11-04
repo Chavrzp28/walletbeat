@@ -47,14 +47,9 @@
 	// Internal state
 	let borderBoxSize: ResizeObserverSize[] | undefined = $state()
 
-
 	// (Computed)
 	let alignBlock = $derived(
 		({ 'top': 'start', 'center': 'center', 'bottom': 'end' } as const)[align]
-	)
-
-	let [ transition, transitionParams ] = $derived(
-		[() => {}]
 	)
 
 
@@ -73,7 +68,6 @@
 	data-clip={clip ? '' : undefined}
 	style:--transitionDuration="250ms"
 	style:--transitionDelay="0ms"
-	transition:transition={transitionParams}
 	data-stack
 	class={`align-${align}`}
 >
