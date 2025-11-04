@@ -243,8 +243,18 @@
 						<Select
 							bind:value={selectedVariant}
 							options={[
-								{ value: undefined, label: 'All versions' },
-								...Object.keys(wallet.variants).map(v => ({ value: v, label: variants[v as Variant].label, icon: variants[v as Variant].icon }))
+								{
+									value: undefined,
+									label: 'All versions',
+								},
+								...(
+									(Object.keys(wallet.variants) as Variant[])
+										.map(v => ({
+											value: v,
+											label: variants[v].label,
+											icon: variants[v].icon,
+										}))
+								),
 							]}
 						/>
 					{/if}
