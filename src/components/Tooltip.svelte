@@ -164,7 +164,6 @@
 	{/snippet}
 
 	{#if buttonTriggerPlacement === 'behind'}
-		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div
 			data-stack
 			{...hoverTriggerPlacement === 'around' && hoverTriggerEvents}
