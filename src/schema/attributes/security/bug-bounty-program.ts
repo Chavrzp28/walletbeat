@@ -53,12 +53,19 @@ function getCoverageDescription(breadth: CoverageBreadth): string {
 }
 
 function getRewardDescription(support: BugBountyProgramSupport): string {
-	if (support.minimumReward && support.maximumReward) {
-		return `with rewards ranging from $${support.minimumReward.toLocaleString()} to $${support.maximumReward.toLocaleString()}`
-	} else if (support.maximumReward) {
-		return `with rewards up to $${support.maximumReward.toLocaleString()}`
-	} else if (support.minimumReward) {
-		return `with rewards starting at $${support.minimumReward.toLocaleString()}`
+	const min = support.rewards?.minimum
+	const max = support.rewards?.maximum
+
+	if (typeof min === 'number' && typeof max === 'number') {
+		if (min === max) {
+			return `with a $${min.toLocaleString()} reward`
+		} else {
+			return `with rewards ranging from $${min.toLocaleString()} to $${max.toLocaleString()}`
+		}
+	} else if (typeof max === 'number') {
+		return `with rewards up to $${max.toLocaleString()}`
+	} else if (typeof min === 'number') {
+		return `with rewards starting at $${min.toLocaleString()}`
 	}
 
 	return ''
