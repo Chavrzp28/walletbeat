@@ -62,10 +62,7 @@ export default [
 		languageOptions: {
 			parserOptions: {
 				projectService: true,
-				extraFileExtensions: [
-					'.svelte',
-					'.svelte.ts',
-				],
+				extraFileExtensions: ['.svelte', '.svelte.ts'],
 				parser: tseslint.parser,
 				svelteFeatures: {
 					experimentalGenerics: true,
@@ -229,7 +226,7 @@ export default [
 
 			// Prefer explicit `$state()` wrapping for `SvelteMap` / `SvelteSet`.
 			'svelte/no-unnecessary-state-wrap': 'off',
-			
+
 			// Not all `Map` / `Set` objects are mutated in practice.
 			'svelte/prefer-svelte-reactivity': 'warn',
 
