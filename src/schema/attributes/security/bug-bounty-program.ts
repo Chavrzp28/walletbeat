@@ -14,10 +14,12 @@ import {
 	type LegalProtection,
 	LegalProtectionType,
 } from '@/schema/features/security/bug-bounty-program'
-import { popRefs } from '@/schema/reference'
+import { popRefs, refNotNecessary } from '@/schema/reference'
+import { isSupported, supported } from '@/schema/features/support'
 import { type AtLeastOneVariant } from '@/schema/variants'
 import { WalletType } from '@/schema/wallet-types'
 import { markdown, mdParagraph, mdSentence, paragraph, sentence } from '@/types/content'
+import type { CalendarDate } from '@/types/date'
 
 import { exempt, pickWorstRating, unrated } from '../common'
 
@@ -53,8 +55,12 @@ function getCoverageDescription(breadth: CoverageBreadth): string {
 }
 
 function getRewardDescription(support: BugBountyProgramSupport): string {
-	const min = support.rewards?.minimum
-	const max = support.rewards?.maximum
+	if (!isSupported(support.rewards)) {
+		return ''
+	}
+
+	const min = support.rewards.minimum ?? 0
+	const max = support.rewards.maximum
 
 	if (typeof min === 'number' && typeof max === 'number') {
 		if (min === max) {
@@ -80,7 +86,7 @@ function noBugBountyProgram(): Evaluation<BugBountyProgramValue> {
 			shortExplanation: sentence(
 				"{{WALLET_NAME}} does not implement a bug bounty program and doesn't provide security updates.",
 			),
-			availability: BugBountyProgramAvailability.NEVER,
+			availability: undefined,
 			coverageBreadth: CoverageBreadth.NONE,
 			upgradePathAvailable: false,
 			__brand: brand,
@@ -99,18 +105,19 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 	const coverageInfo = support.coverageBreadth
 		? getCoverageDescription(support.coverageBreadth)
 		: ''
-	const legalProtectionInfo = support.legalProtections
+	const legalProtectionInfo = isSupported(support.legalProtections)
 		? getLegalProtectionDescription(support.legalProtections)
 		: ''
 
 	const hasRewards =
-		support.minimumReward != null &&
-		support.maximumReward != null &&
-		support.minimumReward !== 0 &&
-		support.maximumReward !== 0
+		isSupported(support.rewards) &&
+		support.rewards.minimum != null &&	
+		support.rewards.maximum != null &&
+		support.rewards.minimum !== 0 &&
+		support.rewards.maximum !== 0
 	const hasFullCoverage = support.coverageBreadth === CoverageBreadth.FULL
 	const hasLegalProtection =
-		support.legalProtections?.type !== LegalProtectionType.NONE &&
+		isSupported(support.legalProtections) &&
 		support.legalProtections?.type != null
 	const isActive = support.availability === BugBountyProgramAvailability.ACTIVE
 
@@ -138,12 +145,11 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 			shortExplanation: mdSentence(
 				`{{WALLET_NAME}} has a bug bounty program ${rewardInfo}${isActive ? '' : ', but it is currently inactive'}.`,
 			),
-			availability: support.availability || BugBountyProgramAvailability.NEVER,
+			availability: support.availability,	
 			coverageBreadth: support.coverageBreadth || CoverageBreadth.NONE,
 			upgradePathAvailable: support.upgradePathAvailable,
 			platform: support.platform,
-			platformUrl: support.platformUrl,
-			legalProtections: support.legalProtections,
+			legalProtections: isSupported(support.legalProtections) ? support.legalProtections : undefined,
 			__brand: brand,
 		},
 		details: markdown(`
@@ -151,12 +157,12 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 
 			${availabilityInfo}
 
-			${support.platform ? `The program is hosted ${platformInfo}${support.platformUrl ? ` at [${support.platform}](${support.platformUrl})` : ''}.` : ''}
+			${support.platform ? `The program is hosted ${platformInfo}${support.platform ? ` at [${support.platform}](${support.platform})` : ''}.` : ''}
 
 			${legalProtectionInfo}
 
 			
-			${support.disclosureProcess ? `**Disclosure Process**: ${support.disclosureProcess}` : ''}
+			${isSupported(support.disclosure) ? `**Disclosure Process**: ${support.disclosure.numberOfDays} days` : ''}
 			
 			${
 				support.upgradePathAvailable
@@ -164,7 +170,7 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 					: 'Unfortunately, the wallet does not provide a clear upgrade path for users when security issues are identified.'
 			}
 			
-			${support.url ? `For more information, visit their [bug bounty program page](${support.url}).` : ''}
+			${support.platform ? `For more information, visit their [bug bounty program page](${support.platform}).` : ''}
 		`),
 		howToImprove: markdown(`
 			{{WALLET_NAME}} should:
@@ -179,27 +185,15 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 }
 
 function getLegalProtectionDescription(legalProtection: LegalProtection): string {
-	if (legalProtection.type === LegalProtectionType.NONE) {
-		return 'Legal Protection: The program does not provide explicit legal protections for security researchers. This may discourage responsible disclosure.'
-	}
-
 	const protectionType =
 		legalProtection.type === LegalProtectionType.SAFE_HARBOR ? 'Safe Harbor' : 'Legal Assurance'
 
-	const standardization = legalProtection.standardizedLanguage
-		? ' The program participates in standardized legal protection initiatives.'
-		: ''
-
-	const referenceLink = legalProtection.reference
-		? ` [View legal protection policy](${legalProtection?.reference})`
-		: ''
-
-	return `Legal Protection: The program provides ${protectionType} protections for security researchers conducting good faith security research.${standardization}${referenceLink}`
+	return `Legal Protection: The program provides ${protectionType} protections for security researchers conducting good faith security research.`
 }
 
 function determineRating(support: BugBountyProgramSupport): Evaluation<BugBountyProgramValue> {
 	// Has financial rewards = bug bounty program exists
-	const hasBugBounty = support.availability !== BugBountyProgramAvailability.NEVER
+	const hasBugBounty = support.availability !== undefined
 
 	// No bug bounty program at all
 	if (!hasBugBounty) {
@@ -272,11 +266,24 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 					full coverage of all components, and provides upgrade paths for users.
 				`),
 				bugBountyAvailable({
-					availability: BugBountyProgramAvailability.ACTIVE,
+					dateStarted: '2020-01-01' as CalendarDate,
+					availability: BugBountyProgramAvailability.ACTIVE,	
 					coverageBreadth: CoverageBreadth.FULL,
-					maximumReward: 50000,
-					minimumReward: 1000,
+					rewards: supported({
+						minimum: 1000,
+						maximum: 50000,
+						currency: 'USD',
+					}),
+					platform: BugBountyPlatform.HACKER_ONE,
+					disclosure: supported({
+						numberOfDays: 30,
+					}),
+					legalProtections: supported({
+						type: LegalProtectionType.SAFE_HARBOR,
+						ref: 'https://example.com/bug-bounty-safe-harbor',
+					}),
 					upgradePathAvailable: true,
+					ref: refNotNecessary,
 				}),
 			),
 		],
@@ -287,10 +294,24 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 					but it is currently inactive and not accepting new reports.
 				`),
 				bugBountyAvailable({
+					dateStarted: '2020-01-01' as CalendarDate,
 					availability: BugBountyProgramAvailability.INACTIVE,
 					coverageBreadth: CoverageBreadth.PARTIAL,
-					maximumReward: 5000,
+					rewards: supported({
+						minimum: 5000,
+						maximum: 5000,
+						currency: 'USD',
+					}),
+					platform: BugBountyPlatform.SELF_HOSTED,
+					disclosure: supported({
+						numberOfDays: 90,
+					}),
+					legalProtections: supported({
+						type: LegalProtectionType.LEGAL_ASSURANCE,
+						ref: 'https://example.com/bug-bounty-legal-assurance',
+					}),
 					upgradePathAvailable: true,
+					ref: refNotNecessary,
 				}),
 			),
 		],
@@ -315,7 +336,7 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 				sentence('This attribute is only applicable for hardware wallets.'),
 				brand,
 				{
-					availability: BugBountyProgramAvailability.NEVER,
+					availability: undefined,
 					coverageBreadth: CoverageBreadth.NONE,
 					upgradePathAvailable: false,
 				},
@@ -324,7 +345,7 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 
 		if (features.security.bugBountyProgram === null) {
 			return unrated(bugBountyProgram, brand, {
-				availability: BugBountyProgramAvailability.NEVER,
+				availability: undefined,	
 				coverageBreadth: CoverageBreadth.NONE,
 				upgradePathAvailable: false,
 			})

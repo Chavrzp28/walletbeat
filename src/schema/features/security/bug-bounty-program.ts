@@ -46,7 +46,6 @@ export type LegalProtection = MustRef<{
 export enum BugBountyProgramAvailability {
 	ACTIVE = 'ACTIVE',
 	INACTIVE = 'INACTIVE',
-	NEVER = 'NEVER', 
 }
 
 /**
