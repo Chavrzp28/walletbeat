@@ -17,7 +17,7 @@
 	const id = $props.id()
 
 
-	// Inputs
+	// Props
 	let {
 		tableId = `table_${id}`,
 
@@ -65,7 +65,7 @@
 
 
 	// State
-	let table = $state(
+	let table = $derived(
 		new TableState({
 			data: rows,
 			columns,
@@ -73,15 +73,6 @@
 			displaceDisabledRows,
 		})
 	)
-
-	$effect(() => {
-		table = new TableState({
-			data: rows,
-			columns,
-			rowIsDisabled,
-			displaceDisabledRows,
-		})
-	})
 
 	$effect(() => {
 		sortedColumn = table.sortedColumn
@@ -248,13 +239,11 @@
 				<tr
 					tabIndex={onRowClick ? 0 : undefined}
 					data-pressable={onRowClick ? '' : undefined}
-					onclick={e => {
-						// e.stopPropagation()
+					onclick={() => {
 						onRowClick?.(row, rowId)
 					}}
 					onkeypress={e => {
 						if(e.code === 'Enter' || e.code === 'Space'){
-							// e.stopPropagation()
 							onRowClick?.(row, rowId)
 						}
 					}}
@@ -263,6 +252,7 @@
 							e.preventDefault()
 
 							const row = e.currentTarget.previousElementSibling ?? e.currentTarget.parentElement?.lastElementChild
+
 							if(row instanceof HTMLElement)
 								row.focus()
 						}
@@ -270,6 +260,7 @@
 							e.preventDefault()
 
 							const row = e.currentTarget.nextElementSibling ?? e.currentTarget.parentElement?.firstElementChild
+
 							if(row instanceof HTMLElement)
 								row.focus()
 						}

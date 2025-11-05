@@ -29,15 +29,20 @@
 ">
 	// Types/constants
 	import type { SvelteHTMLElements } from 'svelte/elements'
-	import type { Snippet } from 'svelte'
-
-
+	
+	
 	// Props
+	import { SvelteSet } from 'svelte/reactivity'
+
 	let {
 		items,
 		filterGroups,
-		activeFilters = $bindable(new Set<Filter<Item>>()),
-		filteredItems = $bindable(items),
+		activeFilters = $bindable(
+			new SvelteSet<Filter<Item>>()
+		),
+		filteredItems = $bindable(
+			items
+		),
 		toggleFilter = $bindable(),
 		toggleFilterById = $bindable(),
 		...restProps
@@ -126,7 +131,7 @@
 						.filter(filter => filterItems(new Set([filter])).length > 0)
 				)
 			}))
-			.filter(({ group, visibleFilters }) => (
+			.filter(({ visibleFilters }) => (
 				visibleFilters.filter(filter => filter.id).length > 1
 			))
 	) as { group, visibleFilters } (group.id)}
@@ -143,11 +148,10 @@
 				{#if group.displayType === 'select'}
 					<!-- Single Select -->
 					<Select
-						defaultValue={group.defaultFilter ?? ''}
+						defaultValue={group.defaultFilter}
 						bind:value={
 							() => (
 								Array.from(activeFilters.intersection(filters))[0]?.id
-								|| ''
 							),
 
 							(filterId) => {
@@ -208,7 +212,6 @@
 					<!-- Multiple Select -->
 					<select
 						multiple
-						defaultValue={group.defaultFilters ?? []}
 						bind:value={
 							() => (
 								Array.from(
@@ -231,11 +234,12 @@
 						}
 						aria-label="Filter by {group.label.toLowerCase()}"
 					>
-						{#each visibleFilters as filter (option.value)}
+						{#each visibleFilters as filter (filter.id)}
 							{@const count = filterItems(activeFilters.difference(filters).union(new Set([filter]))).length}
 
 							<option
 								value={filter.id}
+								selected={group.defaultFilters?.includes(filter.id)}
 							>
 								{@render filterItemContent(filter, count)}
 							</option>
@@ -263,16 +267,14 @@
 									type="checkbox"
 									defaultChecked={group.defaultFilters?.includes(filter.id)}
 									bind:checked={
-										() => activeFilters.has(filter),
-
+										() => (
+											activeFilters.has(filter)
+										),
 										(checked) => {
-											const newActiveFilters = new Set(activeFilters)
-											if (checked) {
-												newActiveFilters.add(filter)
-											} else {
-												newActiveFilters.delete(filter)
-											}
-											activeFilters = newActiveFilters
+											if (checked)
+												activeFilters.add(filter)
+											else
+												activeFilters.delete(filter)
 										}
 									}
 									disabled={count === 0 && !isChecked}

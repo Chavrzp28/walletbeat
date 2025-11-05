@@ -31,18 +31,9 @@ export default [
 			// Ignore generated files
 			'src/generated/**',
 
-			// Issue #329: Remove these ignored files as errors are fixed.
-			'src/views/WalletTable.svelte',
+			// Ignore Svelte files with ESLint parser errors
 			'src/views/WalletPage.svelte',
-			'src/views/NavigationItems.svelte',
-			'src/views/Eip7702Table.svelte',
-			'src/components/Typography.svelte',
-			'src/components/Tooltip.svelte',
-			'src/components/Table.svelte',
-			'src/components/Select.svelte',
-			'src/components/Filters.svelte',
-			'src/components/BlockTransition.svelte',
-			'src/views/WalletAttributeSummary.svelte',
+			'src/views/WalletTable.svelte',
 		],
 	},
 	eslintPluginEslintComments.recommended,
@@ -71,11 +62,10 @@ export default [
 		languageOptions: {
 			parserOptions: {
 				projectService: true,
-				extraFileExtensions: ['.svelte'],
-				parser: {
-					ts: tseslint.parser,
-					typescript: tseslint.parser,
-					svelte: tseslint.parser,
+				extraFileExtensions: ['.svelte', '.svelte.ts'],
+				parser: tseslint.parser,
+				svelteFeatures: {
+					experimentalGenerics: true,
 				},
 				svelteConfig,
 			},
@@ -221,12 +211,35 @@ export default [
 	{
 		files: ['**/*.svelte'],
 		rules: {
+			// Allow imports from the same file across multiple groups.
+			'import/no-duplicates': 'warn',
+
+			// Not useful for props.
+			'prefer-const': 'off',
+
 			// Respect import groupings.
 			'simple-import-sort/imports': 'off',
 			'simple-import-sort/exports': 'off',
 
-			// Not useful for props.
-			'prefer-const': 'off',
+			// {@html} is used for inline SVG icons.
+			'svelte/no-at-html-tags': 'off',
+
+			// Prefer explicit `$state()` wrapping for `SvelteMap` / `SvelteSet`.
+			'svelte/no-unnecessary-state-wrap': 'off',
+
+			// Not all `Map` / `Set` objects are mutated in practice.
+			'svelte/prefer-svelte-reactivity': 'warn',
+
+			// Prevent crashes due to duplicate keys.
+			'svelte/require-each-key': 'warn',
+
+			// ESLint's type checker doesn't perfectly match TypeScript's, especially for Svelte-specific syntax (e.g., {@attach pattern, $bindable inference).
+			// These rules have false positives when TypeScript compiler is happy.
+			'@typescript-eslint/no-unsafe-argument': 'warn',
+			'@typescript-eslint/no-unsafe-assignment': 'warn',
+			'@typescript-eslint/no-unsafe-call': 'warn',
+			'@typescript-eslint/no-unsafe-member-access': 'warn',
+			'@typescript-eslint/no-unsafe-return': 'warn',
 		},
 	},
 ]

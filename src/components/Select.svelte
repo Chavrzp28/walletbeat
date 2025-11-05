@@ -21,13 +21,15 @@
 	// Props
 	let {
 		id,
+		defaultValue,
 		value = $bindable(),
 		options,
 		optionContent,
 		selectedOption = $bindable(),
 		...restProps
-	}: SvelteHTMLElements['select'] & {
+	}: Omit<SvelteHTMLElements['select'], 'value'> & {
 		id?: string
+		defaultValue?: _SelectValue
 		value?: _SelectValue
 		options: _SelectOption[]
 		optionContent?: Snippet<[_SelectOption]>
@@ -64,6 +66,7 @@
 	{#each options as option}
 		<option
 			value={option.value}
+			selected={option.value === defaultValue}
 			onclick={e => {
 				e.preventDefault()
 			}}

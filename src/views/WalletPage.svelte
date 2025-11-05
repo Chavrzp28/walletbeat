@@ -16,22 +16,6 @@
 	import { objectEntries, objectKeys } from '@/types/utils/object'
 
 
-	// Components
-	import { Github, Globe } from 'lucide-static'
-	import Pie, { PieLayout } from '@/components/Pie.svelte'
-	import Select from '@/components/Select.svelte'
-	import AddressCorrelationDetails from '@/views/attributes/privacy/AddressCorrelationDetails.svelte'
-	import ChainVerificationDetails from '@/views/attributes/security/ChainVerificationDetails.svelte'
-	import ScamAlertDetails from '@/views/attributes/security/ScamAlertDetails.svelte'
-	import SecurityAuditsDetails from '@/views/attributes/security/SecurityAuditsDetails.svelte'
-	import TransactionInclusionDetails from '@/views/attributes/self-sovereignty/TransactionInclusionDetails.svelte'
-	import FundingDetails from '@/views/attributes/transparency/FundingDetails.svelte'
-	import UnratedAttribute from '@/views/attributes/UnratedAttribute.svelte'
-	import ReferenceLinks from '@/views/ReferenceLinks.svelte'
-	import ScoreBadge from '@/views/ScoreBadge.svelte'
-	import Typography from '@/components/Typography.svelte'
-
-
 	// Functions
 	import {
 		variants,
@@ -62,12 +46,12 @@
 	import { SvelteURLSearchParams } from 'svelte/reactivity'
 	import { isLabeledUrl } from '@/schema/url'
 
-	let queryParams = $state<URLSearchParams>(
+	let queryParams = $state<URLSearchParams | undefined>(
 		globalThis.location && new SvelteURLSearchParams(globalThis.location.search)
 	)
 
 	$effect(() => {
-		if(queryParams.toString() !== globalThis.location.search)
+		if(queryParams && queryParams.toString() !== globalThis.location.search)
 			globalThis.history.replaceState(null, '', `${globalThis.location.pathname}?${queryParams.toString()}`)
 	})
 
@@ -75,36 +59,34 @@
 		null
 	)
 
-
 	// (Derived)
 	const wallet = $derived(
 		allRatedWallets[walletName]
 	)
 
-	let selectedVariant = $state<Variant | undefined>(
-		undefined
+	let selectedVariant = $derived<Variant | undefined>(
+		hasSingleVariant(wallet.variants) ?
+			undefined
+		:
+			queryParams?.get('variant') as Variant ?? undefined
 	)
-	$effect(() => {
-		selectedVariant = hasSingleVariant(wallet.variants) ? undefined : queryParams.get('variant') as Variant ?? undefined
-	})
+
 	$effect(() => {
 		if(!hasSingleVariant(wallet.variants) && selectedVariant)
-			queryParams.set('variant', selectedVariant)
+			queryParams?.set('variant', selectedVariant)
 		else
-			queryParams.delete('variant')
+			queryParams?.delete('variant')
 	})
 
-	let selectedModel = $state<string | undefined>(
-		undefined
+	let selectedModel = $derived(
+		queryParams?.get('model') ?? undefined
 	)
-	$effect(() => {
-		selectedModel = queryParams.get('model') ?? undefined
-	})
+
 	$effect(() => {
 		if(!selectedModel)
-			queryParams.delete('model')
+			queryParams?.delete('model')
 		else
-			queryParams.set('model', selectedModel)
+			queryParams?.set('model', selectedModel)
 	})
 
 	const evalTree = $derived(
@@ -117,18 +99,20 @@
 	const attrToRelevantVariants = $derived.by(() => {
 		const map = new Map<string, Variant[]>()
 
-		for (const [variant, variantSpecificityMap] of Object.entries(wallet.variantSpecificity)) {
+		for (const [variant, variantSpecificityMap] of Object.entries(wallet.variantSpecificity) as [Variant, Map<string, VariantSpecificity>][]) {
 			for (const [evalAttrId, variantSpecificity] of variantSpecificityMap) {
 				switch (variantSpecificity) {
 					case VariantSpecificity.ALL_SAME:
 					case VariantSpecificity.EXEMPT_FOR_THIS_VARIANT:
 						break
 					case VariantSpecificity.ONLY_ASSESSED_FOR_THIS_VARIANT:
-						map.set(evalAttrId, [variant as Variant])
+						map.set(evalAttrId, [variant])
 						break
 					default:
-						const relevantVariants = map.get(evalAttrId)
-						relevantVariants ? relevantVariants.push(variant as Variant) : map.set(evalAttrId, [variant as Variant])
+						if(map.has(evalAttrId))
+							map.get(evalAttrId)!.push(variant)
+						else
+							map.set(evalAttrId, [variant])
 				}
 			}
 		}
@@ -139,69 +123,111 @@
 	const overallScore = $derived(
 		calculateOverallScore(wallet.overall, () => true),
 	)
+
+
+	// Components
+	import { Github, Globe } from 'lucide-static'
+	import Pie, { PieLayout } from '@/components/Pie.svelte'
+	import Select from '@/components/Select.svelte'
+	import AddressCorrelationDetails from '@/views/attributes/privacy/AddressCorrelationDetails.svelte'
+	import ChainVerificationDetails from '@/views/attributes/security/ChainVerificationDetails.svelte'
+	import ScamAlertDetails from '@/views/attributes/security/ScamAlertDetails.svelte'
+	import SecurityAuditsDetails from '@/views/attributes/security/SecurityAuditsDetails.svelte'
+	import TransactionInclusionDetails from '@/views/attributes/self-sovereignty/TransactionInclusionDetails.svelte'
+	import FundingDetails from '@/views/attributes/transparency/FundingDetails.svelte'
+	import UnratedAttribute from '@/views/attributes/UnratedAttribute.svelte'
+	import ReferenceLinks from '@/views/ReferenceLinks.svelte'
+	import ScoreBadge from '@/views/ScoreBadge.svelte'
+	import Typography from '@/components/Typography.svelte'
 </script>
 
 
 <svelte:head>
-	{@html `<script type="application/ld+json">` + JSON.stringify({
-		'@context': 'https://schema.org',
-		'@type': 'FAQPage',
-		mainEntity: evalTree
-			? objectEntries(attributeTree).flatMap(([attrGroupId, attrGroup]) =>
-					objectEntries(attrGroup.attributes)
-						.map(([attrId, attribute]) => ({
-							evalAttr: evalTree[attrGroupId][
-								attrId as keyof (typeof evalTree)[typeof attrGroupId]
-							] as EvaluatedAttribute<any> | undefined,
-							attribute,
-						}))
-						.filter(
-							({ evalAttr }) => evalAttr && evalAttr.evaluation.value.rating !== Rating.EXEMPT,
-						)
-						.map(({ attribute }) => ({
-							'@type': 'Question',
-							name: renderStrings(
-								attribute.question.contentType === ContentType.MARKDOWN
-									? attribute.question.markdown
-									: attribute.question.contentType === ContentType.TEXT
-										? attribute.question.text
-										: attribute.displayName,
-								{
-									WALLET_NAME: wallet.metadata.displayName,
-								},
-							),
-							acceptedAnswer: {
-								'@type': 'Answer',
-								text: renderStrings(
-									attribute.why.contentType === ContentType.MARKDOWN
-										? attribute.why.markdown
-										: attribute.why.contentType === ContentType.TEXT
-											? attribute.why.text
-											: 'No explanation available',
-									{
-										WALLET_NAME: wallet.metadata.displayName,
+	{@html `<script type="application/ld+json">${
+		JSON.stringify({
+			'@context': 'https://schema.org',
+			'@type': 'FAQPage',
+			mainEntity: (
+				evalTree ?
+					objectEntries(attributeTree)
+						.flatMap(([attrGroupId, attrGroup]) => (
+							objectEntries(attrGroup.attributes)
+								.map(([attrId, attribute]) => ({
+									evalAttr: (
+										evalTree[attrGroupId][
+											attrId as keyof (typeof evalTree)[typeof attrGroupId]
+										] as EvaluatedAttribute<any> | undefined
+									),
+									attribute,
+								}))
+								.filter(({ evalAttr }) => (
+									evalAttr && evalAttr.evaluation.value.rating !== Rating.EXEMPT
+								))
+								.map(({ attribute }) => ({
+									'@type': 'Question',
+									name: renderStrings(
+										(
+											attribute.question.contentType === ContentType.MARKDOWN ?
+												attribute.question.markdown
+											: attribute.question.contentType === ContentType.TEXT ?
+												attribute.question.text
+											:
+												attribute.displayName
+										),
+										{
+											WALLET_NAME: wallet.metadata.displayName,
+										},
+									),
+									acceptedAnswer: {
+										'@type': 'Answer',
+										text: renderStrings(
+											(
+												attribute.why.contentType === ContentType.MARKDOWN ?
+													attribute.why.markdown
+												: attribute.why.contentType === ContentType.TEXT ?
+													attribute.why.text
+												:
+													'No explanation available'
+											),
+											{
+												WALLET_NAME: wallet.metadata.displayName,
+											},
+										),
 									},
-								),
-							},
-						})),
-				)
-			: [],
-		about: {
-			'@type': 'SoftwareApplication',
-			name: wallet.metadata.displayName,
-			description: renderStrings(
-				wallet.metadata.blurb.contentType === ContentType.TEXT ? wallet.metadata.blurb.text : wallet.metadata.displayName + ' wallet',
-				{
-					WALLET_NAME: wallet.metadata.displayName,
-				},
+								}))
+						))
+					:
+						[]
 			),
-			url: typeof wallet.metadata.url === 'string' ? wallet.metadata.url : wallet.metadata.url?.url,
-			applicationCategory: 'Cryptocurrency Wallet',
-			operatingSystem: objectKeys(wallet.variants)
-				.map(variant => variantToRunsOn(variant))
-				.join(', '),
-		},
-	}) + `</script>`}
+			about: {
+				'@type': 'SoftwareApplication',
+				name: wallet.metadata.displayName,
+				description: renderStrings(
+					(
+						wallet.metadata.blurb.contentType === ContentType.TEXT ?
+							wallet.metadata.blurb.text
+						:
+							wallet.metadata.displayName + ' wallet'
+					),
+					{
+						WALLET_NAME: wallet.metadata.displayName
+					},
+				),
+				url: (
+					typeof wallet.metadata.url === 'string' ?
+						wallet.metadata.url
+					:
+						wallet.metadata.url?.url
+				),
+				applicationCategory: 'Cryptocurrency Wallet',
+				operatingSystem: (
+					objectKeys(wallet.variants)
+						.map(variant => variantToRunsOn(variant))
+						.join(', ')
+				),
+			},
+		})
+	}</script>`}
 </svelte:head>
 
 
@@ -243,8 +269,18 @@
 						<Select
 							bind:value={selectedVariant}
 							options={[
-								{ value: undefined, label: 'All versions' },
-								...Object.keys(wallet.variants).map(v => ({ value: v, label: variants[v as Variant].label, icon: variants[v as Variant].icon }))
+								{
+									value: undefined,
+									label: 'All versions',
+								},
+								...(
+									(Object.keys(wallet.variants) as Variant[])
+										.map(v => ({
+											value: v,
+											label: variants[v].label,
+											icon: variants[v].icon,
+										}))
+								),
 							]}
 						/>
 					{/if}

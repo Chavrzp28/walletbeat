@@ -47,12 +47,13 @@
 					...attrGroup,
 					attributes: (
 						Object.fromEntries(
-							Object.entries(attrGroup.attributes).filter(([attributeId, _]) =>
-								wallets.find(w => w.variants.browser || w.variants.desktop || w.variants.mobile)
-									?.overall[attrGroup.id]?.[attributeId]?.evaluation?.value?.rating !== Rating.EXEMPT
-							)
+							Object.entries(attrGroup.attributes)
+								.filter(([attributeId, _]) => (
+									wallets.find(w => w.variants.browser || w.variants.desktop || w.variants.mobile)
+										?.overall[attrGroup.id]?.[attributeId]?.evaluation?.value?.rating !== Rating.EXEMPT
+								))
 						)
-					)
+					),
 				}))
 				.filter(attrGroup => (
 					Object.keys(attrGroup.attributes).length > 0
@@ -63,29 +64,39 @@
 
 
 	// State
-	import { SvelteMap,SvelteSet } from 'svelte/reactivity'
+	import { SvelteMap, SvelteSet } from 'svelte/reactivity'
 
 	let activeFilters = $state(
-		new Set<Filter<RatedWallet>>()
+		new SvelteSet<Filter<RatedWallet>>()
 	)
 
 	let filteredWallets = $state(
 		wallets
 	)
 
-	let selectedAttribute: string | undefined = $state(undefined)
+	let selectedAttribute: string | undefined = $state(
+		undefined
+	)
 
-	let expandedRowIds = $state(new SvelteSet<string>())
+	let expandedRowIds = $state(
+		new SvelteSet<string>()
+	)
 
 	let activeEntityId: {
 		walletId: string
 		attributeGroupId: string
 		attributeId?: string
-	} | undefined = $state(undefined)
+	} | undefined = $state(
+		undefined
+	)
 
-	let sortedColumn: Column<RatedWallet> | undefined = $state(undefined)
+	let sortedColumn: Column<RatedWallet> | undefined = $state(
+		undefined
+	)
 
-	let selectedModels = $state(new SvelteMap<string, string>())
+	let selectedModels = $state(
+		new SvelteMap<string, string>()
+	)
 
 
 	// (Derived)
@@ -123,8 +134,10 @@
 
 
 	// Actions
-	let toggleFilterById: Filters<RatedWallet>['$$prop_def']['toggleFilterById'] = $state()
-	let toggleFilter: Filters<RatedWallet>['$$prop_def']['toggleFilter'] = $state()
+	import type { ComponentProps } from 'svelte'
+
+	let toggleFilterById: ComponentProps<typeof Filters<RatedWallet>>['toggleFilterById'] = $state()
+	let toggleFilter: ComponentProps<typeof Filters<RatedWallet>>['toggleFilter'] = $state()
 
 	const toggleRowExpanded = (id: string) => {
 		if (expandedRowIds.has(id))
@@ -416,10 +429,10 @@
 		{#if column.id === 'displayName'}
 			{@const displayName = value}
 			{@const accountTypes = walletSupportedAccountTypes(wallet, selectedVariant ?? 'ALL_VARIANTS')}
-			{@const supportedVariants =
+			{@const supportedVariants = (
 				[Variant.BROWSER, Variant.MOBILE, Variant.DESKTOP, Variant.EMBEDDED, Variant.HARDWARE]
 					.filter(variant => variant in wallet.variants)
-			}
+			)}
 
 			{@const walletUrl = `/${wallet.metadata.id}/${selectedVariant ? `?variant=${selectedVariant}` : ''}`}
 
@@ -458,7 +471,12 @@
 										<Select
 											bind:value={
 												() => selectedModels.get(wallet.metadata.id),
-												(value) => { selectedModels.set(wallet.metadata.id, value) }
+												(value) => {
+													if (value)
+														selectedModels.set(wallet.metadata.id, value)
+													else
+														selectedModels.delete(wallet.metadata.id)
+												}
 											}
 											options={[
 												{ value: undefined, label: 'All models' },
@@ -658,8 +676,8 @@
 		{:else}
 			{@const selectedSliceId =
 				selectedAttribute ?
-					attributeGroups.find(g => g.id in wallet.overall && selectedAttribute in wallet.overall[g.id]) ?
-						`attrGroup_${attributeGroups.find(g => g.id in wallet.overall && selectedAttribute in wallet.overall[g.id])!.id}__attr_${selectedAttribute}`
+					attributeGroups.find(g => g.id in wallet.overall && selectedAttribute! in wallet.overall[g.id]) ?
+						`attrGroup_${attributeGroups.find(g => g.id in wallet.overall && selectedAttribute! in wallet.overall[g.id])!.id}__attr_${selectedAttribute}`
 					:
 						undefined
 				:
@@ -667,7 +685,7 @@
 			}
 
 			{@const activeSliceId =
-				activeEntityId?.walletId === wallet.metadata.id ?
+				activeEntityId && activeEntityId.walletId === wallet.metadata.id ?
 					activeEntityId.attributeId ?
 						`attrGroup_${activeEntityId.attributeGroupId}__attr_${activeEntityId.attributeId}`
 					:
@@ -758,7 +776,7 @@
 						]}
 						{highlightedSliceId}
 						onSliceClick={sliceId => {
-							const [attributeGroupId, attributeId] = sliceId.split('__').map(part => part.split('_')[1])
+							const [_attributeGroupId, attributeId] = sliceId.split('__').map(part => part.split('_')[1])
 
 							selectedAttribute = attributeId && selectedAttribute === attributeId ? undefined : attributeId
 
@@ -816,28 +834,29 @@
 					</Pie>
 
 					{#snippet ExpandedContent({ isInTooltip }: { isInTooltip?: boolean })}
-						{@const displayedAttribute = activeEntityId?.walletId === wallet.metadata.id ?
-								activeEntityId.attributeId ?
+						{@const displayedAttribute = (
+							activeEntityId?.walletId === wallet.metadata.id ?
+								activeEntityId?.attributeId ?
 									wallet.overall[activeEntityId.attributeGroupId]?.[activeEntityId.attributeId]
 								:
 									undefined
 							: selectedAttribute ?
-								attributeGroups.find(g => g.id in wallet.overall && selectedAttribute in wallet.overall[g.id]) ?
-									wallet.overall[attributeGroups.find(g => g.id in wallet.overall && selectedAttribute in wallet.overall[g.id])!.id]?.[selectedAttribute]
+								attributeGroups.find(g => g.id in wallet.overall && selectedAttribute! in wallet.overall[g.id]) ?
+									wallet.overall[attributeGroups.find(g => g.id in wallet.overall && selectedAttribute! in wallet.overall[g.id])!.id]?.[selectedAttribute]
 								:
 									undefined
 							:
 								undefined
-						}
+						)}
 
-						{@const displayedGroup =
+						{@const displayedGroup = (
 							activeEntityId?.walletId === wallet.metadata.id ?
-								attributeGroups.find(g => g.id === activeEntityId.attributeGroupId)
+								attributeGroups.find(g => g.id === activeEntityId!.attributeGroupId)
 							: selectedAttribute ?
-								attributeGroups.find(g => g.id in wallet.overall && selectedAttribute in wallet.overall[g.id])
+								attributeGroups.find(g => g.id in wallet.overall && selectedAttribute! in wallet.overall[g.id])
 							:
 								undefined
-						}
+						)}
 
 						{#if displayedAttribute}
 							<WalletAttributeSummary
@@ -876,14 +895,14 @@
 
 				{@const hasActiveAttribute = activeEntityId?.walletId === wallet.metadata.id && activeEntityId?.attributeGroupId === attrGroup.id}
 
-				{@const currentAttribute =
+				{@const _currentAttribute = (
 					hasActiveAttribute && activeEntityId ?
 						evalGroup[activeEntityId.attributeId]
-											: selectedAttribute ?
-							evalGroup[selectedAttribute]
+					: selectedAttribute ?
+						evalGroup[selectedAttribute]
 					:
 						undefined
-				}
+				)}
 
 				<TooltipOrAccordion
 					bind:isExpanded={
@@ -943,7 +962,7 @@
 						}
 						{highlightedSliceId}
 						onSliceClick={sliceId => {
-							const [attributeGroupId, attributeId] = sliceId.split('__').map(part => part.split('_')[1])
+							const [_attributeGroupId, attributeId] = sliceId.split('__').map(part => part.split('_')[1])
 
 							if (attributeId) {
 								selectedAttribute = selectedAttribute === attributeId ? undefined : attributeId
@@ -963,7 +982,7 @@
 								}
 							}
 						}}
-						onSliceMouseLeave={sliceId => {
+						onSliceMouseLeave={_sliceId => {
 							activeEntityId = undefined
 						}}
 						onSliceFocus={sliceId => {
@@ -1044,7 +1063,7 @@
 			<!-- Attribute rating -->
 			{:else}
 				{@const [attributeGroupId, attributeId] = column.id.split('.')}
-				{@const attrGroup = displayedAttributeGroups.find(attrGroup => attrGroup.id === attributeGroupId)!}
+				{@const _attrGroup = displayedAttributeGroups.find(attrGroup => attrGroup.id === attributeGroupId)!}
 				{@const attribute = wallet.overall[attributeGroupId][attributeId]}
 
 				<TooltipOrAccordion

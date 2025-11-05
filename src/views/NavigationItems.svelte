@@ -41,9 +41,11 @@
 
 		for (const char of query) {
 			textIndex = text.toLowerCase().indexOf(char, textIndex)
+
 			if (textIndex === -1) return
 
 			const lastRange = ranges.at(-1)
+
 			if (lastRange && lastRange[1] === textIndex) {
 				lastRange[1]++
 			} else {
