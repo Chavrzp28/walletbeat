@@ -58,11 +58,13 @@ export default [
 		languageOptions: {
 			parserOptions: {
 				projectService: true,
-				extraFileExtensions: ['.svelte'],
-				parser: {
-					ts: tseslint.parser,
-					typescript: tseslint.parser,
-					svelte: tseslint.parser,
+				extraFileExtensions: [
+					'.svelte',
+					'.svelte.ts',
+				],
+				parser: tseslint.parser,
+				svelteFeatures: {
+					experimentalGenerics: true,
 				},
 				svelteConfig,
 			},
