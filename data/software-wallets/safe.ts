@@ -55,14 +55,15 @@ export const safe: SoftwareWallet = {
 					TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
 			}),
 			safe: supported({
-				ref: refNotNecessary, // It's Safe Wallet, duh.
-				canDeployNew: true,
+				ref: refNotNecessary,
+				canDeployNew: supported({
+					defaultConfig: {
+						modules: [],
+						owners: 1,
+						threshold: 1,
+					},
+				}),
 				controllingSharesInSelfCustodyByDefault: 'YES',
-				defaultConfig: {
-					modules: [],
-					owners: 1,
-					threshold: 1,
-				},
 				keyRotationTransactionGeneration:
 					TransactionGenerationCapability.USING_OPEN_SOURCE_STANDALONE_APP,
 				supportedConfigs: {
@@ -114,7 +115,7 @@ export const safe: SoftwareWallet = {
 			walletAppLicense: {
 				ref: [
 					{
-						explanation: 'Safe uses the LGPL-3.0 license for its source code', // keep explanation but change enum if needed
+						explanation: 'Safe uses the LGPL-3.0 license for its source code',
 						label: 'Safe License File',
 						url: 'https://github.com/safe-global/safe-wallet-monorepo',
 					},
@@ -154,7 +155,7 @@ export const safe: SoftwareWallet = {
 				hiddenConvenienceFees: false,
 				publicOffering: false,
 				selfFunded: false,
-				transparentConvenienceFees: true, // based on community-aligned fees
+				transparentConvenienceFees: true,
 				ventureCapital: false,
 			},
 		},
