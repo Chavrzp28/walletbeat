@@ -116,9 +116,7 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 		support.rewards.minimum !== 0 &&
 		support.rewards.maximum !== 0
 	const hasFullCoverage = support.coverageBreadth === CoverageBreadth.FULL
-	const hasLegalProtection =
-		isSupported(support.legalProtections) &&
-		support.legalProtections?.type != null
+	const hasLegalProtection = isSupported(support.legalProtections)
 	const isActive = support.availability === BugBountyProgramAvailability.ACTIVE
 
 	const passesAll = isActive && hasFullCoverage && hasRewards && hasLegalProtection
