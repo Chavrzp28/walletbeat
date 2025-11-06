@@ -79,7 +79,7 @@ export interface WalletBaseFeatures {
 		publicSecurityAudits: SecurityAudit[] | null
 
 		/** Bug bounty program implementation */
-		bugBountyProgram: VariantFeature<BugBountyProgramImplementation>
+		bugBountyProgram: VariantFeature<Support<BugBountyProgramImplementation>>
 
 		/** Light clients. */
 		lightClient: {
@@ -267,7 +267,7 @@ export interface ResolvedFeatures {
 		hardwareWalletSupport: ResolvedFeature<HardwareWalletSupport>
 		hardwareWalletAppSigning: ResolvedFeature<HardwareWalletAppSigningImplementation>
 		passkeyVerification: ResolvedFeature<PasskeyVerificationImplementation>
-		bugBountyProgram: ResolvedFeature<BugBountyProgramImplementation>
+		bugBountyProgram: ResolvedFeature<Support<BugBountyProgramImplementation>>
 		firmware: ResolvedFeature<FirmwareSupport>
 		keysHandling: ResolvedFeature<KeysHandlingSupport>
 		supplyChainDIY: ResolvedFeature<SupplyChainDIYSupport>
