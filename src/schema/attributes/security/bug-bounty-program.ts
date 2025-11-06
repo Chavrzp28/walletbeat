@@ -7,6 +7,7 @@ import {
 } from '@/schema/attributes'
 import type { ResolvedFeatures } from '@/schema/features'
 import {
+	type AtLeastOneCoverageBreadth,
 	BugBountyPlatform,
 	BugBountyProgramAvailability,
 	type BugBountyProgramSupport,
@@ -20,7 +21,7 @@ import { type AtLeastOneVariant } from '@/schema/variants'
 import { WalletType } from '@/schema/wallet-types'
 import { markdown, mdParagraph, mdSentence, paragraph, sentence } from '@/types/content'
 import type { CalendarDate } from '@/types/date'
-import { nonEmptySet } from '@/types/utils/non-empty'
+import { nonEmptySet, setItems } from '@/types/utils/non-empty'
 
 import { exempt, pickWorstRating, unrated } from '../common'
 
@@ -30,17 +31,25 @@ export type BugBountyProgramValue = Value & {
 	__brand: 'attributes.security.bug_bounty_program'
 }
 
-function getCoverageDescription(breadth: CoverageBreadth): string {
-	switch (breadth) {
-		case CoverageBreadth.APP_ONLY:
-			return 'The program covers only the application layer.'
-		case CoverageBreadth.FIRMWARE_ONLY:
-			return 'The program covers only firmware vulnerabilities.'
-		case CoverageBreadth.HARDWARE_ONLY:
-			return 'The program covers only hardware vulnerabilities.'
-		default:
-			return ''
+function getCoverageDescription(breadth: AtLeastOneCoverageBreadth): string {
+	const items = setItems(breadth)
+	const descriptions = items.map(item => {
+		switch (item) {
+			case CoverageBreadth.APP_ONLY:
+				return 'only the application layer'
+			case CoverageBreadth.FIRMWARE_ONLY:
+				return 'only firmware vulnerabilities'
+			case CoverageBreadth.HARDWARE_ONLY:
+				return 'only hardware vulnerabilities'
+			default:
+				return ''
+		}
+	}).filter(Boolean)
+	
+	if (descriptions.length === 0) {
+		return ''
 	}
+	return `The program covers ${descriptions.join(', ')}.`
 }
 
 function getRewardDescription(support: BugBountyProgramSupport): string {
@@ -89,8 +98,8 @@ function noBugBountyProgram(): Evaluation<BugBountyProgramValue> {
 function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBountyProgramValue> {
 	const rewardInfo = getRewardDescription(support)
 	const coverageInfo = support.coverageBreadth === 'FULL_SCOPE'
-		? getCoverageDescription(CoverageBreadth.FULL)
-		: ''
+		? 'The program covers all aspects of the hardware wallet.'
+		: getCoverageDescription(support.coverageBreadth)
 	const legalProtectionInfo = isSupported(support.legalProtections)
 		? getLegalProtectionDescription(support.legalProtections)
 		: ''
