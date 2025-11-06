@@ -59,16 +59,16 @@ function getRewardDescription(support: BugBountyProgramSupport): string {
 		return ''
 	}
 
-	const min = support.rewards.minimum ?? 0
+	const min = support.rewards.minimum
 	const max = support.rewards.maximum
 
-	if (typeof min === 'number' && typeof max === 'number') {
+	if (min != null && max != null) {
 		if (min === max) {
 			return `with a $${min.toLocaleString()} reward`
 		} else {
 			return `with rewards ranging from $${min.toLocaleString()} to $${max.toLocaleString()}`
 		}
-	} else if (typeof max === 'number') {
+	} else if (max != null) {
 		return `with rewards up to $${max.toLocaleString()}`
 	} else if (typeof min === 'number') {
 		return `with rewards starting at $${min.toLocaleString()}`
@@ -349,6 +349,10 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 				coverageBreadth: CoverageBreadth.NONE,
 				upgradePathAvailable: false,
 			})
+		}
+
+		if (!isSupported(features.security.bugBountyProgram)) {
+			return noBugBountyProgram()
 		}
 
 		const { withoutRefs, refs } = popRefs<BugBountyProgramSupport>(
