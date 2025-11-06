@@ -176,18 +176,6 @@ function getLegalProtectionDescription(legalProtection: LegalProtection): string
 	return `**Legal Protection**: The program provides ${protectionType} protections for security researchers conducting good faith security research.`
 }
 
-function determineRating(support: BugBountyProgramSupport): Evaluation<BugBountyProgramValue> {
-	// Has financial rewards = bug bounty program exists
-	const hasBugBounty = support.availability !== undefined
-
-	// No bug bounty program at all
-	if (!hasBugBounty) {
-		return noBugBountyProgram()
-	}
-
-	// Has bug bounty program
-	return bugBountyAvailable(support)
-}
 
 export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 	id: 'bugBountyProgram',
@@ -336,7 +324,7 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 			features.security.bugBountyProgram,
 		)
 
-		const result = determineRating(withoutRefs)
+		const result = bugBountyAvailable(withoutRefs)
 
 		// Return result with references if any
 		return {
