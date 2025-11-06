@@ -171,14 +171,15 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 			}
 			
 		`),
-		howToImprove: markdown(`
+		howToImprove: passesAll
+			? undefined
+			: markdown(`
 			{{WALLET_NAME}} should:
 			${!isActive ? '- Activate or relaunch their bug bounty program to encourage vulnerability reporting' : ''}
 			${!hasRewards ? '- Clearly define the reward range (minimum and maximum) to attract more security researchers' : ''}
 			${!hasFullCoverage ? '- Expand coverage to include all hardware and software components' : ''}
 			${!hasLegalProtection ? '- Implement Safe Harbor or legal assurance language to protect security researchers from legal action' : ''}
 			${!support.upgradePathAvailable ? '- Establish or improve a clear upgrade path for users after vulnerabilities are fixed' : ''}
-			${passesAll ? '- Continue maintaining and improving the bug bounty program’s transparency and responsiveness' : ''}
 		`),
 	}
 }
