@@ -20,6 +20,7 @@ import { type AtLeastOneVariant } from '@/schema/variants'
 import { WalletType } from '@/schema/wallet-types'
 import { markdown, mdParagraph, mdSentence, paragraph, sentence } from '@/types/content'
 import type { CalendarDate } from '@/types/date'
+import { nonEmptySet } from '@/types/utils/non-empty'
 
 import { exempt, pickWorstRating, unrated } from '../common'
 
@@ -31,10 +32,6 @@ export type BugBountyProgramValue = Value & {
 
 function getCoverageDescription(breadth: CoverageBreadth): string {
 	switch (breadth) {
-		case CoverageBreadth.FULL:
-			return 'The program covers all aspects of the wallet including hardware, firmware, and software.'
-		case CoverageBreadth.PARTIAL:
-			return 'The program has partial coverage of wallet components.'
 		case CoverageBreadth.APP_ONLY:
 			return 'The program covers only the application layer.'
 		case CoverageBreadth.FIRMWARE_ONLY:
@@ -132,9 +129,6 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 			shortExplanation: mdSentence(
 				`{{WALLET_NAME}} has a bug bounty program ${rewardInfo}${isActive ? '' : ', but it is currently inactive'}.`,
 			),
-			upgradePathAvailable: support.upgradePathAvailable,
-			platform: support.platform,
-			legalProtections: isSupported(support.legalProtections) ? support.legalProtections : undefined,
 			__brand: brand,
 		},
 		details: markdown(`
@@ -241,7 +235,7 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 				bugBountyAvailable({
 					dateStarted: '2020-01-01' as CalendarDate,
 					availability: BugBountyProgramAvailability.ACTIVE,	
-					coverageBreadth: CoverageBreadth.FULL,
+					coverageBreadth: 'FULL_SCOPE',
 					rewards: supported({
 						minimum: 1000,
 						maximum: 50000,
@@ -269,7 +263,7 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 				bugBountyAvailable({
 					dateStarted: '2020-01-01' as CalendarDate,
 					availability: BugBountyProgramAvailability.INACTIVE,
-					coverageBreadth: CoverageBreadth.PARTIAL,
+					coverageBreadth: nonEmptySet(CoverageBreadth.APP_ONLY),
 					rewards: supported({
 						minimum: 5000,
 						maximum: 5000,

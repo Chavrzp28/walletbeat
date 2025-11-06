@@ -55,8 +55,6 @@ export enum BugBountyProgramAvailability {
  * The coverage breadth of the bug bounty program
  */
 export enum CoverageBreadth {
-	FULL = 'FULL',
-	PARTIAL = 'PARTIAL',
 	APP_ONLY = 'APP_ONLY',
 	FIRMWARE_ONLY = 'FIRMWARE_ONLY',
 	HARDWARE_ONLY = 'HARDWARE_ONLY',
