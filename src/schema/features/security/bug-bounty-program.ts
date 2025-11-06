@@ -1,7 +1,9 @@
 import type { WithRef, MustRef } from '@/schema/reference'
 import type { Support } from '../support'
 import type { CalendarDate } from '@/types/date'
-
+import {
+	type NonEmptySet,
+} from '@/types/utils/non-empty'
 /**
  * Platforms of bug bounty programs
  */
@@ -22,6 +24,12 @@ export enum LegalProtectionType {
 	LEGAL_ASSURANCE = 'LEGAL_ASSURANCE',
 }
 
+
+/**
+ * A set of at least one coverage breadth
+ */
+export type AtLeastOneCoverageBreadth = NonEmptySet<CoverageBreadth>
+
 /**
  * Information about legal protections for security researchers
  */
@@ -30,11 +38,6 @@ export type LegalProtection = MustRef<{
 	 * The type of legal protection provided
 	 */
 	type: LegalProtectionType
-
-	/**
-	 * Specific details or excerpt of the legal protection language
-	 */
-	details?: string
 }>
 
 /**
@@ -57,7 +60,6 @@ export enum CoverageBreadth {
 	APP_ONLY = 'APP_ONLY',
 	FIRMWARE_ONLY = 'FIRMWARE_ONLY',
 	HARDWARE_ONLY = 'HARDWARE_ONLY',
-	NONE = 'NONE',
 }
 
 /**
@@ -77,7 +79,8 @@ export type BugBountyProgramSupport = WithRef<{
 	/**
 	 * The coverage breadth of the bug bounty program
 	 */
-	coverageBreadth: CoverageBreadth
+	coverageBreadth: AtLeastOneCoverageBreadth | 'FULL_SCOPE'
+
 
 	/**
 	 * The rewards for the bug bounty program
