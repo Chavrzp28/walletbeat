@@ -170,7 +170,6 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 					: 'Unfortunately, the wallet does not provide a clear upgrade path for users when security issues are identified.'
 			}
 			
-			${support.platform ? `For more information, visit their [bug bounty program page](${support.platform}).` : ''}
 		`),
 		howToImprove: markdown(`
 			{{WALLET_NAME}} should:
