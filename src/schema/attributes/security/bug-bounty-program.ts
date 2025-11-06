@@ -188,7 +188,7 @@ function getLegalProtectionDescription(legalProtection: LegalProtection): string
 	const protectionType =
 		legalProtection.type === LegalProtectionType.SAFE_HARBOR ? 'Safe Harbor' : 'Legal Assurance'
 
-	return `Legal Protection: The program provides ${protectionType} protections for security researchers conducting good faith security research.`
+	return `**Legal Protection**: The program provides ${protectionType} protections for security researchers conducting good faith security research.`
 }
 
 function determineRating(support: BugBountyProgramSupport): Evaluation<BugBountyProgramValue> {
