@@ -262,7 +262,7 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 		pass: [
 			exampleRating(
 				mdParagraph(`
-					The hardware wallet has an active bug bounty program with competitive rewards (e.g., up to $50,000),
+					The hardware wallet has an active bug bounty program with competitive rewards,
 					full coverage of all components, and provides upgrade paths for users.
 				`),
 				bugBountyAvailable({
@@ -290,7 +290,7 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 		partial: [
 			exampleRating(
 				mdParagraph(`
-					The hardware wallet has a bug bounty program with rewards (e.g., up to $5,000),
+					The hardware wallet has a bug bounty program with rewards,
 					but it is currently inactive and not accepting new reports.
 				`),
 				bugBountyAvailable({
