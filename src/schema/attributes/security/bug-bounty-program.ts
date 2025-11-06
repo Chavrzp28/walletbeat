@@ -139,7 +139,7 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 
 	return {
 		value: {
-			id: 'bug_bounty_available',
+			id: isActive ? 'bug_bounty_available' : 'bug_bounty_not_available',
 			rating: rating,
 			displayName: isActive ? 'Bug bounty program available' : 'Bug bounty program inactive',
 			shortExplanation: mdSentence(
