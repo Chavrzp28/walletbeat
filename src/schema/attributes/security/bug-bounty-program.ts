@@ -26,12 +26,6 @@ import { exempt, pickWorstRating, unrated } from '../common'
 const brand = 'attributes.security.bug_bounty_program'
 
 export type BugBountyProgramValue = Value & {
-	availability?: BugBountyProgramAvailability
-	coverageBreadth?: CoverageBreadth
-	upgradePathAvailable?: boolean
-	platform?: BugBountyPlatform
-	platformUrl?: string
-	legalProtections?: LegalProtection
 	__brand: 'attributes.security.bug_bounty_program'
 }
 
@@ -47,8 +41,6 @@ function getCoverageDescription(breadth: CoverageBreadth): string {
 			return 'The program covers only firmware vulnerabilities.'
 		case CoverageBreadth.HARDWARE_ONLY:
 			return 'The program covers only hardware vulnerabilities.'
-		case CoverageBreadth.NONE:
-			return 'The program has no defined coverage scope.'
 		default:
 			return ''
 	}
@@ -86,9 +78,6 @@ function noBugBountyProgram(): Evaluation<BugBountyProgramValue> {
 			shortExplanation: sentence(
 				"{{WALLET_NAME}} does not implement a bug bounty program and doesn't provide security updates.",
 			),
-			availability: undefined,
-			coverageBreadth: CoverageBreadth.NONE,
-			upgradePathAvailable: false,
 			__brand: brand,
 		},
 		details: paragraph(
@@ -102,8 +91,8 @@ function noBugBountyProgram(): Evaluation<BugBountyProgramValue> {
 
 function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBountyProgramValue> {
 	const rewardInfo = getRewardDescription(support)
-	const coverageInfo = support.coverageBreadth
-		? getCoverageDescription(support.coverageBreadth)
+	const coverageInfo = support.coverageBreadth === 'FULL_SCOPE'
+		? getCoverageDescription(CoverageBreadth.FULL)
 		: ''
 	const legalProtectionInfo = isSupported(support.legalProtections)
 		? getLegalProtectionDescription(support.legalProtections)
@@ -115,7 +104,7 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 		support.rewards.maximum != null &&
 		support.rewards.minimum !== 0 &&
 		support.rewards.maximum !== 0
-	const hasFullCoverage = support.coverageBreadth === CoverageBreadth.FULL
+	const hasFullCoverage = support.coverageBreadth === 'FULL_SCOPE'
 	const hasLegalProtection = isSupported(support.legalProtections)
 	const isActive = support.availability === BugBountyProgramAvailability.ACTIVE
 
@@ -143,8 +132,6 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 			shortExplanation: mdSentence(
 				`{{WALLET_NAME}} has a bug bounty program ${rewardInfo}${isActive ? '' : ', but it is currently inactive'}.`,
 			),
-			availability: support.availability,	
-			coverageBreadth: support.coverageBreadth || CoverageBreadth.NONE,
 			upgradePathAvailable: support.upgradePathAvailable,
 			platform: support.platform,
 			legalProtections: isSupported(support.legalProtections) ? support.legalProtections : undefined,
@@ -333,20 +320,12 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 				bugBountyProgram,
 				sentence('This attribute is only applicable for hardware wallets.'),
 				brand,
-				{
-					availability: undefined,
-					coverageBreadth: CoverageBreadth.NONE,
-					upgradePathAvailable: false,
-				},
+				null,
 			)
 		}
 
 		if (features.security.bugBountyProgram === null) {
-			return unrated(bugBountyProgram, brand, {
-				availability: undefined,	
-				coverageBreadth: CoverageBreadth.NONE,
-				upgradePathAvailable: false,
-			})
+			return unrated(bugBountyProgram, brand, null)
 		}
 
 		if (!isSupported(features.security.bugBountyProgram)) {
