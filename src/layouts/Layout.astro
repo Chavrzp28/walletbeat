@@ -99,12 +99,14 @@ import Metadata from '@/layouts/Metadata.astro'
 			min-inline-size: fit-content;
 
 			> section {
-				padding: clamp(1.5rem, (100cqi - var(--content-maxWidth)) / 2, 2rem)
-					max(1.5rem, (100cqi - var(--content-maxWidth)) / 2);
+				padding:
+					clamp(1.5rem, (100cqi - var(--content-maxWidth)) / 2, 2rem)
+					max(1.5rem, (100cqi - var(--content-maxWidth)) / 2)
+				;
 
 				&[data-sticky-container] {
-					--sticky-paddingInlineStart: clamp(1.5rem, 6cqi, 2rem);
-					--sticky-paddingInlineEnd: clamp(1.5rem, 6cqi, 2rem);
+					/* --sticky-paddingInlineStart: clamp(1.5rem, 6cqi, 2rem);
+					--sticky-paddingInlineEnd: clamp(1.5rem, 6cqi, 2rem); */
 
 					--sticky-paddingInlineStart: max(1.5rem, (100cqi - var(--content-maxWidth)) / 2);
 					--sticky-paddingInlineEnd: max(1.5rem, (100cqi - var(--content-maxWidth)) / 2);
