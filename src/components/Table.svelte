@@ -361,10 +361,6 @@
 
 			:where(tr) {
 				:where(th) {
-					/* &:not(:empty) {
-						backdrop-filter: blur(20px);
-					} */
-
 					&[data-header-level='0'] {
 						font-weight: 700;
 						font-size: 1.1em;
@@ -642,16 +638,6 @@
 				align-items: end;
 				transform-origin: right;
 			}
-
-			/* &[data-sticky],
-			&[data-sort]:not([data-sticky]) { */
-			/* &[data-sticky] {
-				position: sticky;
-				backdrop-filter: blur(20px);
-				z-index: 1;
-				inset-inline-start: 0;
-				inset-inline-end: 0;
-			} */
 		}
 
 		:where(th) {
