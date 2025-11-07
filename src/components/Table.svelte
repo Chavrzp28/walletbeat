@@ -354,6 +354,18 @@
 			border-start-start-radius: calc(var(--table-cornerRadius) + var(--table-outerBorderWidth));
 			border-start-end-radius: calc(var(--table-cornerRadius) + var(--table-outerBorderWidth));
 
+			&[data-sticky] {
+				/* Safari: apply `backdrop-filter` and `background-color` to `thead` instead of `thead::before` */
+				@supports (hanging-punctuation: first) and (font: -apple-system-body) and (-webkit-appearance: none) {
+					background-color: var(--sticky-backgroundColor);
+					backdrop-filter: var(--sticky-backdropFilter);
+
+					&::before {
+						content: none !important;
+					}
+				}
+			}
+
 			@container not scroll-state(stuck: none) {
 				border-start-start-radius: 0;
 				border-start-end-radius: 0;
