@@ -677,15 +677,19 @@ span svg {
 	--scrollContainer-inlineSize: 100cqi;
 
 	&:not([data-scroll-container~='block']):not([data-scroll-container~='inline']) {
+		container-type: size;
 		container-type: scroll-state size;
 		overflow: auto auto;
 	}
 	&[data-scroll-container~='block'] {
+		container-type: inline-size;
 		container-type: scroll-state inline-size;
 		overflow-y: auto;
 	}
 	&[data-scroll-container~='inline'] {
+		container-type: size;
 		container-type: scroll-state size;
+		container-type: block-size;
 		container-type: scroll-state block-size;
 		overflow-x: auto;
 	}
