@@ -24,6 +24,7 @@ import type { CalendarDate } from '@/types/date'
 import { nonEmptySet, setItems } from '@/types/utils/non-empty'
 
 import { exempt, pickWorstRating, unrated } from '../common'
+import { commaListFormat } from '@/types/utils/text'
 
 const brand = 'attributes.security.bug_bounty_program'
 
@@ -49,7 +50,7 @@ function getCoverageDescription(breadth: AtLeastOneCoverageBreadth): string {
 	if (descriptions.length === 0) {
 		return ''
 	}
-	return `The program covers ${descriptions.join(', ')}.`
+	return `The program covers ${commaListFormat(descriptions)}.`
 }
 
 function getRewardDescription(support: BugBountyProgramSupport): string {
