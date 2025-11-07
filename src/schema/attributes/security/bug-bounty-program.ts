@@ -324,8 +324,9 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 			return noBugBountyProgram()
 		}
 
-		const { withoutRefs, refs } = popRefs<BugBountyProgramSupport>(
-			features.security.bugBountyProgram,
+		const allRefs = mergeRefs(
+			refs(features.security.bugBountyProgram),
+			isSupported(features.security.bugBountyProgram.legalProtections) ? refs(features.security.bugBountyProgram.legalProtections) : undefined,
 		)
 
 		const result = bugBountyAvailable(withoutRefs)
@@ -333,7 +334,7 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 		// Return result with references if any
 		return {
 			...result,
-			...(refs.length > 0 && { references: refs }),
+			...(allRefs.length > 0 && { references: allRefs }),
 		}
 	},
 }
