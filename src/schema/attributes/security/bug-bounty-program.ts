@@ -15,7 +15,7 @@ import {
 	type LegalProtection,
 	LegalProtectionType,
 } from '@/schema/features/security/bug-bounty-program'
-import { popRefs, refNotNecessary } from '@/schema/reference'
+import { refNotNecessary, mergeRefs, refs } from '@/schema/reference'
 import { isSupported, supported } from '@/schema/features/support'
 import { type AtLeastOneVariant } from '@/schema/variants'
 import { WalletType } from '@/schema/wallet-types'
