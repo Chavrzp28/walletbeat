@@ -37,11 +37,11 @@ function getCoverageDescription(breadth: AtLeastOneCoverageBreadth): string {
 	const descriptions = items.map(item => {
 		switch (item) {
 			case CoverageBreadth.APP_ONLY:
-				return 'only the application layer'
+				return 'the application layer'
 			case CoverageBreadth.FIRMWARE_ONLY:
-				return 'only firmware vulnerabilities'
+				return 'firmware vulnerabilities'
 			case CoverageBreadth.HARDWARE_ONLY:
-				return 'only hardware vulnerabilities'
+				return 'hardware vulnerabilities'
 			default:
 				return ''
 		}
@@ -50,7 +50,7 @@ function getCoverageDescription(breadth: AtLeastOneCoverageBreadth): string {
 	if (descriptions.length === 0) {
 		return ''
 	}
-	return `The program covers ${commaListFormat(descriptions)}.`
+	return `The program covers only ${commaListFormat(descriptions)} .`
 }
 
 function getRewardDescription(support: BugBountyProgramSupport): string {
