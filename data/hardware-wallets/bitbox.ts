@@ -10,6 +10,7 @@ import {
 	WalletInfo,
 } from '@/schema/features/privacy/data-collection'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
+import { BugBountyPlatform, BugBountyProgramAvailability, type BugBountyProgramImplementation } from '@/schema/features/security/bug-bounty-program'
 import { FirmwareType } from '@/schema/features/security/firmware'
 import {
 	DataExtraction,
@@ -20,6 +21,9 @@ import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
+import { featureSupported, notSupported, supported } from '@/schema/features/support'
+import type { CalendarDate } from '@/types/date'
+
 
 export const bitboxWallet: HardwareWallet = {
 	metadata: {
@@ -136,17 +140,22 @@ export const bitboxWallet: HardwareWallet = {
 		},
 		profile: WalletProfile.GENERIC,
 		security: {
-			bugBountyProgram: {
+			bugBountyProgram: supported<BugBountyProgramImplementation>({
 				ref: [
 					{
+						explanation: 'At Shift Crypto, we strive towards excellence when it comes to the security and privacy of our products and believe that an open architecture is vital to keep our users safe. However, even in time-proven security architectures, vulnerabilities can be found. This is why our code is open source. In the case you find a vulnerability, we would like to ask you to follow our bug bounty program for responsible disclosure.',
 						url: 'https://bitbox.swiss/bug-bounty-program/',
 					},
 				],
-				details:
-					'BitBox maintains a comprehensive bug bounty program with a Hall of Thanks, clear disclosure process, and PGP-encrypted communication.',
+				dateStarted: '2024-01-01' as CalendarDate,
+				availability: BugBountyProgramAvailability.ACTIVE,
+				coverageBreadth: 'FULL_SCOPE',
+				rewards: notSupported,
+				platform: BugBountyPlatform.SELF_HOSTED,
+				disclosure: notSupported,
 				upgradePathAvailable: true,
-				url: 'https://bitbox.swiss/bug-bounty-program/',
-			},
+				legalProtections: notSupported,
+			}),
 			firmware: {
 				type: FirmwareType.PASS,
 				customFirmware: null,
