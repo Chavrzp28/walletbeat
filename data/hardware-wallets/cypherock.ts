@@ -77,6 +77,12 @@ export const cypherockWallet: HardwareWallet = {
 		profile: WalletProfile.GENERIC,
 		security: {
 			bugBountyProgram: supported<BugBountyProgramImplementation>({
+				ref: [
+					{
+						explanation: 'Cypherock has a 90-day disclosure policy, which means that we do our best to fix issues within 90 days upon receipt of a vulnerability report. If the issue is fixed sooner and if there is a mutual agreement between the security researcher and the Cypherock Security Team, the disclosure might happen before the 90-day deadline.',
+						url: 'https://www.cypherock.com/bug-bounty',
+					},
+				],
 				dateStarted: '2024-01-01' as CalendarDate,
 				availability: BugBountyProgramAvailability.ACTIVE,
 				coverageBreadth: 'FULL_SCOPE',
@@ -84,17 +90,11 @@ export const cypherockWallet: HardwareWallet = {
 				platform: BugBountyPlatform.SELF_HOSTED,
 				disclosure: supported({
 					numberOfDays: 30,
-					ref: [
-						{
-							explanation: 'Cypherock has a 90-day disclosure policy, which means that we do our best to fix issues within 90 days upon receipt of a vulnerability report. If the issue is fixed sooner and if there is a mutual agreement between the security researcher and the Cypherock Security Team, the disclosure might happen before the 90-day deadline.',
-							url: 'https://www.cypherock.com/bug-bounty',
-						},
-					],
 				}),
 				upgradePathAvailable: true,
 				legalProtections: supported({
 					type: LegalProtectionType.SAFE_HARBOR,
-					refs: [
+					ref: [
 						{
 							explanation: 'Cypherock commits that security researchers reporting bugs will be protected from legal liability, so long as they follow responsible disclosure guidelines and principles.',
 							url: 'https://www.cypherock.com/bug-bounty',
