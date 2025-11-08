@@ -1,15 +1,18 @@
 import { patrickalphac } from '@/data/contributors'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
+import { type BugBountyProgramImplementation, BugBountyProgramAvailability, BugBountyPlatform, LegalProtectionType } from '@/schema/features/security/bug-bounty-program'
 import {
 	DataExtraction,
 	noCalldataDecoding,
 	noDataExtraction,
 } from '@/schema/features/security/hardware-wallet-app-signing'
+import { supported, notSupported } from '@/schema/features/support'
 import { LicensingType, SourceNotAvailableLicense } from '@/schema/features/transparency/license'
 import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
+import type { CalendarDate } from '@/types/date'
 
 export const ngrave: HardwareWallet = {
 	metadata: {
@@ -72,7 +75,25 @@ export const ngrave: HardwareWallet = {
 		},
 		profile: WalletProfile.GENERIC,
 		security: {
-			bugBountyProgram: null,
+			bugBountyProgram: supported<BugBountyProgramImplementation>({
+				ref: refTodo,
+				dateStarted: '2024-01-01' as CalendarDate,
+				availability: BugBountyProgramAvailability.ACTIVE,
+				coverageBreadth: 'FULL_SCOPE',
+				rewards: notSupported,
+				platform: BugBountyPlatform.SELF_HOSTED,
+				disclosure: notSupported,
+				upgradePathAvailable: false,
+				legalProtections: supported({
+					type: LegalProtectionType.SAFE_HARBOR,
+					ref: [
+						{
+							explanation: 'We ensure that security researchers who follow our guidelines are protected from legal action and are acknowledged for their contributions.',
+							url: 'https://ngrave.io/en/bug-bounty-program',
+						}
+					]
+				}),
+			}),
 			firmware: null,
 			hardwareWalletAppSigning: {
 				ref: [
