@@ -1,16 +1,19 @@
 import { patrickalphac } from '@/data/contributors'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
+import { BugBountyPlatform, BugBountyProgramAvailability, LegalProtectionType, type BugBountyProgramImplementation } from '@/schema/features/security/bug-bounty-program'
 import { FirmwareType } from '@/schema/features/security/firmware'
 import {
 	DataExtraction,
 	noCalldataDecoding,
 	noDataExtraction,
 } from '@/schema/features/security/hardware-wallet-app-signing'
+import { notSupported, supported } from '@/schema/features/support'
 import { FOSSLicense, LicensingType } from '@/schema/features/transparency/license'
 import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
+import type { CalendarDate } from '@/types/date'
 
 export const cypherockWallet: HardwareWallet = {
 	metadata: {
@@ -73,19 +76,32 @@ export const cypherockWallet: HardwareWallet = {
 		},
 		profile: WalletProfile.GENERIC,
 		security: {
-			bugBountyProgram: {
-				ref: [
-					{
-						explanation:
-							'Bug bounty program with responsible disclosure policy and discretionary rewards',
-						url: 'https://www.cypherock.com/bug-bounty',
-					},
-				],
-				details:
-					'Cypherock provides legal protection for security researchers and discretionary rewards for valid security issues affecting X1 Wallet and X1 Card.',
+			bugBountyProgram: supported<BugBountyProgramImplementation>({
+				dateStarted: '2024-01-01' as CalendarDate,
+				availability: BugBountyProgramAvailability.ACTIVE,
+				coverageBreadth: 'FULL_SCOPE',
+				rewards: notSupported,
+				platform: BugBountyPlatform.SELF_HOSTED,
+				disclosure: supported({
+					numberOfDays: 30,
+					ref: [
+						{
+							explanation: 'Cypherock has a 90-day disclosure policy, which means that we do our best to fix issues within 90 days upon receipt of a vulnerability report. If the issue is fixed sooner and if there is a mutual agreement between the security researcher and the Cypherock Security Team, the disclosure might happen before the 90-day deadline.',
+							url: 'https://www.cypherock.com/bug-bounty',
+						},
+					],
+				}),
 				upgradePathAvailable: true,
-				url: 'https://www.cypherock.com/bug-bounty',
-			},
+				legalProtections: supported({
+					type: LegalProtectionType.SAFE_HARBOR,
+					refs: [
+						{
+							explanation: 'Cypherock commits that security researchers reporting bugs will be protected from legal liability, so long as they follow responsible disclosure guidelines and principles.',
+							url: 'https://www.cypherock.com/bug-bounty',
+						},
+					],
+				}),
+			}),
 			firmware: {
 				type: FirmwareType.PASS,
 				customFirmware: null,
