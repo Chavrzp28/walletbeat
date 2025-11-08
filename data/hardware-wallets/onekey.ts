@@ -1,16 +1,19 @@
 import { patrickalphac } from '@/data/contributors'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
+import { type BugBountyProgramImplementation, BugBountyProgramAvailability, BugBountyPlatform, LegalProtectionType } from '@/schema/features/security/bug-bounty-program'
 import { FirmwareType } from '@/schema/features/security/firmware'
 import {
 	DataExtraction,
 	displaysFullTransactionDetails,
 	noCalldataDecoding,
 } from '@/schema/features/security/hardware-wallet-app-signing'
+import { supported, notSupported } from '@/schema/features/support'
 import { FOSSLicense, LicensingType } from '@/schema/features/transparency/license'
 import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
+import type { CalendarDate } from '@/types/date'
 
 export const onekeyWallet: HardwareWallet = {
 	metadata: {
@@ -73,19 +76,27 @@ export const onekeyWallet: HardwareWallet = {
 		},
 		profile: WalletProfile.GENERIC,
 		security: {
-			bugBountyProgram: {
-				ref: [
-					{
-						explanation:
-							'OneKey maintains a well-structured bug bounty program with clear scope, rewards up to $10,000 USDC for critical vulnerabilities, and separate categories for different components.',
-						url: 'https://bugrap.io/bounties/OneKey',
-					},
-				],
-				details:
-					'OneKey offers a comprehensive bug bounty program covering app monorepo, firmware, hardware SDK, and websites. Rewards range from $100-$10,000 USDC based on severity, with higher rewards for firmware vulnerabilities.',
+			bugBountyProgram: supported<BugBountyProgramImplementation>({
+				ref: refTodo,
+				dateStarted: '2024-01-01' as CalendarDate,
+				availability: BugBountyProgramAvailability.ACTIVE,
+				coverageBreadth: 'FULL_SCOPE',
+				rewards: supported({
+					minimum: 100,
+					maximum: 10000,
+					currency: 'USDC',
+					ref: [
+						{
+							explanation: 'At the discretion of OneKey, quality, creativity, or novelty of submissions may modify payouts within a given range.',
+							url: 'https://bugrap.io/bounties/OneKey',
+						},
+					],
+				}),
+				platform: BugBountyPlatform.BUGRAP,
+				disclosure: notSupported,
 				upgradePathAvailable: false,
-				url: 'https://bugrap.io/bounties/OneKey',
-			},
+				legalProtections: notSupported,
+			}),
 			firmware: {
 				type: FirmwareType.FAIL,
 				customFirmware: FirmwareType.FAIL,
