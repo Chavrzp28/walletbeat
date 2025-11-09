@@ -67,7 +67,9 @@ import Metadata from '@/layouts/Metadata.astro'
 		@media not (max-width: 1024px) {
 			grid-template:
 				'Nav Main' 100dvh
-				/ var(--navigation-desktop-inlineSize) minmax(0, 1fr);
+				/ var(--navigation-desktop-inlineSize) minmax(auto, 1fr)
+			;
+
 			&[data-sticky-container] {
 				--sticky-marginInlineStart: var(--separator-width);
 				--sticky-paddingInlineStart: var(--navigation-desktop-inlineSize);
@@ -78,7 +80,8 @@ import Metadata from '@/layouts/Metadata.astro'
 			grid-template:
 				'Nav' var(--navigation-mobile-blockSize)
 				'Main' 1fr
-				/ minmax(0, 1fr);
+				/ minmax(auto, 1fr)
+			;
 
 			&[data-sticky-container] {
 				--sticky-marginBlockStart: var(--separator-width);
@@ -95,29 +98,7 @@ import Metadata from '@/layouts/Metadata.astro'
 		}
 
 		> main {
-			--content-maxWidth: 90rem;
-
 			grid-area: Main;
-			min-inline-size: fit-content;
-
-			section,
-			> astro-island > section {
-				padding:
-					clamp(1.5rem, (100cqi - var(--content-maxWidth)) / 2, 2rem)
-					max(1.5rem, (100cqi - var(--content-maxWidth)) / 2)
-				;
-
-				&[data-sticky-container] {
-					/* --sticky-paddingInlineStart: clamp(1.5rem, 6cqi, 2rem);
-					--sticky-paddingInlineEnd: clamp(1.5rem, 6cqi, 2rem); */
-
-					--sticky-paddingInlineStart: max(1.5rem, (100cqi - var(--content-maxWidth)) / 2);
-					--sticky-paddingInlineEnd: max(1.5rem, (100cqi - var(--content-maxWidth)) / 2);
-				}
-
-				gap: 1.5rem;
-				margin: 0 auto;
-			}
 		}
 	}
 </style>
