@@ -257,7 +257,12 @@ details {
 select,
 button,
 input,
-label:has(> input:is([type='checkbox'], [type='radio'])) {
+label:has(
+	> input:is(
+		[type='checkbox'],
+		[type='radio']
+	)
+) {
 	cursor: pointer;
 
 	display: flex;
@@ -280,7 +285,12 @@ label:has(> input:is([type='checkbox'], [type='radio'])) {
 }
 
 option,
-label:has(> input:is([type='checkbox'], [type='radio'])) {
+label:has(
+	> input:is(
+		[type='checkbox'],
+		[type='radio']
+	)
+) {
 	padding: 0.6em 0.8em;
 }
 
@@ -293,7 +303,13 @@ label:has(> input:is([type='checkbox'], [type='radio'])) {
 	option,
 	button,
 	input,
-	label:has(> input:is([type='checkbox'], [type='radio']), button),
+	label:has(
+		> input:is(
+			[type='checkbox'],
+			[type='radio']
+		),
+		button
+	),
 	::scroll-marker
 ) {
 	position: relative;
@@ -312,7 +328,13 @@ label:has(> input:is([type='checkbox'], [type='radio'])) {
 	transition-duration: var(--pressable-transitionOutDuration);
 
 	&:active:is(
-			label:has(> input:is([type='checkbox'], [type='radio']), button),
+			label:has(
+				> input:is(
+					[type='checkbox'],
+					[type='radio']
+				),
+				button
+			),
 			:not(
 				:has(
 					:where(
@@ -325,7 +347,13 @@ label:has(> input:is([type='checkbox'], [type='radio'])) {
 							option,
 							button,
 							input,
-							label:has(> input:is([type='checkbox'], [type='radio']), button)
+							label:has(
+								> input:is(
+									[type='checkbox'],
+									[type='radio']
+								),
+								button
+							)
 						)
 					):active
 				)
@@ -424,8 +452,11 @@ span svg {
 	&[data-row~='wrap'] {
 		flex-wrap: wrap;
 
-		&:not([data-row~='start']):not([data-row~='center']):not([data-row~='end'])
-			> :nth-child(2):last-child {
+		&:not(
+			[data-row~='start'],
+			[data-row~='center'],
+			[data-row~='end']
+		) > :nth-child(2):last-child {
 			margin-inline-start: auto;
 		}
 	}
