@@ -685,21 +685,10 @@ span svg {
 	}
 }
 
-[data-sticky-container] {
-	/* Inputs */
-	--sticky-marginBlockStart: 0px;
-	--sticky-marginBlockEnd: 0px;
-	--sticky-marginInlineStart: 0px;
-	--sticky-marginInlineEnd: 0px;
-	--sticky-paddingBlockStart: 0px;
-	--sticky-paddingBlockEnd: 0px;
-	--sticky-paddingInlineStart: 0px;
-	--sticky-paddingInlineEnd: 0px;
 
-	/* Rules */
-	isolation: isolate;
-}
-
+/**
+ * Scroll Container
+ */
 [data-scroll-container] {
 	/* Inputs */
 	--scrollContainer-sizeBlock: 100cqb;
@@ -853,65 +842,92 @@ span svg {
 			}
 		}
 	}
-}
 
-[data-sticky] {
-	/* Inputs */
-	--sticky-backgroundColor: light-dark(#efefef66, #14141488);
-	--sticky-backdropFilter: blur(20px);
-	--sticky-backdropMaskImage: none;
 
-	/* Rules */
-	z-index: 1;
-	container-type: scroll-state;
+	/**
+	 * Sticky Container
+	 */
+	&[data-sticky-container],
+	[data-sticky-container] {
+		/* Inputs */
+		--sticky-marginBlockStart: 0px;
+		--sticky-marginBlockEnd: 0px;
+		--sticky-marginInlineStart: 0px;
+		--sticky-marginInlineEnd: 0px;
+		--sticky-paddingBlockStart: 0px;
+		--sticky-paddingBlockEnd: 0px;
+		--sticky-paddingInlineStart: 0px;
+		--sticky-paddingInlineEnd: 0px;
+		--scrollItem-inlineDetached-maxSizeInline: var(--sticky-sizeInline);
+		--scrollItem-inlineDetached-maxPaddingMatchStart: 2rem;
+		--scrollItem-inlineDetached-maxPaddingMatchEnd: 2rem;
 
-	position: sticky;
+		/* Rules */
+		isolation: isolate;
 
-	&:not([data-sticky|='block']):not([data-sticky|='inline']),
-	&[data-sticky|='block'] {
-		inset-block-start: var(--sticky-insetBlockStart);
-		inset-block-end: var(--sticky-insetBlockEnd);
 
-		max-block-size: calc(var(--scrollContainer-sizeBlock) - var(--sticky-insetBlockStart) - var(--sticky-insetBlockEnd));
+		/**
+		 * Sticky Item
+		 */
+		[data-sticky] {
+			/* Inputs */
+			--sticky-backgroundColor: light-dark(#efefef66, #14141488);
+			--sticky-backdropFilter: blur(20px);
+			--sticky-backdropMaskImage: none;
 
-		&[data-sticky~='block-start'] {
-			inset-inline-end: auto;
-		}
+			/* Rules */
+			z-index: 1;
+			container-type: scroll-state;
 
-		&[data-sticky~='block-end'] {
-			inset-inline-start: auto;
-		}
-	}
-	&:not([data-sticky|='block']):not([data-sticky|='inline']),
-	&[data-sticky|='inline'] {
-		inset-inline-start: var(--sticky-insetInlineStart);
-		inset-inline-end: var(--sticky-insetInlineEnd);
+			position: sticky;
 
-		max-inline-size: calc(var(--scrollContainer-sizeInline) - var(--sticky-insetInlineStart) - var(--sticky-insetInlineEnd));
+			&:not([data-sticky|='block']):not([data-sticky|='inline']),
+			&[data-sticky~='block'] {
+				inset-block-start: var(--sticky-insetBlockStart);
+				inset-block-end: var(--sticky-insetBlockEnd);
 
-		&[data-sticky~='inline-start'] {
-			inset-inline-end: auto;
-		}
+				max-block-size: calc(var(--scrollContainer-sizeBlock) - var(--sticky-insetBlockStart) - var(--sticky-insetBlockEnd));
 
-		&[data-sticky~='inline-end'] {
-			inset-inline-start: auto;
-		}
-	}
+				&[data-sticky~='block-start'] {
+					inset-inline-end: auto;
+				}
 
-	&:not([data-sticky~='no-backdrop'])::before {
-		content: '';
-		z-index: -1;
-		position: absolute;
-		inset: 0;
-		background-color: var(--sticky-backgroundColor);
-		backdrop-filter: var(--sticky-backdropFilter);
-		border-radius: inherit;
+				&[data-sticky~='block-end'] {
+					inset-inline-start: auto;
+				}
+			}
+			&:not([data-sticky|='block']):not([data-sticky|='inline']),
+			&[data-sticky~='inline'] {
+				inset-inline-start: var(--sticky-insetInlineStart);
+				inset-inline-end: var(--sticky-insetInlineEnd);
 
-		transition-property: background-color, backdrop-filter;
+				max-inline-size: calc(var(--scrollContainer-sizeInline) - var(--sticky-insetInlineStart) - var(--sticky-insetInlineEnd));
 
-		@container scroll-state(stuck: none) {
-			background-color: transparent !important;
-			backdrop-filter: blur(0px);
+				&[data-sticky~='inline-start'] {
+					inset-inline-end: auto;
+				}
+
+				&[data-sticky~='inline-end'] {
+					inset-inline-start: auto;
+				}
+			}
+
+			&:not([data-sticky~='no-backdrop'])::before {
+				content: '';
+				z-index: -1;
+				position: absolute;
+				inset: 0;
+				background-color: var(--sticky-backgroundColor);
+				backdrop-filter: var(--sticky-backdropFilter);
+				border-radius: inherit;
+
+				transition-property: background-color, backdrop-filter;
+
+				@container scroll-state(stuck: none) {
+					background-color: transparent !important;
+					backdrop-filter: blur(0px);
+				}
+			}
 		}
 	}
 }
