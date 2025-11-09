@@ -929,5 +929,69 @@ span svg {
 				}
 			}
 		}
+
+
+		/**
+		 * Scroll Item
+		 */
+		[data-scroll-item] {
+			&[data-scroll-item~='inline-detached'] {
+				/* Rules */
+				--scrollItem-paddingInline: max(1.5rem, (var(--sticky-sizeInline) - var(--scrollItem-inlineDetached-maxSizeInline)) / 2);
+
+				width: 100%;
+				padding-inline-start: var(--scrollItem-paddingInline);
+				padding-inline-end: var(--scrollItem-paddingInline);
+
+				&[data-sticky-container] {
+					--sticky-paddingInlineStart: var(--scrollItem-paddingInline);
+					--sticky-paddingInlineEnd: var(--scrollItem-paddingInline);
+				}
+
+				&[data-scroll-item~='padding-match-start'] {
+					padding-block-start: min(var(--scrollItem-paddingInline), var(--scrollItem-inlineDetached-maxPaddingMatchStart));
+				}
+
+				&[data-scroll-item~='padding-match-end'] {
+					padding-block-end: min(var(--scrollItem-paddingInline), var(--scrollItem-inlineDetached-maxPaddingMatchEnd));
+				}
+			}
+			&[data-scroll-item~='inline-attached'] {
+				display: grid;
+				inline-size: min-content;
+				min-inline-size: var(--sticky-sizeInline);
+
+				&[data-scroll-item~='underflow-start'] {
+					justify-content: safe start;
+				}
+				&[data-scroll-item~='underflow-center'] {
+					justify-content: safe center;
+				}
+				&[data-scroll-item~='underflow-end'] {
+					justify-content: safe end;
+				}
+
+				&[data-scroll-item~='overflow-start'] {
+					position: sticky;
+					inset-inline-end: var(--sticky-insetInlineEnd);
+					margin-inline-start: auto;
+				}
+				&[data-scroll-item~='overflow-center'] {
+					margin-inline: auto;
+				}
+				&[data-scroll-item~='overflow-end'] {
+					position: sticky;
+					inset-inline-start: var(--sticky-insetInlineStart);
+					margin-inline-end: auto;
+				}
+			}
+
+			&[data-scroll-item~='snap-block-start'] {
+				scroll-snap-align: start;
+			}
+			&[data-scroll-item~='snap-block-end'] {
+				scroll-snap-align: end;
+			}
+		}
 	}
 }
