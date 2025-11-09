@@ -100,7 +100,8 @@ import Metadata from '@/layouts/Metadata.astro'
 			grid-area: Main;
 			min-inline-size: fit-content;
 
-			> section {
+			section,
+			> astro-island > section {
 				padding:
 					clamp(1.5rem, (100cqi - var(--content-maxWidth)) / 2, 2rem)
 					max(1.5rem, (100cqi - var(--content-maxWidth)) / 2)

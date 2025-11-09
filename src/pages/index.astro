@@ -41,23 +41,19 @@ import WalletTable from '@/views/WalletTable.svelte'
 			</p>
 		</header>
 
-		<section data-sticky-container data-column='gap-6'>
-			<WalletTable
-				client:load
-				title='Software Wallets'
-				wallets={Object.values(ratedSoftwareWallets)}
-				{attributeGroups}
-			/>
-		</section>
+		<WalletTable
+			client:load
+			title='Software Wallets'
+			wallets={Object.values(ratedSoftwareWallets)}
+			{attributeGroups}
+		/>
 
-		<section data-sticky-container data-column='gap-6'>
-			<WalletTable
-				client:load
-				title='Hardware Wallets'
-				wallets={Object.values(ratedHardwareWallets)}
-				{attributeGroups}
-			/>
-		</section>
+		<WalletTable
+			client:load
+			title='Hardware Wallets'
+			wallets={Object.values(ratedHardwareWallets)}
+			{attributeGroups}
+		/>
 	</main>
 </Layout>
 
