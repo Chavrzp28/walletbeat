@@ -1,12 +1,12 @@
 <script
 	lang="ts"
 	generics="
-		TypographicContent extends _TypographicContent<any> = _TypographicContent<any>
+		TypographicContent extends _TypographicContent = _TypographicContent
 	"
 >
 	// Types
 	import { ContentType, type TypographicContent as _TypographicContent } from '@/types/content'
-	import { renderStrings, trimWhitespacePrefix } from '@/types/utils/text'
+	import { renderStrings } from '@/types/utils/text'
 
 
 	// Props

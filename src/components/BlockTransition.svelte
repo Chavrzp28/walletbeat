@@ -1,13 +1,10 @@
-<script lang="ts">
+<script lang="ts" generics="
+	Key extends string | number | undefined = undefined,
+	Value extends any = any
+">
 	// Types
 	import type { Snippet } from 'svelte'
-	import type { SvelteHTMLElements } from 'svelte/elements'
-	import type { EasingFunction } from 'svelte/transition'
 	import type { TransitionConfig } from 'svelte/transition'
-
-	type Key = $$Generic<any>
-	type Value = $$Generic<any>
-	type TransitionParams = $$Generic<{delay?: number; duration?: number; easing?: EasingFunction}>
 
 	type TransitionFnAndParams<
 		Fn extends (node: Element, _?: any) => TransitionConfig = any
@@ -18,7 +15,7 @@
 	)
 
 
-	// Inputs
+	// Props
 	let {
 		key,
 		value,
@@ -36,7 +33,7 @@
 		clip?: boolean
 
 		// Snippets
-		children?: Snippet<[{ key?: Key, value: any }]>
+		children?: Snippet<[{ key?: Key, value: Value }]>
 
 		// View options
 		align?: 'top' | 'center' | 'bottom'
@@ -44,17 +41,12 @@
 	} = $props()
 
 
-	// Internal state
+	// State
 	let borderBoxSize: ResizeObserverSize[] | undefined = $state()
-
 
 	// (Computed)
 	let alignBlock = $derived(
 		({ 'top': 'start', 'center': 'center', 'bottom': 'end' } as const)[align]
-	)
-
-	let [ transition, transitionParams ] = $derived(
-		[() => {}]
 	)
 
 
@@ -73,7 +65,6 @@
 	data-clip={clip ? '' : undefined}
 	style:--transitionDuration="250ms"
 	style:--transitionDelay="0ms"
-	transition:transition={transitionParams}
 	data-stack
 	class={`align-${align}`}
 >
@@ -105,8 +96,8 @@
 				<div
 					data-content
 					bind:borderBoxSize
-				data-column
-				class={`align-${align}`}
+					data-column
+					class={`align-${align}`}
 					in:inTransition={inParams}
 				>
 					{#if children}

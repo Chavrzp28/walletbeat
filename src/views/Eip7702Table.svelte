@@ -187,8 +187,8 @@
 					alt={wallet.metadata.displayName}
 					class="wallet-icon"
 					onerror={e => {
-						const target = e.target as HTMLImageElement
-						if (target) target.src = '/images/wallets/default.svg'
+						if (e.currentTarget)
+							e.currentTarget.src = '/images/wallets/default.svg'
 					}}
 				/>
 
@@ -314,9 +314,9 @@
 			{/if}
 
 		{:else if column.id === 'batching'}
-			{@const contract = getWalletContract(wallet)}
+			<!-- {@const contract = getWalletContract(wallet)} -->
 
-		<span class="muted-text">Coming soon</span>
+			<span class="muted-text">Coming soon</span>
 
 		{:else}
 			{value}

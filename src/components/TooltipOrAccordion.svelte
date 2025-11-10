@@ -10,7 +10,9 @@
 		showAccordionMarker = false,
 
 		tooltipMaxWidth,
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- ESLint incorrectly infers `ComponentProps<...>['...']` as `any`
 		tooltipButtonTriggerPlacement = 'around',
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- ESLint incorrectly infers `ComponentProps<...>['...']` as `any`
 		tooltipHoverTriggerPlacement = 'around',
 
 		children,
@@ -38,7 +40,6 @@
 	// Transitions/animations
 	import { expoOut } from 'svelte/easing'
 	import { fade } from 'svelte/transition'
-
 </script>
 
 
