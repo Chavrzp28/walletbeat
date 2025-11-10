@@ -12,6 +12,7 @@ export enum BugBountyPlatform {
 	HACKER_ONE = 'Hacker One',
 	BUG_CROWD = 'Bugcrowd',
 	INTIGRITI = 'Intigriti',
+	IMMUNEFI = 'Immunefi',
 	BUGRAP = 'Bugrap',
 }
 
