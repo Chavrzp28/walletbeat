@@ -98,8 +98,7 @@ export const trezorWallet: HardwareWallet = {
 					type: LegalProtectionType.SAFE_HARBOR,
 					ref: [
 						{
-							explanation:
-								'“Use exploits solely to verify the existence of vulnerabilities.',
+							explanation: 'Use exploits solely to verify the existence of vulnerabilities.',
 							url: 'https://trezor.io/other/partner-portal/for-developers/bug-bounty-program',
 						},
 					],
