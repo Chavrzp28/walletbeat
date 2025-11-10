@@ -37,6 +37,8 @@ import { paragraph } from '@/types/content'
 
 import { cure53 } from '../entities/cure53'
 import { imToken } from '../entities/imtoken'
+import { type BugBountyProgramImplementation, BugBountyProgramAvailability, BugBountyPlatform, LegalProtectionType } from '@/schema/features/security/bug-bounty-program'
+import type { CalendarDate } from '@/types/date'
 
 export const imtoken: SoftwareWallet = {
 	metadata: {
@@ -236,23 +238,21 @@ export const imtoken: SoftwareWallet = {
 		},
 		profile: WalletProfile.GENERIC,
 		security: {
-			bugBountyProgram: {
-				ref: [
-					{
-						explanation:
-							'imToken bug bounty program covers both wallet and website security vulnerabilities.',
-						url: 'https://bugrap.io/bounties/imToken%20Wallet',
-					},
-					{
-						explanation: 'imToken website bug bounty program for security vulnerabilities.',
-						url: 'https://bugrap.io/bounties/imToken%20Website',
-					},
-				],
-				details:
-					'imToken operates a comprehensive bug bounty program through Bugrap platform, covering both the wallet and the website. The program has a wide scope, competitive rewards, and a responsive disclosure process.',
+			bugBountyProgram: supported<BugBountyProgramImplementation>({
+				ref: refTodo,
+				dateStarted: '2024-01-01' as CalendarDate,
+				availability: BugBountyProgramAvailability.ACTIVE,
+				coverageBreadth: 'FULL_SCOPE',
+				rewards: supported({
+					minimum: 0,
+					maximum: 10000,
+					currency: 'USDC',
+				}),				
+				platform: BugBountyPlatform.SELF_HOSTED,
+				disclosure: notSupported,
 				upgradePathAvailable: true,
-				url: 'https://bugrap.io/bounties/imToken%20Wallet',
-			},
+				legalProtections: notSupported,
+			}),
 			hardwareWalletSupport: {
 				[Variant.MOBILE]: {
 					ref: [
