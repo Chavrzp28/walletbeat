@@ -329,6 +329,7 @@
 
 <Table
 	{tableId}
+	class="wallet-table"
 
 	rows={wallets}
 	rowId={wallet => wallet.metadata.id}
@@ -411,7 +412,6 @@
 		})()
 	}
 	bind:sortedColumn
-	style="--table-cell-verticalAlign: top;"
 >
 	{#snippet Cell({
 		row: wallet,
@@ -1135,10 +1135,21 @@
 
 <style>
 	:global {
+		.wallet-table {
+			td:not(:has(details:open)) {
+				transition-property: vertical-align;
+				transition-delay: 0.25s;
+			}
+
+			td:has(details:open) {
+				--table-cell-verticalAlign: top;
+			}
+		}
+
 		details.wallet-info-details {
 			transition-property: gap, margin-block-start;
 
-			&:is(:not([open])) {
+			&:is(:not(:open)) {
 				margin-block-start: calc((96px - 5rem) / 2);
 			}
 		}
