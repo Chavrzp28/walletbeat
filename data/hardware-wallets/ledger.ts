@@ -1,9 +1,9 @@
 import { nconsigny, patrickalphac } from '@/data/contributors'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
 import {
-	type BugBountyProgramImplementation,
-	BugBountyProgramAvailability,
 	BugBountyPlatform,
+	BugBountyProgramAvailability,
+	type BugBountyProgramImplementation,
 	LegalProtectionType,
 } from '@/schema/features/security/bug-bounty-program'
 import {
@@ -96,15 +96,12 @@ export const ledgerWallet: HardwareWallet = {
 		security: {
 			bugBountyProgram: supported<BugBountyProgramImplementation>({
 				ref: refTodo,
-				dateStarted: '2020-03-07' as CalendarDate,
 				availability: BugBountyProgramAvailability.ACTIVE,
 				coverageBreadth: 'FULL_SCOPE',
-				rewards: notSupported,
-				platform: BugBountyPlatform.SELF_HOSTED,
+				dateStarted: '2020-03-07' as CalendarDate,
 				disclosure: supported({
 					numberOfDays: 90,
 				}),
-				upgradePathAvailable: true,
 				legalProtections: supported({
 					type: LegalProtectionType.SAFE_HARBOR,
 					ref: [
@@ -115,6 +112,9 @@ export const ledgerWallet: HardwareWallet = {
 						},
 					],
 				}),
+				platform: BugBountyPlatform.SELF_HOSTED,
+				rewards: notSupported,
+				upgradePathAvailable: true,
 			}),
 			firmware: null,
 			hardwareWalletAppSigning: {

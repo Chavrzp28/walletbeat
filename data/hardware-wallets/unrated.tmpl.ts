@@ -1,12 +1,12 @@
 import { exampleContributor } from '@/data/contributors/example'
 import { WalletProfile } from '@/schema/features/profile'
 import {
-	type BugBountyProgramImplementation,
-	BugBountyProgramAvailability,
 	BugBountyPlatform,
+	BugBountyProgramAvailability,
+	type BugBountyProgramImplementation,
 	LegalProtectionType,
 } from '@/schema/features/security/bug-bounty-program'
-import { supported, notSupported } from '@/schema/features/support'
+import { notSupported, supported } from '@/schema/features/support'
 import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
@@ -58,15 +58,12 @@ export const unratedHardwareTemplate: HardwareWallet = {
 		security: {
 			bugBountyProgram: supported<BugBountyProgramImplementation>({
 				ref: refTodo,
-				dateStarted: '2024-01-01' as CalendarDate,
 				availability: BugBountyProgramAvailability.ACTIVE,
 				coverageBreadth: 'FULL_SCOPE',
-				rewards: notSupported,
-				platform: BugBountyPlatform.SELF_HOSTED,
+				dateStarted: '2024-01-01' as CalendarDate,
 				disclosure: supported({
 					numberOfDays: 30,
 				}),
-				upgradePathAvailable: true,
 				legalProtections: supported({
 					type: LegalProtectionType.SAFE_HARBOR,
 					ref: [
@@ -76,6 +73,9 @@ export const unratedHardwareTemplate: HardwareWallet = {
 						},
 					],
 				}),
+				platform: BugBountyPlatform.SELF_HOSTED,
+				rewards: notSupported,
+				upgradePathAvailable: true,
 			}),
 			firmware: null,
 			hardwareWalletAppSigning: null,

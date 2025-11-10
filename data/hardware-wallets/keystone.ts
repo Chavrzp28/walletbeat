@@ -1,9 +1,9 @@
 import { nconsigny, patrickalphac } from '@/data/contributors'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
 import {
-	type BugBountyProgramImplementation,
-	BugBountyProgramAvailability,
 	BugBountyPlatform,
+	BugBountyProgramAvailability,
+	type BugBountyProgramImplementation,
 	LegalProtectionType,
 } from '@/schema/features/security/bug-bounty-program'
 import { FirmwareType } from '@/schema/features/security/firmware'
@@ -12,7 +12,7 @@ import {
 	DataExtraction,
 	displaysFullTransactionDetails,
 } from '@/schema/features/security/hardware-wallet-app-signing'
-import { supported, notSupported } from '@/schema/features/support'
+import { notSupported, supported } from '@/schema/features/support'
 import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
@@ -72,13 +72,10 @@ export const keystoneWallet: HardwareWallet = {
 		security: {
 			bugBountyProgram: supported<BugBountyProgramImplementation>({
 				ref: refTodo,
-				dateStarted: '2021-04-02' as CalendarDate,
 				availability: BugBountyProgramAvailability.ACTIVE,
 				coverageBreadth: 'FULL_SCOPE',
-				rewards: notSupported,
-				platform: BugBountyPlatform.SELF_HOSTED,
+				dateStarted: '2021-04-02' as CalendarDate,
 				disclosure: notSupported,
-				upgradePathAvailable: false,
 				legalProtections: supported({
 					type: LegalProtectionType.SAFE_HARBOR,
 					ref: [
@@ -89,6 +86,9 @@ export const keystoneWallet: HardwareWallet = {
 						},
 					],
 				}),
+				platform: BugBountyPlatform.SELF_HOSTED,
+				rewards: notSupported,
+				upgradePathAvailable: false,
 			}),
 			firmware: {
 				type: FirmwareType.PASS,

@@ -1,9 +1,9 @@
 import { patrickalphac } from '@/data/contributors'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
 import {
-	type BugBountyProgramImplementation,
-	BugBountyProgramAvailability,
 	BugBountyPlatform,
+	BugBountyProgramAvailability,
+	type BugBountyProgramImplementation,
 	LegalProtectionType,
 } from '@/schema/features/security/bug-bounty-program'
 import {
@@ -11,7 +11,7 @@ import {
 	noCalldataDecoding,
 	noDataExtraction,
 } from '@/schema/features/security/hardware-wallet-app-signing'
-import { supported, notSupported } from '@/schema/features/support'
+import { notSupported, supported } from '@/schema/features/support'
 import { LicensingType, SourceNotAvailableLicense } from '@/schema/features/transparency/license'
 import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
@@ -82,13 +82,10 @@ export const ngrave: HardwareWallet = {
 		security: {
 			bugBountyProgram: supported<BugBountyProgramImplementation>({
 				ref: refTodo,
-				dateStarted: '2025-01-18' as CalendarDate,
 				availability: BugBountyProgramAvailability.ACTIVE,
 				coverageBreadth: 'FULL_SCOPE',
-				rewards: notSupported,
-				platform: BugBountyPlatform.SELF_HOSTED,
+				dateStarted: '2025-01-18' as CalendarDate,
 				disclosure: notSupported,
-				upgradePathAvailable: false,
 				legalProtections: supported({
 					type: LegalProtectionType.SAFE_HARBOR,
 					ref: [
@@ -99,6 +96,9 @@ export const ngrave: HardwareWallet = {
 						},
 					],
 				}),
+				platform: BugBountyPlatform.SELF_HOSTED,
+				rewards: notSupported,
+				upgradePathAvailable: false,
 			}),
 			firmware: null,
 			hardwareWalletAppSigning: {

@@ -20,12 +20,12 @@ import {
 	DataExtraction,
 	noCalldataDecoding,
 } from '@/schema/features/security/hardware-wallet-app-signing'
+import { notSupported, supported } from '@/schema/features/support'
 import { FOSSLicense, LicensingType } from '@/schema/features/transparency/license'
 import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
-import { featureSupported, notSupported, supported } from '@/schema/features/support'
 import type { CalendarDate } from '@/types/date'
 
 export const bitboxWallet: HardwareWallet = {
@@ -151,14 +151,14 @@ export const bitboxWallet: HardwareWallet = {
 						url: 'https://bitbox.swiss/bug-bounty-program/',
 					},
 				],
-				dateStarted: '2023-06-08' as CalendarDate,
 				availability: BugBountyProgramAvailability.ACTIVE,
 				coverageBreadth: 'FULL_SCOPE',
-				rewards: notSupported,
-				platform: BugBountyPlatform.SELF_HOSTED,
+				dateStarted: '2023-06-08' as CalendarDate,
 				disclosure: notSupported,
-				upgradePathAvailable: true,
 				legalProtections: notSupported,
+				platform: BugBountyPlatform.SELF_HOSTED,
+				rewards: notSupported,
+				upgradePathAvailable: true,
 			}),
 			firmware: {
 				type: FirmwareType.PASS,

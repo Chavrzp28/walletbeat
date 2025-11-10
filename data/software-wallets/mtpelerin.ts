@@ -2,10 +2,9 @@ import { sigri } from '@/data/contributors/sigri'
 import { PrivateTransferTechnology } from '@/schema/features/privacy/transaction-privacy'
 import { WalletProfile } from '@/schema/features/profile'
 import {
-	type BugBountyProgramImplementation,
-	BugBountyProgramAvailability,
 	BugBountyPlatform,
-	LegalProtectionType,
+	BugBountyProgramAvailability,
+	type BugBountyProgramImplementation,
 } from '@/schema/features/security/bug-bounty-program'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
 import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
@@ -116,18 +115,18 @@ export const mtpelerin: SoftwareWallet = {
 						url: 'https://immunefi.com/bug-bounty/mtpelerin/information/',
 					},
 				],
-				dateStarted: '2021-02-08' as CalendarDate,
 				availability: BugBountyProgramAvailability.ACTIVE,
 				coverageBreadth: 'FULL_SCOPE',
-				rewards: supported({
-					minimum: 1000,
-					maximum: 100000,
-					currency: 'USD',
-				}),
-				platform: BugBountyPlatform.IMMUNEFI,
+				dateStarted: '2021-02-08' as CalendarDate,
 				disclosure: notSupported,
-				upgradePathAvailable: false,
 				legalProtections: notSupported,
+				platform: BugBountyPlatform.IMMUNEFI,
+				rewards: supported({
+					currency: 'USD',
+					maximum: 100000,
+					minimum: 1000,
+				}),
+				upgradePathAvailable: false,
 			}),
 			hardwareWalletSupport: {
 				ref: refTodo,

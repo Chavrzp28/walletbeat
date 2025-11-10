@@ -14,6 +14,11 @@ import {
 import { PrivateTransferTechnology } from '@/schema/features/privacy/transaction-privacy'
 import { WalletProfile } from '@/schema/features/profile'
 import {
+	BugBountyPlatform,
+	BugBountyProgramAvailability,
+	type BugBountyProgramImplementation,
+} from '@/schema/features/security/bug-bounty-program'
+import {
 	HardwareWalletConnection,
 	HardwareWalletType,
 	type SupportedHardwareWallet,
@@ -30,6 +35,7 @@ import { type References, refNotNecessary, refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
+import type { CalendarDate } from '@/types/date'
 
 import { nconsigny } from '../contributors'
 import { ambireEntity } from '../entities/ambire'
@@ -41,13 +47,6 @@ import { pashov } from '../entities/pashov-audit-group'
 import { pimlico } from '../entities/pimlico'
 import { ambireAccountContract } from '../wallet-contracts/ambire-account'
 import { ambireDelegatorContract } from '../wallet-contracts/ambire-delegator'
-import {
-	BugBountyPlatform,
-	BugBountyProgramAvailability,
-	LegalProtectionType,
-	type BugBountyProgramImplementation,
-} from '@/schema/features/security/bug-bounty-program'
-import type { CalendarDate } from '@/types/date'
 
 const v2Audits: SecurityAudit[] = [
 	{
@@ -430,14 +429,14 @@ export const ambire: SoftwareWallet = {
 						url: 'https://blog.ambire.com/ambire-x-immunefy-bug-bounty-audit-our-code-and-earn-rewards/',
 					},
 				],
-				dateStarted: '2021-12-17' as CalendarDate,
 				availability: BugBountyProgramAvailability.INACTIVE,
 				coverageBreadth: 'FULL_SCOPE',
-				rewards: notSupported,
-				platform: BugBountyPlatform.SELF_HOSTED,
+				dateStarted: '2021-12-17' as CalendarDate,
 				disclosure: notSupported,
-				upgradePathAvailable: false,
 				legalProtections: notSupported,
+				platform: BugBountyPlatform.SELF_HOSTED,
+				rewards: notSupported,
+				upgradePathAvailable: false,
 			}),
 			hardwareWalletSupport: {
 				ref: {

@@ -15,16 +15,16 @@ import {
 	type LegalProtection,
 	LegalProtectionType,
 } from '@/schema/features/security/bug-bounty-program'
-import { refNotNecessary, mergeRefs, refs, popRefs } from '@/schema/reference'
 import { isSupported, supported } from '@/schema/features/support'
+import { mergeRefs, popRefs, refNotNecessary, refs } from '@/schema/reference'
 import { type AtLeastOneVariant } from '@/schema/variants'
 import { WalletType } from '@/schema/wallet-types'
 import { markdown, mdParagraph, mdSentence, paragraph, sentence } from '@/types/content'
 import type { CalendarDate } from '@/types/date'
 import { nonEmptySet, setItems } from '@/types/utils/non-empty'
+import { commaListFormat } from '@/types/utils/text'
 
 import { exempt, pickWorstRating, unrated } from '../common'
-import { commaListFormat } from '@/types/utils/text'
 
 const brand = 'attributes.security.bug_bounty_program'
 
@@ -52,6 +52,7 @@ function getCoverageDescription(breadth: AtLeastOneCoverageBreadth): string {
 	if (descriptions.length === 0) {
 		return ''
 	}
+
 	return `The program covers only ${commaListFormat(descriptions)} .`
 }
 
@@ -325,6 +326,7 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 		if (!isSupported(features.security.bugBountyProgram)) {
 			return noBugBountyProgram()
 		}
+
 		const { withoutRefs } = popRefs<BugBountyProgramSupport>(features.security.bugBountyProgram)
 
 		const allRefs = mergeRefs(

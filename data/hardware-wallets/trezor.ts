@@ -1,9 +1,9 @@
 import { nconsigny, patrickalphac } from '@/data/contributors'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
 import {
-	type BugBountyProgramImplementation,
-	BugBountyProgramAvailability,
 	BugBountyPlatform,
+	BugBountyProgramAvailability,
+	type BugBountyProgramImplementation,
 	LegalProtectionType,
 } from '@/schema/features/security/bug-bounty-program'
 import {
@@ -12,7 +12,7 @@ import {
 	noCalldataDecoding,
 } from '@/schema/features/security/hardware-wallet-app-signing'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
-import { supported, notSupported } from '@/schema/features/support'
+import { notSupported, supported } from '@/schema/features/support'
 import { refNotNecessary, refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
@@ -90,17 +90,10 @@ export const trezorWallet: HardwareWallet = {
 		security: {
 			bugBountyProgram: supported<BugBountyProgramImplementation>({
 				ref: refTodo,
-				dateStarted: '2018-08-25' as CalendarDate,
 				availability: BugBountyProgramAvailability.ACTIVE,
 				coverageBreadth: 'FULL_SCOPE',
-				rewards: supported({
-					minimum: 0,
-					maximum: 100000,
-					currency: 'USD',
-				}),
-				platform: BugBountyPlatform.SELF_HOSTED,
+				dateStarted: '2018-08-25' as CalendarDate,
 				disclosure: notSupported,
-				upgradePathAvailable: true,
 				legalProtections: supported({
 					type: LegalProtectionType.SAFE_HARBOR,
 					ref: [
@@ -111,6 +104,13 @@ export const trezorWallet: HardwareWallet = {
 						},
 					],
 				}),
+				platform: BugBountyPlatform.SELF_HOSTED,
+				rewards: supported({
+					currency: 'USD',
+					maximum: 100000,
+					minimum: 0,
+				}),
+				upgradePathAvailable: true,
 			}),
 			firmware: null,
 			hardwareWalletAppSigning: {

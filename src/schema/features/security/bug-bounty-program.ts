@@ -1,7 +1,8 @@
-import type { WithRef, MustRef } from '@/schema/reference'
-import type { Support } from '../support'
+import type { MustRef, WithRef } from '@/schema/reference'
 import type { CalendarDate } from '@/types/date'
 import { type NonEmptySet } from '@/types/utils/non-empty'
+
+import type { Support } from '../support'
 /**
  * Platforms of bug bounty programs
  */

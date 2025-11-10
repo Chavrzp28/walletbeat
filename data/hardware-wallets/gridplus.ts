@@ -3,16 +3,15 @@ import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/
 import {
 	BugBountyPlatform,
 	BugBountyProgramAvailability,
-	CoverageBreadth,
-	LegalProtectionType,
 	type BugBountyProgramImplementation,
+	LegalProtectionType,
 } from '@/schema/features/security/bug-bounty-program'
 import {
 	CalldataDecoding,
 	DataExtraction,
 	displaysFullTransactionDetails,
 } from '@/schema/features/security/hardware-wallet-app-signing'
-import { supported, notSupported } from '@/schema/features/support'
+import { notSupported, supported } from '@/schema/features/support'
 import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
@@ -72,13 +71,10 @@ export const gridplusWallet: HardwareWallet = {
 		security: {
 			bugBountyProgram: supported<BugBountyProgramImplementation>({
 				ref: refTodo,
-				dateStarted: '2021-09-23' as CalendarDate,
 				availability: BugBountyProgramAvailability.ACTIVE,
 				coverageBreadth: 'FULL_SCOPE',
-				rewards: notSupported,
-				platform: BugBountyPlatform.SELF_HOSTED,
+				dateStarted: '2021-09-23' as CalendarDate,
 				disclosure: notSupported,
-				upgradePathAvailable: true,
 				legalProtections: supported({
 					type: LegalProtectionType.SAFE_HARBOR,
 					ref: [
@@ -89,6 +85,9 @@ export const gridplusWallet: HardwareWallet = {
 						},
 					],
 				}),
+				platform: BugBountyPlatform.SELF_HOSTED,
+				rewards: notSupported,
+				upgradePathAvailable: true,
 			}),
 			firmware: null,
 			hardwareWalletAppSigning: {

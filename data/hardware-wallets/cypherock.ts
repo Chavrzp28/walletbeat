@@ -3,8 +3,8 @@ import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/
 import {
 	BugBountyPlatform,
 	BugBountyProgramAvailability,
-	LegalProtectionType,
 	type BugBountyProgramImplementation,
+	LegalProtectionType,
 } from '@/schema/features/security/bug-bounty-program'
 import { FirmwareType } from '@/schema/features/security/firmware'
 import {
@@ -89,15 +89,12 @@ export const cypherockWallet: HardwareWallet = {
 						url: 'https://www.cypherock.com/bug-bounty',
 					},
 				],
-				dateStarted: '2023-03-22' as CalendarDate,
 				availability: BugBountyProgramAvailability.ACTIVE,
 				coverageBreadth: 'FULL_SCOPE',
-				rewards: notSupported,
-				platform: BugBountyPlatform.SELF_HOSTED,
+				dateStarted: '2023-03-22' as CalendarDate,
 				disclosure: supported({
 					numberOfDays: 30,
 				}),
-				upgradePathAvailable: true,
 				legalProtections: supported({
 					type: LegalProtectionType.SAFE_HARBOR,
 					ref: [
@@ -108,6 +105,9 @@ export const cypherockWallet: HardwareWallet = {
 						},
 					],
 				}),
+				platform: BugBountyPlatform.SELF_HOSTED,
+				rewards: notSupported,
+				upgradePathAvailable: true,
 			}),
 			firmware: {
 				type: FirmwareType.PASS,

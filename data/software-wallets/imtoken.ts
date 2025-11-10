@@ -12,6 +12,11 @@ import {
 import { PrivateTransferTechnology } from '@/schema/features/privacy/transaction-privacy'
 import { WalletProfile } from '@/schema/features/profile'
 import {
+	BugBountyPlatform,
+	BugBountyProgramAvailability,
+	type BugBountyProgramImplementation,
+} from '@/schema/features/security/bug-bounty-program'
+import {
 	HardwareWalletConnection,
 	HardwareWalletType,
 	type SupportedHardwareWallet,
@@ -34,16 +39,10 @@ import { refNotNecessary, refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
+import type { CalendarDate } from '@/types/date'
 
 import { cure53 } from '../entities/cure53'
 import { imToken } from '../entities/imtoken'
-import {
-	type BugBountyProgramImplementation,
-	BugBountyProgramAvailability,
-	BugBountyPlatform,
-	LegalProtectionType,
-} from '@/schema/features/security/bug-bounty-program'
-import type { CalendarDate } from '@/types/date'
 
 export const imtoken: SoftwareWallet = {
 	metadata: {
@@ -251,18 +250,18 @@ export const imtoken: SoftwareWallet = {
 						url: 'https://bugrap.io/bounties/imToken%20Wallet',
 					},
 				],
-				dateStarted: '2024-04-15' as CalendarDate,
 				availability: BugBountyProgramAvailability.ACTIVE,
 				coverageBreadth: 'FULL_SCOPE',
-				rewards: supported({
-					minimum: 0,
-					maximum: 10000,
-					currency: 'USDC',
-				}),
-				platform: BugBountyPlatform.SELF_HOSTED,
+				dateStarted: '2024-04-15' as CalendarDate,
 				disclosure: notSupported,
-				upgradePathAvailable: true,
 				legalProtections: notSupported,
+				platform: BugBountyPlatform.SELF_HOSTED,
+				rewards: supported({
+					currency: 'USDC',
+					maximum: 10000,
+					minimum: 0,
+				}),
+				upgradePathAvailable: true,
 			}),
 			hardwareWalletSupport: {
 				[Variant.MOBILE]: {

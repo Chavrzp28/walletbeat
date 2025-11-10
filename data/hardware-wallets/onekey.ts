@@ -1,10 +1,9 @@
 import { patrickalphac } from '@/data/contributors'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
 import {
-	type BugBountyProgramImplementation,
-	BugBountyProgramAvailability,
 	BugBountyPlatform,
-	LegalProtectionType,
+	BugBountyProgramAvailability,
+	type BugBountyProgramImplementation,
 } from '@/schema/features/security/bug-bounty-program'
 import { FirmwareType } from '@/schema/features/security/firmware'
 import {
@@ -12,7 +11,7 @@ import {
 	displaysFullTransactionDetails,
 	noCalldataDecoding,
 } from '@/schema/features/security/hardware-wallet-app-signing'
-import { supported, notSupported } from '@/schema/features/support'
+import { notSupported, supported } from '@/schema/features/support'
 import { FOSSLicense, LicensingType } from '@/schema/features/transparency/license'
 import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
@@ -83,13 +82,13 @@ export const onekeyWallet: HardwareWallet = {
 		security: {
 			bugBountyProgram: supported<BugBountyProgramImplementation>({
 				ref: refTodo,
-				dateStarted: '2023-04-20' as CalendarDate,
 				availability: BugBountyProgramAvailability.ACTIVE,
 				coverageBreadth: 'FULL_SCOPE',
+				dateStarted: '2023-04-20' as CalendarDate,
+				disclosure: notSupported,
+				legalProtections: notSupported,
+				platform: BugBountyPlatform.BUGRAP,
 				rewards: supported({
-					minimum: 100,
-					maximum: 10000,
-					currency: 'USDC',
 					ref: [
 						{
 							explanation:
@@ -97,11 +96,11 @@ export const onekeyWallet: HardwareWallet = {
 							url: 'https://bugrap.io/bounties/OneKey',
 						},
 					],
+					currency: 'USDC',
+					maximum: 10000,
+					minimum: 100,
 				}),
-				platform: BugBountyPlatform.BUGRAP,
-				disclosure: notSupported,
 				upgradePathAvailable: false,
-				legalProtections: notSupported,
 			}),
 			firmware: {
 				type: FirmwareType.FAIL,
