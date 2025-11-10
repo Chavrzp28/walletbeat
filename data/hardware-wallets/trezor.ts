@@ -99,7 +99,7 @@ export const trezorWallet: HardwareWallet = {
 					ref: [
 						{
 							explanation:
-								'When submitting a vulnerability report, you agree to allow us the opportunity to diagnose and remedy the vulnerability before disclosing its details to third parties or the public. We will coordinate the disclosure together.',
+								'“Use exploits solely to verify the existence of vulnerabilities.',
 							url: 'https://trezor.io/other/partner-portal/for-developers/bug-bounty-program',
 						},
 					],
