@@ -1,15 +1,18 @@
 import { nconsigny, patrickalphac } from '@/data/contributors'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
+import { type BugBountyProgramImplementation, BugBountyProgramAvailability, BugBountyPlatform, LegalProtectionType } from '@/schema/features/security/bug-bounty-program'
 import {
 	DataExtraction,
 	displaysFullTransactionDetails,
 	noCalldataDecoding,
 } from '@/schema/features/security/hardware-wallet-app-signing'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
+import { notSupported, supported } from '@/schema/features/support'
 import { refNotNecessary, refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
+import type { CalendarDate } from '@/types/date'
 
 export const ledgerWallet: HardwareWallet = {
 	metadata: {
@@ -86,19 +89,29 @@ export const ledgerWallet: HardwareWallet = {
 		},
 		profile: WalletProfile.GENERIC,
 		security: {
-			bugBountyProgram: {
-				ref: [
-					{
-						explanation:
-							'Ledger maintains a well-documented bug bounty program through their Donjon security team, offering rewards up to $10,000 for critical vulnerabilities.',
-						url: 'https://donjon.ledger.com/bounty/',
-					},
-				],
-				details:
-					'Ledger offers a comprehensive bug bounty program through their Donjon security team. The program offers competitive rewards based on the severity of findings and has a clear disclosure process.',
+			bugBountyProgram: supported<BugBountyProgramImplementation>({
+				ref: refTodo,
+				dateStarted: '2024-01-01' as CalendarDate,
+				availability: BugBountyProgramAvailability.ACTIVE,
+				coverageBreadth: 'FULL_SCOPE',
+				rewards: supported({
+					minimum: 0,
+					maximum: 100000,
+					currency: 'USD',
+				}),
+				platform: BugBountyPlatform.SELF_HOSTED,
+				disclosure: notSupported,
 				upgradePathAvailable: true,
-				url: 'https://donjon.ledger.com/bounty/',
-			},
+				legalProtections: supported({
+					type: LegalProtectionType.SAFE_HARBOR,
+					ref: [
+						{
+							explanation: 'When submitting a vulnerability report, you agree to allow us the opportunity to diagnose and remedy the vulnerability before disclosing its details to third parties or the public. We will coordinate the disclosure together.',
+							url: 'https://trezor.io/other/partner-portal/for-developers/bug-bounty-program',
+						}
+					]
+				}),
+			}),
 			firmware: null,
 			hardwareWalletAppSigning: {
 				ref: [
