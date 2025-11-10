@@ -239,8 +239,13 @@ export const imtoken: SoftwareWallet = {
 		profile: WalletProfile.GENERIC,
 		security: {
 			bugBountyProgram: supported<BugBountyProgramImplementation>({
-				ref: refTodo,
-				dateStarted: '2024-01-01' as CalendarDate,
+				ref: [
+					{
+						explanation: 'To show our appreciation to researchers, who help keep our products and our customers safe, we are glad to introduce a Responsible Disclosure Program to provide recognition and rewards for responsibly disclosed vulnerabilities.',
+						url: 'https://bugrap.io/bounties/imToken%20Wallet',
+					}
+				],
+				dateStarted: '2024-04-15' as CalendarDate,
 				availability: BugBountyProgramAvailability.ACTIVE,
 				coverageBreadth: 'FULL_SCOPE',
 				rewards: supported({
