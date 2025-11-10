@@ -88,18 +88,20 @@ export const trezorWallet: HardwareWallet = {
 				dateStarted: '2024-01-01' as CalendarDate,
 				availability: BugBountyProgramAvailability.ACTIVE,
 				coverageBreadth: 'FULL_SCOPE',
-				rewards: notSupported,
-				platform: BugBountyPlatform.SELF_HOSTED,
-				disclosure: supported({
-					numberOfDays: 90,
+				rewards: supported({
+					minimum: 0,
+					maximum: 100000,
+					currency: 'USD',
 				}),
+				platform: BugBountyPlatform.SELF_HOSTED,
+				disclosure: notSupported,
 				upgradePathAvailable: true,
 				legalProtections: supported({
 					type: LegalProtectionType.SAFE_HARBOR,
 					ref: [
 						{
-							explanation: 'Ledger commits that security researchers reporting bugs will be protected from legal liability, so long as they follow responsible disclosure guidelines and principles.',
-							url: 'https://donjon.ledger.com/bounty',
+							explanation: 'When submitting a vulnerability report, you agree to allow us the opportunity to diagnose and remedy the vulnerability before disclosing its details to third parties or the public. We will coordinate the disclosure together.',
+							url: 'https://trezor.io/other/partner-portal/for-developers/bug-bounty-program',
 						}
 					]
 				}),
