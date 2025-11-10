@@ -34,19 +34,21 @@ export type BugBountyProgramValue = Value & {
 
 function getCoverageDescription(breadth: AtLeastOneCoverageBreadth): string {
 	const items = setItems(breadth)
-	const descriptions = items.map(item => {
-		switch (item) {
-			case CoverageBreadth.APP_ONLY:
-				return 'the application layer'
-			case CoverageBreadth.FIRMWARE_ONLY:
-				return 'firmware vulnerabilities'
-			case CoverageBreadth.HARDWARE_ONLY:
-				return 'hardware vulnerabilities'
-			default:
-				return ''
-		}
-	}).filter(Boolean)
-	
+	const descriptions = items
+		.map(item => {
+			switch (item) {
+				case CoverageBreadth.APP_ONLY:
+					return 'the application layer'
+				case CoverageBreadth.FIRMWARE_ONLY:
+					return 'firmware vulnerabilities'
+				case CoverageBreadth.HARDWARE_ONLY:
+					return 'hardware vulnerabilities'
+				default:
+					return ''
+			}
+		})
+		.filter(Boolean)
+
 	if (descriptions.length === 0) {
 		return ''
 	}
@@ -98,16 +100,17 @@ function noBugBountyProgram(): Evaluation<BugBountyProgramValue> {
 
 function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBountyProgramValue> {
 	const rewardInfo = getRewardDescription(support)
-	const coverageInfo = support.coverageBreadth === 'FULL_SCOPE'
-		? 'The program covers all aspects of the hardware wallet.'
-		: getCoverageDescription(support.coverageBreadth)
+	const coverageInfo =
+		support.coverageBreadth === 'FULL_SCOPE'
+			? 'The program covers all aspects of the hardware wallet.'
+			: getCoverageDescription(support.coverageBreadth)
 	const legalProtectionInfo = isSupported(support.legalProtections)
 		? getLegalProtectionDescription(support.legalProtections)
 		: ''
 
 	const hasRewards =
 		isSupported(support.rewards) &&
-		support.rewards.minimum != null &&	
+		support.rewards.minimum != null &&
 		support.rewards.maximum != null &&
 		support.rewards.minimum !== 0 &&
 		support.rewards.maximum !== 0
@@ -180,7 +183,6 @@ function getLegalProtectionDescription(legalProtection: LegalProtection): string
 	return `**Legal Protection**: The program provides ${protectionType} protections for security researchers conducting good faith security research.`
 }
 
-
 export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 	id: 'bugBountyProgram',
 	icon: '\u{1F41B}', // Bug emoji
@@ -244,7 +246,7 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 				`),
 				bugBountyAvailable({
 					dateStarted: '2020-01-01' as CalendarDate,
-					availability: BugBountyProgramAvailability.ACTIVE,	
+					availability: BugBountyProgramAvailability.ACTIVE,
 					coverageBreadth: 'FULL_SCOPE',
 					rewards: supported({
 						minimum: 1000,
@@ -323,13 +325,13 @@ export const bugBountyProgram: Attribute<BugBountyProgramValue> = {
 		if (!isSupported(features.security.bugBountyProgram)) {
 			return noBugBountyProgram()
 		}
-		const { withoutRefs } = popRefs<BugBountyProgramSupport>(
-			features.security.bugBountyProgram,
-		)
+		const { withoutRefs } = popRefs<BugBountyProgramSupport>(features.security.bugBountyProgram)
 
 		const allRefs = mergeRefs(
 			refs(features.security.bugBountyProgram),
-			isSupported(features.security.bugBountyProgram.legalProtections) ? refs(features.security.bugBountyProgram.legalProtections) : undefined,
+			isSupported(features.security.bugBountyProgram.legalProtections)
+				? refs(features.security.bugBountyProgram.legalProtections)
+				: undefined,
 		)
 
 		const result = bugBountyAvailable(withoutRefs)

@@ -1,6 +1,11 @@
 import { patrickalphac } from '@/data/contributors'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
-import { type BugBountyProgramImplementation, BugBountyProgramAvailability, BugBountyPlatform, LegalProtectionType } from '@/schema/features/security/bug-bounty-program'
+import {
+	type BugBountyProgramImplementation,
+	BugBountyProgramAvailability,
+	BugBountyPlatform,
+	LegalProtectionType,
+} from '@/schema/features/security/bug-bounty-program'
 import { FirmwareType } from '@/schema/features/security/firmware'
 import {
 	DataExtraction,
@@ -87,7 +92,8 @@ export const onekeyWallet: HardwareWallet = {
 					currency: 'USDC',
 					ref: [
 						{
-							explanation: 'At the discretion of OneKey, quality, creativity, or novelty of submissions may modify payouts within a given range.',
+							explanation:
+								'At the discretion of OneKey, quality, creativity, or novelty of submissions may modify payouts within a given range.',
 							url: 'https://bugrap.io/bounties/OneKey',
 						},
 					],

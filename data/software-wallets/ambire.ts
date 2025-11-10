@@ -41,7 +41,12 @@ import { pashov } from '../entities/pashov-audit-group'
 import { pimlico } from '../entities/pimlico'
 import { ambireAccountContract } from '../wallet-contracts/ambire-account'
 import { ambireDelegatorContract } from '../wallet-contracts/ambire-delegator'
-import { BugBountyPlatform, BugBountyProgramAvailability, LegalProtectionType, type BugBountyProgramImplementation } from '@/schema/features/security/bug-bounty-program'
+import {
+	BugBountyPlatform,
+	BugBountyProgramAvailability,
+	LegalProtectionType,
+	type BugBountyProgramImplementation,
+} from '@/schema/features/security/bug-bounty-program'
 import type { CalendarDate } from '@/types/date'
 
 const v2Audits: SecurityAudit[] = [

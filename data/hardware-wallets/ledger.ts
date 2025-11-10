@@ -1,6 +1,11 @@
 import { nconsigny, patrickalphac } from '@/data/contributors'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
-import { type BugBountyProgramImplementation, BugBountyProgramAvailability, BugBountyPlatform, LegalProtectionType } from '@/schema/features/security/bug-bounty-program'
+import {
+	type BugBountyProgramImplementation,
+	BugBountyProgramAvailability,
+	BugBountyPlatform,
+	LegalProtectionType,
+} from '@/schema/features/security/bug-bounty-program'
 import {
 	DataExtraction,
 	displaysFullTransactionDetails,
@@ -104,10 +109,11 @@ export const ledgerWallet: HardwareWallet = {
 					type: LegalProtectionType.SAFE_HARBOR,
 					ref: [
 						{
-							explanation: 'Ledger commits that security researchers reporting bugs will be protected from legal liability, so long as they follow responsible disclosure guidelines and principles.',
+							explanation:
+								'Ledger commits that security researchers reporting bugs will be protected from legal liability, so long as they follow responsible disclosure guidelines and principles.',
 							url: 'https://donjon.ledger.com/bounty',
-						}
-					]
+						},
+					],
 				}),
 			}),
 			firmware: null,

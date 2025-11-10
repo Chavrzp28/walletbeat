@@ -1,6 +1,11 @@
 import { nconsigny, patrickalphac } from '@/data/contributors'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
-import { type BugBountyProgramImplementation, BugBountyProgramAvailability, BugBountyPlatform, LegalProtectionType } from '@/schema/features/security/bug-bounty-program'
+import {
+	type BugBountyProgramImplementation,
+	BugBountyProgramAvailability,
+	BugBountyPlatform,
+	LegalProtectionType,
+} from '@/schema/features/security/bug-bounty-program'
 import { FirmwareType } from '@/schema/features/security/firmware'
 import {
 	CalldataDecoding,
@@ -78,10 +83,11 @@ export const keystoneWallet: HardwareWallet = {
 					type: LegalProtectionType.SAFE_HARBOR,
 					ref: [
 						{
-							explanation: 'Keystone strongly supports security research into our products and wants to encourage that research.',
+							explanation:
+								'Keystone strongly supports security research into our products and wants to encourage that research.',
 							url: 'https://keyst.one/bug-bounty-program',
-						}
-					]
+						},
+					],
 				}),
 			}),
 			firmware: {

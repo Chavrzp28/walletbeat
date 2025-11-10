@@ -1,7 +1,12 @@
 import { sigri } from '@/data/contributors/sigri'
 import { PrivateTransferTechnology } from '@/schema/features/privacy/transaction-privacy'
 import { WalletProfile } from '@/schema/features/profile'
-import { type BugBountyProgramImplementation, BugBountyProgramAvailability, BugBountyPlatform, LegalProtectionType } from '@/schema/features/security/bug-bounty-program'
+import {
+	type BugBountyProgramImplementation,
+	BugBountyProgramAvailability,
+	BugBountyPlatform,
+	LegalProtectionType,
+} from '@/schema/features/security/bug-bounty-program'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
 import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
 import { featureSupported, notSupported, supported } from '@/schema/features/support'
@@ -106,15 +111,16 @@ export const mtpelerin: SoftwareWallet = {
 			bugBountyProgram: supported<BugBountyProgramImplementation>({
 				ref: [
 					{
-						explanation: 'The bug bounty program is focused around its smart contracts, mobile apps and website, and is mostly aimed at addressing serious security issues directly affecting fund safety and user data protection.',
+						explanation:
+							'The bug bounty program is focused around its smart contracts, mobile apps and website, and is mostly aimed at addressing serious security issues directly affecting fund safety and user data protection.',
 						url: 'https://immunefi.com/bug-bounty/mtpelerin/information/',
 					},
 				],
 				dateStarted: '2021-02-08' as CalendarDate,
 				availability: BugBountyProgramAvailability.ACTIVE,
 				coverageBreadth: 'FULL_SCOPE',
-				rewards: supported({                   
-					minimum: 1000,                       
+				rewards: supported({
+					minimum: 1000,
 					maximum: 100000,
 					currency: 'USD',
 				}),

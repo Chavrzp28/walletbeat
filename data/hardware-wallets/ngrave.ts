@@ -1,6 +1,11 @@
 import { patrickalphac } from '@/data/contributors'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
-import { type BugBountyProgramImplementation, BugBountyProgramAvailability, BugBountyPlatform, LegalProtectionType } from '@/schema/features/security/bug-bounty-program'
+import {
+	type BugBountyProgramImplementation,
+	BugBountyProgramAvailability,
+	BugBountyPlatform,
+	LegalProtectionType,
+} from '@/schema/features/security/bug-bounty-program'
 import {
 	DataExtraction,
 	noCalldataDecoding,
@@ -88,10 +93,11 @@ export const ngrave: HardwareWallet = {
 					type: LegalProtectionType.SAFE_HARBOR,
 					ref: [
 						{
-							explanation: 'We ensure that security researchers who follow our guidelines are protected from legal action and are acknowledged for their contributions.',
+							explanation:
+								'We ensure that security researchers who follow our guidelines are protected from legal action and are acknowledged for their contributions.',
 							url: 'https://ngrave.io/en/bug-bounty-program',
-						}
-					]
+						},
+					],
 				}),
 			}),
 			firmware: null,

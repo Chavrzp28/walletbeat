@@ -37,7 +37,12 @@ import { paragraph } from '@/types/content'
 
 import { cure53 } from '../entities/cure53'
 import { imToken } from '../entities/imtoken'
-import { type BugBountyProgramImplementation, BugBountyProgramAvailability, BugBountyPlatform, LegalProtectionType } from '@/schema/features/security/bug-bounty-program'
+import {
+	type BugBountyProgramImplementation,
+	BugBountyProgramAvailability,
+	BugBountyPlatform,
+	LegalProtectionType,
+} from '@/schema/features/security/bug-bounty-program'
 import type { CalendarDate } from '@/types/date'
 
 export const imtoken: SoftwareWallet = {
@@ -241,9 +246,10 @@ export const imtoken: SoftwareWallet = {
 			bugBountyProgram: supported<BugBountyProgramImplementation>({
 				ref: [
 					{
-						explanation: 'To show our appreciation to researchers, who help keep our products and our customers safe, we are glad to introduce a Responsible Disclosure Program to provide recognition and rewards for responsibly disclosed vulnerabilities.',
+						explanation:
+							'To show our appreciation to researchers, who help keep our products and our customers safe, we are glad to introduce a Responsible Disclosure Program to provide recognition and rewards for responsibly disclosed vulnerabilities.',
 						url: 'https://bugrap.io/bounties/imToken%20Wallet',
-					}
+					},
 				],
 				dateStarted: '2024-04-15' as CalendarDate,
 				availability: BugBountyProgramAvailability.ACTIVE,
@@ -252,7 +258,7 @@ export const imtoken: SoftwareWallet = {
 					minimum: 0,
 					maximum: 10000,
 					currency: 'USDC',
-				}),				
+				}),
 				platform: BugBountyPlatform.SELF_HOSTED,
 				disclosure: notSupported,
 				upgradePathAvailable: true,

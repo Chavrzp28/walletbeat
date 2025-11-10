@@ -1,6 +1,11 @@
 import { patrickalphac } from '@/data/contributors'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
-import { BugBountyPlatform, BugBountyProgramAvailability, LegalProtectionType, type BugBountyProgramImplementation } from '@/schema/features/security/bug-bounty-program'
+import {
+	BugBountyPlatform,
+	BugBountyProgramAvailability,
+	LegalProtectionType,
+	type BugBountyProgramImplementation,
+} from '@/schema/features/security/bug-bounty-program'
 import { FirmwareType } from '@/schema/features/security/firmware'
 import {
 	DataExtraction,
@@ -79,7 +84,8 @@ export const cypherockWallet: HardwareWallet = {
 			bugBountyProgram: supported<BugBountyProgramImplementation>({
 				ref: [
 					{
-						explanation: 'Cypherock has a 90-day disclosure policy, which means that we do our best to fix issues within 90 days upon receipt of a vulnerability report. If the issue is fixed sooner and if there is a mutual agreement between the security researcher and the Cypherock Security Team, the disclosure might happen before the 90-day deadline.',
+						explanation:
+							'Cypherock has a 90-day disclosure policy, which means that we do our best to fix issues within 90 days upon receipt of a vulnerability report. If the issue is fixed sooner and if there is a mutual agreement between the security researcher and the Cypherock Security Team, the disclosure might happen before the 90-day deadline.',
 						url: 'https://www.cypherock.com/bug-bounty',
 					},
 				],
@@ -96,7 +102,8 @@ export const cypherockWallet: HardwareWallet = {
 					type: LegalProtectionType.SAFE_HARBOR,
 					ref: [
 						{
-							explanation: 'Cypherock commits that security researchers reporting bugs will be protected from legal liability, so long as they follow responsible disclosure guidelines and principles.',
+							explanation:
+								'Cypherock commits that security researchers reporting bugs will be protected from legal liability, so long as they follow responsible disclosure guidelines and principles.',
 							url: 'https://www.cypherock.com/bug-bounty',
 						},
 					],

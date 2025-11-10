@@ -1,9 +1,7 @@
 import type { WithRef, MustRef } from '@/schema/reference'
 import type { Support } from '../support'
 import type { CalendarDate } from '@/types/date'
-import {
-	type NonEmptySet,
-} from '@/types/utils/non-empty'
+import { type NonEmptySet } from '@/types/utils/non-empty'
 /**
  * Platforms of bug bounty programs
  */
@@ -25,7 +23,6 @@ export enum LegalProtectionType {
 	SAFE_HARBOR = 'SAFE_HARBOR',
 	LEGAL_ASSURANCE = 'LEGAL_ASSURANCE',
 }
-
 
 /**
  * A set of at least one coverage breadth
@@ -81,7 +78,6 @@ export type BugBountyProgramSupport = WithRef<{
 	 */
 	coverageBreadth: AtLeastOneCoverageBreadth | 'FULL_SCOPE'
 
-
 	/**
 	 * The rewards for the bug bounty program
 	 */
@@ -90,7 +86,6 @@ export type BugBountyProgramSupport = WithRef<{
 		maximum: number
 		currency: string
 	}>
-
 
 	/**
 	 * The platform of the bug bounty program

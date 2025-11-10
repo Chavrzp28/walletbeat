@@ -1,6 +1,11 @@
 import { exampleContributor } from '@/data/contributors/example'
 import { WalletProfile } from '@/schema/features/profile'
-import { type BugBountyProgramImplementation, BugBountyProgramAvailability, BugBountyPlatform, LegalProtectionType } from '@/schema/features/security/bug-bounty-program'
+import {
+	type BugBountyProgramImplementation,
+	BugBountyProgramAvailability,
+	BugBountyPlatform,
+	LegalProtectionType,
+} from '@/schema/features/security/bug-bounty-program'
 import { supported, notSupported } from '@/schema/features/support'
 import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
@@ -68,8 +73,8 @@ export const unratedHardwareTemplate: HardwareWallet = {
 						{
 							explanation: 'Sample Reference',
 							url: 'https://example.com',
-						}
-					]
+						},
+					],
 				}),
 			}),
 			firmware: null,

@@ -1,6 +1,11 @@
 import { nconsigny, patrickalphac } from '@/data/contributors'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
-import { type BugBountyProgramImplementation, BugBountyProgramAvailability, BugBountyPlatform, LegalProtectionType } from '@/schema/features/security/bug-bounty-program'
+import {
+	type BugBountyProgramImplementation,
+	BugBountyProgramAvailability,
+	BugBountyPlatform,
+	LegalProtectionType,
+} from '@/schema/features/security/bug-bounty-program'
 import {
 	DataExtraction,
 	displaysFullTransactionDetails,
@@ -100,10 +105,11 @@ export const trezorWallet: HardwareWallet = {
 					type: LegalProtectionType.SAFE_HARBOR,
 					ref: [
 						{
-							explanation: 'When submitting a vulnerability report, you agree to allow us the opportunity to diagnose and remedy the vulnerability before disclosing its details to third parties or the public. We will coordinate the disclosure together.',
+							explanation:
+								'When submitting a vulnerability report, you agree to allow us the opportunity to diagnose and remedy the vulnerability before disclosing its details to third parties or the public. We will coordinate the disclosure together.',
 							url: 'https://trezor.io/other/partner-portal/for-developers/bug-bounty-program',
-						}
-					]
+						},
+					],
 				}),
 			}),
 			firmware: null,

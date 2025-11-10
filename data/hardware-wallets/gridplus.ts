@@ -83,7 +83,8 @@ export const gridplusWallet: HardwareWallet = {
 					type: LegalProtectionType.SAFE_HARBOR,
 					ref: [
 						{
-							explanation: 'GridPlus pledges not to initiate legal action for security research conducted pursuant to all Bug Bounty Program policies, including good faith, accidental violations.',
+							explanation:
+								'GridPlus pledges not to initiate legal action for security research conducted pursuant to all Bug Bounty Program policies, including good faith, accidental violations.',
 							url: 'https://docs.gridplus.io/resources/bug-bounty-and-responsible-disclosure-policy',
 						},
 					],
