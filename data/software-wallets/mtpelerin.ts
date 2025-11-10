@@ -1,14 +1,16 @@
 import { sigri } from '@/data/contributors/sigri'
 import { PrivateTransferTechnology } from '@/schema/features/privacy/transaction-privacy'
 import { WalletProfile } from '@/schema/features/profile'
+import { type BugBountyProgramImplementation, BugBountyProgramAvailability, BugBountyPlatform, LegalProtectionType } from '@/schema/features/security/bug-bounty-program'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
 import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
-import { featureSupported, notSupported } from '@/schema/features/support'
+import { featureSupported, notSupported, supported } from '@/schema/features/support'
 import { LicensingType, SourceNotAvailableLicense } from '@/schema/features/transparency/license'
 import { refNotNecessary, refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
+import type { CalendarDate } from '@/types/date'
 
 export const mtpelerin: SoftwareWallet = {
 	metadata: {
@@ -101,12 +103,26 @@ export const mtpelerin: SoftwareWallet = {
 		},
 		profile: WalletProfile.GENERIC,
 		security: {
-			bugBountyProgram: {
-				ref: refTodo,
-				details: 'The wallet implements a comprehensive bug bounty program through Immunefi.',
-				upgradePathAvailable: true,
-				url: 'https://immunefi.com/bug-bounty/mtpelerin/',
-			},
+			bugBountyProgram: supported<BugBountyProgramImplementation>({
+				ref: [
+					{
+						explanation: 'The bug bounty program is focused around its smart contracts, mobile apps and website, and is mostly aimed at addressing serious security issues directly affecting fund safety and user data protection.',
+						url: 'https://immunefi.com/bug-bounty/mtpelerin/information/',
+					},
+				],
+				dateStarted: '2024-01-01' as CalendarDate,
+				availability: BugBountyProgramAvailability.ACTIVE,
+				coverageBreadth: 'FULL_SCOPE',
+				rewards: supported({                   
+					minimum: 1000,                       
+					maximum: 100000,
+					currency: 'USD',
+				}),
+				platform: BugBountyPlatform.IMMUNEFI,
+				disclosure: notSupported,
+				upgradePathAvailable: false,
+				legalProtections: notSupported,
+			}),
 			hardwareWalletSupport: {
 				ref: refTodo,
 				wallets: {},
