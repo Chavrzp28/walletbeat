@@ -78,7 +78,7 @@ export const onekeyWallet: HardwareWallet = {
 		security: {
 			bugBountyProgram: supported<BugBountyProgramImplementation>({
 				ref: refTodo,
-				dateStarted: '2024-01-01' as CalendarDate,
+				dateStarted: '2023-04-20' as CalendarDate,
 				availability: BugBountyProgramAvailability.ACTIVE,
 				coverageBreadth: 'FULL_SCOPE',
 				rewards: supported({

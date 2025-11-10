@@ -147,7 +147,7 @@ export const bitboxWallet: HardwareWallet = {
 						url: 'https://bitbox.swiss/bug-bounty-program/',
 					},
 				],
-				dateStarted: '2024-01-01' as CalendarDate,
+				dateStarted: '2023-06-08' as CalendarDate,
 				availability: BugBountyProgramAvailability.ACTIVE,
 				coverageBreadth: 'FULL_SCOPE',
 				rewards: notSupported,

@@ -83,7 +83,7 @@ export const cypherockWallet: HardwareWallet = {
 						url: 'https://www.cypherock.com/bug-bounty',
 					},
 				],
-				dateStarted: '2024-01-01' as CalendarDate,
+				dateStarted: '2023-03-22' as CalendarDate,
 				availability: BugBountyProgramAvailability.ACTIVE,
 				coverageBreadth: 'FULL_SCOPE',
 				rewards: notSupported,

@@ -91,7 +91,7 @@ export const ledgerWallet: HardwareWallet = {
 		security: {
 			bugBountyProgram: supported<BugBountyProgramImplementation>({
 				ref: refTodo,
-				dateStarted: '2024-01-01' as CalendarDate,
+				dateStarted: '2020-03-07' as CalendarDate,
 				availability: BugBountyProgramAvailability.ACTIVE,
 				coverageBreadth: 'FULL_SCOPE',
 				rewards: notSupported,

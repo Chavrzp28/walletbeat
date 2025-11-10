@@ -110,7 +110,7 @@ export const mtpelerin: SoftwareWallet = {
 						url: 'https://immunefi.com/bug-bounty/mtpelerin/information/',
 					},
 				],
-				dateStarted: '2024-01-01' as CalendarDate,
+				dateStarted: '2021-02-08' as CalendarDate,
 				availability: BugBountyProgramAvailability.ACTIVE,
 				coverageBreadth: 'FULL_SCOPE',
 				rewards: supported({                   

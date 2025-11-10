@@ -77,7 +77,7 @@ export const ngrave: HardwareWallet = {
 		security: {
 			bugBountyProgram: supported<BugBountyProgramImplementation>({
 				ref: refTodo,
-				dateStarted: '2024-01-01' as CalendarDate,
+				dateStarted: '2025-01-18' as CalendarDate,
 				availability: BugBountyProgramAvailability.ACTIVE,
 				coverageBreadth: 'FULL_SCOPE',
 				rewards: notSupported,

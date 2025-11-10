@@ -67,7 +67,7 @@ export const keystoneWallet: HardwareWallet = {
 		security: {
 			bugBountyProgram: supported<BugBountyProgramImplementation>({
 				ref: refTodo,
-				dateStarted: '2024-01-01' as CalendarDate,
+				dateStarted: '2021-04-02' as CalendarDate,
 				availability: BugBountyProgramAvailability.ACTIVE,
 				coverageBreadth: 'FULL_SCOPE',
 				rewards: notSupported,
