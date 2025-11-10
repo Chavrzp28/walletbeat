@@ -53,7 +53,7 @@ function getCoverageDescription(breadth: AtLeastOneCoverageBreadth): string {
 		return ''
 	}
 
-	return `The program covers only ${commaListFormat(descriptions)} .`
+	return `The program covers only ${commaListFormat(descriptions)}.`
 }
 
 function getRewardDescription(support: BugBountyProgramSupport): string {
@@ -141,7 +141,7 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 			rating: rating,
 			displayName: isActive ? 'Bug bounty program available' : 'Bug bounty program inactive',
 			shortExplanation: mdSentence(
-				`{{WALLET_NAME}} has a bug bounty program ${rewardInfo}${isActive ? '' : ', but it is currently inactive'}.`,
+				`{{WALLET_NAME}} has a bug bounty program${rewardInfo ? ` ${rewardInfo}` : ''}${isActive ? '' : ', but it is currently inactive'}.`,
 			),
 			__brand: brand,
 		},
