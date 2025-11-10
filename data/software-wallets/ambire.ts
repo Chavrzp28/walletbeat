@@ -41,6 +41,8 @@ import { pashov } from '../entities/pashov-audit-group'
 import { pimlico } from '../entities/pimlico'
 import { ambireAccountContract } from '../wallet-contracts/ambire-account'
 import { ambireDelegatorContract } from '../wallet-contracts/ambire-delegator'
+import { BugBountyPlatform, BugBountyProgramAvailability, LegalProtectionType, type BugBountyProgramImplementation } from '@/schema/features/security/bug-bounty-program'
+import type { CalendarDate } from '@/types/date'
 
 const v2Audits: SecurityAudit[] = [
 	{
@@ -416,21 +418,22 @@ export const ambire: SoftwareWallet = {
 		},
 		profile: WalletProfile.GENERIC,
 		security: {
-			bugBountyProgram: {
-				ref: refTodo,
-
-				details: `Rewards are distributed according to the impact of the vulnerability based on the Immunefi Vulnerability Severity Classification System V2.2. This is a simplified 5-level scale, with separate scales for websites/apps and smart contracts/blockchains, encompassing everything from consequence of exploitation to privilege required to likelihood of a successful exploit.
-
-All High and Critical Smart Contract bug reports require a PoC and a suggestion for a fix to be eligible for a reward. All Low and Medium Smart contract bug reports require a suggestion for a fix to be eligible for a reward.
-
-The following vulnerabilities are not eligible for a reward:
-
-https://github.com/AmbireTech/code4rena#known-tradeoffs
-
-Payouts are handled by the Ambire team directly and are denominated in USD. However, payouts are done in ETH unless agreed otherwise.`,
+			bugBountyProgram: supported<BugBountyProgramImplementation>({
+				ref: [
+					{
+						explanation: 'As from August 2025, this bug bounty program is no longer active.',
+						url: 'https://blog.ambire.com/ambire-x-immunefy-bug-bounty-audit-our-code-and-earn-rewards/',
+					},
+				],
+				dateStarted: '2021-12-17' as CalendarDate,
+				availability: BugBountyProgramAvailability.INACTIVE,
+				coverageBreadth: 'FULL_SCOPE',
+				rewards: notSupported,
+				platform: BugBountyPlatform.SELF_HOSTED,
+				disclosure: notSupported,
 				upgradePathAvailable: false,
-				url: 'https://immunefi.com/bug-bounty/ambire/information/',
-			},
+				legalProtections: notSupported,
+			}),
 			hardwareWalletSupport: {
 				ref: {
 					explanation:
