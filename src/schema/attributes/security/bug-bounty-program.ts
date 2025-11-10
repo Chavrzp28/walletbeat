@@ -127,7 +127,12 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 			? Rating.PARTIAL
 			: Rating.FAIL
 
-	const platformInfo = support.platform ? `on ${support.platform}` : ''
+	const platformInfo =
+		support.platform === BugBountyPlatform.SELF_HOSTED
+			? 'The program is self-hosted.'
+			: support.platform
+				? `The program is hosted on ${support.platform}.`
+				: ''
 
 	const availabilityInfo = isActive
 		? 'The program is currently active and accepting vulnerability reports.'
@@ -150,7 +155,7 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 
 			${availabilityInfo}
 
-			${support.platform ? `The program is hosted ${platformInfo}${support.platform ? ` at [${support.platform}](${support.platform})` : ''}.` : ''}
+			${platformInfo}
 
 			${legalProtectionInfo}
 
