@@ -21,8 +21,8 @@ import GitHubIcon from 'lucide-static/icons/github.svg?raw'
 >
 	<Navigation navigationItems={defaultNavigationItems} />
 
-	<main data-sticky-container>
-		<header data-sticky='inline'>
+	<main data-sticky-container data-column='gap-8'>
+		<header data-sticky='inline' data-scroll-item='inline-detached padding-match-start'>
 			{/* @ts-expect-error - Astro type checking doesn't fully support Svelte 5 generics yet */}
 			<Typography
 				content={markdown(`
@@ -35,28 +35,42 @@ import GitHubIcon from 'lucide-static/icons/github.svg?raw'
 			/>
 		</header>
 
-		<section data-sticky-container data-column='gap-6'>
-			<Eip7702Table title='Software Wallets by EIP-7702 Support' client:load />
+		<Eip7702Table title='Software Wallets by EIP-7702 Support' client:load />
 
-			<footer data-sticky='inline'>
-				<p>
-					Incorrect data? Submit a PR: <a
-						href={repositoryUrl}
-						target='_blank'
-						rel='noopener noreferrer'
-						class='github-link'
-						data-row='gap-2'><span set:html={GitHubIcon} />GitHub Repository</a
-					>
-				</p>
-			</footer>
-		</section>
+		<footer data-scroll-item='inline-detached padding-match-end' data-row='center'>
+			<p>
+				Incorrect data? Submit a PR: <a
+					href={repositoryUrl}
+					target='_blank'
+					rel='noopener noreferrer'
+					class='github-link'
+					data-row='gap-2'><span set:html={GitHubIcon} />GitHub Repository</a
+				>
+			</p>
+		</footer>
 	</main>
 </Layout>
 
 <style>
-	header {
-		padding: clamp(1.5rem, 6cqi, 2rem);
+	main {
+		&[data-sticky-container] {
+			--scrollItem-inlineDetached-maxSize: 60.5rem;
+			--scrollItem-inlineDetached-paddingStart: clamp(
+				1.5rem,
+				0.04 * var(--scrollContainer-sizeInline),
+				3rem
+			);
+			--scrollItem-inlineDetached-maxPaddingMatchStart: 5rem;
+			--scrollItem-inlineDetached-paddingEnd: clamp(
+				1.5rem,
+				0.04 * var(--scrollContainer-sizeInline),
+				3rem
+			);
+			--scrollItem-inlineDetached-maxPaddingMatchEnd: 5rem;
+		}
+	}
 
+	header {
 		h1 {
 			font-size: 2.5rem;
 			font-weight: 800;
@@ -65,11 +79,6 @@ import GitHubIcon from 'lucide-static/icons/github.svg?raw'
 	}
 
 	footer {
-		justify-content: center;
-		margin-top: 2rem;
-		padding-top: 1rem;
-		border-top: 1px solid var(--border-color);
-
 		p {
 			color: var(--text-secondary);
 			font-size: 0.9rem;

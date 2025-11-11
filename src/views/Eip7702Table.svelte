@@ -97,235 +97,251 @@
 </script>
 
 
-<header
-	data-sticky="inline"
-	data-row="wrap"
+<section
+	data-sticky-container
+	data-column="gap-6"
 >
-	{#if title}
-		<h2>{title}</h2>
-	{/if}
-
-	<Filters
-		items={Object.values(ratedSoftwareWallets)}
-		filterGroups={[
-			{
-				id: 'accountType',
-				label: 'Account Type',
-				displayType: 'group',
-				exclusive: false,
-				filters: [
-					{
-						id: 'accountType-eip7702',
-						label: 'EIP-7702',
-						icon: KeyIcon,
-						filterFunction: wallet => getWalletTypeFor7702(wallet) === WalletTypeFor7702.EIP7702,
-					},
-					{
-						id: 'accountType-erc4337',
-						label: 'ERC-4337',
-						icon: KeyIcon,
-						filterFunction: wallet => getWalletTypeFor7702(wallet) === WalletTypeFor7702.EIP4337,
-					},
-					{
-						id: 'accountType-eoa',
-						label: 'EOA',
-						icon: KeyIcon,
-						filterFunction: wallet => getWalletTypeFor7702(wallet) === WalletTypeFor7702.NON_7702_EOA,
-					},
-				],
-			},
-		]}
-		bind:activeFilters
-		bind:filteredItems={filteredWallets}
-		bind:toggleFilter
-		bind:toggleFilterById
-	/>
-</header>
-
-<Table
-	rows={filteredWallets}
-	rowId={wallet => wallet.metadata.id}
-
-	columns={[
-		{
-			id: 'wallet',
-			name: 'Wallet',
-			value: wallet => wallet.metadata.displayName,
-			isSticky: true,
-			sort: {
-				defaultDirection: 'asc',
-			},
-		},
-		{
-			id: 'type',
-			name: 'Type',
-			value: wallet => WalletTypeFor7702SortPriority[getWalletTypeFor7702(wallet)],
-			sort: {
-				isDefault: true,
-				defaultDirection: 'asc',
-			},
-		},
-		{
-			id: 'contract',
-			name: 'Contract',
-			value: wallet => getWalletContract(wallet),
-		},
-		{
-			id: 'batching',
-			name: 'Batching',
-			value: () => 'Coming soon',
-		},
-	]}
->
-	{#snippet Cell({ row: wallet, column, value })}
-		{#if column.id === 'wallet'}
-			<div class="wallet-info" data-row>
-				<span class="row-count" data-row="center"></span>
-
-				<img
-					src={`/images/wallets/${wallet.metadata.id}.svg`}
-					alt={wallet.metadata.displayName}
-					class="wallet-icon"
-					onerror={e => {
-						if (e.currentTarget)
-							e.currentTarget.src = '/images/wallets/default.svg'
-					}}
-				/>
-
-				<div class="name">
-					<h3>
-						<a
-							href={`/${wallet.metadata.id}/`}
-						>
-							{wallet.metadata.displayName}
-						</a>
-					</h3>
-				</div>
-			</div>
-
-		{:else if column.id === 'type'}
-			{@const typeFor7702 = getWalletTypeFor7702(wallet)}
-
-			{#if typeFor7702 === WalletTypeFor7702.EIP7702}
-				<Tooltip
-					placement="inline-end"
-				>
-					<button
-						data-tag="eip"
-						aria-label="Filter by EIP-7702"
-						onclick={e => {
-							e.stopPropagation()
-							toggleFilterById!('accountType-eip7702')
-						}}
-					>
-						EIP-7702
-					</button>
-
-					{#snippet TooltipContent()}
-						<EipDetails eip={eip7702} />
-					{/snippet}
-				</Tooltip>
-			{:else}
-				{#if typeFor7702 === WalletTypeFor7702.EIP4337}
-					<Tooltip
-						placement="inline-end"
-					>
-						<button
-							data-tag="eip"
-							aria-label="Filter by ERC-4337"
-							onclick={e => {
-								e.stopPropagation()
-								toggleFilterById!('accountType-erc4337')
-							}}
-						>
-							ERC-4337
-						</button>
-
-						{#snippet TooltipContent()}
-							<EipDetails eip={erc4337} />
-						{/snippet}
-					</Tooltip>
-				{:else}
-					{#if typeFor7702 === WalletTypeFor7702.NON_7702_EOA}
-						<button
-							data-tag="eoa"
-							aria-label="Filter by EOA"
-							onclick={e => {
-								e.stopPropagation()
-								toggleFilterById!('accountType-eoa')
-							}}
-						>
-							EOA
-						</button>
-					{/if}
-				{/if}
-
-				<small class="muted-text">(non-7702)</small>
-			{/if}
-
-		{:else if column.id === 'contract'}
-			{@const contract = getWalletContract(wallet)}
-
-			{#if contract === undefined}
-				<span class="muted-text">–</span>
-			{:else if contract === 'UNKNOWN'}
-				<span class="muted-text">Unknown</span>
-			{:else}
-				{@const getContractUrl = (contractAddress: EVMAddress, anchor?: string) =>
-					`https://etherscan.io/address/${contractAddress}${anchor ? `#${anchor}` : ''}`
-				}
-
-				<div class="contract-info">
-					<strong>
-						<a
-							href={getContractUrl(contract.address)}
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							{contract.name}
-						</a>
-					</strong>
-				</div>
-
-				<small>
-					{#if contract.sourceCode.available}
-						{@const sourceRefs = refs(contract.sourceCode)}
-						{@const sourceUrl =
-							isNonEmptyArray(sourceRefs) ?
-								nonEmptyGet(nonEmptyGet(sourceRefs).urls)
-							:
-								getContractUrl(contract.address, 'code')
-						}
-						{@const rawUrl = isLabeledUrl(sourceUrl) ? sourceUrl.url : sourceUrl}
-
-						<a
-							href={rawUrl}
-							target="_blank"
-							rel="noopener noreferrer"
-							class="source-link"
-						>
-							Source code
-							<span>{@html ExternalLinkIcon}</span>
-						</a>
-					{:else}
-						<span class="muted-text">Source unavailable</span>
-					{/if}
-				</small>
-			{/if}
-
-		{:else if column.id === 'batching'}
-			<!-- {@const contract = getWalletContract(wallet)} -->
-
-			<span class="muted-text">Coming soon</span>
-
-		{:else}
-			{value}
+	<header
+		data-sticky="inline"
+		data-row="wrap"
+		data-scroll-item='inline-detached padding-match-start'
+	>
+		{#if title}
+			<h2>{title}</h2>
 		{/if}
-	{/snippet}
-</Table>
+
+		<Filters
+			items={Object.values(ratedSoftwareWallets)}
+			filterGroups={[
+				{
+					id: 'accountType',
+					label: 'Account Type',
+					displayType: 'group',
+					exclusive: false,
+					filters: [
+						{
+							id: 'accountType-eip7702',
+							label: 'EIP-7702',
+							icon: KeyIcon,
+							filterFunction: wallet => getWalletTypeFor7702(wallet) === WalletTypeFor7702.EIP7702,
+						},
+						{
+							id: 'accountType-erc4337',
+							label: 'ERC-4337',
+							icon: KeyIcon,
+							filterFunction: wallet => getWalletTypeFor7702(wallet) === WalletTypeFor7702.EIP4337,
+						},
+						{
+							id: 'accountType-eoa',
+							label: 'EOA',
+							icon: KeyIcon,
+							filterFunction: wallet => getWalletTypeFor7702(wallet) === WalletTypeFor7702.NON_7702_EOA,
+						},
+					],
+				},
+			]}
+			bind:activeFilters
+			bind:filteredItems={filteredWallets}
+			bind:toggleFilter
+			bind:toggleFilterById
+		/>
+	</header>
+
+	<div data-scroll-item="inline-attached underflow-center overflow-start">
+		<Table
+			rows={filteredWallets}
+			rowId={wallet => wallet.metadata.id}
+
+			columns={[
+				{
+					id: 'wallet',
+					name: 'Wallet',
+					value: wallet => wallet.metadata.displayName,
+					isSticky: true,
+					sort: {
+						defaultDirection: 'asc',
+					},
+				},
+				{
+					id: 'type',
+					name: 'Type',
+					value: wallet => WalletTypeFor7702SortPriority[getWalletTypeFor7702(wallet)],
+					sort: {
+						isDefault: true,
+						defaultDirection: 'asc',
+					},
+				},
+				{
+					id: 'contract',
+					name: 'Contract',
+					value: wallet => getWalletContract(wallet),
+				},
+				{
+					id: 'batching',
+					name: 'Batching',
+					value: () => 'Coming soon',
+				},
+			]}
+		>
+			{#snippet Cell({ row: wallet, column, value })}
+				{#if column.id === 'wallet'}
+					<div class="wallet-info" data-row>
+						<span class="row-count" data-row="center"></span>
+
+						<img
+							src={`/images/wallets/${wallet.metadata.id}.svg`}
+							alt={wallet.metadata.displayName}
+							class="wallet-icon"
+							onerror={e => {
+								if (e.currentTarget)
+									e.currentTarget.src = '/images/wallets/default.svg'
+							}}
+						/>
+
+						<div class="name">
+							<h3>
+								<a
+									href={`/${wallet.metadata.id}/`}
+								>
+									{wallet.metadata.displayName}
+								</a>
+							</h3>
+						</div>
+					</div>
+
+				{:else if column.id === 'type'}
+					{@const typeFor7702 = getWalletTypeFor7702(wallet)}
+
+					{#if typeFor7702 === WalletTypeFor7702.EIP7702}
+						<Tooltip
+							placement="inline-end"
+						>
+							<button
+								data-tag="eip"
+								aria-label="Filter by EIP-7702"
+								onclick={e => {
+									e.stopPropagation()
+									toggleFilterById!('accountType-eip7702')
+								}}
+							>
+								EIP-7702
+							</button>
+
+							{#snippet TooltipContent()}
+								<EipDetails eip={eip7702} />
+							{/snippet}
+						</Tooltip>
+					{:else}
+						{#if typeFor7702 === WalletTypeFor7702.EIP4337}
+							<Tooltip
+								placement="inline-end"
+							>
+								<button
+									data-tag="eip"
+									aria-label="Filter by ERC-4337"
+									onclick={e => {
+										e.stopPropagation()
+										toggleFilterById!('accountType-erc4337')
+									}}
+								>
+									ERC-4337
+								</button>
+
+								{#snippet TooltipContent()}
+									<EipDetails eip={erc4337} />
+								{/snippet}
+							</Tooltip>
+						{:else}
+							{#if typeFor7702 === WalletTypeFor7702.NON_7702_EOA}
+								<button
+									data-tag="eoa"
+									aria-label="Filter by EOA"
+									onclick={e => {
+										e.stopPropagation()
+										toggleFilterById!('accountType-eoa')
+									}}
+								>
+									EOA
+								</button>
+							{/if}
+						{/if}
+
+						<small class="muted-text">(non-7702)</small>
+					{/if}
+
+				{:else if column.id === 'contract'}
+					{@const contract = getWalletContract(wallet)}
+
+					{#if contract === undefined}
+						<span class="muted-text">–</span>
+					{:else if contract === 'UNKNOWN'}
+						<span class="muted-text">Unknown</span>
+					{:else}
+						{@const getContractUrl = (contractAddress: EVMAddress, anchor?: string) =>
+							`https://etherscan.io/address/${contractAddress}${anchor ? `#${anchor}` : ''}`
+						}
+
+						<div class="contract-info">
+							<strong>
+								<a
+									href={getContractUrl(contract.address)}
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									{contract.name}
+								</a>
+							</strong>
+						</div>
+
+						<small>
+							{#if contract.sourceCode.available}
+								{@const sourceRefs = refs(contract.sourceCode)}
+								{@const sourceUrl =
+									isNonEmptyArray(sourceRefs) ?
+										nonEmptyGet(nonEmptyGet(sourceRefs).urls)
+									:
+										getContractUrl(contract.address, 'code')
+								}
+								{@const rawUrl = isLabeledUrl(sourceUrl) ? sourceUrl.url : sourceUrl}
+
+								<a
+									href={rawUrl}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="source-link"
+								>
+									Source code
+									<span>{@html ExternalLinkIcon}</span>
+								</a>
+							{:else}
+								<span class="muted-text">Source unavailable</span>
+							{/if}
+						</small>
+					{/if}
+
+				{:else if column.id === 'batching'}
+					<!-- {@const contract = getWalletContract(wallet)} -->
+
+					<span class="muted-text">Coming soon</span>
+
+				{:else}
+					{value}
+				{/if}
+			{/snippet}
+		</Table>
+	</div>
+</section>
 
 
 <style>
+	section {
+		&[data-sticky-container] {
+			--scrollItem-inlineDetached-maxSize: 60.5rem;
+			--scrollItem-inlineDetached-paddingStart: clamp(1.5rem, 0.04 * var(--scrollContainer-sizeInline), 3rem);
+			--scrollItem-inlineDetached-paddingEnd: clamp(1.5rem, 0.04 * var(--scrollContainer-sizeInline), 3rem);
+		}
+	}
+
 	.wallet-info {
 		gap: 0.85em;
 		padding: 0.5em 0;
@@ -359,16 +375,7 @@
 
 			h3 {
 				font-weight: 600;
-
-				a {
-					color: var(--text-primary);
-
-					&:not(:hover) {
-						text-decoration: none;
-					}
-				}
 			}
-
 		}
 	}
 
