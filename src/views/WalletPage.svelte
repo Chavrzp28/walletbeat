@@ -239,6 +239,7 @@
 >
 	<article
 		data-scroll-container="block"
+		data-column="gap-8"
 	>
 		<div
 			data-sticky="block"
@@ -247,7 +248,11 @@
 			Table of contents
 		</div>
 
-		<header id="top" data-column="gap-6">
+		<header
+			id="top"
+			data-column="gap-6"
+			data-scroll-item="inline-detached padding-match-start"
+		>
 			<div data-row="wrap">
 				<div data-row="wrap">
 					<a
@@ -305,7 +310,10 @@
 				</div>
 			</div>
 
-			<section class="wallet-overview" data-column="gap-6">
+			<section
+				class="wallet-overview"
+				data-column="gap-6"
+			>
 				<div data-row="wrap">
 					<p>
 						<Typography
@@ -339,7 +347,10 @@
 					</nav>
 				</div>
 
-				<footer class="wallet-platforms" data-card="padding-5">
+				<footer
+					class="wallet-platforms"
+					data-card="padding-5"
+				>
 					<p>
 						<span class="platforms-label">Platforms: </span>
 						{#each Object.keys(wallet.variants) as variant, i}
@@ -420,13 +431,16 @@
 			class="attribute-group"
 			id={slugifyCamelCase(attrGroup.id)}
 			aria-label={attrGroup.displayName}
-			data-column
 			data-score={scoreLevel}
 			data-icon={attrGroup.icon}
 			style:--attributeGroup-icon={`'${attrGroup.icon}'`}
 			style:--accent={scoreColor}
 		>
-			<header data-sticky data-row>
+			<header
+				data-sticky="block"
+				data-row
+				data-scroll-item="inline-detached"
+			>
 				<a data-link="camouflaged" href={`#${slugifyCamelCase(attrGroup.id)}`}>
 					<h2>
 						{attrGroup.displayName}
@@ -438,104 +452,109 @@
 				/>
 			</header>
 
-			{#if attrGroup.perWalletQuestion}
-				<div class="section-caption">
-					<Typography
-						content={attrGroup.perWalletQuestion}
-						strings={{ WALLET_NAME: wallet.metadata.displayName }}
-					/>
-				</div>
-			{/if}
-
-			<div class="attributes-overview-container">
-				<section class="attributes-overview" data-card="radius-8">
-					<div class="attributes-pie">
-						<Pie
-							layout={PieLayout.FullTop}
-							radius={120}
-							padding={20}
-							levels={[{
-								outerRadiusFraction: 0.95,
-								innerRadiusFraction: 0.125,
-								gap: 8,
-								angleGap: 0,
-							}]}
-							slices={
-								attributes
-									.map(({ attribute, evalAttr }) => ({
-										id: attribute.id,
-										color: ratingToColor(evalAttr.evaluation.value.rating),
-										weight: attrGroup.attributeWeights[attribute.id],
-										arcLabel: evalAttr.evaluation.value.icon ?? evalAttr.attribute.icon,
-										tooltip: attribute.displayName,
-										tooltipValue: evalAttr.evaluation.value.rating,
-										href: `#${slugifyCamelCase(attribute.id)}`,
-									}))
-							}
-							highlightedSliceId={highlightedAttributeId}
-							onSliceMouseEnter={id => {
-								highlightedAttributeId = id
-							}}
-							onSliceMouseLeave={() => {
-								highlightedAttributeId = null
-							}}
-						>
-							{#snippet centerContentSnippet()}
-								<circle
-									r="8"
-									fill={scoreColor}
-								>
-									{#if score?.hasUnratedComponent}
-										<title>
-											*contains unrated components
-										</title>
-									{/if}
-								</circle>
-							{/snippet}
-						</Pie>
+			<div
+				data-scroll-item="inline-detached padding-match-end"
+				data-column
+			>
+				{#if attrGroup.perWalletQuestion}
+					<div class="section-caption">
+						<Typography
+							content={attrGroup.perWalletQuestion}
+							strings={{ WALLET_NAME: wallet.metadata.displayName }}
+						/>
 					</div>
+				{/if}
 
-					<div class="attributes-list" data-column="gap-3">
-						<h3>Attribute Details:</h3>
-
-						<ul data-column="gap-2">
-							{#each attributes as { attribute, evalAttr }}
-								{@const attributeUrl = `#${slugifyCamelCase(attribute.id)}`}
-								<li>
-									<a
-										data-link="camouflaged"
-										href={attributeUrl}
-										style:--accent={ratingToColor(evalAttr.evaluation.value.rating)}
-										data-card="secondary padding-3"
-										data-highlighted={highlightedAttributeId === attribute.id ? '' : undefined}
-										onmouseenter={() => {
-											highlightedAttributeId = attribute.id
-										}}
-										onmouseleave={() => {
-											highlightedAttributeId = null
-										}}
+				<div class="attributes-overview-container">
+					<section class="attributes-overview" data-card="radius-8">
+						<div class="attributes-pie">
+							<Pie
+								layout={PieLayout.FullTop}
+								radius={120}
+								padding={20}
+								levels={[{
+									outerRadiusFraction: 0.95,
+									innerRadiusFraction: 0.125,
+									gap: 8,
+									angleGap: 0,
+								}]}
+								slices={
+									attributes
+										.map(({ attribute, evalAttr }) => ({
+											id: attribute.id,
+											color: ratingToColor(evalAttr.evaluation.value.rating),
+											weight: attrGroup.attributeWeights[attribute.id],
+											arcLabel: evalAttr.evaluation.value.icon ?? evalAttr.attribute.icon,
+											tooltip: attribute.displayName,
+											tooltipValue: evalAttr.evaluation.value.rating,
+											href: `#${slugifyCamelCase(attribute.id)}`,
+										}))
+								}
+								highlightedSliceId={highlightedAttributeId}
+								onSliceMouseEnter={id => {
+									highlightedAttributeId = id
+								}}
+								onSliceMouseLeave={() => {
+									highlightedAttributeId = null
+								}}
+							>
+								{#snippet centerContentSnippet()}
+									<circle
+										r="8"
+										fill={scoreColor}
 									>
-										<span>{attribute.displayName}</span>
-										<data
-											data-badge="small"
-											value={evalAttr.evaluation.value.rating}
-										>{evalAttr.evaluation.value.rating}</data>
-									</a>
-								</li>
-							{/each}
-						</ul>
-					</div>
-				</section>
-			</div>
+										{#if score?.hasUnratedComponent}
+											<title>
+												*contains unrated components
+											</title>
+										{/if}
+									</circle>
+								{/snippet}
+							</Pie>
+						</div>
 
-			<div class="attributes" data-column>
-				{#each attributes as { attribute, evalAttr }}
-					{@render attributeSnippet({
-						attrGroupId: attrGroup.id,
-						attribute,
-						evalAttr,
-					})}
-				{/each}
+						<div class="attributes-list" data-column="gap-3">
+							<h3>Attribute Details:</h3>
+
+							<ul data-column="gap-2">
+								{#each attributes as { attribute, evalAttr }}
+									{@const attributeUrl = `#${slugifyCamelCase(attribute.id)}`}
+									<li>
+										<a
+											data-link="camouflaged"
+											href={attributeUrl}
+											style:--accent={ratingToColor(evalAttr.evaluation.value.rating)}
+											data-card="secondary padding-3"
+											data-highlighted={highlightedAttributeId === attribute.id ? '' : undefined}
+											onmouseenter={() => {
+												highlightedAttributeId = attribute.id
+											}}
+											onmouseleave={() => {
+												highlightedAttributeId = null
+											}}
+										>
+											<span>{attribute.displayName}</span>
+											<data
+												data-badge="small"
+												value={evalAttr.evaluation.value.rating}
+											>{evalAttr.evaluation.value.rating}</data>
+										</a>
+									</li>
+								{/each}
+							</ul>
+						</div>
+					</section>
+				</div>
+
+				<div class="attributes" data-column>
+					{#each attributes as { attribute, evalAttr }}
+						{@render attributeSnippet({
+							attrGroupId: attrGroup.id,
+							attribute,
+							evalAttr,
+						})}
+					{/each}
+				</div>
 			</div>
 		</section>
 	{/if}
@@ -886,7 +905,13 @@
 
 <style>
 	.container {
-		--content-maxWidth: 54rem;
+		&[data-sticky-container] {
+			--scrollItem-inlineDetached-maxSize: 54rem;
+			--scrollItem-inlineDetached-paddingStart: 2rem;
+			--scrollItem-inlineDetached-maxPaddingMatchStart: 5rem;
+			--scrollItem-inlineDetached-paddingEnd: 2rem;
+			--scrollItem-inlineDetached-maxPaddingMatchEnd: 5rem;
+		}
 
 		--wallet-icon-size: 3rem;
 		--border-radius-lg: 1rem;
@@ -990,11 +1015,6 @@
 				&::scroll-marker-group:not(:focus-within) {
 					translate: -100% 0;
 				}
-			}
-
-			> :is(header, section, footer) {
-				justify-content: center;
-				padding: 3rem max(1.5rem, (100cqi - var(--content-maxWidth)) / 2);
 			}
 		}
 	}
@@ -1182,7 +1202,6 @@
 		timeline-scope: --AttributesViewTimeline;
 
 		scroll-margin-top: 3.5rem;
-		padding: 3rem 1.5rem;
 
 		&::scroll-marker {
 			content: attr(data-icon) '\00a0\00a0' attr(aria-label);

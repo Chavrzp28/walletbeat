@@ -5,21 +5,24 @@
 	"
 >
 	// Types
+	import type { SvelteHTMLElements } from 'svelte/elements'
 	import { ContentType, type TypographicContent as _TypographicContent } from '@/types/content'
-	import { renderStrings } from '@/types/utils/text'
 
 
 	// Props
 	let {
 		content,
 		strings,
-	}: {
+		...restProps
+	}: SvelteHTMLElements['div'] & {
 		content: TypographicContent
 		strings?: TypographicContent extends _TypographicContent<infer Strings> ? Strings extends null ? never : Strings : never
 	} = $props()
 
 
 	// Functions
+	import { renderStrings } from '@/types/utils/text'
+
 	import { micromark } from 'micromark'
 
 	const parseMarkdown = (markdown: string) => {
@@ -36,7 +39,11 @@
 {:else if content.contentType === ContentType.MARKDOWN}
 	{@const text = strings ? renderStrings(content.markdown, strings) : content.markdown}
 
-	<div class="markdown" data-column="gap-5">
+	<div
+		class="markdown"
+		data-column="gap-5"
+		{...restProps}
+	>
 		{@html parseMarkdown(text)}
 	</div>
 {/if}

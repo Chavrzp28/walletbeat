@@ -141,6 +141,10 @@
 	transition-timing-function: var(--transition-easeOutExpo);
 }
 
+[popover] {
+	background-color: transparent;
+}
+
 ::details-content,
 ::picker(select),
 ::scroll-marker {
@@ -737,11 +741,12 @@ span svg {
 	--sticky-sizeBlock: var(--sticky0-sizeBlock);
 	--sticky-sizeInline: var(--sticky0-sizeInline);
 
-	@scope (
+	/* Firefox: not supported (find workaround to support resetting nested `[data-scroll-container]`s) */
+	/* @scope (
 		&
 	) to (
 		[data-scroll-container] > *
-	) {
+	) { */
 		[data-sticky-container]:not(&) {
 			--sticky-level: 1;
 
@@ -841,7 +846,7 @@ span svg {
 				}
 			}
 		}
-	}
+	/* } */
 
 
 	/**
@@ -858,8 +863,11 @@ span svg {
 		--sticky-paddingBlockEnd: 0px;
 		--sticky-paddingInlineStart: 0px;
 		--sticky-paddingInlineEnd: 0px;
-		--scrollItem-inlineDetached-maxSizeInline: var(--sticky-sizeInline);
+
+		--scrollItem-inlineDetached-maxSize: var(--sticky-sizeInline);
+		--scrollItem-inlineDetached-paddingStart: 1.5rem;
 		--scrollItem-inlineDetached-maxPaddingMatchStart: 2rem;
+		--scrollItem-inlineDetached-paddingEnd: 1.5rem;
 		--scrollItem-inlineDetached-maxPaddingMatchEnd: 2rem;
 
 		/* Rules */
@@ -871,7 +879,7 @@ span svg {
 		 */
 		[data-sticky] {
 			/* Inputs */
-			--sticky-backgroundColor: light-dark(#efefef66, #14141488);
+			--sticky-backgroundColor: light-dark(#efefefaa, #141414aa);
 			--sticky-backdropFilter: blur(20px);
 			--sticky-backdropMaskImage: none;
 
@@ -881,7 +889,7 @@ span svg {
 
 			position: sticky;
 
-			&:not([data-sticky|='block']):not([data-sticky|='inline']),
+			&:not([data-sticky~='block']):not([data-sticky~='inline']),
 			&[data-sticky~='block'] {
 				inset-block-start: var(--sticky-insetBlockStart);
 				inset-block-end: var(--sticky-insetBlockEnd);
@@ -896,7 +904,7 @@ span svg {
 					inset-inline-start: auto;
 				}
 			}
-			&:not([data-sticky|='block']):not([data-sticky|='inline']),
+			&:not([data-sticky~='block']):not([data-sticky~='inline']),
 			&[data-sticky~='inline'] {
 				inset-inline-start: var(--sticky-insetInlineStart);
 				inset-inline-end: var(--sticky-insetInlineEnd);
@@ -937,23 +945,25 @@ span svg {
 		[data-scroll-item] {
 			&[data-scroll-item~='inline-detached'] {
 				/* Rules */
-				--scrollItem-paddingInline: max(1.5rem, (var(--sticky-sizeInline) - var(--scrollItem-inlineDetached-maxSizeInline)) / 2);
+				--scrollItem-paddingInlineStart: max(var(--scrollItem-inlineDetached-paddingStart), (var(--sticky-sizeInline) - var(--scrollItem-inlineDetached-maxSize)) / 2);
+				--scrollItem-paddingInlineEnd: max(var(--scrollItem-inlineDetached-paddingEnd), (var(--sticky-sizeInline) - var(--scrollItem-inlineDetached-maxSize)) / 2);
+				--scrollItem-paddingInlineMatch: min(var(--scrollItem-paddingInlineStart), var(--scrollItem-paddingInlineEnd));
 
 				width: 100%;
-				padding-inline-start: var(--scrollItem-paddingInline);
-				padding-inline-end: var(--scrollItem-paddingInline);
+				padding-inline-start: var(--scrollItem-paddingInlineStart);
+				padding-inline-end: var(--scrollItem-paddingInlineEnd);
 
 				&[data-sticky-container] {
-					--sticky-paddingInlineStart: var(--scrollItem-paddingInline);
-					--sticky-paddingInlineEnd: var(--scrollItem-paddingInline);
+					--sticky-paddingInlineStart: var(--scrollItem-paddingInlineStart);
+					--sticky-paddingInlineEnd: var(--scrollItem-paddingInlineEnd);
 				}
 
 				&[data-scroll-item~='padding-match-start'] {
-					padding-block-start: min(var(--scrollItem-paddingInline), var(--scrollItem-inlineDetached-maxPaddingMatchStart));
+					padding-block-start: min(var(--scrollItem-paddingInlineMatch), var(--scrollItem-inlineDetached-maxPaddingMatchStart));
 				}
 
 				&[data-scroll-item~='padding-match-end'] {
-					padding-block-end: min(var(--scrollItem-paddingInline), var(--scrollItem-inlineDetached-maxPaddingMatchEnd));
+					padding-block-end: min(var(--scrollItem-paddingInlineMatch), var(--scrollItem-inlineDetached-maxPaddingMatchEnd));
 				}
 			}
 			&[data-scroll-item~='inline-attached'] {

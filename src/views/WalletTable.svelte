@@ -414,7 +414,10 @@
 									isDefaultExpanded: true,
 								} satisfies Column<RatedWallet>
 							:
-								attrGroupColumns[0]
+								{
+									...attrGroupColumns[0],
+									isDefaultExpanded: true,
+								}
 						),
 					]
 				})()
@@ -1146,7 +1149,9 @@
 <style>
 	section {
 		&[data-sticky-container] {
-			--scrollItem-inlineDetached-maxSizeInline: 60.5rem;
+			--scrollItem-inlineDetached-maxSize: 60.5rem;
+			--scrollItem-inlineDetached-paddingStart: clamp(1.5rem, 0.04 * var(--scrollContainer-sizeInline), 3rem);
+			--scrollItem-inlineDetached-paddingEnd: clamp(1.5rem, 0.04 * var(--scrollContainer-sizeInline), 3rem);
 		}
 	}
 

@@ -47,7 +47,6 @@ import WalletTable from '@/views/WalletTable.svelte'
 			title='Software Wallets'
 			wallets={Object.values(allRatedWallets).filter(wallet => wallet.types[WalletType.SOFTWARE])}
 			attributeGroups={[attrGroup]}
-			expandByDefault={true}
 		/>
 	</main>
 </Layout>
