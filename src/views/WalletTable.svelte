@@ -1136,29 +1136,45 @@
 <style>
 	:global {
 		.wallet-table {
-			td:not(:has(details:open)) {
-				transition-property: vertical-align;
-				transition-delay: 0.25s;
-			}
+			tr {
+				&:has(svg[height="52"]) {
+					--walletTable-rowClosed-blockSize: 52px;
+				}
 
-			td:has(details:open) {
-				--table-cell-verticalAlign: top;
-			}
-		}
+				&:has(svg[height="96"]) {
+					--walletTable-rowClosed-blockSize: 96px;
+				}
 
-		details.wallet-info-details {
-			summary {
-				box-sizing: content-box;
-				margin: calc(-1 * var(--table-cell-padding));
-				padding: var(--table-cell-padding);
+				&:has(svg[height="176"]) {
+					--walletTable-rowClosed-blockSize: 176px;
+				}
 
-				transition-property: opacity, scale, min-block-size, padding-block-end;
-				min-block-size: 96px;
-			}
+				td {
+					&:not(:has(details:open)) {
+						transition-property: vertical-align;
+						transition-delay: 0.25s;
+					}
 
-			&:open summary {
-				min-block-size: 5rem;
-				padding-block-end: 0.25rem;
+					&:has(details:open) {
+						--table-cell-verticalAlign: top;
+					}
+				}
+
+				details.wallet-info-details {
+					summary {
+						box-sizing: content-box;
+						margin: calc(-1 * var(--table-cell-padding));
+						padding: var(--table-cell-padding);
+
+						transition-property: opacity, scale, min-block-size, padding-block-end;
+						min-block-size: var(--walletTable-rowClosed-blockSize);
+					}
+
+					&:open summary {
+						min-block-size: 5rem;
+						padding-block-end: 0.25rem;
+					}
+				}
 			}
 		}
 	}
