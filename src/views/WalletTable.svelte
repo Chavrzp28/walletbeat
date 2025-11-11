@@ -414,7 +414,10 @@
 									isDefaultExpanded: true,
 								} satisfies Column<RatedWallet>
 							:
-								attrGroupColumns[0]
+								{
+									...attrGroupColumns[0],
+									isDefaultExpanded: true,
+								}
 						),
 					]
 				})()

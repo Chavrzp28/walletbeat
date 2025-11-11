@@ -47,7 +47,6 @@ import WalletTable from '@/views/WalletTable.svelte'
 			title='Embedded Wallets'
 			wallets={Object.values(allRatedWallets).filter(wallet => wallet.types[WalletType.EMBEDDED])}
 			attributeGroups={[attrGroup]}
-			expandByDefault={true}
 		/>
 	</main>
 </Layout>
