@@ -329,6 +329,7 @@
 
 <Table
 	{tableId}
+	class="wallet-table"
 
 	rows={wallets}
 	rowId={wallet => wallet.metadata.id}
@@ -411,7 +412,6 @@
 		})()
 	}
 	bind:sortedColumn
-	style="--table-cell-verticalAlign: top;"
 >
 	{#snippet Cell({
 		row: wallet,
@@ -1135,11 +1135,46 @@
 
 <style>
 	:global {
-		details.wallet-info-details {
-			transition-property: gap, margin-block-start;
+		.wallet-table {
+			tr {
+				&:has(svg[height="52"]) {
+					--walletTable-rowClosed-blockSize: 52px;
+				}
 
-			&:is(:not([open])) {
-				margin-block-start: calc((96px - 5rem) / 2);
+				&:has(svg[height="96"]) {
+					--walletTable-rowClosed-blockSize: 96px;
+				}
+
+				&:has(svg[height="176"]) {
+					--walletTable-rowClosed-blockSize: 176px;
+				}
+
+				td {
+					&:not(:has(details:open)) {
+						transition-property: vertical-align;
+						transition-delay: 0.25s;
+					}
+
+					&:has(details:open) {
+						--table-cell-verticalAlign: top;
+					}
+				}
+
+				details.wallet-info-details {
+					summary {
+						box-sizing: content-box;
+						margin: calc(-1 * var(--table-cell-padding));
+						padding: var(--table-cell-padding);
+
+						transition-property: opacity, scale, min-block-size, padding-block-end;
+						min-block-size: var(--walletTable-rowClosed-blockSize);
+					}
+
+					&:open summary {
+						min-block-size: 5rem;
+						padding-block-end: 0.25rem;
+					}
+				}
 			}
 		}
 	}

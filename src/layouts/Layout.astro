@@ -21,6 +21,7 @@ const { metadata, rewriteUrlTo } = Astro.props
 import Metadata from '@/layouts/Metadata.astro'
 ---
 
+
 <!doctype html>
 <html lang='en'>
 	<head>
@@ -49,11 +50,12 @@ import Metadata from '@/layouts/Metadata.astro'
 	</body>
 </html>
 
+
 <style>
 	#layout {
 		/* Constants */
 		--navigation-desktop-inlineSize: 20rem;
-		--navigation-mobile-blockSize: 4rem;
+		--navigation-mobile-blockSize: 4.16rem;
 
 		/* Rules */
 		width: 100dvw;
@@ -93,18 +95,20 @@ import Metadata from '@/layouts/Metadata.astro'
 		}
 
 		> main {
-			--content-maxWidth: 86rem;
+			--content-maxWidth: 90rem;
 
 			grid-area: Main;
 			min-inline-size: fit-content;
 
 			> section {
-				padding: clamp(1.5rem, (100cqi - var(--content-maxWidth)) / 2, 2rem)
-					max(1.5rem, (100cqi - var(--content-maxWidth)) / 2);
+				padding:
+					clamp(1.5rem, (100cqi - var(--content-maxWidth)) / 2, 2rem)
+					max(1.5rem, (100cqi - var(--content-maxWidth)) / 2)
+				;
 
 				&[data-sticky-container] {
-					--sticky-paddingInlineStart: clamp(1.5rem, 6cqi, 2rem);
-					--sticky-paddingInlineEnd: clamp(1.5rem, 6cqi, 2rem);
+					/* --sticky-paddingInlineStart: clamp(1.5rem, 6cqi, 2rem);
+					--sticky-paddingInlineEnd: clamp(1.5rem, 6cqi, 2rem); */
 
 					--sticky-paddingInlineStart: max(1.5rem, (100cqi - var(--content-maxWidth)) / 2);
 					--sticky-paddingInlineEnd: max(1.5rem, (100cqi - var(--content-maxWidth)) / 2);

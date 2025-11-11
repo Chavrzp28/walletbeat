@@ -1130,7 +1130,6 @@
 		padding: 1rem;
 		width: calc(var(--nav-width) - 1px);
 
-		backdrop-filter: blur(10px);
 		border-bottom: 1px solid var(--border-color);
 
 		font-size: 0.875rem;
