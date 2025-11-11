@@ -1109,9 +1109,8 @@
 		}
 	}
 
-	.nav-title {
+	.nav-title[data-sticky] {
 		z-index: 3;
-
 		position: absolute;
 		left: auto;
 		right: 0;

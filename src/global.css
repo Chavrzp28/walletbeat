@@ -685,27 +685,17 @@ span svg {
 	}
 }
 
-[data-sticky-container] {
-	/* Inputs */
-	--sticky-marginBlockStart: 0px;
-	--sticky-marginBlockEnd: 0px;
-	--sticky-marginInlineStart: 0px;
-	--sticky-marginInlineEnd: 0px;
-	--sticky-paddingBlockStart: 0px;
-	--sticky-paddingBlockEnd: 0px;
-	--sticky-paddingInlineStart: 0px;
-	--sticky-paddingInlineEnd: 0px;
 
-	/* Rules */
-	isolation: isolate;
-}
-
+/**
+ * Scroll Container
+ */
 [data-scroll-container] {
+	/* Inputs */
+	--scrollContainer-sizeBlock: 100cqb;
+	--scrollContainer-sizeInline: 100cqi;
+
 	/* Rules */
 	container-name: ScrollContainer;
-
-	--scrollContainer-blockSize: 100cqb;
-	--scrollContainer-inlineSize: 100cqi;
 
 	&:not([data-scroll-container~='block']):not([data-scroll-container~='inline']) {
 		container-type: size;
@@ -736,10 +726,16 @@ span svg {
 	--sticky0-paddingInlineStart: var(--sticky-paddingInlineStart);
 	--sticky0-paddingInlineEnd: var(--sticky-paddingInlineEnd);
 
+	--sticky0-sizeBlock: calc(var(--scrollContainer-sizeBlock) - var(--sticky0-insetBlockStart) - var(--sticky0-insetBlockEnd));
+	--sticky0-sizeInline: calc(var(--scrollContainer-sizeInline) - var(--sticky0-insetInlineStart) - var(--sticky0-insetInlineEnd));
+
 	--sticky-insetBlockStart: var(--sticky0-insetBlockStart);
 	--sticky-insetBlockEnd: var(--sticky0-insetBlockEnd);
 	--sticky-insetInlineStart: var(--sticky0-insetInlineStart);
 	--sticky-insetInlineEnd: var(--sticky0-insetInlineEnd);
+
+	--sticky-sizeBlock: var(--sticky0-sizeBlock);
+	--sticky-sizeInline: var(--sticky0-sizeInline);
 
 	@scope (
 		&
@@ -759,10 +755,16 @@ span svg {
 			--sticky1-paddingInlineStart: var(--sticky-paddingInlineStart);
 			--sticky1-paddingInlineEnd: var(--sticky-paddingInlineEnd);
 
+			--sticky1-sizeBlock: calc(var(--scrollContainer-sizeBlock) - var(--sticky1-insetBlockStart) - var(--sticky1-insetBlockEnd));
+			--sticky1-sizeInline: calc(var(--scrollContainer-sizeInline) - var(--sticky1-insetInlineStart) - var(--sticky1-insetInlineEnd));
+
 			--sticky-insetBlockStart: var(--sticky1-insetBlockStart);
 			--sticky-insetBlockEnd: var(--sticky1-insetBlockEnd);
 			--sticky-insetInlineStart: var(--sticky1-insetInlineStart);
 			--sticky-insetInlineEnd: var(--sticky1-insetInlineEnd);
+
+			--sticky-sizeBlock: var(--sticky1-sizeBlock);
+			--sticky-sizeInline: var(--sticky1-sizeInline);
 
 			[data-sticky-container] {
 				--sticky-level: 2;
@@ -777,10 +779,16 @@ span svg {
 				--sticky2-paddingInlineStart: var(--sticky-paddingInlineStart);
 				--sticky2-paddingInlineEnd: var(--sticky-paddingInlineEnd);
 
+				--sticky2-sizeBlock: calc(var(--scrollContainer-sizeBlock) - var(--sticky2-insetBlockStart) - var(--sticky2-insetBlockEnd));
+				--sticky2-sizeInline: calc(var(--scrollContainer-sizeInline) - var(--sticky2-insetInlineStart) - var(--sticky2-insetInlineEnd));
+
 				--sticky-insetBlockStart: var(--sticky2-insetBlockStart);
 				--sticky-insetBlockEnd: var(--sticky2-insetBlockEnd);
 				--sticky-insetInlineStart: var(--sticky2-insetInlineStart);
 				--sticky-insetInlineEnd: var(--sticky2-insetInlineEnd);
+
+				--sticky-sizeBlock: var(--sticky2-sizeBlock);
+				--sticky-sizeInline: var(--sticky2-sizeInline);
 
 				[data-sticky-container] {
 					--sticky-level: 3;
@@ -795,10 +803,16 @@ span svg {
 					--sticky3-paddingInlineStart: var(--sticky-paddingInlineStart);
 					--sticky3-paddingInlineEnd: var(--sticky-paddingInlineEnd);
 
+					--sticky3-sizeBlock: calc(var(--scrollContainer-sizeBlock) - var(--sticky3-insetBlockStart) - var(--sticky3-insetBlockEnd));
+					--sticky3-sizeInline: calc(var(--scrollContainer-sizeInline) - var(--sticky3-insetInlineStart) - var(--sticky3-insetInlineEnd));
+
 					--sticky-insetBlockStart: var(--sticky3-insetBlockStart);
 					--sticky-insetBlockEnd: var(--sticky3-insetBlockEnd);
 					--sticky-insetInlineStart: var(--sticky3-insetInlineStart);
 					--sticky-insetInlineEnd: var(--sticky3-insetInlineEnd);
+
+					--sticky-sizeBlock: var(--sticky3-sizeBlock);
+					--sticky-sizeInline: var(--sticky3-sizeInline);
 
 					[data-sticky-container] {
 						--sticky-level: 4;
@@ -813,76 +827,171 @@ span svg {
 						--sticky4-paddingInlineStart: var(--sticky-paddingInlineStart);
 						--sticky4-paddingInlineEnd: var(--sticky-paddingInlineEnd);
 
+						--sticky4-sizeBlock: calc(var(--scrollContainer-sizeBlock) - var(--sticky4-insetBlockStart) - var(--sticky4-insetBlockEnd));
+						--sticky4-sizeInline: calc(var(--scrollContainer-sizeInline) - var(--sticky4-insetInlineStart) - var(--sticky4-insetInlineEnd));
+
 						--sticky-insetBlockStart: var(--sticky4-insetBlockStart);
 						--sticky-insetBlockEnd: var(--sticky4-insetBlockEnd);
 						--sticky-insetInlineStart: var(--sticky4-insetInlineStart);
 						--sticky-insetInlineEnd: var(--sticky4-insetInlineEnd);
+
+						--sticky-sizeBlock: var(--sticky4-sizeBlock);
+						--sticky-sizeInline: var(--sticky4-sizeInline);
 					}
 				}
 			}
 		}
 	}
-}
 
-[data-sticky] {
-	/* Inputs */
-	--sticky-backgroundColor: light-dark(#efefef66, #14141488);
-	--sticky-backdropFilter: blur(20px);
-	--sticky-backdropMaskImage: none;
 
-	/* Rules */
-	z-index: 1;
-	container-type: scroll-state;
+	/**
+	 * Sticky Container
+	 */
+	&[data-sticky-container],
+	[data-sticky-container] {
+		/* Inputs */
+		--sticky-marginBlockStart: 0px;
+		--sticky-marginBlockEnd: 0px;
+		--sticky-marginInlineStart: 0px;
+		--sticky-marginInlineEnd: 0px;
+		--sticky-paddingBlockStart: 0px;
+		--sticky-paddingBlockEnd: 0px;
+		--sticky-paddingInlineStart: 0px;
+		--sticky-paddingInlineEnd: 0px;
+		--scrollItem-inlineDetached-maxSizeInline: var(--sticky-sizeInline);
+		--scrollItem-inlineDetached-maxPaddingMatchStart: 2rem;
+		--scrollItem-inlineDetached-maxPaddingMatchEnd: 2rem;
 
-	position: sticky;
+		/* Rules */
+		isolation: isolate;
 
-	&:not([data-sticky|='block']):not([data-sticky|='inline']),
-	&[data-sticky|='block'] {
-		inset-block-start: var(--sticky-insetBlockStart);
-		inset-block-end: var(--sticky-insetBlockEnd);
 
-		max-block-size: calc(
-			var(--scrollContainer-blockSize) - var(--sticky-insetBlockStart) - var(--sticky-insetBlockEnd)
-		);
+		/**
+		 * Sticky Item
+		 */
+		[data-sticky] {
+			/* Inputs */
+			--sticky-backgroundColor: light-dark(#efefef66, #14141488);
+			--sticky-backdropFilter: blur(20px);
+			--sticky-backdropMaskImage: none;
 
-		&[data-sticky~='block-start'] {
-			inset-inline-end: auto;
+			/* Rules */
+			z-index: 1;
+			container-type: scroll-state;
+
+			position: sticky;
+
+			&:not([data-sticky|='block']):not([data-sticky|='inline']),
+			&[data-sticky~='block'] {
+				inset-block-start: var(--sticky-insetBlockStart);
+				inset-block-end: var(--sticky-insetBlockEnd);
+
+				max-block-size: calc(var(--scrollContainer-sizeBlock) - var(--sticky-insetBlockStart) - var(--sticky-insetBlockEnd));
+
+				&[data-sticky~='block-start'] {
+					inset-inline-end: auto;
+				}
+
+				&[data-sticky~='block-end'] {
+					inset-inline-start: auto;
+				}
+			}
+			&:not([data-sticky|='block']):not([data-sticky|='inline']),
+			&[data-sticky~='inline'] {
+				inset-inline-start: var(--sticky-insetInlineStart);
+				inset-inline-end: var(--sticky-insetInlineEnd);
+
+				max-inline-size: calc(var(--scrollContainer-sizeInline) - var(--sticky-insetInlineStart) - var(--sticky-insetInlineEnd));
+
+				&[data-sticky~='inline-start'] {
+					inset-inline-end: auto;
+				}
+
+				&[data-sticky~='inline-end'] {
+					inset-inline-start: auto;
+				}
+			}
+
+			&:not([data-sticky~='no-backdrop'])::before {
+				content: '';
+				z-index: -1;
+				position: absolute;
+				inset: 0;
+				background-color: var(--sticky-backgroundColor);
+				backdrop-filter: var(--sticky-backdropFilter);
+				border-radius: inherit;
+
+				transition-property: background-color, backdrop-filter;
+
+				@container scroll-state(stuck: none) {
+					background-color: transparent !important;
+					backdrop-filter: blur(0px);
+				}
+			}
 		}
 
-		&[data-sticky~='block-end'] {
-			inset-inline-start: auto;
-		}
-	}
-	&:not([data-sticky|='block']):not([data-sticky|='inline']),
-	&[data-sticky|='inline'] {
-		inset-inline-start: var(--sticky-insetInlineStart);
-		inset-inline-end: var(--sticky-insetInlineEnd);
 
-		max-inline-size: calc(100cqi - var(--sticky-insetInlineStart) - var(--sticky-insetInlineEnd));
+		/**
+		 * Scroll Item
+		 */
+		[data-scroll-item] {
+			&[data-scroll-item~='inline-detached'] {
+				/* Rules */
+				--scrollItem-paddingInline: max(1.5rem, (var(--sticky-sizeInline) - var(--scrollItem-inlineDetached-maxSizeInline)) / 2);
 
-		&[data-sticky~='inline-start'] {
-			inset-inline-end: auto;
-		}
+				width: 100%;
+				padding-inline-start: var(--scrollItem-paddingInline);
+				padding-inline-end: var(--scrollItem-paddingInline);
 
-		&[data-sticky~='inline-end'] {
-			inset-inline-start: auto;
-		}
-	}
+				&[data-sticky-container] {
+					--sticky-paddingInlineStart: var(--scrollItem-paddingInline);
+					--sticky-paddingInlineEnd: var(--scrollItem-paddingInline);
+				}
 
-	&:not([data-sticky~='no-backdrop'])::before {
-		content: '';
-		z-index: -1;
-		position: absolute;
-		inset: 0;
-		background-color: var(--sticky-backgroundColor);
-		backdrop-filter: var(--sticky-backdropFilter);
-		border-radius: inherit;
+				&[data-scroll-item~='padding-match-start'] {
+					padding-block-start: min(var(--scrollItem-paddingInline), var(--scrollItem-inlineDetached-maxPaddingMatchStart));
+				}
 
-		transition-property: background-color, backdrop-filter;
+				&[data-scroll-item~='padding-match-end'] {
+					padding-block-end: min(var(--scrollItem-paddingInline), var(--scrollItem-inlineDetached-maxPaddingMatchEnd));
+				}
+			}
+			&[data-scroll-item~='inline-attached'] {
+				display: grid;
+				inline-size: min-content;
+				min-inline-size: var(--sticky-sizeInline);
 
-		@container scroll-state(stuck: none) {
-			background-color: transparent !important;
-			backdrop-filter: blur(0px);
+				&[data-scroll-item~='underflow-start'] {
+					justify-content: safe start;
+				}
+				&[data-scroll-item~='underflow-center'] {
+					justify-content: safe center;
+				}
+				&[data-scroll-item~='underflow-end'] {
+					justify-content: safe end;
+				}
+
+				&[data-scroll-item~='overflow-start'] {
+					position: sticky;
+					inset-inline-end: var(--sticky-insetInlineEnd);
+					margin-inline-start: auto;
+				}
+				&[data-scroll-item~='overflow-center'] {
+					margin-inline: auto;
+				}
+				&[data-scroll-item~='overflow-end'] {
+					position: sticky;
+					inset-inline-start: var(--sticky-insetInlineStart);
+					margin-inline-end: auto;
+				}
+			}
+
+			&[data-scroll-item~='snap-block-start'] {
+				scroll-snap-align: start;
+			}
+			&[data-scroll-item~='snap-block-end'] {
+				scroll-snap-align: end;
+			}
 		}
 	}
 }
