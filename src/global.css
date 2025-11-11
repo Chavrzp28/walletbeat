@@ -881,7 +881,7 @@ span svg {
 
 			position: sticky;
 
-			&:not([data-sticky|='block']):not([data-sticky|='inline']),
+			&:not([data-sticky~='block']):not([data-sticky~='inline']),
 			&[data-sticky~='block'] {
 				inset-block-start: var(--sticky-insetBlockStart);
 				inset-block-end: var(--sticky-insetBlockEnd);
@@ -896,7 +896,7 @@ span svg {
 					inset-inline-start: auto;
 				}
 			}
-			&:not([data-sticky|='block']):not([data-sticky|='inline']),
+			&:not([data-sticky~='block']):not([data-sticky~='inline']),
 			&[data-sticky~='inline'] {
 				inset-inline-start: var(--sticky-insetInlineStart);
 				inset-inline-end: var(--sticky-insetInlineEnd);
