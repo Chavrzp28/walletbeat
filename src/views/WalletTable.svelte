@@ -1146,7 +1146,7 @@
 <style>
 	section {
 		&[data-sticky-container] {
-			--scrollItem-inlineDetached-maxSizeInline: 60.5rem;
+			--scrollItem-inlineDetached-maxSize: 60.5rem;
 		}
 	}
 

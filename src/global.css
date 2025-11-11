@@ -858,7 +858,8 @@ span svg {
 		--sticky-paddingBlockEnd: 0px;
 		--sticky-paddingInlineStart: 0px;
 		--sticky-paddingInlineEnd: 0px;
-		--scrollItem-inlineDetached-maxSizeInline: var(--sticky-sizeInline);
+
+		--scrollItem-inlineDetached-maxSize: var(--sticky-sizeInline);
 		--scrollItem-inlineDetached-maxPaddingMatchStart: 2rem;
 		--scrollItem-inlineDetached-maxPaddingMatchEnd: 2rem;
 
