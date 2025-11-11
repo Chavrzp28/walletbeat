@@ -141,6 +141,10 @@
 	transition-timing-function: var(--transition-easeOutExpo);
 }
 
+[popover] {
+	background-color: transparent;
+}
+
 ::details-content,
 ::picker(select),
 ::scroll-marker {
