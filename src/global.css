@@ -741,11 +741,12 @@ span svg {
 	--sticky-sizeBlock: var(--sticky0-sizeBlock);
 	--sticky-sizeInline: var(--sticky0-sizeInline);
 
-	@scope (
+	/* Firefox: not supported (find workaround to support resetting nested `[data-scroll-container]`s) */
+	/* @scope (
 		&
 	) to (
 		[data-scroll-container] > *
-	) {
+	) { */
 		[data-sticky-container]:not(&) {
 			--sticky-level: 1;
 
@@ -845,7 +846,7 @@ span svg {
 				}
 			}
 		}
-	}
+	/* } */
 
 
 	/**
