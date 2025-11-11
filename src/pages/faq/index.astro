@@ -302,8 +302,8 @@ import HelpOutlineIcon from '@material-icons/svg/svg/help_outline/baseline.svg?r
 		]}
 	/>
 
-	<main data-sticky-container>
-		<header id='top'>
+	<main data-sticky-container data-column='gap-8'>
+		<header id='top' data-scroll-item='inline-detached padding-match-start'>
 			<h1>Walletbeat FAQ</h1>
 		</header>
 
@@ -312,14 +312,16 @@ import HelpOutlineIcon from '@material-icons/svg/svg/help_outline/baseline.svg?r
 				<>
 					<hr />
 
-					<section id={entry.anchor} data-column='gap-6'>
-						<h2>
-							<span set:html={HelpOutlineIcon} />
-							{entry.question}
-						</h2>
+					<section id={entry.anchor} data-column='gap-3'>
+						<header data-sticky='block' data-scroll-item='inline-detached'>
+							<h2>
+								<span set:html={HelpOutlineIcon} />
+								{entry.question}
+							</h2>
+						</header>
 
 						{/* @ts-expect-error - Astro type checking doesn't fully support Svelte 5 generics yet */}
-						<Typography client:load content={entry.answer} />
+						<Typography client:load content={entry.answer} data-scroll-item='inline-detached' />
 					</section>
 				</>
 			))
@@ -329,35 +331,36 @@ import HelpOutlineIcon from '@material-icons/svg/svg/help_outline/baseline.svg?r
 
 <style>
 	main {
-		display: grid;
-		grid-template-columns: minmax(0, 42rem);
-		justify-content: center;
-		padding: 3rem 1.5rem;
-		gap: 1.66rem;
-		line-height: 1.8;
-
-		> header {
-			> p {
-				font-size: 1.25rem;
-				font-style: italic;
-				color: var(--text-secondary);
-				opacity: 0.75;
-			}
+		&[data-sticky-container] {
+			--scrollItem-inlineDetached-maxSize: 42rem;
+			--scrollItem-inlineDetached-paddingStart: 4.5rem;
+			--scrollItem-inlineDetached-maxPaddingMatchStart: 5rem;
+			--scrollItem-inlineDetached-maxPaddingMatchEnd: 5rem;
 		}
-	}
 
-	section {
-		padding: 0 1.5rem 1.5rem 1.5rem !important;
+		line-height: 1.4;
 
-		h2 {
-			position: relative;
+		section {
+			line-height: 1.8;
+			/* padding-inline-start: clamp(0, (var(--scrollItem-inlineDetached-maxSize) - var(--sticky-sizeInline)) / 2, 5rem); */
+			/* padding-inline-start: 2.5rem; */
 
-			span {
-				position: absolute;
-				right: 100%;
-				top: 0;
-				transform: translateX(-0.5em);
-				color: var(--text-secondary);
+			> header {
+				margin-block-start: -1rem;
+				padding-block: 1.5rem;
+			}
+
+			h2 {
+				position: relative;
+
+				span {
+					position: absolute;
+					right: 100%;
+					top: 0;
+					transform: translateX(-0.5em);
+					color: var(--text-secondary);
+					line-height: 1.3;
+				}
 			}
 		}
 	}
