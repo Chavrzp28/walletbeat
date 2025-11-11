@@ -860,7 +860,9 @@ span svg {
 		--sticky-paddingInlineEnd: 0px;
 
 		--scrollItem-inlineDetached-maxSize: var(--sticky-sizeInline);
+		--scrollItem-inlineDetached-paddingStart: 1.5rem;
 		--scrollItem-inlineDetached-maxPaddingMatchStart: 2rem;
+		--scrollItem-inlineDetached-paddingEnd: 1.5rem;
 		--scrollItem-inlineDetached-maxPaddingMatchEnd: 2rem;
 
 		/* Rules */
@@ -938,23 +940,25 @@ span svg {
 		[data-scroll-item] {
 			&[data-scroll-item~='inline-detached'] {
 				/* Rules */
-				--scrollItem-paddingInline: max(1.5rem, (var(--sticky-sizeInline) - var(--scrollItem-inlineDetached-maxSizeInline)) / 2);
+				--scrollItem-paddingInlineStart: max(var(--scrollItem-inlineDetached-paddingStart), (var(--sticky-sizeInline) - var(--scrollItem-inlineDetached-maxSize)) / 2);
+				--scrollItem-paddingInlineEnd: max(var(--scrollItem-inlineDetached-paddingEnd), (var(--sticky-sizeInline) - var(--scrollItem-inlineDetached-maxSize)) / 2);
+				--scrollItem-paddingInlineMatch: min(var(--scrollItem-paddingInlineStart), var(--scrollItem-paddingInlineEnd));
 
 				width: 100%;
-				padding-inline-start: var(--scrollItem-paddingInline);
-				padding-inline-end: var(--scrollItem-paddingInline);
+				padding-inline-start: var(--scrollItem-paddingInlineStart);
+				padding-inline-end: var(--scrollItem-paddingInlineEnd);
 
 				&[data-sticky-container] {
-					--sticky-paddingInlineStart: var(--scrollItem-paddingInline);
-					--sticky-paddingInlineEnd: var(--scrollItem-paddingInline);
+					--sticky-paddingInlineStart: var(--scrollItem-paddingInlineStart);
+					--sticky-paddingInlineEnd: var(--scrollItem-paddingInlineEnd);
 				}
 
 				&[data-scroll-item~='padding-match-start'] {
-					padding-block-start: min(var(--scrollItem-paddingInline), var(--scrollItem-inlineDetached-maxPaddingMatchStart));
+					padding-block-start: min(var(--scrollItem-paddingInlineMatch), var(--scrollItem-inlineDetached-maxPaddingMatchStart));
 				}
 
 				&[data-scroll-item~='padding-match-end'] {
-					padding-block-end: min(var(--scrollItem-paddingInline), var(--scrollItem-inlineDetached-maxPaddingMatchEnd));
+					padding-block-end: min(var(--scrollItem-paddingInlineMatch), var(--scrollItem-inlineDetached-maxPaddingMatchEnd));
 				}
 			}
 			&[data-scroll-item~='inline-attached'] {
