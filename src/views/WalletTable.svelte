@@ -1147,10 +1147,18 @@
 		}
 
 		details.wallet-info-details {
-			transition-property: gap, margin-block-start;
+			summary {
+				box-sizing: content-box;
+				margin: calc(-1 * var(--table-cell-padding));
+				padding: var(--table-cell-padding);
 
-			&:is(:not(:open)) {
-				margin-block-start: calc((96px - 5rem) / 2);
+				transition-property: opacity, scale, min-block-size, padding-block-end;
+				min-block-size: 96px;
+			}
+
+			&:open summary {
+				min-block-size: 5rem;
+				padding-block-end: 0.25rem;
 			}
 		}
 	}
