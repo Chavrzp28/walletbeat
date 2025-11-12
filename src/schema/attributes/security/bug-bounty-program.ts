@@ -79,6 +79,31 @@ function getRewardDescription(support: BugBountyProgramSupport): string {
 	return ''
 }
 
+function getRewardDetailsDescription(support: BugBountyProgramSupport): string {
+	if (!isSupported(support.rewards)) {
+		return ''
+	}
+
+	const min = support.rewards.minimum
+	const max = support.rewards.maximum
+	const currency = support.rewards.currency || 'USD'
+	const currencySymbol = currency === 'USD' ? '$' : ''
+
+	if (min != null && max != null) {
+		if (min === max) {
+			return `Rewards are ${currencySymbol}${min.toLocaleString()} ${currency !== 'USD' ? currency : ''}`.trim()
+		} else {
+			return `Rewards range from ${currencySymbol}${min.toLocaleString()} to ${currencySymbol}${max.toLocaleString()} ${currency !== 'USD' ? currency : ''}`.trim()
+		}
+	} else if (max != null) {
+		return `Rewards are up to ${currencySymbol}${max.toLocaleString()} ${currency !== 'USD' ? currency : ''}`.trim()
+	} else if (typeof min === 'number') {
+		return `Rewards start at ${currencySymbol}${min.toLocaleString()} ${currency !== 'USD' ? currency : ''}`.trim()
+	}
+
+	return ''
+}
+
 function noBugBountyProgram(): Evaluation<BugBountyProgramValue> {
 	return {
 		value: {
@@ -101,6 +126,7 @@ function noBugBountyProgram(): Evaluation<BugBountyProgramValue> {
 
 function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBountyProgramValue> {
 	const rewardInfo = getRewardDescription(support)
+	const rewardDetailsInfo = getRewardDetailsDescription(support)
 	const coverageInfo =
 		support.coverageBreadth === 'FULL_SCOPE'
 			? 'The program covers all aspects of the hardware wallet.'
@@ -152,10 +178,12 @@ function bugBountyAvailable(support: BugBountyProgramSupport): Evaluation<BugBou
 		},
 		details: markdown(`
 			${coverageInfo}
-
+			
 			${availabilityInfo}
-
+			
 			${platformInfo}
+			
+			${rewardDetailsInfo}
 
 			${legalProtectionInfo}
 
