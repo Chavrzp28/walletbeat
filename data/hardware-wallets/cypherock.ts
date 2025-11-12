@@ -167,7 +167,7 @@ export const cypherockWallet: HardwareWallet = {
 						date: '2022-09-30',
 					},
 					unpatchedFlaws: 'ALL_FIXED',
-					variantsScope: {[Variant.HARDWARE]: true},
+					variantsScope: { [Variant.HARDWARE]: true },
 					ref: [
 						{
 							explanation: 'Cypherock X1 security audit by KeyLabs',
@@ -175,10 +175,10 @@ export const cypherockWallet: HardwareWallet = {
 						},
 						{
 							explanation: 'Public Response to Keylabs Audit of Cypherock',
-							url: 'https://www.cypherock.com/keylabs.pdf'
-						}
+							url: 'https://www.cypherock.com/keylabs.pdf',
+						},
 					],
-				}
+				},
 			],
 			supplyChainDIY: null,
 			supplyChainFactory: null,
