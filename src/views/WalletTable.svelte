@@ -1,7 +1,7 @@
 <script module lang="ts">
 	export enum SummaryVisualization {
 		None = 'none',
-		Dot = 'dot',
+		ScoreDot = 'dot',
 		Score = 'score',
 	}
 </script>
@@ -28,7 +28,7 @@
 		title,
 		wallets,
 		attributeGroups,
-		summaryVisualization = SummaryVisualization.Dot,
+		summaryVisualization = SummaryVisualization.ScoreDot,
 	}: {
 		tableId?: string,
 		title?: string
@@ -829,7 +829,7 @@
 													'❓'
 											}
 										</text>
-									{:else if summaryVisualization === SummaryVisualization.Dot}
+									{:else if summaryVisualization === SummaryVisualization.ScoreDot}
 										<circle
 											r="4"
 											fill={scoreToColor(score === null ? null : score.score)}
@@ -1030,7 +1030,7 @@
 													'❓'
 											}
 										</text>
-									{:else if summaryVisualization === SummaryVisualization.Dot}
+									{:else if summaryVisualization === SummaryVisualization.ScoreDot}
 										<circle
 											r="4"
 											fill={scoreToColor(groupScore === null ? null : groupScore.score)}
