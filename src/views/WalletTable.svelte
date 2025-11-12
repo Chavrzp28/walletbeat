@@ -3,6 +3,7 @@
 		None = 'none',
 		ScoreDot = 'dot',
 		Score = 'score',
+		Icon = 'icon',
 	}
 </script>
 
@@ -829,6 +830,7 @@
 													'❓'
 											}
 										</text>
+
 									{:else if summaryVisualization === SummaryVisualization.ScoreDot}
 										<circle
 											r="4"
@@ -840,6 +842,15 @@
 												</title>
 											{/if}
 										</circle>
+
+									{:else if summaryVisualization === SummaryVisualization.Icon}
+										<image
+											href={`/images/wallets/${wallet.metadata.id}.${wallet.metadata.iconExtension}`}
+											width="40"
+											height="40"
+											x="-20"
+											y="-20"
+										/>
 									{/if}
 								{/snippet}
 							</Pie>
@@ -929,7 +940,7 @@
 								levels={[
 									{
 										outerRadiusFraction: 1,
-										innerRadiusFraction: summaryVisualization === SummaryVisualization.Score ? 0.3 : 0.166,
+										innerRadiusFraction: (summaryVisualization === SummaryVisualization.Score || summaryVisualization === SummaryVisualization.Icon) ? 0.3 : 0.166,
 										gap: 3,
 										angleGap: 0
 									}
@@ -1014,7 +1025,13 @@
 								}}
 							>
 								{#snippet centerContentSnippet()}
-									{#if summaryVisualization === SummaryVisualization.Score}
+									{#if summaryVisualization === SummaryVisualization.Icon}
+										<text
+											font-size="24"
+										>
+											{attrGroup.icon}
+										</text>
+									{:else if summaryVisualization === SummaryVisualization.Score}
 										<text>
 											{
 												groupScore !== null && groupScore.score !== null ?
