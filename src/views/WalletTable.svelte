@@ -172,9 +172,9 @@
 	import Typography from '@/components/Typography.svelte'
 
 	import EipDetails from '@/views/EipDetails.svelte'
-	import WalletAttributeGroupSummary from '@/views/WalletAttributeGroupSummary.svelte'
-	import WalletAttributeSummary from '@/views/WalletAttributeSummary.svelte'
-	import WalletOverallSummary from '@/views/WalletOverallSummary.svelte'
+	import WalletAttributeGroupSummary, { WalletAttributeGroupSummaryType } from '@/views/WalletAttributeGroupSummary.svelte'
+	import WalletAttributeSummary, { WalletAttributeSummaryType } from '@/views/WalletAttributeSummary.svelte'
+	import WalletOverallSummary, { WalletSummaryType } from '@/views/WalletOverallSummary.svelte'
 
 
 	// Styles
@@ -874,20 +874,22 @@
 										{wallet}
 										attribute={displayedAttribute}
 										variant={selectedVariant}
-										showRating={true}
+										summaryType={WalletAttributeSummaryType.Rating}
 										{isInTooltip}
 									/>
 								{:else if displayedGroup}
 									<WalletAttributeGroupSummary
 										{wallet}
 										attributeGroup={displayedGroup}
+										summaryType={WalletAttributeGroupSummaryType.None}
 										{isInTooltip}
 									/>
 								{:else}
 									<WalletOverallSummary
 										{wallet}
 										{score}
-										{isInTooltip}
+										summaryType={WalletSummaryType.None}
+										{isInTooltip}	
 									/>
 								{/if}
 							{/snippet}
@@ -1058,13 +1060,14 @@
 										{wallet}
 										attribute={displayedAttribute}
 										variant={selectedVariant}
-										showRating={true}
+										summaryType={WalletAttributeSummaryType.Rating}
 										{isInTooltip}
 									/>
 								{:else}
 									<WalletAttributeGroupSummary
 										{wallet}
 										attributeGroup={attrGroup}
+										summaryType={WalletAttributeGroupSummaryType.None}
 										{isInTooltip}
 									/>
 								{/if}
@@ -1133,7 +1136,6 @@
 									{wallet}
 									attribute={attribute}
 									variant={selectedVariant}
-									showRating={false}
 									{isInTooltip}
 								/>
 							{/snippet}

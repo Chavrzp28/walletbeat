@@ -1,3 +1,10 @@
+<script module lang="ts">
+	export enum WalletSummaryType {
+		None = 'none',
+		Score = 'score',
+	}
+</script>
+
 <script lang="ts">
 	// Types/constants
 	import type { MaybeUnratedScore } from '@/schema/score'
@@ -9,10 +16,12 @@
 	const {
 		wallet,
 		score,
+		summaryType = WalletSummaryType.None,
 		isInTooltip = false,
 	}: {
 		wallet: RatedWallet
 		score: MaybeUnratedScore
+		summaryType?: WalletSummaryType
 		isInTooltip?: boolean
 	} = $props()
 
@@ -46,14 +55,14 @@
 	</header>
 
 	<div data-column="center gap-2">
-		Walletbeat score:
+		{#if summaryType === WalletSummaryType.Score}
+			Walletbeat score:
 
-		<ScoreBadge {score} size="large" />
+			<ScoreBadge {score} size="large" />
 
-		<!-- <p></p> -->
-
-		{#if score?.hasUnratedComponent}
-			<small>*contains unrated components</small>
+			{#if score?.hasUnratedComponent}
+				<small>*contains unrated components</small>
+			{/if}
 		{/if}
 	</div>
 </div>

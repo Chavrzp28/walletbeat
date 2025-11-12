@@ -1,3 +1,10 @@
+<script module lang="ts">
+	export enum WalletAttributeSummaryType {
+		None = 'none',
+		Rating = 'rating',
+	}
+</script>
+
 <script lang="ts">
 	// Types/constants
 	import { type EvaluatedAttribute, ratingIcons, ratingToColor, type Value } from '@/schema/attributes'
@@ -10,13 +17,13 @@
 		wallet,
 		attribute,
 		variant,
-		showRating = false,
+		summaryType = WalletAttributeSummaryType.None,
 		isInTooltip = false,
 	}: {
 		wallet: RatedWallet
 		attribute: EvaluatedAttribute<Value>
 		variant?: Variant
-		showRating?: boolean
+		summaryType?: WalletAttributeSummaryType
 		isInTooltip?: boolean
 	} = $props()
 
@@ -44,7 +51,7 @@
 			{attribute.attribute.displayName}
 		</h4>
 
-		{#if showRating}
+		{#if summaryType === WalletAttributeSummaryType.Rating}
 			<data
 				data-badge="small"
 				value={attribute.evaluation.value.rating}
