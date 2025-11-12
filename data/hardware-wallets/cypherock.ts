@@ -20,6 +20,8 @@ import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
 import type { CalendarDate } from '@/types/date'
 
+import { keylabs } from '../entities/keylabs'
+
 export const cypherockWallet: HardwareWallet = {
 	metadata: {
 		id: 'cypherock',
@@ -158,7 +160,27 @@ export const cypherockWallet: HardwareWallet = {
 				ethereumL1: null,
 			},
 			passkeyVerification: null,
-			publicSecurityAudits: null,
+			publicSecurityAudits: [
+				{
+					ref: [
+						{
+							explanation: 'Cypherock X1 security audit by KeyLabs',
+							url: 'https://www.cypherock.com/security-audit',
+						},
+						{
+							explanation: 'Public Response to Keylabs Audit of Cypherock',
+							url: 'https://www.cypherock.com/keylabs.pdf',
+						},
+					],
+					auditDate: '2022-09-30',
+					auditor: keylabs,
+					codeSnapshot: {
+						date: '2022-09-30',
+					},
+					unpatchedFlaws: 'ALL_FIXED',
+					variantsScope: { [Variant.HARDWARE]: true },
+				},
+			],
 			supplyChainDIY: null,
 			supplyChainFactory: null,
 			userSafety: null,
