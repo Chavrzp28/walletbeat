@@ -3,6 +3,7 @@
 		None = 'none',
 		ScoreDot = 'dot',
 		Score = 'score',
+		Stage = 'stage',
 		Icon = 'icon',
 	}
 </script>
@@ -29,7 +30,7 @@
 		title,
 		wallets,
 		attributeGroups,
-		summaryVisualization = SummaryVisualization.ScoreDot,
+		summaryVisualization = SummaryVisualization.Stage,
 	}: {
 		tableId?: string,
 		title?: string
@@ -39,9 +40,43 @@
 	} = $props()
 
 
+	// State
+	import { SvelteMap, SvelteSet } from 'svelte/reactivity'
+
+	let attributeActiveFilters = $state(
+		new SvelteSet<{ id: string, label: string, filterFunction: (attr: any) => boolean }>()
+	)
+
 	// (Derived)
-	const displayedAttributeGroups = $derived(
-		wallets.find(w => w.variants.browser || w.variants.desktop || w.variants.mobile) ?
+	const maxStages = $derived(
+		Math.max(...Object.values(ladders).map(ladder => ladder.stages.length))
+	)
+	const stageFilterDefinitions = $derived(
+		Array.from({ length: maxStages }, (_, i) => ({
+			id: `stage-${i}`,
+			label: `Stage ${i}`,
+			filterFunction: (attr: { attributeGroupId: string, attributeId: string, attribute: any }) => {
+				const attributeStages = getAttributeStages(attr.attribute)
+				return attributeStages.some(({ stageNumbers }) => stageNumbers.includes(i))
+			},
+		}))
+	)
+	const allAttributes = $derived.by(() => {
+		const attrs: Array<{ attributeGroupId: string, attributeId: string, attribute: any }> = []
+		for (const attrGroup of attributeGroups) {
+			for (const [attributeId, attribute] of Object.entries(attrGroup.attributes)) {
+				attrs.push({ attributeGroupId: attrGroup.id, attributeId, attribute })
+			}
+		}
+		return attrs
+	})
+
+	let filteredAttributes = $state<Array<{ attributeGroupId: string, attributeId: string, attribute: any }>>(
+		[]
+	)
+
+	const displayedAttributeGroups = $derived.by(() => {
+		let filtered = wallets.find(w => w.variants.browser || w.variants.desktop || w.variants.mobile) ?
 			// Filter attribute groups to only include non-exempt attributes
 			attributeGroups
 				.map(attrGroup => ({
@@ -61,12 +96,34 @@
 				))
 		:
 			attributeGroups
-	)
+
+		// Filter by stage if any stage filters are active
+		if (attributeActiveFilters.size > 0) {
+			const filteredAttributeIds = new Set(
+				filteredAttributes.map(a => `${a.attributeGroupId}.${a.attributeId}`)
+			)
+			filtered = filtered
+				.map(attrGroup => ({
+					...attrGroup,
+					attributes: (
+						Object.fromEntries(
+							Object.entries(attrGroup.attributes)
+								.filter(([attributeId, _]) => 
+									filteredAttributeIds.has(`${attrGroup.id}.${attributeId}`)
+								)
+						)
+					),
+				}))
+				.filter(attrGroup => (
+					Object.keys(attrGroup.attributes).length > 0
+				))
+		}
+
+		return filtered
+	})
 
 
 	// State
-	import { SvelteMap, SvelteSet } from 'svelte/reactivity'
-
 	let activeFilters = $state(
 		new SvelteSet<Filter<RatedWallet>>()
 	)
@@ -99,6 +156,10 @@
 		new SvelteMap<string, string>()
 	)
 
+	let showStage = $state(
+		true
+	)
+
 
 	// (Derived)
 	const allSupportedVariants = $derived(
@@ -123,6 +184,14 @@
 		)
 	})
 
+	const hasNonApplicableStages = $derived(
+		filteredWallets.length > 0 &&
+		filteredWallets.every(wallet => {
+			const { stage } = getWalletStageAndLadder(wallet)
+			return stage === 'NOT_APPLICABLE' || stage === null
+		})
+	)
+
 
 	// Functions
 	import { variantToName } from '@/constants/variants'
@@ -131,7 +200,11 @@
 	import { isLabeledUrl } from '@/schema/url'
 	import { hasVariant } from '@/schema/variants'
 	import { attributeVariantSpecificity, VariantSpecificity,walletSupportedAccountTypes } from '@/schema/wallet'
+	import { getWalletStageAndLadder, getStageNumber } from '@/utils/stage'
 	import { isNonEmptyArray, nonEmptyMap } from '@/types/utils/non-empty'
+	import { getAttributeStages } from '@/utils/stage-attributes'
+	import { ladders, WalletLadderType } from '@/schema/ladders'
+	import WalletStageBadge from './WalletStageBadge.svelte'
 
 
 	// Actions
@@ -179,7 +252,7 @@
 
 
 	// Styles
-	import { scoreToColor } from '@/utils/colors'
+	import { scoreToColor, stageToColor } from '@/utils/colors'
 </script>
 
 
@@ -196,141 +269,161 @@
 			<h2>{title}</h2>
 		{/if}
 
-		<Filters
-			items={wallets}
-			filterGroups={
-				[
-					{
-						id: 'walletType',
-						label: 'Type',
-						displayType: 'select',
-						exclusive: true,
-						defaultFilter: '',
-						filters: [
-							{
-								id: '',
-								label: 'All',
-							},
-							{
-								id: 'walletType-software',
-								label: 'Software',
-								icon: AppWindowIcon,
-								filterFunction: wallet => !hasVariant(wallet.variants, Variant.HARDWARE)
-							},
-							{
-								id: 'walletType-hardware',
-								label: 'Hardware',
-								icon: HardwareIcon,
-								filterFunction: wallet => hasVariant(wallet.variants, Variant.HARDWARE)
-							},
-							{
-								id: 'walletType-embedded',
-								label: 'Embedded',
-								icon: WalletIcon,
-								filterFunction: wallet => hasVariant(wallet.variants, Variant.EMBEDDED)
-							},
-						],
-					},
-					{
-						id: 'manufactureType',
-						label: 'Manufacture Type',
-						displayType: 'group',
-						exclusive: false,
-						filters: [
-							{
-								id: `manufactureType-${HardwareWalletManufactureType.FACTORY_MADE}`,
-								label: 'Factory-Made',
-								icon: FactoryIcon,
-								filterFunction: wallet => (
-									hasVariant(wallet.variants, Variant.HARDWARE) &&
-									wallet.metadata.hardwareWalletManufactureType === HardwareWalletManufactureType.FACTORY_MADE
-								)
-							},
-							{
-								id: `manufactureType-${HardwareWalletManufactureType.DIY}`,
-								label: 'DIY',
-								icon: HandymanIcon,
-								filterFunction: wallet => (
-									hasVariant(wallet.variants, Variant.HARDWARE) &&
-									wallet.metadata.hardwareWalletManufactureType === HardwareWalletManufactureType.DIY
-								)
-							},
-						],
-					},
-					{
-						id: 'variant',
-						label: 'Variant',
-						// displayType: 'select',
-						// exclusive: true,
-						displayType: 'group',
-						exclusive: false,
-						filters: [
-							// {
-							// 	id: '',
-							// 	label: 'All',
-							// },
-							...(
-								(Object.entries(variants) as [Variant, { label: string, icon: string }][])
-									.map(([variant, { label, icon }]) => ({
-										id: `variant-${variant}`,
-										label,
-										icon,
-										filterFunction: (wallet: RatedWallet) => Boolean(wallet.variants[variant])
-									}))
-							),
-						],
-					},
-					{
-						id: 'accountType',
-						label: 'Account Type',
-						displayType: 'group',
-						exclusive: false,
-						filters: [
-							{
-								id: 'accountType-eoa',
-								label: 'EOA',
-								icon: KeyIcon,
-								filterFunction: wallet => {
-									const accountTypes = walletSupportedAccountTypes(wallet, 'ALL_VARIANTS')
-									return accountTypes !== null && AccountType.eoa in accountTypes
-								}
-							},
-							{
-								id: 'accountType-eip7702',
-								label: 'EIP-7702',
-								icon: KeyIcon,
-								filterFunction: wallet => {
-									const accountTypes = walletSupportedAccountTypes(wallet, 'ALL_VARIANTS')
-									return accountTypes !== null && AccountType.eip7702 in accountTypes
-								}
-							},
-							{
-								id: 'accountType-erc4337',
-								label: 'ERC-4337',
-								icon: KeyIcon,
-								filterFunction: wallet => {
-									const accountTypes = walletSupportedAccountTypes(wallet, 'ALL_VARIANTS')
-									return accountTypes !== null && AccountType.rawErc4337 in accountTypes
-								}
-							},
-							{
-								id: 'accountType-mpc',
-								label: 'MPC',
-								icon: KeyIcon,
-								filterFunction: wallet => {
-									const accountTypes = walletSupportedAccountTypes(wallet, 'ALL_VARIANTS')
-									return accountTypes !== null && AccountType.mpc in accountTypes
-								}
-							},
-						],
-					},
-				]
-			}
-			bind:activeFilters
-			bind:filteredItems={filteredWallets}
-			bind:toggleFilter
-			bind:toggleFilterById
-		/>
+		<div data-row="wrap">
+			<Filters
+				items={wallets}
+				filterGroups={
+					[
+						{
+							id: 'walletType',
+							label: 'Type',
+							displayType: 'select',
+							exclusive: true,
+							defaultFilter: '',
+							filters: [
+								{
+									id: '',
+									label: 'All',
+								},
+								{
+									id: 'walletType-software',
+									label: 'Software',
+									icon: AppWindowIcon,
+									filterFunction: wallet => !hasVariant(wallet.variants, Variant.HARDWARE)
+								},
+								{
+									id: 'walletType-hardware',
+									label: 'Hardware',
+									icon: HardwareIcon,
+									filterFunction: wallet => hasVariant(wallet.variants, Variant.HARDWARE)
+								},
+								{
+									id: 'walletType-embedded',
+									label: 'Embedded',
+									icon: WalletIcon,
+									filterFunction: wallet => hasVariant(wallet.variants, Variant.EMBEDDED)
+								},
+							],
+						},
+						{
+							id: 'manufactureType',
+							label: 'Manufacture Type',
+							displayType: 'group',
+							exclusive: false,
+							filters: [
+								{
+									id: `manufactureType-${HardwareWalletManufactureType.FACTORY_MADE}`,
+									label: 'Factory-Made',
+									icon: FactoryIcon,
+									filterFunction: wallet => (
+										hasVariant(wallet.variants, Variant.HARDWARE) &&
+										wallet.metadata.hardwareWalletManufactureType === HardwareWalletManufactureType.FACTORY_MADE
+									)
+								},
+								{
+									id: `manufactureType-${HardwareWalletManufactureType.DIY}`,
+									label: 'DIY',
+									icon: HandymanIcon,
+									filterFunction: wallet => (
+										hasVariant(wallet.variants, Variant.HARDWARE) &&
+										wallet.metadata.hardwareWalletManufactureType === HardwareWalletManufactureType.DIY
+									)
+								},
+							],
+						},
+						{
+							id: 'variant',
+							label: 'Variant',
+							// displayType: 'select',
+							// exclusive: true,
+							displayType: 'group',
+							exclusive: false,
+							filters: [
+								// {
+								// 	id: '',
+								// 	label: 'All',
+								// },
+								...(
+									(Object.entries(variants) as [Variant, { label: string, icon: string }][])
+										.map(([variant, { label, icon }]) => ({
+											id: `variant-${variant}`,
+											label,
+											icon,
+											filterFunction: (wallet: RatedWallet) => Boolean(wallet.variants[variant])
+										}))
+								),
+							],
+						},
+						{
+							id: 'accountType',
+							label: 'Account Type',
+							displayType: 'group',
+							exclusive: false,
+							filters: [
+								{
+									id: 'accountType-eoa',
+									label: 'EOA',
+									icon: KeyIcon,
+									filterFunction: wallet => {
+										const accountTypes = walletSupportedAccountTypes(wallet, 'ALL_VARIANTS')
+										return accountTypes !== null && AccountType.eoa in accountTypes
+									}
+								},
+								{
+									id: 'accountType-eip7702',
+									label: 'EIP-7702',
+									icon: KeyIcon,
+									filterFunction: wallet => {
+										const accountTypes = walletSupportedAccountTypes(wallet, 'ALL_VARIANTS')
+										return accountTypes !== null && AccountType.eip7702 in accountTypes
+									}
+								},
+								{
+									id: 'accountType-erc4337',
+									label: 'ERC-4337',
+									icon: KeyIcon,
+									filterFunction: wallet => {
+										const accountTypes = walletSupportedAccountTypes(wallet, 'ALL_VARIANTS')
+										return accountTypes !== null && AccountType.rawErc4337 in accountTypes
+									}
+								},
+								{
+									id: 'accountType-mpc',
+									label: 'MPC',
+									icon: KeyIcon,
+									filterFunction: wallet => {
+										const accountTypes = walletSupportedAccountTypes(wallet, 'ALL_VARIANTS')
+										return accountTypes !== null && AccountType.mpc in accountTypes
+									}
+								},
+							],
+						},
+					]
+				}
+				bind:activeFilters
+				bind:filteredItems={filteredWallets}
+				bind:toggleFilter
+				bind:toggleFilterById
+			/>
+
+			{#if !hasNonApplicableStages}
+				<Filters
+					items={allAttributes}
+					filterGroups={[
+						{
+							id: 'stage',
+							label: 'Attributes',
+							displayType: 'group',
+							exclusive: false,
+							operation: 'union',
+							filters: stageFilterDefinitions,
+						},
+					]}
+					bind:activeFilters={attributeActiveFilters}
+					bind:filteredItems={filteredAttributes}
+				/>
+			{/if}
+		</div>
 	</header>
 
 	<div
@@ -393,6 +486,23 @@
 							isSticky: true,
 						} satisfies Column<RatedWallet>,
 
+						...(hasNonApplicableStages ? [] : [{
+							id: 'stage',
+							name: 'Stage',
+							value: (wallet: RatedWallet) => {
+								const { stage, ladderEvaluation } = getWalletStageAndLadder(wallet)
+								if (stage && stage !== 'NOT_APPLICABLE' && stage !== 'QUALIFIED_FOR_NO_STAGES' && ladderEvaluation) {
+									const stageNum = getStageNumber(stage, ladderEvaluation)
+									return stageNum !== null ? stageNum : null
+								}
+								return null
+							},
+
+							sort: {
+								defaultDirection: 'desc',
+							},
+						} satisfies Column<RatedWallet>]),
+
 						(
 							attrGroupColumns.length > 1 ?
 								{
@@ -438,7 +548,41 @@
 						expandedRowIds.delete(wallet.metadata.id)
 				}}
 
-				{#if column.id === 'displayName'}
+				{#if column.id === 'stage'}
+					{@const { stage, ladderEvaluation } = getWalletStageAndLadder(wallet)}
+					{#if stage !== null && ladderEvaluation !== null}
+						{@const stageNumber = getStageNumber(stage, ladderEvaluation)}
+						{@const stageFilterId = stageNumber !== null ? `stage-${stageNumber}` : null}
+						{@const stageFilter = stageFilterId ? Array.from(attributeActiveFilters).find(f => f.id === stageFilterId) : null}
+						{@const isActive = stageFilter !== null}
+						{@const handleStageClick = (clickedStageNumber: number) => {
+							const clickedStageFilterId = `stage-${clickedStageNumber}`
+							const clickedTargetFilter = stageFilterDefinitions.find(f => f.id === clickedStageFilterId)
+							if (clickedTargetFilter) {
+								const clickedStageFilter = Array.from(attributeActiveFilters).find(f => f.id === clickedStageFilterId)
+								if (clickedStageFilter) {
+									attributeActiveFilters.delete(clickedStageFilter)
+								} else {
+									attributeActiveFilters.add(clickedTargetFilter)
+								}
+							}
+						}}
+						<button
+							type="button"
+							onclick={(e) => {
+								e.preventDefault()
+								e.stopPropagation()
+								if (stageFilterId && stageNumber !== null) {
+									handleStageClick(stageNumber)
+								}
+							}}
+						>
+							<WalletStageBadge {wallet} {stage} {ladderEvaluation} size="medium" onStageClick={handleStageClick} />
+						</button>
+					{:else}
+						<small>N/A</small>
+					{/if}
+				{:else if column.id === 'displayName'}
 					{@const displayName = value}
 					{@const accountTypes = walletSupportedAccountTypes(wallet, selectedVariant ?? 'ALL_VARIANTS')}
 					{@const supportedVariants = (
@@ -716,6 +860,7 @@
 								ag => displayedAttributeGroups.some(attrGroup => attrGroup.id === ag.id),
 							)
 						}
+						{@const { stage, ladderEvaluation } = getWalletStageAndLadder(wallet)}
 
 						<TooltipOrAccordion
 							bind:isExpanded={
@@ -723,6 +868,9 @@
 								setIsExpanded
 							}
 						>
+							{@const overallFilteredAttributeIds = attributeActiveFilters.size > 0 ? new Set(
+								filteredAttributes.map(a => `${a.attributeGroupId}.${a.attributeId}`)
+							) : null}
 							<Pie
 								slices={
 									displayedAttributeGroups.map(attrGroup => {
@@ -753,8 +901,9 @@
 											...evalGroup && {
 												children: (
 													evaluatedAttributesEntries(evalGroup)
-														.filter(([_, attribute]) => (
-															attribute?.evaluation?.value?.rating !== Rating.EXEMPT
+														.filter(([attributeId, attribute]) => (
+															attribute?.evaluation?.value?.rating !== Rating.EXEMPT &&
+															(overallFilteredAttributeIds === null || overallFilteredAttributeIds.has(`${attrGroup.id}.${attributeId}`))
 														))
 														.map(([attributeId, attribute]) => ({
 															id: `attrGroup_${attrGroup.id}__attr_${attributeId}`,
@@ -774,14 +923,14 @@
 								radius={80}
 								levels={[
 									{
-										outerRadiusFraction: summaryVisualization === SummaryVisualization.Score ? 0.7 : 0.65,
-										innerRadiusFraction: summaryVisualization === SummaryVisualization.Score ? 0.3 : 0.1,
+										outerRadiusFraction: (summaryVisualization === SummaryVisualization.Score || summaryVisualization === SummaryVisualization.Stage) ? 0.7 : 0.65,
+										innerRadiusFraction: (summaryVisualization === SummaryVisualization.Score || summaryVisualization === SummaryVisualization.Stage) ? 0.3 : 0.1,
 										gap: 4,
 										angleGap: 0
 									},
 									{
 										outerRadiusFraction: 1,
-										innerRadiusFraction: summaryVisualization === SummaryVisualization.Score ? 0.725 : 0.675,
+										innerRadiusFraction: (summaryVisualization === SummaryVisualization.Score || summaryVisualization === SummaryVisualization.Stage) ? 0.725 : 0.675,
 										gap: 2,
 										angleGap: 0,
 									}
@@ -809,7 +958,29 @@
 								}}
 							>
 								{#snippet centerContentSnippet()}
-									{#if summaryVisualization === SummaryVisualization.Score}
+									{#if summaryVisualization === SummaryVisualization.Icon}
+										<image
+											href={`/images/wallets/${wallet.metadata.id}.${wallet.metadata.iconExtension}`}
+											width="40"
+											height="40"
+											x="-20"
+											y="-20"
+										/>
+									{:else if summaryVisualization === SummaryVisualization.Stage}
+										{#if stage && stage !== 'NOT_APPLICABLE' && stage !== 'QUALIFIED_FOR_NO_STAGES' && ladderEvaluation}
+											{@const stageNum = getStageNumber(stage, ladderEvaluation)}
+											{@const maxStages = ladderEvaluation.ladder.stages.length}
+											{#if stageNum !== null}
+												<text fill={stageToColor(stageNum, maxStages)}>
+													{stageNum}
+												</text>
+											{:else}
+												<text>❓</text>
+											{/if}
+										{:else}
+											<text>❓</text>
+										{/if}
+									{:else if summaryVisualization === SummaryVisualization.Score}
 										<text>
 											{
 												score !== null && score.score !== null ?
@@ -830,7 +1001,6 @@
 													'❓'
 											}
 										</text>
-
 									{:else if summaryVisualization === SummaryVisualization.ScoreDot}
 										<circle
 											r="4"
@@ -842,15 +1012,6 @@
 												</title>
 											{/if}
 										</circle>
-
-									{:else if summaryVisualization === SummaryVisualization.Icon}
-										<image
-											href={`/images/wallets/${wallet.metadata.id}.${wallet.metadata.iconExtension}`}
-											width="40"
-											height="40"
-											x="-20"
-											y="-20"
-										/>
 									{/if}
 								{/snippet}
 							</Pie>
@@ -899,7 +1060,7 @@
 									<WalletOverallSummary
 										{wallet}
 										{score}
-										summaryType={WalletSummaryType.None}
+										summaryType={showStage ? WalletSummaryType.Stage : WalletSummaryType.Score}
 										{isInTooltip}	
 									/>
 								{/if}
@@ -907,14 +1068,19 @@
 						</TooltipOrAccordion>
 
 					<!-- Attribute group rating -->
-					{:else if !column.id.includes('.')}
-						{@const attrGroup = displayedAttributeGroups.find(attrGroup => attrGroup.id === column.id)!}
-						{@const evalGroup = wallet.overall[attrGroup.id]}
+					{:else if column.id && !column.id.includes('.')}
+						{@const attrGroup = displayedAttributeGroups.find(attrGroup => attrGroup.id === column.id)}
+						{#if attrGroup}
+							{@const evalGroup = wallet.overall[attrGroup.id]}
 						{@const groupScore = calculateAttributeGroupScore(attrGroup.attributeWeights, evalGroup)}
 
+						{@const filteredAttributeIds = attributeActiveFilters.size > 0 ? new Set(
+							filteredAttributes.map(a => `${a.attributeGroupId}.${a.attributeId}`)
+						) : null}
 						{@const evalEntries = evaluatedAttributesEntries(evalGroup)
-							.filter(([_, attribute]) => (
-								attribute?.evaluation?.value?.rating !== Rating.EXEMPT
+							.filter(([attributeId, attribute]) => (
+								attribute?.evaluation?.value?.rating !== Rating.EXEMPT &&
+								(filteredAttributeIds === null || filteredAttributeIds.has(`${attrGroup.id}.${attributeId}`))
 							))}
 
 						{@const hasActiveAttribute = activeEntityId?.walletId === wallet.metadata.id && activeEntityId?.attributeGroupId === attrGroup.id}
@@ -1028,6 +1194,8 @@
 									{#if summaryVisualization === SummaryVisualization.Icon}
 										<text
 											font-size="24"
+											text-anchor="middle"
+											dominant-baseline="central"
 										>
 											{attrGroup.icon}
 										</text>
@@ -1090,9 +1258,10 @@
 								{/if}
 							{/snippet}
 						</TooltipOrAccordion>
+						{/if}
 
 					<!-- Attribute rating -->
-					{:else}
+					{:else if column.id && column.id.includes('.')}
 						{@const [attributeGroupId, attributeId] = column.id.split('.')}
 						{@const _attrGroup = displayedAttributeGroups.find(attrGroup => attrGroup.id === attributeGroupId)!}
 						{@const attribute = wallet.overall[attributeGroupId][attributeId]}
@@ -1332,5 +1501,11 @@
 
 	.eip-tooltip-content {
 		width: 34rem;
+	}
+
+	button:has([data-badge]) {
+		background: none;
+		border: none;
+		padding: 0;
 	}
 </style>
