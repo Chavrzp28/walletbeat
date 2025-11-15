@@ -15,7 +15,8 @@
 	--background-primary: light-dark(#fff, #17191f);
 	--background-secondary: light-dark(#efefef, #141414);
 	--background-tertiary: light-dark(#eeeff4, #17191f);
-	--accent: light-dark(#e564bc, #e683c7);
+	--accent: var(--accent-color);
+	--accent-color: light-dark(#e564bc, #e683c7);
 	--accent-backgroundColor: light-dark(#fbdcf2, #440530);
 	--text-primary: light-dark(#222222, #efefef);
 	--text-secondary: light-dark(#3f4046, #b1b2b9);
