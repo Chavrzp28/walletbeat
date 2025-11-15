@@ -10,6 +10,9 @@
 	import { type EvaluatedAttribute, ratingIcons, ratingToColor, type Value } from '@/schema/attributes'
 	import type { Variant } from '@/schema/variants'
 	import { attributeVariantSpecificity, type RatedWallet,VariantSpecificity } from '@/schema/wallet'
+	import { getAttributeStages } from '@/utils/stage-attributes'
+	import { getWalletStageAndLadder } from '@/utils/stage'
+	import { WalletLadderType } from '@/schema/ladders'
 
 
 	// Props
@@ -36,6 +39,38 @@
 	// Components
 	import InfoIcon from '@material-icons/svg/svg/info/baseline.svg?raw'
 	import Typography from '../components/Typography.svelte'
+	import Tooltip from '@/components/Tooltip.svelte'
+	import WalletStageSummary from './WalletStageSummary.svelte'
+
+
+	// Derived
+	const { ladderEvaluation } = getWalletStageAndLadder(wallet)
+	const ladderType = $derived.by(() => {
+		if (!ladderEvaluation) {
+			return null
+		}
+		for (const [type, evaluation] of Object.entries(wallet.ladders)) {
+			if (evaluation === ladderEvaluation) {
+				return type as WalletLadderType
+			}
+		}
+		return null
+	})
+	const attributeStages = $derived(getAttributeStages(attribute.attribute))
+	const relevantStages = $derived.by(() => {
+		if (!ladderType || !ladderEvaluation) {
+			return []
+		}
+		const stagesForLadder = attributeStages.find(s => s.ladderType === ladderType)
+		return stagesForLadder?.stageNumbers ?? []
+	})
+	const firstStage = $derived.by(() => {
+		if (relevantStages.length === 0 || !ladderEvaluation) {
+			return null
+		}
+		const stageNumber = relevantStages[0]
+		return ladderEvaluation.ladder.stages[stageNumber] ?? null
+	})
 </script>
 
 
@@ -51,12 +86,45 @@
 			{attribute.attribute.displayName}
 		</h4>
 
-		{#if summaryType === WalletAttributeSummaryType.Rating}
-			<data
-				data-badge="small"
-				value={attribute.evaluation.value.rating}
-			>{attribute.evaluation.value.rating}</data>
-		{/if}
+		<div data-row="gap-2">
+			{#if relevantStages.length > 0 && firstStage && ladderEvaluation}
+				{@const stageNumber = relevantStages[0]}
+				<Tooltip
+					buttonTriggerPlacement="behind"
+					hoverTriggerPlacement="around"
+				>
+					{#snippet children()}
+						<a
+							href={`/${wallet.metadata.id}${variant ? `?variant=${variant}` : ''}#stage-${stageNumber}`}
+							data-link="camouflaged"
+							title={`This attribute is required for stage${relevantStages.length > 1 ? 's' : ''} ${relevantStages.join(', ')}`}
+						>
+							<div
+								data-badge="small"
+								style:--accent="var(--accent-color)"
+							>
+								<small>Stage {relevantStages.join(', ')}</small>
+							</div>
+						</a>
+					{/snippet}
+					{#snippet TooltipContent()}
+						<WalletStageSummary 
+							{wallet} 
+							stage={firstStage} 
+							{ladderEvaluation}
+							showNextStageCriteria={false}
+						/>
+					{/snippet}
+				</Tooltip>
+			{/if}
+
+			{#if summaryType === WalletAttributeSummaryType.Rating}
+				<data
+					data-badge="small"
+					value={attribute.evaluation.value.rating}
+				>{attribute.evaluation.value.rating}</data>
+			{/if}
+		</div>
 	</header>
 
 	<p>
