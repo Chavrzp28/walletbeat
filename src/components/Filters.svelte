@@ -11,6 +11,7 @@
 		label: string
 		displayType?: 'select' | 'group'
 		filters: Filter<Item, FilterId>[]
+		operation?: 'union' | 'intersection'
 	} & (
 		| {
 			exclusive: true
@@ -58,12 +59,41 @@
 
 	// State
 	// (Derived)
-	const filterItems = (filters: Set<Filter<Item>>) => (
-		items.filter(item => (
-			Array.from(filters)
-				.every(filter => filter.filterFunction?.(item) ?? true)
-		))
-	)
+	const filterItems = (filters: Set<Filter<Item>>) => {
+		if (filters.size === 0) return items
+
+		// Group filters by their filter group
+		const filtersByGroup = new Map<string, Set<Filter<Item>>>()
+		for (const filter of filters) {
+			const group = filterGroups.find(g => g.filters.includes(filter))
+			if (group) {
+				if (!filtersByGroup.has(group.id)) {
+					filtersByGroup.set(group.id, new Set())
+				}
+				filtersByGroup.get(group.id)!.add(filter)
+			}
+		}
+
+		return items.filter(item => {
+			// For each filter group, check if the item passes
+			for (const [groupId, groupFilters] of filtersByGroup) {
+				const group = filterGroups.find(g => g.id === groupId)
+				if (!group) continue
+
+				const groupPasses = (group.operation ?? 'intersection') === 'union' ?
+					// Union: item passes if it matches ANY filter in this group
+					Array.from(groupFilters).some(filter => filter.filterFunction?.(item) ?? true)
+				:
+					// Intersection: item passes if it matches ALL filters in this group
+					Array.from(groupFilters).every(filter => filter.filterFunction?.(item) ?? true)
+
+				if (!groupPasses) {
+					return false
+				}
+			}
+			return true
+		})
+	}
 
 	$effect(() => {
 		filteredItems = filterItems(activeFilters)
@@ -106,7 +136,7 @@
 
 
 {#snippet filterItemContent(
-	filter: Filter<Item>,
+	filter: Filter<any>,
 	count: number
 )}
 	<span class="icon" aria-hidden="true">{@html filter.icon}</span>
