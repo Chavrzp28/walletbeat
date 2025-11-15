@@ -2,6 +2,7 @@
 	export enum WalletSummaryType {
 		None = 'none',
 		Score = 'score',
+		Stage = 'stage',
 	}
 </script>
 
@@ -26,8 +27,16 @@
 	} = $props()
 
 
+	// Derived
+	import { getWalletStageAndLadder } from '@/utils/stage'
+	const { stage, ladderEvaluation } = $derived(
+		getWalletStageAndLadder(wallet)
+	)
+
+
 	// Components
 	import ScoreBadge from '../views/ScoreBadge.svelte'
+	import WalletStageBadge from '../views/WalletStageBadge.svelte'
 </script>
 
 
@@ -55,11 +64,20 @@
 	</header>
 
 	<div data-column="center gap-2">
-		{#if summaryType === WalletSummaryType.Score}
+		{#if summaryType === WalletSummaryType.Stage}
+			{#if stage !== null && ladderEvaluation !== null}
+				Walletbeat stage:
+				<WalletStageBadge {wallet} {stage} {ladderEvaluation} size="large" />
+			{:else}
+				Walletbeat score:
+				<ScoreBadge {score} size="large" />
+				{#if score?.hasUnratedComponent}
+					<small>*contains unrated components</small>
+				{/if}
+			{/if}
+		{:else if summaryType === WalletSummaryType.Score}
 			Walletbeat score:
-
 			<ScoreBadge {score} size="large" />
-
 			{#if score?.hasUnratedComponent}
 				<small>*contains unrated components</small>
 			{/if}
