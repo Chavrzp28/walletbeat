@@ -580,6 +580,7 @@ span svg {
 
 [data-badge] {
 	flex-shrink: 0;
+	flex-basis: auto;
 
 	column-gap: 0;
 
@@ -612,6 +613,11 @@ span svg {
 		&:first-child {
 			margin-inline-end: 0.25em;
 		}
+	}
+
+	a:has(> &:only-child) {
+		flex-shrink: 0;
+		flex-basis: auto;
 	}
 }
 
