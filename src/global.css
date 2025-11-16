@@ -257,6 +257,20 @@ details {
 			transform: perspective(100px) rotateX(180deg);
 		}
 	}
+
+	&[data-card] {
+		padding: 0;
+		gap: 0;
+
+		> summary {
+			padding: var(--card-padding);
+		}
+
+		> summary ~ * {
+			padding: var(--card-padding);
+			padding-top: 0;
+		}
+	}
 }
 
 select,
