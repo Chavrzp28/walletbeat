@@ -503,54 +503,60 @@ span svg {
 }
 
 [data-card] {
-	background-color: var(--background-primary);
-	border-radius: 0.5em;
-	padding: 1em;
+	/* Inputs */
+	--card-backgroundColor: var(--background-primary);
+	--card-radius: 0.5em;
+	--card-padding: 1em;
+
+	/* Rules */
+	background-color: var(--card-backgroundColor);
+	border-radius: var(--card-radius);
+	padding: var(--card-padding);
 
 	&[data-card~='secondary'] {
-		background-color: var(--background-secondary);
+		--card-backgroundColor: var(--background-secondary);
 		border-color: var(--border-color);
 	}
 
 	&[data-card~='radius-1'] {
-		border-radius: 0.125em;
+		--card-radius: 0.125em;
 	}
 	&[data-card~='radius-2'] {
-		border-radius: 0.25em;
+		--card-radius: 0.25em;
 	}
 	&[data-card~='radius-3'] {
-		border-radius: 0.375em;
+		--card-radius: 0.375em;
 	}
 	&[data-card~='radius-4'] {
-		border-radius: 0.5em;
+		--card-radius: 0.5em;
 	}
 	&[data-card~='radius-6'] {
-		border-radius: 0.75em;
+		--card-radius: 0.75em;
 	}
 	&[data-card~='radius-8'] {
-		border-radius: 1em;
+		--card-radius: 1em;
 	}
 
 	&[data-card~='padding-0'] {
-		padding: 0em;
+		--card-padding: 0em;
 	}
 	&[data-card~='padding-1'] {
-		padding: 0.25em;
+		--card-padding: 0.25em;
 	}
 	&[data-card~='padding-2'] {
-		padding: 0.5em;
+		--card-padding: 0.5em;
 	}
 	&[data-card~='padding-3'] {
-		padding: 0.75em;
+		--card-padding: 0.75em;
 	}
 	&[data-card~='padding-4'] {
-		padding: 1em;
+		--card-padding: 1em;
 	}
 	&[data-card~='padding-5'] {
-		padding: 1.25em;
+		--card-padding: 1.25em;
 	}
 	&[data-card~='padding-6'] {
-		padding: 1.5em;
+		--card-padding: 1.5em;
 	}
 
 	&[data-card~='border-accent'] {
