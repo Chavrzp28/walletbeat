@@ -5,15 +5,13 @@ import { ladders } from '@/schema/ladders'
 import type { WalletStage, WalletStageCriterion } from '@/schema/stages'
 
 /**
- * Iterate over all stages across all ladders.
+ * Get all stages across all ladders with their ladder type and index.
  */
-function* allStages(): Generator<{ ladderType: WalletLadderType, stage: WalletStage, stageIndex: number }> {
-	for (const [ladderType, ladder] of Object.entries(ladders) as [WalletLadderType, typeof ladders[WalletLadderType]][]) {
-		for (let stageIndex = 0; stageIndex < ladder.stages.length; stageIndex++) {
-			yield { ladderType, stage: ladder.stages[stageIndex], stageIndex }
-		}
-	}
-}
+const allStages = (): Array<{ ladderType: WalletLadderType, stage: WalletStage, stageIndex: number }> =>
+	(Object.entries(ladders) as [WalletLadderType, typeof ladders[WalletLadderType]][])
+		.flatMap(([ladderType, ladder]) =>
+			ladder.stages.map((stage, stageIndex) => ({ ladderType, stage, stageIndex }))
+		)
 
 /**
  * Map of stage IDs to stage objects (using the first occurrence across all ladders).
@@ -22,6 +20,15 @@ export const stagesById = new Map(
 	Object.values(ladders)
 		.flatMap(ladder => ladder.stages)
 		.map(stage => [stage.id, stage] as const)
+)
+
+/**
+ * Map of attribute IDs to attribute objects.
+ */
+export const attributesById = new Map(
+	Object.values(attributeTree)
+		.flatMap(attrGroup => Object.values(attrGroup.attributes))
+		.map(attr => [attr.id, attr] as const)
 )
 
 /**
@@ -70,9 +77,9 @@ const isAttributeUsedInStageObject = (attribute: Attribute<any>, stage: WalletSt
  * @param stageId The stage ID to check
  * @returns true if the attribute is used in the stage
  */
-export function isAttributeUsedInStage(attribute: Attribute<any>, stageId: string): boolean {
+export const isAttributeUsedInStage = (attribute: Attribute<any>, stageId: string): boolean => {
 	const stage = stagesById.get(stageId)
-	return stage ? isAttributeUsedInStageObject(attribute, stage) : false
+	return stage !== undefined && isAttributeUsedInStageObject(attribute, stage)
 }
 
 /**
@@ -81,23 +88,17 @@ export function isAttributeUsedInStage(attribute: Attribute<any>, stageId: strin
  * @returns An array of objects containing ladder type and stage numbers where the attribute is used
  */
 export function getAttributeStages(attribute: Attribute<any>): Array<{ ladderType: WalletLadderType, stageNumbers: number[] }> {
-	const stagesWithAttribute = Array.from(allStages())
+	const stagesWithAttribute = allStages()
 		.filter(({ stage }) => isAttributeUsedInStageObject(attribute, stage))
 		.map(({ ladderType, stageIndex }) => ({ ladderType, stageIndex }))
 
 	const uniqueLadderTypes = Array.from(new Set(stagesWithAttribute.map(({ ladderType }) => ladderType)))
-	const byLadderEntries = uniqueLadderTypes.map(ladderType => [ladderType, [] as number[]] as [WalletLadderType, number[]])
-
-	for (const { ladderType, stageIndex } of stagesWithAttribute) {
-		const entry = byLadderEntries.find(([type]) => type === ladderType)
-		if (entry) {
-			entry[1].push(stageIndex)
-		}
-	}
-
-	return byLadderEntries.map(([ladderType, stageNumbers]) => ({
+	
+	return uniqueLadderTypes.map(ladderType => ({
 		ladderType,
-		stageNumbers,
+		stageNumbers: stagesWithAttribute
+			.filter(({ ladderType: type }) => type === ladderType)
+			.map(({ stageIndex }) => stageIndex),
 	}))
 }
 
@@ -133,7 +134,7 @@ export function getCriterionAttributeId(criterion: { evaluate: (wallet: any) => 
  * @returns An array of objects containing ladder type, stage number, and criterion
  */
 export function getAttributeCriteria(attribute: Attribute<any>): Array<{ ladderType: WalletLadderType, stageNumber: number, criterion: WalletStageCriterion }> {
-	return Array.from(allStages())
+	return allStages()
 		.filter(({ stage }) => isAttributeUsedInStageObject(attribute, stage))
 		.flatMap(({ ladderType, stage, stageIndex }) =>
 			allCriteriaInStage(stage)
@@ -142,14 +143,4 @@ export function getAttributeCriteria(attribute: Attribute<any>): Array<{ ladderT
 		)
 }
 
-/**
- * Find an attribute by ID in the attribute tree.
- * @param attributeId The attribute ID to find
- * @returns The attribute if found, null otherwise
- */
-export function findAttributeById(attributeId: string): Attribute<any> | null {
-	return Object.values(attributeTree)
-		.flatMap(attrGroup => Object.values(attrGroup.attributes))
-		.find(attr => attr.id === attributeId) ?? null
-}
 

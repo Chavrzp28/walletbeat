@@ -4,9 +4,8 @@
 	import type { RatedWallet } from '@/schema/wallet'
 	import { ladders } from '@/schema/ladders'
 	import { StageCriterionRating, type StageEvaluatableWallet, type WalletLadderEvaluation, type WalletStage } from '@/schema/stages'
-	import { getCriterionAttributeId, findAttributeById } from '@/utils/stage-attributes'
+	import { getCriterionAttributeId, attributesById } from '@/utils/stage-attributes'
 	import { slugifyCamelCase } from '@/types/utils/text'
-	import { getLadderType } from '@/utils/stage'
 
 
 	// Components
@@ -38,7 +37,11 @@
 		overall: wallet.overall,
 		overrides: wallet.overrides,
 	})
-	const ladderType = $derived(getLadderType(wallet, ladderEvaluation))
+	const ladderType = $derived(
+		ladderEvaluation ? 
+			(Object.entries(wallet.ladders).find(([_, evaluation]) => evaluation === ladderEvaluation)?.[0] as WalletLadderType | undefined) ?? null
+		: null
+	)
 	const ladderDefinition = $derived(ladderType ? ladders[ladderType] : null)
 	const stage0 = $derived(ladderDefinition?.stages[0] ?? null)
 	
@@ -180,7 +183,7 @@
 			<ul data-column="gap-2">
 				{#each criteria as { criteriaGroup, criterion, evaluation }}
 					{@const attributeId = getCriterionAttributeId(criterion)}
-					{@const attribute = attributeId ? findAttributeById(attributeId) : null}
+					{@const attribute = attributeId ? attributesById.get(attributeId) ?? null : null}
 					{@const attributeName = attribute?.displayName ?? attributeId}
 					{@const attributeLink = attributeId ? `/${wallet.metadata.id}#${slugifyCamelCase(attributeId)}` : null}
 

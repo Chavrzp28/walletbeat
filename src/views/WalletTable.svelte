@@ -193,7 +193,10 @@
 
 	const hasNonApplicableStages = $derived(
 		filteredWallets.length > 0 &&
-		filteredWallets.every(wallet => getWalletStageValue(wallet) === 'NOT_APPLICABLE')
+		filteredWallets.every(wallet => {
+			const { stage, ladderEvaluation } = getWalletStageAndLadder(wallet)
+			return stage === 'NOT_APPLICABLE' || stage === null || ladderEvaluation === null
+		})
 	)
 
 
@@ -204,7 +207,7 @@
 	import { isLabeledUrl } from '@/schema/url'
 	import { hasVariant } from '@/schema/variants'
 	import { attributeVariantSpecificity, VariantSpecificity,walletSupportedAccountTypes } from '@/schema/wallet'
-	import { getWalletStageAndLadder, getWalletStageValue } from '@/utils/stage'
+	import { getWalletStageAndLadder } from '@/utils/stage'
 	import { isNonEmptyArray, nonEmptyMap } from '@/types/utils/non-empty'
 	import { getAttributeStages, isAttributeUsedInStage, stagesById } from '@/utils/stage-attributes'
 	import { ladders, WalletLadderType } from '@/schema/ladders'
@@ -498,10 +501,9 @@
 							id: 'stage',
 							name: 'Stage',
 							value: (wallet: RatedWallet) => {
-								const stageValue = getWalletStageValue(wallet)
-								if (stageValue === 'NOT_APPLICABLE') return undefined
 								const { stage, ladderEvaluation } = getWalletStageAndLadder(wallet)
-								if (!stage || typeof stage === 'string' || !ladderEvaluation) return null
+								if (stage === 'NOT_APPLICABLE' || stage === null || ladderEvaluation === null) return undefined
+								if (typeof stage === 'string') return null
 								const stageIndex = ladderEvaluation.ladder.stages.findIndex(s => s.id === stage.id)
 								return stageIndex >= 0 ? stageIndex : null
 							},
@@ -557,12 +559,12 @@
 				}}
 
 				{#if column.id === 'stage'}
-					{@const stageValue = getWalletStageValue(wallet)}
 					{@const { stage, ladderEvaluation } = getWalletStageAndLadder(wallet)}
 					
-					{#if stageValue === 'NOT_APPLICABLE'}
+					{#if stage === 'NOT_APPLICABLE' || stage === null || ladderEvaluation === null}
 						<small>N/A</small>
 					{:else}
+						{@const stageValue = typeof stage === 'string' ? stage : stage.id}
 						{@const stageFilterId = `stage-${stageValue}`}
 						<Tooltip
 							buttonTriggerPlacement="behind"
@@ -572,7 +574,7 @@
 								<div
 									role="button"
 									tabindex="0"
-									aria-label={stageValue === 'QUALIFIED_FOR_NO_STAGES' ? 'Filter by No Stage' : stage && typeof stage === 'object' ? `Filter by ${stage.label}` : 'Filter by stage'}
+									aria-label={stage === 'QUALIFIED_FOR_NO_STAGES' ? 'Filter by No Stage' : stage && typeof stage === 'object' ? `Filter by ${stage.label}` : 'Filter by stage'}
 									onclick={(e) => {
 										e.preventDefault()
 										e.stopPropagation()
