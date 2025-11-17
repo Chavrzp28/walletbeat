@@ -48,75 +48,82 @@
 	)
 
 	// (Derived)
-	const maxStages = $derived(
-		Math.max(...Object.values(ladders).map(ladder => ladder.stages.length))
-	)
 	const stageFilterDefinitions = $derived(
-		Array.from({ length: maxStages }, (_, i) => ({
-			id: `stage-${i}`,
-			label: `Stage ${i}`,
-			filterFunction: (attr: { attributeGroupId: string, attributeId: string, attribute: any }) => {
-				const attributeStages = getAttributeStages(attr.attribute)
-				return attributeStages.some(({ stageNumbers }) => stageNumbers.includes(i))
-			},
-		}))
+		Array.from(
+			stagesById.entries(),
+			([stageId, stageNumber]) => ({
+				id: `stage-${stageId}`,
+				label: `Stage ${stageNumber}`,
+				filterFunction: ({ attribute }) => (
+					isAttributeUsedInStage(attribute, stageId)
+				),
+			})
+		)
 	)
-	const allAttributes = $derived.by(() => {
-		const attrs: Array<{ attributeGroupId: string, attributeId: string, attribute: any }> = []
-		for (const attrGroup of attributeGroups) {
-			for (const [attributeId, attribute] of Object.entries(attrGroup.attributes)) {
-				attrs.push({ attributeGroupId: attrGroup.id, attributeId, attribute })
-			}
-		}
-		return attrs
-	})
+	
+	const allAttributes = $derived(
+		attributeGroups
+			.flatMap(attrGroup => (
+				Object.entries(attrGroup.attributes)
+					.map(([attributeId, attribute]) => ({
+						attributeGroupId: attrGroup.id,
+						attributeId,
+						attribute,
+					}))
+			))
+	)
 
 	let filteredAttributes = $state<Array<{ attributeGroupId: string, attributeId: string, attribute: any }>>(
 		[]
 	)
 
 	const displayedAttributeGroups = $derived.by(() => {
-		let filtered = wallets.find(w => w.variants.browser || w.variants.desktop || w.variants.mobile) ?
-			// Filter attribute groups to only include non-exempt attributes
-			attributeGroups
-				.map(attrGroup => ({
-					...attrGroup,
-					attributes: (
-						Object.fromEntries(
-							Object.entries(attrGroup.attributes)
-								.filter(([attributeId, _]) => (
-									wallets.find(w => w.variants.browser || w.variants.desktop || w.variants.mobile)
-										?.overall[attrGroup.id]?.[attributeId]?.evaluation?.value?.rating !== Rating.EXEMPT
-								))
-						)
-					),
-				}))
-				.filter(attrGroup => (
-					Object.keys(attrGroup.attributes).length > 0
-				))
-		:
-			attributeGroups
+		let filtered = (
+			wallets.find(w => w.variants.browser || w.variants.desktop || w.variants.mobile) ?
+				// Filter attribute groups to only include non-exempt attributes
+				attributeGroups
+					.map(attrGroup => ({
+						...attrGroup,
+						attributes: (
+							Object.fromEntries(
+								Object.entries(attrGroup.attributes)
+									.filter(([attributeId, _]) => (
+										wallets.find(w => w.variants.browser || w.variants.desktop || w.variants.mobile)
+											?.overall[attrGroup.id]?.[attributeId]?.evaluation?.value?.rating !== Rating.EXEMPT
+									))
+							)
+						),
+					}))
+					.filter(attrGroup => (
+						Object.keys(attrGroup.attributes).length > 0
+					))
+			:
+				attributeGroups
+		)
 
 		// Filter by stage if any stage filters are active
 		if (attributeActiveFilters.size > 0) {
 			const filteredAttributeIds = new Set(
 				filteredAttributes.map(a => `${a.attributeGroupId}.${a.attributeId}`)
 			)
-			filtered = filtered
-				.map(attrGroup => ({
-					...attrGroup,
-					attributes: (
-						Object.fromEntries(
-							Object.entries(attrGroup.attributes)
-								.filter(([attributeId, _]) => 
-									filteredAttributeIds.has(`${attrGroup.id}.${attributeId}`)
-								)
-						)
-					),
-				}))
-				.filter(attrGroup => (
-					Object.keys(attrGroup.attributes).length > 0
-				))
+
+			return (
+				filtered
+					.map(attrGroup => ({
+						...attrGroup,
+						attributes: (
+							Object.fromEntries(
+								Object.entries(attrGroup.attributes)
+									.filter(([attributeId, _]) => 
+										filteredAttributeIds.has(`${attrGroup.id}.${attributeId}`)
+									)
+							)
+						),
+					}))
+					.filter(attrGroup => (
+						Object.keys(attrGroup.attributes).length > 0
+					))
+			)
 		}
 
 		return filtered
@@ -186,10 +193,7 @@
 
 	const hasNonApplicableStages = $derived(
 		filteredWallets.length > 0 &&
-		filteredWallets.every(wallet => {
-			const { stage } = getWalletStageAndLadder(wallet)
-			return stage === 'NOT_APPLICABLE' || stage === null
-		})
+		filteredWallets.every(wallet => getWalletStageValue(wallet) === 'NOT_APPLICABLE')
 	)
 
 
@@ -200,9 +204,9 @@
 	import { isLabeledUrl } from '@/schema/url'
 	import { hasVariant } from '@/schema/variants'
 	import { attributeVariantSpecificity, VariantSpecificity,walletSupportedAccountTypes } from '@/schema/wallet'
-	import { getWalletStageAndLadder, getStageNumber } from '@/utils/stage'
+	import { getWalletStageAndLadder, getWalletStageValue, getStageNumberById } from '@/utils/stage'
 	import { isNonEmptyArray, nonEmptyMap } from '@/types/utils/non-empty'
-	import { getAttributeStages } from '@/utils/stage-attributes'
+	import { getAttributeStages, isAttributeUsedInStage, stagesById } from '@/utils/stage-attributes'
 	import { ladders, WalletLadderType } from '@/schema/ladders'
 	import WalletStageBadge from './WalletStageBadge.svelte'
 
@@ -212,6 +216,8 @@
 
 	let toggleFilterById: ComponentProps<typeof Filters<RatedWallet>>['toggleFilterById'] = $state()
 	let toggleFilter: ComponentProps<typeof Filters<RatedWallet>>['toggleFilter'] = $state()
+
+	let toggleAttributeFilterById: ComponentProps<typeof Filters<{ attributeGroupId: string, attributeId: string, attribute: any }>>['toggleFilterById'] = $state()
 
 	const toggleRowExpanded = (id: string) => {
 		if (expandedRowIds.has(id))
@@ -407,7 +413,7 @@
 				bind:toggleFilterById
 			/>
 
-			{#if !hasNonApplicableStages}
+			{#if !hasNonApplicableStages && stageFilterDefinitions.length > 0}
 				<Filters
 					items={allAttributes}
 					filterGroups={[
@@ -422,6 +428,7 @@
 					]}
 					bind:activeFilters={attributeActiveFilters}
 					bind:filteredItems={filteredAttributes}
+					bind:toggleFilterById={toggleAttributeFilterById}
 				/>
 			{/if}
 		</div>
@@ -491,12 +498,10 @@
 							id: 'stage',
 							name: 'Stage',
 							value: (wallet: RatedWallet) => {
-								const { stage, ladderEvaluation } = getWalletStageAndLadder(wallet)
-								if (stage && stage !== 'NOT_APPLICABLE' && stage !== 'QUALIFIED_FOR_NO_STAGES' && ladderEvaluation) {
-									const stageNum = getStageNumber(stage, ladderEvaluation)
-									return stageNum !== null ? stageNum : null
-								}
-								return null
+								const stageValue = getWalletStageValue(wallet)
+								if (stageValue === 'NOT_APPLICABLE') return undefined
+								const { ladderEvaluation } = getWalletStageAndLadder(wallet)
+								return ladderEvaluation ? getStageNumberById(stageValue, ladderEvaluation) : null
 							},
 
 							sort: {
@@ -550,24 +555,13 @@
 				}}
 
 				{#if column.id === 'stage'}
+					{@const stageValue = getWalletStageValue(wallet)}
 					{@const { stage, ladderEvaluation } = getWalletStageAndLadder(wallet)}
-					{#if stage !== null && ladderEvaluation !== null}
-						{@const stageNumber = getStageNumber(stage, ladderEvaluation)}
-						{@const stageFilterId = stageNumber !== null ? `stage-${stageNumber}` : null}
-						{@const stageFilter = stageFilterId ? Array.from(attributeActiveFilters).find(f => f.id === stageFilterId) : null}
-						{@const isActive = stageFilter !== null}
-						{@const handleStageClick = (clickedStageNumber: number) => {
-							const clickedStageFilterId = `stage-${clickedStageNumber}`
-							const clickedTargetFilter = stageFilterDefinitions.find(f => f.id === clickedStageFilterId)
-							if (clickedTargetFilter) {
-								const clickedStageFilter = Array.from(attributeActiveFilters).find(f => f.id === clickedStageFilterId)
-								if (clickedStageFilter) {
-									attributeActiveFilters.delete(clickedStageFilter)
-								} else {
-									attributeActiveFilters.add(clickedTargetFilter)
-								}
-							}
-						}}
+					
+					{#if stageValue === 'NOT_APPLICABLE'}
+						<small>N/A</small>
+					{:else}
+						{@const stageFilterId = `stage-${stageValue}`}
 						<Tooltip
 							buttonTriggerPlacement="behind"
 							hoverTriggerPlacement="around"
@@ -576,33 +570,36 @@
 								<div
 									role="button"
 									tabindex="0"
-									aria-label="Filter by Stage {stageNumber}"
+									aria-label={stageValue === 'QUALIFIED_FOR_NO_STAGES' ? 'Filter by No Stage' : `Filter by Stage ${getStageNumberById(stageValue, ladderEvaluation!)}`}
 									onclick={(e) => {
 										e.preventDefault()
 										e.stopPropagation()
-										if (stageNumber !== null) {
-											handleStageClick(stageNumber)
-										}
+										toggleAttributeFilterById?.(stageFilterId)
 									}}
 									onkeydown={(e) => {
 										if (e.key !== 'Enter' && e.key !== ' ') return
 
 										e.preventDefault()
 										e.stopPropagation()
-										if (stageNumber !== null) {
-											handleStageClick(stageNumber)
-										}
+										toggleAttributeFilterById?.(stageFilterId)
 									}}
 								>
 									<WalletStageBadge {stage} {ladderEvaluation} size="medium" />
 								</div>
 							{/snippet}
 							{#snippet TooltipContent()}
-								<WalletStageSummary {wallet} {stage} {ladderEvaluation} onStageClick={handleStageClick} />
+								<WalletStageSummary
+									{wallet}
+									{stage}
+									{ladderEvaluation}
+									onStageClick={n => {
+										if (ladderEvaluation && n !== null && n < ladderEvaluation.ladder.stages.length) {
+											toggleAttributeFilterById?.(stageFilterId)
+										}
+									}}
+								/>
 							{/snippet}
 						</Tooltip>
-					{:else}
-						<small>N/A</small>
 					{/if}
 				{:else if column.id === 'displayName'}
 					{@const displayName = value}

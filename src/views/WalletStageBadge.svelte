@@ -2,7 +2,7 @@
 	// Types/constants
 	import { type WalletLadderEvaluation, type WalletStage } from '@/schema/stages'
 	import { stageToColor } from '@/utils/colors'
-	import { getStageNumber } from '@/utils/stage'
+	import { getStageNumberById } from '@/utils/stage'
 
 
 	// Props
@@ -18,9 +18,19 @@
 
 
 	// Derived
+	const stageValue = $derived.by(() => {
+		if (stage === 'NOT_APPLICABLE' || stage === null || ladderEvaluation === null) {
+			return 'NOT_APPLICABLE'
+		}
+		if (stage === 'QUALIFIED_FOR_NO_STAGES') {
+			return 'QUALIFIED_FOR_NO_STAGES'
+		}
+		return stage.id
+	})
+	
 	const stageNumber = $derived(
-		stage && ladderEvaluation ?
-			getStageNumber(stage, ladderEvaluation)
+		stageValue !== 'NOT_APPLICABLE' && stageValue !== 'QUALIFIED_FOR_NO_STAGES' && ladderEvaluation ?
+			getStageNumberById(stageValue, ladderEvaluation)
 		:
 			null
 	)
@@ -30,50 +40,26 @@
 	)
 
 	const stageColor = $derived(
-		stageToColor(stageNumber, maxStages)
+		stageNumber !== null ? stageToColor(stageNumber, maxStages) : undefined
 	)
-
-	const dataValue = $derived.by(() => {
-		if (stage === 'QUALIFIED_FOR_NO_STAGES') {
-			return 'NO_STAGES'
-		} else if (stage === 'NOT_APPLICABLE' || stage === null) {
-			return 'NOT_APPLICABLE'
-		} else if (stage && stageNumber !== null) {
-			return `STAGE_${stageNumber}`
-		} else {
-			return 'NOT_APPLICABLE'
-		}
-	})
-
-	const dataTitle = $derived.by(() => {
-		if (stage === 'QUALIFIED_FOR_NO_STAGES') {
-			return 'Wallet did not qualify for any stages'
-		} else if (stage === 'NOT_APPLICABLE' || stage === null) {
-			return 'Stage rating not applicable to this wallet'
-		} else {
-			return undefined
-		}
-	})
 
 </script>
 
 
 <data
 	data-badge={size}
-	value={dataValue}
-	title={dataTitle}
-	style:--accent={stage && stage !== 'NOT_APPLICABLE' && stage !== 'QUALIFIED_FOR_NO_STAGES' && stageNumber !== null ? stageColor : undefined}
+	value={stageValue === 'QUALIFIED_FOR_NO_STAGES' ? 'NO_STAGES' : stageValue === 'NOT_APPLICABLE' ? 'NOT_APPLICABLE' : `STAGE_${stageNumber}`}
+	title={stageValue === 'QUALIFIED_FOR_NO_STAGES' ? 'Wallet did not qualify for any stages' : stageValue === 'NOT_APPLICABLE' ? 'Stage rating not applicable to this wallet' : undefined}
+	style:--accent={stageColor}
 >
-	{#if stage === 'QUALIFIED_FOR_NO_STAGES'}
-		<small>No Stage</small>
-	{:else if stage === 'NOT_APPLICABLE' || stage === null}
+	{#if stageValue === 'NOT_APPLICABLE'}
 		<small>N/A</small>
-	{:else if stage && stageNumber !== null}
+	{:else if stageValue === 'QUALIFIED_FOR_NO_STAGES'}
+		<small>No Stage</small>
+	{:else if stageNumber !== null}
 		<strong>
 			Stage {stageNumber}
 		</strong>
-	{:else}
-		<small>N/A</small>
 	{/if}
 </data>
 
