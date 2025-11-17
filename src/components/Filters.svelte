@@ -202,7 +202,13 @@
 					>
 						{#snippet optionContent(option)}
 							{@const filter = filterById.get(option.value)!}
-							{@const count = filterItems(activeFilters.difference(filters).union(new Set([filter]))).length}
+							{@const count = (
+								group.operation === 'union' ?
+									filterItems(new Set([filter])).length
+								:
+									filterItems(activeFilters.difference(filters).union(new Set([filter]))).length
+							)}
+
 							{@render filterItemContent(filter, count)}
 						{/snippet}
 					</Select>
@@ -213,7 +219,12 @@
 
 					<div class="group" data-column="gap-1">
 						{#each visibleFilters as filter}
-							{@const count = filterItems(activeFilters.difference(filters).union(new Set([filter]))).length}
+							{@const count = (
+								group.operation === 'union' ?
+									filterItems(new Set([filter])).length
+								:
+									filterItems(activeFilters.difference(filters).union(new Set([filter]))).length
+							)}
 
 							<label
 								data-filter={filter.id}
@@ -265,7 +276,12 @@
 						aria-label="Filter by {group.label.toLowerCase()}"
 					>
 						{#each visibleFilters as filter (filter.id)}
-							{@const count = filterItems(activeFilters.difference(filters).union(new Set([filter]))).length}
+							{@const count = (
+								group.operation === 'union' ?
+									filterItems(new Set([filter])).length
+								:
+									filterItems(activeFilters.difference(filters).union(new Set([filter]))).length
+							)}
 
 							<option
 								value={filter.id}
@@ -281,12 +297,17 @@
 					<div class="group" data-column="gap-1">
 						{#each visibleFilters as filter}
 							{@const isChecked = activeFilters.has(filter)}
-							{@const count = filterItems(
-								isChecked ?
-									activeFilters
+							{@const count = (
+								group.operation === 'union' ?
+									filterItems(new Set([filter])).length
 								:
-									activeFilters.symmetricDifference(new Set([filter]))
-							).length}
+									filterItems(
+										isChecked ?
+											activeFilters
+										:
+											activeFilters.symmetricDifference(new Set([filter]))
+									).length
+							)}
 
 							<label
 								data-filter={filter.id}
