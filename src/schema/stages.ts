@@ -111,6 +111,9 @@ export interface WalletStage {
 	/** An ID for this stage. */
 	id: string
 
+	/** A human-readable label for this stage (e.g., "Stage 0", "Stage 1"). */
+	label: string
+
 	/** A description of what this stage represents. */
 	description: Content
 

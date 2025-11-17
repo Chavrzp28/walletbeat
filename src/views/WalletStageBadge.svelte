@@ -2,7 +2,6 @@
 	// Types/constants
 	import { type WalletLadderEvaluation, type WalletStage } from '@/schema/stages'
 	import { stageToColor } from '@/utils/colors'
-	import { getStageNumberById } from '@/utils/stage'
 
 
 	// Props
@@ -28,9 +27,9 @@
 		return stage.id
 	})
 	
-	const stageNumber = $derived(
-		stageValue !== 'NOT_APPLICABLE' && stageValue !== 'QUALIFIED_FOR_NO_STAGES' && ladderEvaluation ?
-			getStageNumberById(stageValue, ladderEvaluation)
+	const stageIndex = $derived(
+		stage && typeof stage === 'object' && ladderEvaluation ?
+			ladderEvaluation.ladder.stages.findIndex(s => s.id === stage.id)
 		:
 			null
 	)
@@ -40,7 +39,7 @@
 	)
 
 	const stageColor = $derived(
-		stageNumber !== null ? stageToColor(stageNumber, maxStages) : undefined
+		stageIndex !== null && stageIndex >= 0 ? stageToColor(stageIndex, maxStages) : undefined
 	)
 
 </script>
@@ -48,7 +47,7 @@
 
 <data
 	data-badge={size}
-	value={stageValue === 'QUALIFIED_FOR_NO_STAGES' ? 'NO_STAGES' : stageValue === 'NOT_APPLICABLE' ? 'NOT_APPLICABLE' : `STAGE_${stageNumber}`}
+	value={stageValue === 'QUALIFIED_FOR_NO_STAGES' ? 'NO_STAGES' : stageValue === 'NOT_APPLICABLE' ? 'NOT_APPLICABLE' : stageValue}
 	title={stageValue === 'QUALIFIED_FOR_NO_STAGES' ? 'Wallet did not qualify for any stages' : stageValue === 'NOT_APPLICABLE' ? 'Stage rating not applicable to this wallet' : undefined}
 	style:--accent={stageColor}
 >
@@ -56,9 +55,9 @@
 		<small>N/A</small>
 	{:else if stageValue === 'QUALIFIED_FOR_NO_STAGES'}
 		<small>No Stage</small>
-	{:else if stageNumber !== null}
+	{:else if stage && typeof stage === 'object'}
 		<strong>
-			Stage {stageNumber}
+			{stage.label}
 		</strong>
 	{/if}
 </data>

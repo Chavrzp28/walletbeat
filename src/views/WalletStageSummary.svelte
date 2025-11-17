@@ -6,7 +6,7 @@
 	import { StageCriterionRating, type StageEvaluatableWallet, type WalletLadderEvaluation, type WalletStage } from '@/schema/stages'
 	import { getCriterionAttributeId, findAttributeById } from '@/utils/stage-attributes'
 	import { slugifyCamelCase } from '@/types/utils/text'
-	import { getStageNumber, getLadderType } from '@/utils/stage'
+	import { getLadderType } from '@/utils/stage'
 
 
 	// Components
@@ -26,7 +26,7 @@
 		stage: WalletStage | 'NOT_APPLICABLE' | 'QUALIFIED_FOR_NO_STAGES' | null
 		ladderEvaluation: WalletLadderEvaluation | null
 		showNextStageCriteria?: boolean
-		onStageClick?: (stageNumber: number) => void
+		onStageClick?: (stageIndex: number) => void
 	} = $props()
 
 
@@ -40,34 +40,22 @@
 	})
 	const ladderType = $derived(getLadderType(wallet, ladderEvaluation))
 	const ladderDefinition = $derived(ladderType ? ladders[ladderType] : null)
-	const stageNumber = $derived(
-		stage && ladderEvaluation ? getStageNumber(stage, ladderEvaluation) : null
-	)
-	
-	// Helper: get stage 0 from ladder
 	const stage0 = $derived(ladderDefinition?.stages[0] ?? null)
 	
-	// Helper: get current stage index
 	const currentStageIndex = $derived.by(() => {
 		if (!stage || typeof stage === 'string' || !ladderDefinition) return null
 		return ladderDefinition.stages.findIndex(s => s.id === stage.id)
 	})
 	
-	// Helper: get next stage
 	const nextStage = $derived.by(() => {
 		if (currentStageIndex === null || !ladderDefinition) return null
 		const nextIndex = currentStageIndex + 1
 		return nextIndex < ladderDefinition.stages.length ? ladderDefinition.stages[nextIndex] : null
 	})
 	
-	// Display stage: for QUALIFIED_FOR_NO_STAGES, show stage 0; otherwise show the actual stage
 	const displayStage = $derived.by(() => {
 		if (stage === 'QUALIFIED_FOR_NO_STAGES' && stage0) return stage0
 		return stage && typeof stage !== 'string' ? stage : null
-	})
-	
-	const displayStageNumber = $derived.by(() => {
-		return stage === 'QUALIFIED_FOR_NO_STAGES' ? 0 : stageNumber
 	})
 	
 	// Target stage: what criteria to show
@@ -87,20 +75,15 @@
 		return targetStage.criteriaGroups.flatMap(criteriaGroup =>
 			criteriaGroup.criteria
 				.filter(criterion => typeof criterion.evaluate === 'function')
-				.map(criterion => {
-					const evaluation = criterion.evaluate(stageEvaluatableWallet)
-					return { criteriaGroup, criterion, evaluation }
-				})
+				.map(criterion => ({
+					criteriaGroup,
+					criterion,
+					evaluation: criterion.evaluate(stageEvaluatableWallet),
+				}))
 				.filter(({ evaluation }) => 
-					showNextStageCriteria ? evaluation.rating !== StageCriterionRating.PASS : true
+					!showNextStageCriteria || evaluation.rating !== StageCriterionRating.PASS
 				)
 		)
-	})
-	
-	const targetStageNumber = $derived.by(() => {
-		return showNextStageCriteria 
-			? (stage === 'QUALIFIED_FOR_NO_STAGES' ? 0 : (displayStageNumber ?? 0) + 1)
-			: (displayStageNumber ?? 0)
 	})
 	
 	// Rating display helpers
@@ -115,10 +98,15 @@
 		'var(--rating-unrated)'
 	
 	// Helper to wrap badge with click handler or link
-	const handleBadgeClick = (stageNum: number) => (e: MouseEvent) => {
+	const handleBadgeClick = (clickedStage: WalletStage | null) => (e: MouseEvent) => {
 		e.preventDefault()
 		e.stopPropagation()
-		onStageClick?.(stageNum)
+		if (clickedStage && ladderDefinition) {
+			const stageIndex = ladderDefinition.stages.findIndex(s => s.id === clickedStage.id)
+			if (stageIndex >= 0) {
+				onStageClick?.(stageIndex)
+			}
+		}
 	}
 
 </script>
@@ -138,7 +126,7 @@
 		<header data-column="gap-2">
 			<h3 data-row="gap-2">
 				{#if onStageClick}
-					<button type="button" onclick={handleBadgeClick(0)}>
+					<button type="button" onclick={handleBadgeClick(stage0)}>
 						<WalletStageBadge stage={stage} ladderEvaluation={ladderEvaluation} size="large" />
 					</button>
 				{:else}
@@ -146,15 +134,15 @@
 				{/if}
 			</h3>
 		</header>
-	{:else if displayStage && displayStageNumber !== null}
+	{:else if displayStage}
 		<header data-column="gap-2">
 			<h3 data-row="gap-2 start">
 				{#if onStageClick}
-					<button type="button" onclick={handleBadgeClick(displayStageNumber)}>
+					<button type="button" onclick={handleBadgeClick(displayStage)}>
 						<WalletStageBadge stage={displayStage} ladderEvaluation={ladderEvaluation} size="large" />
 					</button>
 				{:else}
-					<a data-link="camouflaged" href={`/${wallet.metadata.id}#stage-${displayStageNumber}`}>
+					<a data-link="camouflaged" href={`/${wallet.metadata.id}#stage-${displayStage.id}`}>
 						<WalletStageBadge stage={displayStage} ladderEvaluation={ladderEvaluation} size="large" />
 					</a>
 				{/if}
@@ -167,21 +155,21 @@
 		</header>
 	{/if}
 
-	{#if targetStage && criteria.length > 0 && displayStageNumber !== null}
+	{#if targetStage && criteria.length > 0 && displayStage}
 		{#if showNextStageCriteria}
 			<hr>
 		{/if}
 
 		<section data-column="gap-4">
-			{#if showNextStageCriteria && targetStage}
+			{#if showNextStageCriteria && targetStage && typeof targetStage === 'object'}
 				<h4>
 					Criteria needed to advance to
 					{#if onStageClick}
-						<button type="button" onclick={handleBadgeClick(targetStageNumber)}>
+						<button type="button" onclick={handleBadgeClick(targetStage)}>
 							<WalletStageBadge stage={targetStage} ladderEvaluation={ladderEvaluation} size="medium" />
 						</button>
 					{:else}
-						<a data-link="camouflaged" href={`/${wallet.metadata.id}#stage-${targetStageNumber}`}>
+						<a data-link="camouflaged" href={`/${wallet.metadata.id}#stage-${targetStage.id}`}>
 							<WalletStageBadge stage={targetStage} ladderEvaluation={ladderEvaluation} size="large" />
 						</a>
 					{/if}

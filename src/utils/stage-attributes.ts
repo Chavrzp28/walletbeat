@@ -16,31 +16,19 @@ function* allStages(): Generator<{ ladderType: WalletLadderType, stage: WalletSt
 }
 
 /**
- * Map of all unique stage IDs to their stage numbers (using the first occurrence).
- * This is useful for creating filter definitions and other stage-related operations.
+ * Map of stage IDs to stage objects (using the first occurrence across all ladders).
  */
-export const stagesById = (
-	new Map(
-		Object.values(ladders)
-			.flatMap(ladder => (
-				ladder.stages.map((stage, stageIndex) => [stage.id, stageIndex] as const)
-			))
-			.filter(([stageId], idx, arr) => (
-				arr.findIndex(([id]) => id === stageId) === idx
-			))
-	)
+export const stagesById = new Map(
+	Object.values(ladders)
+		.flatMap(ladder => ladder.stages)
+		.map(stage => [stage.id, stage] as const)
 )
 
 /**
- * Iterate over all criteria in a stage.
+ * Get all criteria in a stage.
  */
-function* allCriteriaInStage(stage: WalletStage): Generator<WalletStageCriterion> {
-	for (const criteriaGroup of stage.criteriaGroups) {
-		for (const criterion of criteriaGroup.criteria) {
-			yield criterion
-		}
-	}
-}
+const allCriteriaInStage = (stage: WalletStage): WalletStageCriterion[] =>
+	stage.criteriaGroups.flatMap(criteriaGroup => criteriaGroup.criteria)
 
 /**
  * Check if an attribute is used in any stage requirement by checking if the attribute
@@ -71,12 +59,10 @@ export function isAttributeUsedInStages(attribute: Attribute<any>): boolean {
  * @param stage The stage to check
  * @returns true if the attribute is used in the stage
  */
-function isAttributeUsedInStageObject(attribute: Attribute<any>, stage: WalletStage): boolean {
-	return Array.from(allCriteriaInStage(stage)).some(criterion => {
-		const attributeId = getCriterionAttributeId(criterion)
-		return attributeId === attribute.id
-	})
-}
+const isAttributeUsedInStageObject = (attribute: Attribute<any>, stage: WalletStage): boolean =>
+	allCriteriaInStage(stage).some(criterion => 
+		getCriterionAttributeId(criterion) === attribute.id
+	)
 
 /**
  * Check if an attribute is used in a specific stage by stage ID.
@@ -85,12 +71,8 @@ function isAttributeUsedInStageObject(attribute: Attribute<any>, stage: WalletSt
  * @returns true if the attribute is used in the stage
  */
 export function isAttributeUsedInStage(attribute: Attribute<any>, stageId: string): boolean {
-	for (const { stage } of allStages()) {
-		if (stage.id === stageId && isAttributeUsedInStageObject(attribute, stage)) {
-			return true
-		}
-	}
-	return false
+	const stage = stagesById.get(stageId)
+	return stage ? isAttributeUsedInStageObject(attribute, stage) : false
 }
 
 /**
@@ -99,17 +81,21 @@ export function isAttributeUsedInStage(attribute: Attribute<any>, stageId: strin
  * @returns An array of objects containing ladder type and stage numbers where the attribute is used
  */
 export function getAttributeStages(attribute: Attribute<any>): Array<{ ladderType: WalletLadderType, stageNumbers: number[] }> {
-	const byLadder = new Map<WalletLadderType, number[]>()
-	
-	for (const { ladderType, stage, stageIndex } of allStages()) {
-		if (isAttributeUsedInStageObject(attribute, stage)) {
-			const stageNumbers = byLadder.get(ladderType) ?? []
-			stageNumbers.push(stageIndex)
-			byLadder.set(ladderType, stageNumbers)
+	const stagesWithAttribute = Array.from(allStages())
+		.filter(({ stage }) => isAttributeUsedInStageObject(attribute, stage))
+		.map(({ ladderType, stageIndex }) => ({ ladderType, stageIndex }))
+
+	const uniqueLadderTypes = Array.from(new Set(stagesWithAttribute.map(({ ladderType }) => ladderType)))
+	const byLadderEntries = uniqueLadderTypes.map(ladderType => [ladderType, [] as number[]] as [WalletLadderType, number[]])
+
+	for (const { ladderType, stageIndex } of stagesWithAttribute) {
+		const entry = byLadderEntries.find(([type]) => type === ladderType)
+		if (entry) {
+			entry[1].push(stageIndex)
 		}
 	}
 
-	return Array.from(byLadder.entries()).map(([ladderType, stageNumbers]) => ({
+	return byLadderEntries.map(([ladderType, stageNumbers]) => ({
 		ladderType,
 		stageNumbers,
 	}))
@@ -147,19 +133,13 @@ export function getCriterionAttributeId(criterion: { evaluate: (wallet: any) => 
  * @returns An array of objects containing ladder type, stage number, and criterion
  */
 export function getAttributeCriteria(attribute: Attribute<any>): Array<{ ladderType: WalletLadderType, stageNumber: number, criterion: WalletStageCriterion }> {
-	const result: Array<{ ladderType: WalletLadderType, stageNumber: number, criterion: WalletStageCriterion }> = []
-
-	for (const { ladderType, stage, stageIndex } of allStages()) {
-		if (isAttributeUsedInStageObject(attribute, stage)) {
-			for (const criterion of allCriteriaInStage(stage)) {
-				if (getCriterionAttributeId(criterion) === attribute.id) {
-					result.push({ ladderType, stageNumber: stageIndex, criterion })
-				}
-			}
-		}
-	}
-
-	return result
+	return Array.from(allStages())
+		.filter(({ stage }) => isAttributeUsedInStageObject(attribute, stage))
+		.flatMap(({ ladderType, stage, stageIndex }) =>
+			allCriteriaInStage(stage)
+				.filter(criterion => getCriterionAttributeId(criterion) === attribute.id)
+				.map(criterion => ({ ladderType, stageNumber: stageIndex, criterion }))
+		)
 }
 
 /**
@@ -168,12 +148,8 @@ export function getAttributeCriteria(attribute: Attribute<any>): Array<{ ladderT
  * @returns The attribute if found, null otherwise
  */
 export function findAttributeById(attributeId: string): Attribute<any> | null {
-	for (const attrGroup of Object.values(attributeTree)) {
-		const attr = attrGroup.attributes[attributeId]
-		if (attr) {
-			return attr
-		}
-	}
-	return null
+	return Object.values(attributeTree)
+		.flatMap(attrGroup => Object.values(attrGroup.attributes))
+		.find(attr => attr.id === attributeId) ?? null
 }
 

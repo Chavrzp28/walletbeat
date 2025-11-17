@@ -51,9 +51,9 @@
 	const stageFilterDefinitions = $derived(
 		Array.from(
 			stagesById.entries(),
-			([stageId, stageNumber]) => ({
+			([stageId, stage]) => ({
 				id: `stage-${stageId}`,
-				label: `Stage ${stageNumber}`,
+				label: stage.label,
 				filterFunction: ({ attribute }) => (
 					isAttributeUsedInStage(attribute, stageId)
 				),
@@ -204,7 +204,7 @@
 	import { isLabeledUrl } from '@/schema/url'
 	import { hasVariant } from '@/schema/variants'
 	import { attributeVariantSpecificity, VariantSpecificity,walletSupportedAccountTypes } from '@/schema/wallet'
-	import { getWalletStageAndLadder, getWalletStageValue, getStageNumberById } from '@/utils/stage'
+	import { getWalletStageAndLadder, getWalletStageValue } from '@/utils/stage'
 	import { isNonEmptyArray, nonEmptyMap } from '@/types/utils/non-empty'
 	import { getAttributeStages, isAttributeUsedInStage, stagesById } from '@/utils/stage-attributes'
 	import { ladders, WalletLadderType } from '@/schema/ladders'
@@ -500,8 +500,10 @@
 							value: (wallet: RatedWallet) => {
 								const stageValue = getWalletStageValue(wallet)
 								if (stageValue === 'NOT_APPLICABLE') return undefined
-								const { ladderEvaluation } = getWalletStageAndLadder(wallet)
-								return ladderEvaluation ? getStageNumberById(stageValue, ladderEvaluation) : null
+								const { stage, ladderEvaluation } = getWalletStageAndLadder(wallet)
+								if (!stage || typeof stage === 'string' || !ladderEvaluation) return null
+								const stageIndex = ladderEvaluation.ladder.stages.findIndex(s => s.id === stage.id)
+								return stageIndex >= 0 ? stageIndex : null
 							},
 
 							sort: {
@@ -570,7 +572,7 @@
 								<div
 									role="button"
 									tabindex="0"
-									aria-label={stageValue === 'QUALIFIED_FOR_NO_STAGES' ? 'Filter by No Stage' : `Filter by Stage ${getStageNumberById(stageValue, ladderEvaluation!)}`}
+									aria-label={stageValue === 'QUALIFIED_FOR_NO_STAGES' ? 'Filter by No Stage' : stage && typeof stage === 'object' ? `Filter by ${stage.label}` : 'Filter by stage'}
 									onclick={(e) => {
 										e.preventDefault()
 										e.stopPropagation()
@@ -987,11 +989,11 @@
 										/>
 									{:else if summaryVisualization === SummaryVisualization.Stage}
 										{#if stage && stage !== 'NOT_APPLICABLE' && stage !== 'QUALIFIED_FOR_NO_STAGES' && ladderEvaluation}
-											{@const stageNum = getStageNumber(stage, ladderEvaluation)}
+											{@const stageIndex = ladderEvaluation.ladder.stages.findIndex(s => s.id === stage.id)}
 											{@const maxStages = ladderEvaluation.ladder.stages.length}
-											{#if stageNum !== null}
-												<text fill={stageToColor(stageNum, maxStages)}>
-													{stageNum}
+											{#if stageIndex >= 0}
+												<text fill={stageToColor(stageIndex, maxStages)}>
+													{stage.label}
 												</text>
 											{:else}
 												<text>❓</text>
