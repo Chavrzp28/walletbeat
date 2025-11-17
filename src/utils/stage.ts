@@ -11,9 +11,7 @@ import { WalletType } from '@/schema/wallet-types'
  * For software wallets, returns the SOFTWARE ladder stage.
  * For other wallet types, returns the first applicable ladder stage.
  */
-export function getWalletStageAndLadder(
-	wallet: RatedWallet,
-): {
+export function getWalletStageAndLadder(wallet: RatedWallet): {
 	stage: WalletStage | 'NOT_APPLICABLE' | 'QUALIFIED_FOR_NO_STAGES' | null
 	ladderEvaluation: WalletLadderEvaluation | null
 } {
@@ -29,17 +27,17 @@ export function getWalletStageAndLadder(
 	}
 
 	// Otherwise, return the first applicable ladder evaluation
-	const applicableLadder = Object.values(wallet.ladders)
-		.find(ladderEvaluation => ladderEvaluation.stage !== 'NOT_APPLICABLE')
+	const applicableLadder = Object.values(wallet.ladders).find(
+		ladderEvaluation => ladderEvaluation.stage !== 'NOT_APPLICABLE',
+	)
 
-	return applicableLadder ? {
-		stage: applicableLadder.stage,
-		ladderEvaluation: applicableLadder,
-	} : {
-		stage: null,
-		ladderEvaluation: null,
-	}
+	return applicableLadder
+		? {
+				stage: applicableLadder.stage,
+				ladderEvaluation: applicableLadder,
+			}
+		: {
+				stage: null,
+				ladderEvaluation: null,
+			}
 }
-
-
-

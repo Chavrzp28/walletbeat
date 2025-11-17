@@ -13,9 +13,7 @@ export const scoreToColor = (score: Score) =>
  * @param stageNumber 0-indexed stage number, or null for unrated/not applicable
  * @param maxStages Maximum number of stages in the ladder (for scaling)
  */
-export const stageToColor = (stageNumber: number | null, maxStages: number = 3) => (
-	stageNumber === null ?
-		'var(--rating-unrated)'
-	:
-		`color-mix(in oklch, var(--accent-color) ${((stageNumber + 1) / maxStages) * 100}%, white)`
-)
+export const stageToColor = (stageNumber: number | null, maxStages: number = 3) =>
+	stageNumber === null
+		? 'var(--rating-unrated)'
+		: `color-mix(in oklch, var(--accent-color) ${((stageNumber + 1) / maxStages) * 100}%, white)`
