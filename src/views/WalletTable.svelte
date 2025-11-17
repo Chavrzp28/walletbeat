@@ -243,6 +243,7 @@
 	import Table from '@/components/Table.svelte'
 	import Tooltip from '@/components/Tooltip.svelte'
 	import TooltipOrAccordion from '@/components/TooltipOrAccordion.svelte'
+	import WalletStageSummary from './WalletStageSummary.svelte'
 	import Typography from '@/components/Typography.svelte'
 
 	import EipDetails from '@/views/EipDetails.svelte'
@@ -567,18 +568,39 @@
 								}
 							}
 						}}
-						<button
-							type="button"
-							onclick={(e) => {
-								e.preventDefault()
-								e.stopPropagation()
-								if (stageFilterId && stageNumber !== null) {
-									handleStageClick(stageNumber)
-								}
-							}}
+						<Tooltip
+							buttonTriggerPlacement="behind"
+							hoverTriggerPlacement="around"
 						>
-							<WalletStageBadge {wallet} {stage} {ladderEvaluation} size="medium" onStageClick={handleStageClick} />
-						</button>
+							{#snippet children()}
+								<div
+									role="button"
+									tabindex="0"
+									aria-label="Filter by Stage {stageNumber}"
+									onclick={(e) => {
+										e.preventDefault()
+										e.stopPropagation()
+										if (stageNumber !== null) {
+											handleStageClick(stageNumber)
+										}
+									}}
+									onkeydown={(e) => {
+										if (e.key !== 'Enter' && e.key !== ' ') return
+
+										e.preventDefault()
+										e.stopPropagation()
+										if (stageNumber !== null) {
+											handleStageClick(stageNumber)
+										}
+									}}
+								>
+									<WalletStageBadge {stage} {ladderEvaluation} size="medium" />
+								</div>
+							{/snippet}
+							{#snippet TooltipContent()}
+								<WalletStageSummary {wallet} {stage} {ladderEvaluation} onStageClick={handleStageClick} />
+							{/snippet}
+						</Tooltip>
 					{:else}
 						<small>N/A</small>
 					{/if}

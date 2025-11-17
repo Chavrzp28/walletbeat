@@ -67,7 +67,7 @@
 		{#if summaryType === WalletSummaryType.Stage}
 			{#if stage !== null && ladderEvaluation !== null}
 				Walletbeat stage:
-				<WalletStageBadge {wallet} {stage} {ladderEvaluation} size="large" />
+				<WalletStageBadge {stage} {ladderEvaluation} size="large" />
 			{:else}
 				Walletbeat score:
 				<ScoreBadge {score} size="large" />

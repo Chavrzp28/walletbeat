@@ -320,7 +320,17 @@
 					{#if showStage}
 						{@const { stage, ladderEvaluation } = getWalletStageAndLadder(wallet)}
 						{#if stage !== null && ladderEvaluation !== null}
-							<WalletStageBadge {wallet} {stage} {ladderEvaluation} size="large" />
+							<Tooltip
+								buttonTriggerPlacement="behind"
+								hoverTriggerPlacement="around"
+							>
+								{#snippet children()}
+									<WalletStageBadge {stage} {ladderEvaluation} size="large" />
+								{/snippet}
+								{#snippet TooltipContent()}
+									<WalletStageSummary {wallet} {stage} {ladderEvaluation} />
+								{/snippet}
+							</Tooltip>
 						{/if}
 					{/if}
 

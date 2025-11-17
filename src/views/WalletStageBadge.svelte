@@ -1,29 +1,19 @@
 <script lang="ts">
 	// Types/constants
-	import type { RatedWallet } from '@/schema/wallet'
 	import { type WalletLadderEvaluation, type WalletStage } from '@/schema/stages'
 	import { stageToColor } from '@/utils/colors'
 	import { getStageNumber } from '@/utils/stage'
 
 
-	// Components
-	import Tooltip from '@/components/Tooltip.svelte'
-	import WalletStageSummary from './WalletStageSummary.svelte'
-
-
 	// Props
 	const {
-		wallet,
 		stage,
 		ladderEvaluation,
 		size = 'medium',
-		onStageClick,
 	}: {
-		wallet: RatedWallet
 		stage: WalletStage | 'NOT_APPLICABLE' | 'QUALIFIED_FOR_NO_STAGES' | null
 		ladderEvaluation: WalletLadderEvaluation | null
 		size?: 'small' | 'medium' | 'large'
-		onStageClick?: (stageNumber: number) => void
 	} = $props()
 
 
@@ -43,98 +33,49 @@
 		stageToColor(stageNumber, maxStages)
 	)
 
+	const dataValue = $derived.by(() => {
+		if (stage === 'QUALIFIED_FOR_NO_STAGES') {
+			return 'NO_STAGES'
+		} else if (stage === 'NOT_APPLICABLE' || stage === null) {
+			return 'NOT_APPLICABLE'
+		} else if (stage && stageNumber !== null) {
+			return `STAGE_${stageNumber}`
+		} else {
+			return 'NOT_APPLICABLE'
+		}
+	})
+
+	const dataTitle = $derived.by(() => {
+		if (stage === 'QUALIFIED_FOR_NO_STAGES') {
+			return 'Wallet did not qualify for any stages'
+		} else if (stage === 'NOT_APPLICABLE' || stage === null) {
+			return 'Stage rating not applicable to this wallet'
+		} else {
+			return undefined
+		}
+	})
+
 </script>
 
 
-{#if stage && stage !== 'NOT_APPLICABLE' && stage !== 'QUALIFIED_FOR_NO_STAGES' && stageNumber !== null}
-	{#if ladderEvaluation}
-		<Tooltip
-			buttonTriggerPlacement="behind"
-			hoverTriggerPlacement="around"
-		>
-			{#snippet children()}
-				<data
-					data-badge={size}
-					value={`STAGE_${stageNumber}`}
-					style:--accent={stageColor}
-				>
-					<strong>
-						Stage {stageNumber}
-					</strong>
-				</data>
-			{/snippet}
-			{#snippet TooltipContent()}
-				<WalletStageSummary {wallet} {stage} {ladderEvaluation} {onStageClick} />
-			{/snippet}
-		</Tooltip>
+<data
+	data-badge={size}
+	value={dataValue}
+	title={dataTitle}
+	style:--accent={stage && stage !== 'NOT_APPLICABLE' && stage !== 'QUALIFIED_FOR_NO_STAGES' && stageNumber !== null ? stageColor : undefined}
+>
+	{#if stage === 'QUALIFIED_FOR_NO_STAGES'}
+		<small>No Stage</small>
+	{:else if stage === 'NOT_APPLICABLE' || stage === null}
+		<small>N/A</small>
+	{:else if stage && stageNumber !== null}
+		<strong>
+			Stage {stageNumber}
+		</strong>
 	{:else}
-		<data
-			data-badge={size}
-			value={`STAGE_${stageNumber}`}
-			style:--accent={stageColor}
-		>
-			<strong>
-				Stage {stageNumber}
-			</strong>
-		</data>
+		<small>N/A</small>
 	{/if}
-{:else if stage === 'QUALIFIED_FOR_NO_STAGES'}
-	{#if ladderEvaluation}
-		<Tooltip
-			buttonTriggerPlacement="behind"
-			hoverTriggerPlacement="around"
-		>
-			{#snippet children()}
-				<data
-					data-badge={size}
-					value="NO_STAGES"
-					title="Wallet did not qualify for any stages"
-				>
-					<small>No Stage</small>
-				</data>
-			{/snippet}
-			{#snippet TooltipContent()}
-				<WalletStageSummary {wallet} stage={stage} {ladderEvaluation} />
-			{/snippet}
-		</Tooltip>
-	{:else}
-		<data
-			data-badge={size}
-			value="NO_STAGES"
-			title="Wallet did not qualify for any stages"
-		>
-			<small>No Stage</small>
-		</data>
-	{/if}
-{:else}
-	{#if ladderEvaluation}
-		<Tooltip
-			buttonTriggerPlacement="behind"
-			hoverTriggerPlacement="around"
-		>
-			{#snippet children()}
-				<data
-					data-badge={size}
-					value="NOT_APPLICABLE"
-					title="Stage rating not applicable to this wallet"
-				>
-					<small>N/A</small>
-				</data>
-			{/snippet}
-			{#snippet TooltipContent()}
-				<WalletStageSummary {wallet} stage={stage} {ladderEvaluation} />
-			{/snippet}
-		</Tooltip>
-	{:else}
-		<data
-			data-badge={size}
-			value="NOT_APPLICABLE"
-			title="Stage rating not applicable to this wallet"
-		>
-			<small>N/A</small>
-		</data>
-	{/if}
-{/if}
+</data>
 
 
 <style>
