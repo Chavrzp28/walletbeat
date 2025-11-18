@@ -652,6 +652,16 @@
 				align-items: end;
 				transform-origin: right;
 			}
+
+			@container (width < 48rem) {
+				&[data-sticky] {
+					position: static !important;
+
+					&:before {
+						content: none !important;
+					}
+				}
+			}
 		}
 
 		:where(th) {
