@@ -1,9 +1,8 @@
-import { setContains } from '@/types/utils/non-empty'
-
 import { WalletLadderType } from '@/schema/ladders'
 import type { WalletLadderEvaluation, WalletStage } from '@/schema/stages'
 import type { RatedWallet } from '@/schema/wallet'
 import { WalletType } from '@/schema/wallet-types'
+import { setContains } from '@/types/utils/non-empty'
 
 /**
  * Get the primary stage and ladder evaluation for a wallet.
@@ -18,6 +17,7 @@ export function getWalletStageAndLadder(wallet: RatedWallet): {
 	// Prioritize SOFTWARE ladder if the wallet is a software wallet
 	if (setContains<WalletType>(wallet.types, WalletType.SOFTWARE)) {
 		const softwareLadder = wallet.ladders[WalletLadderType.SOFTWARE]
+
 		if (softwareLadder && softwareLadder.stage !== 'NOT_APPLICABLE') {
 			return {
 				stage: softwareLadder.stage,

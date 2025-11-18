@@ -47,17 +47,21 @@
 	
 	const currentStageIndex = $derived.by(() => {
 		if (!stage || typeof stage === 'string' || !ladderDefinition) return null
+
 		return ladderDefinition.stages.findIndex(s => s.id === stage.id)
 	})
 	
 	const nextStage = $derived.by(() => {
 		if (currentStageIndex === null || !ladderDefinition) return null
+
 		const nextIndex = currentStageIndex + 1
+
 		return nextIndex < ladderDefinition.stages.length ? ladderDefinition.stages[nextIndex] : null
 	})
 	
 	const displayStage = $derived.by(() => {
 		if (stage === 'QUALIFIED_FOR_NO_STAGES' && stage0) return stage0
+
 		return stage && typeof stage !== 'string' ? stage : null
 	})
 	
@@ -66,8 +70,11 @@
 		if (showNextStageCriteria) {
 			return stage === 'QUALIFIED_FOR_NO_STAGES' ? stage0 : nextStage
 		}
+
 		if (stage === 'QUALIFIED_FOR_NO_STAGES') return stage0
+
 		if (stage === 'NOT_APPLICABLE' || stage === null) return null
+
 		return displayStage
 	})
 	const criteria = $derived.by(() => {
@@ -104,8 +111,10 @@
 	const handleBadgeClick = (clickedStage: WalletStage | null) => (e: MouseEvent) => {
 		e.preventDefault()
 		e.stopPropagation()
+
 		if (clickedStage && ladderDefinition) {
 			const stageIndex = ladderDefinition.stages.findIndex(s => s.id === clickedStage.id)
+
 			if (stageIndex >= 0) {
 				onStageClick?.(stageIndex)
 			}
@@ -145,7 +154,7 @@
 						<WalletStageBadge stage={displayStage} ladderEvaluation={ladderEvaluation} size="large" />
 					</button>
 				{:else}
-					<a data-link="camouflaged" href={`/${wallet.metadata.id}#stage-${displayStage.id}`}>
+					<a data-link="camouflaged" href={`/${wallet.metadata.id}/#stage-${displayStage.id}`}>
 						<WalletStageBadge stage={displayStage} ladderEvaluation={ladderEvaluation} size="large" />
 					</a>
 				{/if}
@@ -172,7 +181,7 @@
 							<WalletStageBadge stage={targetStage} ladderEvaluation={ladderEvaluation} size="medium" />
 						</button>
 					{:else}
-						<a data-link="camouflaged" href={`/${wallet.metadata.id}#stage-${targetStage.id}`}>
+						<a data-link="camouflaged" href={`/${wallet.metadata.id}/#stage-${targetStage.id}`}>
 							<WalletStageBadge stage={targetStage} ladderEvaluation={ladderEvaluation} size="large" />
 						</a>
 					{/if}
@@ -185,7 +194,7 @@
 					{@const attributeId = getCriterionAttributeId(criterion)}
 					{@const attribute = attributeId ? attributesById.get(attributeId) ?? null : null}
 					{@const attributeName = attribute?.displayName ?? attributeId}
-					{@const attributeLink = attributeId ? `/${wallet.metadata.id}#${slugifyCamelCase(attributeId)}` : null}
+					{@const attributeLink = attributeId ? `/${wallet.metadata.id}/#${slugifyCamelCase(attributeId)}` : null}
 
 					<li data-row="start gap-2">
 						<span style="color: {getRatingColor(evaluation.rating)}">{getRatingIcon(evaluation.rating)}</span>

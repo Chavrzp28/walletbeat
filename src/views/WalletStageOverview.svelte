@@ -1,9 +1,9 @@
 <script lang="ts">
 	// Types/constants
-	import { ContentType, isTypographicContent } from '@/types/content'
+	import { isTypographicContent } from '@/types/content'
 	import type { RatedWallet } from '@/schema/wallet'
 	import { WalletLadderType, ladders } from '@/schema/ladders'
-	import { StageCriterionRating, type StageEvaluatableWallet, type WalletLadderEvaluation, type WalletStage } from '@/schema/stages'
+	import { StageCriterionRating, type WalletLadderEvaluation, type WalletStage } from '@/schema/stages'
 	import { stageToColor } from '@/utils/colors'
 	import { getCriterionAttributeId } from '@/utils/stage-attributes'
 	import { slugifyCamelCase } from '@/types/utils/text'
@@ -12,10 +12,9 @@
 
 	// Components
 	import Typography from '@/components/Typography.svelte'
-	import WalletStageBadge from './WalletStageBadge.svelte'
+	
 
-
-	// Props
+// Props
 	const {
 		wallet,
 		stage,
@@ -32,17 +31,20 @@
 		if (!ladderEvaluation) {
 			return null
 		}
+
 		for (const [type, evaluation] of Object.entries(wallet.ladders)) {
 			if (evaluation === ladderEvaluation) {
 				return type as WalletLadderType
 			}
 		}
+
 		return null
 	})
 	let ladderDefinition = $derived.by(() => {
 		if (!ladderType) {
 			return null
 		}
+
 		return ladders[ladderType]
 	})
 	let stageEvaluatableWallet = $derived(wallet)
@@ -50,19 +52,23 @@
 		if (!stage || typeof stage === 'string' || !ladderDefinition) {
 			return null
 		}
+
 		return ladderDefinition.stages.findIndex(s => s.id === stage.id)
 	})
 	const defaultOpenStageIndex = $derived.by(() => {
 		if (currentStageIndex === null || !ladderDefinition) {
 			return ladderDefinition ? ladderDefinition.stages.length - 1 : null
 		}
+
 		const nextIndex = currentStageIndex + 1
+
 		return nextIndex < ladderDefinition.stages.length ? nextIndex : ladderDefinition.stages.length - 1
 	})
 	const stagesToShow = $derived.by(() => {
 		if (!ladderDefinition) {
 			return []
 		}
+
 		return ladderDefinition.stages
 	})
 
@@ -86,6 +92,7 @@
 				{@const allCriteria = s.criteriaGroups.flatMap(group => group.criteria)}
 				{@const passedCriteria = allCriteria.filter(criterion => {
 					const evaluation = criterion.evaluate(stageEvaluatableWallet)
+
 					return evaluation.rating === StageCriterionRating.PASS
 				})}
 				{@const passedCount = passedCriteria.length}
@@ -175,7 +182,7 @@
 															'var(--rating-unrated)'
 														}
 														{@const attributeId = getCriterionAttributeId(criterion)}
-														{@const attributeLink = attributeId ? `/${wallet.metadata.id}#${slugifyCamelCase(attributeId)}` : null}
+														{@const attributeLink = attributeId ? `/${wallet.metadata.id}/#${slugifyCamelCase(attributeId)}` : null}
 														{@const attribute = attributeId ? (() => {
 															for (const attrGroup of Object.values(attributeTree)) {
 																for (const attr of Object.values(attrGroup.attributes)) {
@@ -184,6 +191,7 @@
 																	}
 																}
 															}
+
 															return null
 														})() : null}
 														{@const attributeName = attribute?.displayName ?? attributeId}

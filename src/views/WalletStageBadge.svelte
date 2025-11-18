@@ -21,9 +21,11 @@
 		if (stage === 'NOT_APPLICABLE' || stage === null || ladderEvaluation === null) {
 			return 'NOT_APPLICABLE'
 		}
+
 		if (stage === 'QUALIFIED_FOR_NO_STAGES') {
 			return 'QUALIFIED_FOR_NO_STAGES'
 		}
+
 		return stage.id
 	})
 	

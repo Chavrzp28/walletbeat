@@ -49,11 +49,13 @@
 		if (!ladderEvaluation) {
 			return null
 		}
+
 		for (const [type, evaluation] of Object.entries(wallet.ladders)) {
 			if (evaluation === ladderEvaluation) {
 				return type as WalletLadderType
 			}
 		}
+
 		return null
 	})
 	const attributeStages = $derived(getAttributeStages(attribute.attribute))
@@ -61,14 +63,18 @@
 		if (!ladderType || !ladderEvaluation) {
 			return []
 		}
+
 		const stagesForLadder = attributeStages.find(s => s.ladderType === ladderType)
+
 		return stagesForLadder?.stageNumbers ?? []
 	})
 	const firstStage = $derived.by(() => {
 		if (relevantStages.length === 0 || !ladderEvaluation) {
 			return null
 		}
+
 		const stageNumber = relevantStages[0]
+
 		return ladderEvaluation.ladder.stages[stageNumber] ?? null
 	})
 </script>
@@ -95,7 +101,7 @@
 				>
 					{#snippet children()}
 						<a
-							href={`/${wallet.metadata.id}${variant ? `?variant=${variant}` : ''}#stage-${stageNumber}`}
+							href={`/${wallet.metadata.id}/${variant ? `?variant=${variant}` : ''}#stage-${stageNumber}`}
 							data-link="camouflaged"
 							title={`This attribute is required for stage${relevantStages.length > 1 ? 's' : ''} ${relevantStages.join(', ')}`}
 						>

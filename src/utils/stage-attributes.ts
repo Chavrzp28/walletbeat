@@ -1,7 +1,6 @@
-import type { Attribute } from '@/schema/attributes'
 import { attributeTree } from '@/schema/attribute-groups'
-import { WalletLadderType } from '@/schema/ladders'
-import { ladders } from '@/schema/ladders'
+import type { Attribute } from '@/schema/attributes'
+import { ladders, WalletLadderType } from '@/schema/ladders'
 import type { WalletStage, WalletStageCriterion } from '@/schema/stages'
 
 /**
@@ -53,7 +52,7 @@ export function isAttributeUsedInStages(attribute: Attribute<any>): boolean {
 	// The attribute objects are referenced in the stage definitions via variantsMustPassAttribute
 	// We can check if the attribute ID appears in the ladder structure
 	// by serializing and checking for the attribute ID
-	const ladderString = JSON.stringify(ladders, (key, value) => {
+	const ladderString = JSON.stringify(ladders, (_, value) => {
 		// When we encounter an attribute object, include its ID
 		if (
 			value &&
@@ -64,6 +63,7 @@ export function isAttributeUsedInStages(attribute: Attribute<any>): boolean {
 		) {
 			return { id: value.id, _isAttribute: true }
 		}
+
 		return value
 	})
 
@@ -87,6 +87,7 @@ const isAttributeUsedInStageObject = (attribute: Attribute<any>, stage: WalletSt
  */
 export const isAttributeUsedInStage = (attribute: Attribute<any>, stageId: string): boolean => {
 	const stage = stagesById.get(stageId)
+
 	return stage !== undefined && isAttributeUsedInStageObject(attribute, stage)
 }
 
@@ -125,12 +126,13 @@ export function getCriterionAttributeId(criterion: {
 	// First check if the evaluate function has the __attributeId property attached
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
 	const attachedId = (criterion.evaluate as any).__attributeId
+
 	if (typeof attachedId === 'string') {
 		return attachedId
 	}
 
 	// Fallback to serialization for other cases
-	const criterionString = JSON.stringify(criterion, (key, value) => {
+	const criterionString = JSON.stringify(criterion, (_, value) => {
 		if (
 			value &&
 			typeof value === 'object' &&
@@ -140,11 +142,13 @@ export function getCriterionAttributeId(criterion: {
 		) {
 			return { id: value.id, _isAttribute: true }
 		}
+
 		return value
 	})
 
 	// Try to extract the attribute ID from the serialized string
 	const attributeIdMatch = criterionString.match(/"id":"([^"]+)","_isAttribute":true/)
+
 	return attributeIdMatch ? attributeIdMatch[1] : null
 }
 
