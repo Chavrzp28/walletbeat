@@ -421,7 +421,7 @@
 		{#if showStage}
 			{@const { stage, ladderEvaluation } = getWalletStageAndLadder(wallet)}
 
-			<section data-column="gap-6">
+			<section id="stages">
 				<header
 					data-sticky="block"
 					data-row
@@ -1305,6 +1305,12 @@
 
 	.platforms-label {
 		color: var(--accent);
+	}
+
+	#stages {
+		> header {
+			padding-block: 1rem;
+		}
 	}
 
 	.attribute-group {
