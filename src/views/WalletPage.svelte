@@ -1174,7 +1174,9 @@
 				view-timeline-axis: block;
 
 				.wallet-name {
-					h1 img {
+					position: static;
+
+					.wallet-icon {
 						position: sticky;
 						position: absolute;
 						top: 0;
@@ -1309,7 +1311,7 @@
 
 	#stages {
 		> header {
-			padding-block: 1rem;
+			padding-block: 1.2rem;
 		}
 	}
 
