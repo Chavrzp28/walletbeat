@@ -6,6 +6,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  turbopack: {},
   webpack: (config, { isServer }) => {
     if (!isServer) {
       // Handle @worldcoin/idkit and @worldcoin/idkit-core for client-side
