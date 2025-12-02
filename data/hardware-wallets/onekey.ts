@@ -11,6 +11,7 @@ import {
 	displaysFullTransactionDetails,
 	noCalldataDecoding,
 } from '@/schema/features/security/hardware-wallet-app-signing'
+import { SecureElementType } from '@/schema/features/security/secure-element'
 import { notSupported, supported } from '@/schema/features/support'
 import { FOSSLicense, LicensingType } from '@/schema/features/transparency/license'
 import { refTodo } from '@/schema/reference'
@@ -174,6 +175,16 @@ export const onekeyWallet: HardwareWallet = {
 					variantsScope: { [Variant.HARDWARE]: true },
 				},
 			],
+			secureElement: supported({
+				ref: [
+					{
+						explanation:
+							'Built with an EAL 6+ Secure Element, the same level of chip security used in government IDs, passports, and EMV bank cards.',
+						url: 'https://onekey.so/products/onekey-classic-1s-hardware-wallet/',
+					},
+				],
+				secureElementType: SecureElementType.EAL_6_PLUS,
+			}),
 			supplyChainDIY: null,
 			supplyChainFactory: null,
 			userSafety: null,
