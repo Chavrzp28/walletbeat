@@ -198,6 +198,7 @@ export const safe: SoftwareWallet = {
 					}),
 				},
 			},
+			keysHandling: null,
 			lightClient: {
 				ethereumL1: null,
 			},

@@ -13,12 +13,15 @@ import {
 } from '@/schema/features/privacy/data-collection'
 import { PrivateTransferTechnology } from '@/schema/features/privacy/transaction-privacy'
 import { WalletProfile } from '@/schema/features/profile'
-import { SeedphraseBackupOnboardingFlowBehavior } from '@/schema/features/security/account-recovery'
 import {
 	HardwareWalletConnection,
 	HardwareWalletType,
 	type SupportedHardwareWallet,
 } from '@/schema/features/security/hardware-wallet-support'
+import {
+	KeyGenerationLocation,
+	MultiPartyKeyReconstruction,
+} from '@/schema/features/security/keys-handling'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
 import type { ScamUrlWarning } from '@/schema/features/security/scam-alerts'
 import { SecurityFlawSeverity } from '@/schema/features/security/security-audits'
@@ -368,9 +371,6 @@ export const rabby: SoftwareWallet = {
 		security: {
 			accountRecovery: {
 				guardianRecovery: notSupported,
-				seedPhraseBackup: {
-					onboardingFlow: SeedphraseBackupOnboardingFlowBehavior.NO_DEDICATED_BACKUP_STEP,
-				},
 			},
 			bugBountyProgram: null,
 			hardwareWalletSupport: {
@@ -402,6 +402,11 @@ export const rabby: SoftwareWallet = {
 				},
 				[Variant.BROWSER]: null,
 				[Variant.MOBILE]: null,
+			},
+			keysHandling: {
+				ref: refTodo,
+				keyGeneration: KeyGenerationLocation.FULLY_ON_USER_DEVICE,
+				multipartyKeyReconstruction: MultiPartyKeyReconstruction.NON_MULTIPARTY,
 			},
 			lightClient: {
 				ethereumL1: notSupported,

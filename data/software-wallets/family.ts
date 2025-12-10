@@ -100,6 +100,7 @@ export const family: SoftwareWallet = {
 				ref: refTodo,
 				wallets: {},
 			},
+			keysHandling: null,
 			lightClient: {
 				ethereumL1: null,
 			},

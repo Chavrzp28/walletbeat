@@ -166,6 +166,7 @@ export const nufi: SoftwareWallet = {
 					}),
 				},
 			},
+			keysHandling: null,
 			lightClient: {
 				ethereumL1: notSupported,
 			},

@@ -110,6 +110,7 @@ export const mtpelerin: SoftwareWallet = {
 		},
 		profile: WalletProfile.GENERIC,
 		security: {
+			accountRecovery: null,
 			bugBountyProgram: supported<BugBountyProgramImplementation>({
 				ref: [
 					{
@@ -135,6 +136,7 @@ export const mtpelerin: SoftwareWallet = {
 				ref: refTodo,
 				wallets: {},
 			},
+			keysHandling: null,
 			lightClient: {
 				ethereumL1: null,
 			},

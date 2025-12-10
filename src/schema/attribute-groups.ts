@@ -58,6 +58,7 @@ import {
 	privateTransfers,
 	type PrivateTransfersValue,
 } from './attributes/privacy/private-transfers'
+import { accountRecovery, type AccountRecoveryValue } from './attributes/security/account-recovery'
 import {
 	bugBountyProgram,
 	type BugBountyProgramValue,
@@ -75,7 +76,6 @@ import {
 	hardwareWalletSupport,
 	type HardwareWalletSupportValue,
 } from './attributes/security/hardware-wallet-support'
-import { keysHandling, type KeysHandlingValue } from './attributes/security/keys-handling'
 import {
 	passkeyImplementation,
 	type PasskeyImplementationValue,
@@ -92,6 +92,10 @@ import {
 	accountPortability,
 	type AccountPortabilityValue,
 } from './attributes/self-sovereignty/account-portability'
+import {
+	accountUnruggability,
+	type AccountUnruggabilityValue,
+} from './attributes/self-sovereignty/account-unruggability'
 import {
 	interoperability,
 	type InteroperabilityValue,
@@ -133,8 +137,8 @@ type SecurityValues = Dict<{
 	supplyChainDIY: SupplyChainDIYValue
 	supplyChainFactory: SupplyChainFactoryValue
 	firmware: FirmwareValue
-	keysHandling: KeysHandlingValue
 	userSafety: UserSafetyValue
+	accountRecovery: AccountRecoveryValue
 }>
 
 /** Security attributes. */
@@ -154,8 +158,8 @@ export const securityAttributeGroup: AttributeGroup<SecurityValues> = {
 		supplyChainDIY,
 		supplyChainFactory,
 		firmware,
-		keysHandling,
 		userSafety,
+		accountRecovery,
 	},
 	attributeWeights: {
 		securityAudits: 1.0,
@@ -168,8 +172,8 @@ export const securityAttributeGroup: AttributeGroup<SecurityValues> = {
 		supplyChainDIY: 1.0,
 		supplyChainFactory: 1.0,
 		firmware: 1.0,
-		keysHandling: 1.0,
 		userSafety: 1.0,
+		accountRecovery: 1.0,
 	},
 }
 
@@ -211,6 +215,7 @@ type SelfSovereigntyValues = Dict<{
 	selfHostedNode: SelfHostedNodeValue
 	accountPortability: AccountPortabilityValue
 	transactionInclusion: TransactionInclusionValue
+	accountUnruggability: AccountUnruggabilityValue
 }>
 
 /** Self-sovereignty attributes. */
@@ -225,11 +230,13 @@ export const selfSovereigntyAttributeGroup: AttributeGroup<SelfSovereigntyValues
 		selfHostedNode,
 		accountPortability,
 		transactionInclusion,
+		accountUnruggability,
 	},
 	attributeWeights: {
 		selfHostedNode: 1.0,
 		accountPortability: 1.0,
 		transactionInclusion: 1.0,
+		accountUnruggability: 1.0,
 	},
 }
 
@@ -347,8 +354,8 @@ export interface SecurityEvaluations extends EvaluatedGroup<SecurityValues> {
 	supplyChainDIY: EvaluatedAttribute<SupplyChainDIYValue>
 	supplyChainFactory: EvaluatedAttribute<SupplyChainFactoryValue>
 	firmware: EvaluatedAttribute<FirmwareValue>
-	keysHandling: EvaluatedAttribute<KeysHandlingValue>
 	userSafety: EvaluatedAttribute<UserSafetyValue>
+	accountRecovery: EvaluatedAttribute<AccountRecoveryValue>
 }
 
 /** Evaluated privacy attributes for a single wallet. */
@@ -449,8 +456,8 @@ export function evaluateAttributes(
 			supplyChainDIY: evalAttr(supplyChainDIY),
 			supplyChainFactory: evalAttr(supplyChainFactory),
 			firmware: evalAttr(firmware),
-			keysHandling: evalAttr(keysHandling),
 			userSafety: evalAttr(userSafety),
+			accountRecovery: evalAttr(accountRecovery),
 		},
 		privacy: {
 			addressCorrelation: evalAttr(addressCorrelation),
@@ -463,6 +470,7 @@ export function evaluateAttributes(
 			selfHostedNode: evalAttr(selfHostedNode),
 			accountPortability: evalAttr(accountPortability),
 			transactionInclusion: evalAttr(transactionInclusion),
+			accountUnruggability: evalAttr(accountUnruggability),
 		},
 		transparency: {
 			openSource: evalAttr(openSource),
@@ -520,8 +528,8 @@ export function aggregateAttributes(perVariant: AtLeastOneVariant<EvaluationTree
 			supplyChainDIY: attr(tree => tree.security.supplyChainDIY),
 			supplyChainFactory: attr(tree => tree.security.supplyChainFactory),
 			firmware: attr(tree => tree.security.firmware),
-			keysHandling: attr(tree => tree.security.keysHandling),
 			userSafety: attr(tree => tree.security.userSafety),
+			accountRecovery: attr(tree => tree.security.accountRecovery),
 		},
 		privacy: {
 			addressCorrelation: attr(tree => tree.privacy.addressCorrelation),
@@ -534,6 +542,7 @@ export function aggregateAttributes(perVariant: AtLeastOneVariant<EvaluationTree
 			selfHostedNode: attr(tree => tree.selfSovereignty.selfHostedNode),
 			accountPortability: attr(tree => tree.selfSovereignty.accountPortability),
 			transactionInclusion: attr(tree => tree.selfSovereignty.transactionInclusion),
+			accountUnruggability: attr(tree => tree.selfSovereignty.accountUnruggability),
 		},
 		transparency: {
 			openSource: attr(tree => tree.transparency.openSource),

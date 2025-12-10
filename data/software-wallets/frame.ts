@@ -145,6 +145,7 @@ export const frame: SoftwareWallet = {
 					}),
 				},
 			},
+			keysHandling: null,
 			lightClient: {
 				ethereumL1: null,
 			},

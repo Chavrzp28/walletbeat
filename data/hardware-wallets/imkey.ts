@@ -49,13 +49,10 @@ export const imkeyWallet: HardwareWallet = {
 			websites: ['https://imkey.im/'],
 		},
 	},
-
 	features: {
 		accountSupport: null,
-
 		licensing: {
 			type: LicensingType.SEPARATE_CORE_CODE_LICENSE_VS_WALLET_CODE_LICENSE,
-
 			coreLicense: {
 				ref: [
 					{
@@ -65,7 +62,6 @@ export const imkeyWallet: HardwareWallet = {
 				],
 				license: FOSSLicense.APACHE_2_0,
 			},
-
 			walletAppLicense: {
 				[Variant.HARDWARE]: {
 					ref: [
@@ -79,7 +75,6 @@ export const imkeyWallet: HardwareWallet = {
 				},
 			},
 		},
-
 		monetization: {
 			ref: [
 				{
@@ -101,9 +96,7 @@ export const imkeyWallet: HardwareWallet = {
 				ventureCapital: false,
 			},
 		},
-
 		multiAddress: featureSupported,
-
 		privacy: {
 			dataCollection: null,
 			hardwarePrivacy: {
@@ -117,12 +110,10 @@ export const imkeyWallet: HardwareWallet = {
 			privacyPolicy: 'https://token.im/tos-en.html',
 			transactionPrivacy: null,
 		},
-
 		profile: WalletProfile.GENERIC,
-
 		security: {
+			accountRecovery: null,
 			bugBountyProgram: null,
-
 			firmware: {
 				type: FirmwareType.PASS,
 				customFirmware: null,
@@ -133,7 +124,6 @@ export const imkeyWallet: HardwareWallet = {
 				silentUpdateProtection: FirmwareType.PASS,
 				url: 'https://support.imkey.im/hc/en-001/articles/36709320202649',
 			},
-
 			hardwareWalletAppSigning: {
 				ref: [
 					{
@@ -179,7 +169,6 @@ export const imkeyWallet: HardwareWallet = {
 					displayedTransactionDetails: { ...displaysFullTransactionDetails, nonce: false },
 				},
 			},
-
 			keysHandling: null,
 			lightClient: { ethereumL1: null },
 			passkeyVerification: null,
@@ -200,7 +189,6 @@ export const imkeyWallet: HardwareWallet = {
 			},
 			userSafety: null,
 		},
-
 		selfSovereignty: {
 			interoperability: {
 				type: InteroperabilityType.PASS,
@@ -211,7 +199,6 @@ export const imkeyWallet: HardwareWallet = {
 				url: 'https://imkey.im/pages/integrated-wallets',
 			},
 		},
-
 		transparency: {
 			maintenance: null,
 			operationFees: {
@@ -223,6 +210,5 @@ export const imkeyWallet: HardwareWallet = {
 			reputation: null,
 		},
 	},
-
 	variants: { [Variant.HARDWARE]: true },
 }

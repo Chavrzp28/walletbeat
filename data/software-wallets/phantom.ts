@@ -119,6 +119,7 @@ export const phantom: SoftwareWallet = {
 					}),
 				},
 			},
+			keysHandling: null,
 			lightClient: {
 				ethereumL1: null,
 			},

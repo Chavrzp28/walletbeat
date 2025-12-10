@@ -94,6 +94,9 @@ export interface WalletBaseFeatures {
 
 		/** How can users of the wallet recover their account? */
 		accountRecovery: VariantFeature<AccountRecovery>
+
+		/** How are secret keys handled? */
+		keysHandling: VariantFeature<WithRef<KeysHandlingSupport>>
 	}
 
 	/** Privacy features. */
@@ -208,7 +211,6 @@ export type WalletHardwareFeatures = WalletBaseFeatures & {
 		hardwareWalletAppSigning: VariantFeature<HardwareWalletAppSigningImplementation>
 
 		firmware: VariantFeature<FirmwareSupport>
-		keysHandling: VariantFeature<KeysHandlingSupport>
 		supplyChainDIY: VariantFeature<SupplyChainDIYSupport>
 		supplyChainFactory: VariantFeature<SupplyChainFactorySupport>
 		userSafety: VariantFeature<UserSafetySupport>
@@ -276,7 +278,7 @@ export interface ResolvedFeatures {
 		passkeyVerification: ResolvedFeature<PasskeyVerificationImplementation>
 		bugBountyProgram: ResolvedFeature<Support<BugBountyProgramImplementation>>
 		firmware: ResolvedFeature<FirmwareSupport>
-		keysHandling: ResolvedFeature<KeysHandlingSupport>
+		keysHandling: ResolvedFeature<WithRef<KeysHandlingSupport>>
 		supplyChainDIY: ResolvedFeature<SupplyChainDIYSupport>
 		supplyChainFactory: ResolvedFeature<SupplyChainFactorySupport>
 		userSafety: ResolvedFeature<UserSafetySupport>
@@ -396,10 +398,7 @@ export function resolveFeatures(
 				features => features.security.bugBountyProgram,
 			),
 			firmware: hardwareFeat('security.firmware', features => features.security.firmware),
-			keysHandling: hardwareFeat(
-				'security.keysHandling',
-				features => features.security.keysHandling,
-			),
+			keysHandling: baseFeat('security.keysHandling', features => features.security.keysHandling),
 			supplyChainDIY: hardwareFeat(
 				'security.supplyChainDIY',
 				features => features.security.supplyChainDIY,

@@ -85,6 +85,7 @@ export const unratedTemplate: SoftwareWallet = {
 			accountRecovery: null,
 			bugBountyProgram: null,
 			hardwareWalletSupport: null,
+			keysHandling: null,
 			lightClient: {
 				ethereumL1: null,
 			},

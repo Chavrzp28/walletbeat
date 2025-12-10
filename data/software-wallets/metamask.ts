@@ -4,16 +4,16 @@ import { AccountType } from '@/schema/features/account-support'
 import type { AddressResolutionData } from '@/schema/features/privacy/address-resolution'
 import { PrivateTransferTechnology } from '@/schema/features/privacy/transaction-privacy'
 import { WalletProfile } from '@/schema/features/profile'
-import {
-	GuardianPolicyType,
-	GuardianType,
-	SeedphraseBackupOnboardingFlowBehavior,
-} from '@/schema/features/security/account-recovery'
+import { GuardianPolicyType, GuardianType } from '@/schema/features/security/account-recovery'
 import {
 	HardwareWalletConnection,
 	HardwareWalletType,
 	type SupportedHardwareWallet,
 } from '@/schema/features/security/hardware-wallet-support'
+import {
+	KeyGenerationLocation,
+	MultiPartyKeyReconstruction,
+} from '@/schema/features/security/keys-handling'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
 import type { ScamUrlWarning } from '@/schema/features/security/scam-alerts'
 import {
@@ -243,34 +243,50 @@ export const metamask: SoftwareWallet = {
 		security: {
 			accountRecovery: {
 				guardianRecovery: supported({
-					minimumGuardianPolicy: {
-						type: GuardianPolicyType.SECRET_SPLIT_ACROSS_GUARDIANS,
-						// Requires at least one external account + the data stored in
-						// MetaMask's secret store service, which is effectively 2 pieces
-						// of data that need to be brought together.
-						numSharesRequiredForRecovery: 2,
-						// Minimum of 1 social login provider + MetaMask data store
-						// = 2 shares across 2 guardians.
-						numSharesTotal: 2,
-						possibleGuardians: [
-							{ type: GuardianType.USER_EXTERNAL_ACCOUNT, entity: alphabet },
-							{ type: GuardianType.USER_EXTERNAL_ACCOUNT, entity: apple },
-							{ type: GuardianType.WALLET_PROVIDER, entity: consensys },
-						],
-						secretReconstitution: 'CLIENT_SIDE',
-					},
 					ref: [
 						{
-							explanation:
-								"MetaMask's social login feature splits your recovery key across Google and/or Apple, and stores an encrypted copy in Consensys's data store service, making it effectively a 2/2-secret-sharing scheme at minimum.",
-							label: 'MetaMask social login documentation',
+							label: 'MetaMask account recovery documentation',
 							url: 'https://support.metamask.io/configure/wallet/social-login',
 						},
 					],
+					minimumGuardianPolicy: {
+						type: GuardianPolicyType.SECRET_SPLIT_ACROSS_GUARDIANS,
+						descriptionMarkdown: `
+							MetaMask's account recovery feature splits recovery key shares across Google
+							and/or Apple. The user may configure a single one without the other,
+							in which case the key is effectively a 1-of-1.
+
+							MetaMask uses a key derived from the wallet password and these key shares
+							to create an encrypted seed phrase backup stored in Consensys's data store service.
+						`,
+						optionalGuardians: [
+							{
+								type: GuardianType.USER_EXTERNAL_ACCOUNT,
+								description: 'Google account',
+								entity: alphabet,
+							},
+							{
+								type: GuardianType.USER_EXTERNAL_ACCOUNT,
+								description: 'Apple account',
+								entity: apple,
+							},
+						],
+						optionalGuardiansMinimumConfigurable: 1,
+						optionalGuardiansMinimumNeededForRecovery: 1,
+						requiredGuardians: [
+							// Needed to decrypt encrypted backup.
+							{ type: GuardianType.WALLET_PASSWORD },
+							// MetaMask data store is a critical dependency here,
+							// as without it the encrypted backup is not accessible.
+							{
+								type: GuardianType.WALLET_PROVIDER,
+								description: 'MetaMask data store service',
+								entity: consensys,
+							},
+						],
+						secretReconstitution: 'CLIENT_SIDE',
+					},
 				}),
-				seedPhraseBackup: {
-					onboardingFlow: SeedphraseBackupOnboardingFlowBehavior.BYPASSABLE_QUIZ,
-				},
 			},
 			bugBountyProgram: null,
 			hardwareWalletSupport: {
@@ -295,6 +311,11 @@ export const metamask: SoftwareWallet = {
 						connectionTypes: [HardwareWalletConnection.QR],
 					}),
 				},
+			},
+			keysHandling: {
+				ref: refTodo,
+				keyGeneration: KeyGenerationLocation.FULLY_ON_USER_DEVICE,
+				multipartyKeyReconstruction: MultiPartyKeyReconstruction.NON_MULTIPARTY,
 			},
 			lightClient: {
 				ethereumL1: notSupported,

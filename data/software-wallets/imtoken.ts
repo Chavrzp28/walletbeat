@@ -252,6 +252,7 @@ export const imtoken: SoftwareWallet = {
 		},
 		profile: WalletProfile.GENERIC,
 		security: {
+			accountRecovery: null,
 			bugBountyProgram: supported<BugBountyProgramImplementation>({
 				ref: [
 					{
@@ -292,6 +293,7 @@ export const imtoken: SoftwareWallet = {
 					},
 				},
 			},
+			keysHandling: null,
 			lightClient: {
 				ethereumL1: notSupported,
 			},
