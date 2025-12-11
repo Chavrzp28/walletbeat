@@ -1,4 +1,4 @@
-import { patrickalphac } from '@/data/contributors'
+import { patrickalphac } from '@/data/contributors/patrickalphac'
 import { bitbox } from '@/data/entities/bitbox'
 import { etherscan } from '@/data/entities/etherscan'
 import {

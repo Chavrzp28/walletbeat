@@ -68,7 +68,7 @@ export const unratedHardwareTemplate: HardwareWallet = {
 		privacy: {
 			dataCollection: null,
 			hardwarePrivacy: null,
-			privacyPolicy: 'https://example.com/privacy-policy',
+			privacyPolicy: null,
 			transactionPrivacy: null,
 		},
 		profile: WalletProfile.GENERIC,

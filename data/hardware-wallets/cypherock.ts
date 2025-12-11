@@ -1,4 +1,4 @@
-import { patrickalphac } from '@/data/contributors'
+import { patrickalphac } from '@/data/contributors/patrickalphac'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
 import {
 	BugBountyPlatform,
