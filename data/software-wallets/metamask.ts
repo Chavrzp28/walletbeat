@@ -129,17 +129,23 @@ export const metamask: SoftwareWallet = {
 		chainConfigurability: supported<WithRef<ChainConfigurability>>({
 			ref: [
 				{
-					explanation:
-						'MetaMask allows users to configure custom RPC endpoints for any network, including Ethereum mainnet, before making any requests to the default endpoints.',
+					explanation: `
+						MetaMask allows users to configure custom RPC endpoints for any network,
+						including Ethereum mainnet, but contacts \`mainnet.infura.io\` and
+						some L2s (e.g. \`polygon-mainnet.infura.io\`,
+						\`arbitrum-mainnet.infura.io\`) to perform \`eth_blockNumber\` and
+						\`net_version\` JSON RPCs before the user is able to customize the
+						endpoints to use for these chains.
+					`,
 					url: 'https://support.metamask.io/configure/networks/how-to-add-a-custom-network-rpc/',
 				},
 			],
 			customChainRpcEndpoint: featureSupported,
 			l1: supported({
-				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
+				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_AFTER_OTHER_REQUESTS,
 			}),
 			nonL1: supported({
-				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
+				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_AFTER_OTHER_REQUESTS,
 			}),
 		}),
 		ecosystem: {
