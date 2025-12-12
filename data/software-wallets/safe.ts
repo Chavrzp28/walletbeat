@@ -92,10 +92,10 @@ export const safe: SoftwareWallet = {
 			ref: refTodo,
 			customChainRpcEndpoint: notSupported,
 			l1: supported({
-				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
+				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_BEFORE_ANY_SENSITIVE_REQUEST,
 			}),
 			nonL1: supported({
-				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
+				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_BEFORE_ANY_SENSITIVE_REQUEST,
 			}),
 		}),
 		ecosystem: {

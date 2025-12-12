@@ -75,10 +75,10 @@ export const frame: SoftwareWallet = {
 			],
 			customChainRpcEndpoint: featureSupported,
 			l1: supported({
-				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_AFTER_OTHER_REQUESTS,
+				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_AFTER_OTHER_SENSITIVE_REQUESTS,
 			}),
 			nonL1: supported({
-				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_AFTER_OTHER_REQUESTS,
+				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_AFTER_OTHER_SENSITIVE_REQUESTS,
 			}),
 		}),
 		ecosystem: {
