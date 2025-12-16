@@ -1,5 +1,9 @@
 import { mattmatt } from '@/data/contributors/0xmattmatt'
 import { patrickalphac } from '@/data/contributors/patrickalphac'
+import {
+	type AppConnectionMethodDetails,
+	SoftwareWalletType,
+} from '@/schema/features/ecosystem/hw-app-connection-support'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
 import {
 	BugBountyPlatform,
@@ -7,15 +11,16 @@ import {
 	type BugBountyProgramImplementation,
 } from '@/schema/features/security/bug-bounty-program'
 import { FirmwareType } from '@/schema/features/security/firmware'
+import { SecureElementType } from '@/schema/features/security/secure-element'
 import {
 	DataExtraction,
 	displaysFullTransactionDetails,
 	noCalldataDecoding,
-} from '@/schema/features/security/hardware-wallet-app-signing'
-import { SecureElementType } from '@/schema/features/security/secure-element'
+	TransactionDisplayOptions,
+} from '@/schema/features/security/transaction-legibility'
 import { notSupported, supported } from '@/schema/features/support'
 import { FOSSLicense, LicensingType } from '@/schema/features/transparency/license'
-import { refTodo } from '@/schema/reference'
+import { refTodo, type WithRef } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -55,6 +60,17 @@ export const onekeyWallet: HardwareWallet = {
 	},
 	features: {
 		accountSupport: null,
+		appConnectionSupport: supported<WithRef<AppConnectionMethodDetails>>({
+			ref: [
+				'https://help.onekey.so/en/articles/11461105-how-to-use-rabby-wallet-with-onekey-hardware-wallets',
+				'https://developer.onekey.so/connect-to-software/using-walletconnect',
+			],
+			supportedConnections: {
+				[SoftwareWalletType.METAMASK]: true,
+				[SoftwareWalletType.RABBY]: true,
+				[SoftwareWalletType.OTHER]: true,
+			},
+		}),
 		licensing: {
 			type: LicensingType.SINGLE_WALLET_REPO_AND_LICENSE,
 			walletAppLicense: {
@@ -126,44 +142,6 @@ export const onekeyWallet: HardwareWallet = {
 				reproducibleBuilds: FirmwareType.FAIL,
 				silentUpdateProtection: null,
 			},
-			hardwareWalletAppSigning: {
-				ref: [
-					{
-						explanation:
-							"Independent video demonstration of OneKey Pro's signing implementation with a Safe.",
-						url: 'https://youtu.be/9YmPWxAvKYY?t=1958',
-					},
-					{
-						explanation: "Independent video showing OneKey Pro's transaction details",
-						url: 'https://youtube.com/shorts/J_XG7cNOVhM',
-					},
-				],
-				messageSigning: {
-					calldataDecoding: noCalldataDecoding,
-					details:
-						'OneKey Pro shows EIP-712 domain types and message data but does not display domain hash or message hash for easier verification.',
-					messageExtraction: {
-						[DataExtraction.EYES]: true,
-						[DataExtraction.HASHES]: false,
-						[DataExtraction.QRCODE]: false,
-					},
-				},
-				transactionSigning: {
-					calldataDecoding: noCalldataDecoding,
-					calldataExtraction: {
-						[DataExtraction.EYES]: true,
-						[DataExtraction.HASHES]: false,
-						[DataExtraction.QRCODE]: false,
-					},
-					details:
-						'OneKey Pro shows all calldata but does not decode it, requiring users to manually interpret the transaction data.',
-					displayedTransactionDetails: {
-						...displaysFullTransactionDetails,
-						chain: false,
-						nonce: false,
-					},
-				},
-			},
 			keysHandling: null,
 			lightClient: {
 				ethereumL1: null,
@@ -196,6 +174,30 @@ export const onekeyWallet: HardwareWallet = {
 			}),
 			supplyChainDIY: null,
 			supplyChainFactory: null,
+			transactionLegibility: {
+				ref: [
+					{
+						explanation:
+							"Independent video demonstration of OneKey Pro's signing implementation with a Safe.",
+						url: 'https://youtu.be/9YmPWxAvKYY?t=1958',
+					},
+					{
+						explanation: "Independent video showing OneKey Pro's transaction details",
+						url: 'https://youtube.com/shorts/J_XG7cNOVhM',
+					},
+				],
+				dataExtraction: {
+					[DataExtraction.EYES]: true,
+					[DataExtraction.HASHES]: false,
+					[DataExtraction.QRCODE]: false,
+				},
+				detailsDisplayed: {
+					...displaysFullTransactionDetails,
+					chain: TransactionDisplayOptions.NOT_IN_UI,
+					nonce: TransactionDisplayOptions.NOT_IN_UI,
+				},
+				legibility: noCalldataDecoding,
+			},
 			userSafety: null,
 		},
 		selfSovereignty: {

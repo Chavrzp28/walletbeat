@@ -110,6 +110,7 @@ export const family: SoftwareWallet = {
 			},
 			publicSecurityAudits: null,
 			scamAlerts: null,
+			transactionLegibility: null,
 		},
 		selfSovereignty: {
 			transactionSubmission: {

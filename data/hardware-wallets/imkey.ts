@@ -2,12 +2,14 @@ import { mako } from '@/data/contributors/mako'
 import { HardwarePrivacyType } from '@/schema/features/privacy/hardware-privacy'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
 import { FirmwareType } from '@/schema/features/security/firmware'
+import { SupplyChainFactoryType } from '@/schema/features/security/supply-chain-factory'
 import {
+	CalldataDecoded,
 	CalldataDecoding,
 	DataExtraction,
 	displaysFullTransactionDetails,
-} from '@/schema/features/security/hardware-wallet-app-signing'
-import { SupplyChainFactoryType } from '@/schema/features/security/supply-chain-factory'
+	TransactionDisplayOptions,
+} from '@/schema/features/security/transaction-legibility'
 import { InteroperabilityType } from '@/schema/features/self-sovereignty/interoperability'
 import { featureSupported, notSupported, supported } from '@/schema/features/support'
 import { comprehensiveFeesShownByDefault } from '@/schema/features/transparency/fee-display'
@@ -16,6 +18,7 @@ import {
 	LicensingType,
 	SourceNotAvailableLicense,
 } from '@/schema/features/transparency/license'
+import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -51,6 +54,7 @@ export const imkeyWallet: HardwareWallet = {
 	},
 	features: {
 		accountSupport: null,
+		appConnectionSupport: null,
 		licensing: {
 			type: LicensingType.SEPARATE_CORE_CODE_LICENSE_VS_WALLET_CODE_LICENSE,
 			coreLicense: {
@@ -124,51 +128,6 @@ export const imkeyWallet: HardwareWallet = {
 				silentUpdateProtection: FirmwareType.PASS,
 				url: 'https://support.imkey.im/hc/en-001/articles/36709320202649',
 			},
-			hardwareWalletAppSigning: {
-				ref: [
-					{
-						explanation:
-							'imKey interacts seamlessly with DApps through the imToken in-app browser and supports connection via Rabby or WalletConnect.',
-						url: [
-							'https://imkey.im/pages/integrated-wallets',
-							'https://learn.imkey.im/hc/en-001/articles/35683788822937',
-						],
-					},
-				],
-				messageSigning: {
-					calldataDecoding: {
-						[CalldataDecoding.ETH_USDC_TRANSFER]: true,
-						[CalldataDecoding.ZKSYNC_USDC_TRANSFER]: true,
-						[CalldataDecoding.AAVE_SUPPLY]: false,
-						[CalldataDecoding.SAFEWALLET_AAVE_SUPPLY_NESTED]: false,
-						[CalldataDecoding.SAFEWALLET_AAVE_USDC_APPROVE_SUPPLY_BATCH_NESTED_MULTISEND]: false,
-					},
-					details:
-						'imKey functions as a signer only; decoding/rendering is handled by companion apps (imToken/Rabby). Users approve on-device; data may be extracted via QR where applicable.',
-					messageExtraction: {
-						[DataExtraction.EYES]: true,
-						[DataExtraction.HASHES]: false,
-						[DataExtraction.QRCODE]: false,
-					},
-				},
-				transactionSigning: {
-					calldataDecoding: {
-						[CalldataDecoding.ETH_USDC_TRANSFER]: true,
-						[CalldataDecoding.ZKSYNC_USDC_TRANSFER]: true,
-						[CalldataDecoding.AAVE_SUPPLY]: false,
-						[CalldataDecoding.SAFEWALLET_AAVE_SUPPLY_NESTED]: false,
-						[CalldataDecoding.SAFEWALLET_AAVE_USDC_APPROVE_SUPPLY_BATCH_NESTED_MULTISEND]: false,
-					},
-					calldataExtraction: {
-						[DataExtraction.EYES]: true,
-						[DataExtraction.HASHES]: false,
-						[DataExtraction.QRCODE]: false,
-					},
-					details:
-						'imKey acts as a signing device; transaction decoding and UI are performed by imToken/Rabby. On-device prompts confirm and sign the request.',
-					displayedTransactionDetails: { ...displaysFullTransactionDetails, nonce: false },
-				},
-			},
 			keysHandling: null,
 			lightClient: { ethereumL1: null },
 			passkeyVerification: null,
@@ -186,6 +145,43 @@ export const imkeyWallet: HardwareWallet = {
 				tamperEvidence: SupplyChainFactoryType.PASS,
 				tamperResistance: SupplyChainFactoryType.PASS,
 				url: 'https://imkey.im/pages/verify',
+			},
+
+			transactionLegibility: {
+				ref: [
+					{
+						explanation:
+							'imKey interacts seamlessly with DApps through the imToken in-app browser and supports connection via Rabby or WalletConnect.',
+						url: [
+							'https://imkey.im/pages/integrated-wallets',
+							'https://learn.imkey.im/hc/en-001/articles/35683788822937',
+						],
+					},
+				],
+				dataExtraction: {
+					[DataExtraction.EYES]: true,
+					[DataExtraction.HASHES]: false,
+					[DataExtraction.QRCODE]: false,
+				},
+				detailsDisplayed: {
+					...displaysFullTransactionDetails,
+					nonce: TransactionDisplayOptions.NOT_IN_UI,
+				},
+				legibility: {
+					[CalldataDecoding.ETH_USDC_TRANSFER]: supported({
+						ref: refTodo,
+						decoded: CalldataDecoded.ON_DEVICE,
+					}),
+					[CalldataDecoding.ZKSYNC_USDC_TRANSFER]: supported({
+						ref: refTodo,
+						decoded: CalldataDecoded.ON_DEVICE,
+					}),
+					[CalldataDecoding.USDC_APPROVAL]: notSupported,
+					[CalldataDecoding.AAVE_SUPPLY]: notSupported,
+					[CalldataDecoding.SAFEWALLET_AAVE_SUPPLY_NESTED]: notSupported,
+					[CalldataDecoding.SAFEWALLET_AAVE_USDC_APPROVE_SUPPLY_BATCH_NESTED_MULTISEND]:
+						notSupported,
+				},
 			},
 			userSafety: null,
 		},

@@ -41,6 +41,10 @@ import {
 	type HardwareWalletInteroperabilityValue,
 } from './attributes/ecosystem/hardware-wallet-interoperability'
 import {
+	appConnectionSupport,
+	type AppConnectionSupportValue,
+} from './attributes/ecosystem/hw-app-connection-support'
+import {
 	transactionBatching,
 	type TransactionBatchingValue,
 } from './attributes/ecosystem/transaction-batching'
@@ -69,10 +73,6 @@ import {
 } from './attributes/security/chain-verification'
 import { firmware, type FirmwareValue } from './attributes/security/firmware'
 import {
-	hardwareWalletAppSigning,
-	type HardwareWalletAppSigningValue,
-} from './attributes/security/hardware-wallet-app-signing'
-import {
 	hardwareWalletSupport,
 	type HardwareWalletSupportValue,
 } from './attributes/security/hardware-wallet-support'
@@ -87,6 +87,10 @@ import {
 	supplyChainFactory,
 	type SupplyChainFactoryValue,
 } from './attributes/security/supply-chain-factory'
+import {
+	transactionLegibility,
+	type TransactionLegibilityValue,
+} from './attributes/security/transaction-legibility'
 import { userSafety, type UserSafetyValue } from './attributes/security/user-safety'
 import {
 	accountPortability,
@@ -130,7 +134,7 @@ type SecurityValues = Dict<{
 	securityAudits: SecurityAuditsValue
 	scamPrevention: ScamPreventionValue
 	chainVerification: ChainVerificationValue
-	hardwareWalletAppSigning: HardwareWalletAppSigningValue
+	transactionLegibility: TransactionLegibilityValue
 	hardwareWalletSupport: HardwareWalletSupportValue
 	passkeyImplementation: PasskeyImplementationValue
 	bugBountyProgram: BugBountyProgramValue
@@ -151,7 +155,7 @@ export const securityAttributeGroup: AttributeGroup<SecurityValues> = {
 		securityAudits,
 		scamPrevention,
 		chainVerification,
-		hardwareWalletAppSigning,
+		transactionLegibility,
 		hardwareWalletSupport,
 		passkeyImplementation,
 		bugBountyProgram,
@@ -165,7 +169,7 @@ export const securityAttributeGroup: AttributeGroup<SecurityValues> = {
 		securityAudits: 1.0,
 		scamPrevention: 1.0,
 		chainVerification: 1.0,
-		hardwareWalletAppSigning: 1.0,
+		transactionLegibility: 1.0,
 		hardwareWalletSupport: 1.0,
 		passkeyImplementation: 1.0,
 		bugBountyProgram: 1.0,
@@ -282,6 +286,7 @@ type EcosystemValues = Dict<{
 	transactionBatching: TransactionBatchingValue
 	hardwareWalletInteroperability: HardwareWalletInteroperabilityValue
 	interoperability: InteroperabilityValue
+	appConnectionSupport: AppConnectionSupportValue
 }>
 
 /** Ecosystem attributes. */
@@ -300,6 +305,7 @@ export const ecosystemAttributeGroup: AttributeGroup<EcosystemValues> = {
 		transactionBatching,
 		hardwareWalletInteroperability,
 		interoperability,
+		appConnectionSupport,
 	},
 	attributeWeights: {
 		accountAbstraction: 1.0,
@@ -309,6 +315,7 @@ export const ecosystemAttributeGroup: AttributeGroup<EcosystemValues> = {
 		transactionBatching: 1.0,
 		hardwareWalletInteroperability: 1.0,
 		interoperability: 1.0,
+		appConnectionSupport: 1.0,
 	},
 }
 
@@ -344,10 +351,10 @@ export const attributeTree: NonEmptyRecord<string, AttributeGroup<any>> = {
 
 /** Evaluated security attributes for a single wallet. */
 export interface SecurityEvaluations extends EvaluatedGroup<SecurityValues> {
+	transactionLegibility: EvaluatedAttribute<TransactionLegibilityValue>
 	securityAudits: EvaluatedAttribute<SecurityAuditsValue>
 	scamPrevention: EvaluatedAttribute<ScamPreventionValue>
 	chainVerification: EvaluatedAttribute<ChainVerificationValue>
-	hardwareWalletAppSigning: EvaluatedAttribute<HardwareWalletAppSigningValue>
 	hardwareWalletSupport: EvaluatedAttribute<HardwareWalletSupportValue>
 	passkeyImplementation: EvaluatedAttribute<PasskeyImplementationValue>
 	bugBountyProgram: EvaluatedAttribute<BugBountyProgramValue>
@@ -449,7 +456,7 @@ export function evaluateAttributes(
 			securityAudits: evalAttr(securityAudits),
 			scamPrevention: evalAttr(scamPrevention),
 			chainVerification: evalAttr(chainVerification),
-			hardwareWalletAppSigning: evalAttr(hardwareWalletAppSigning),
+			transactionLegibility: evalAttr(transactionLegibility),
 			hardwareWalletSupport: evalAttr(hardwareWalletSupport),
 			passkeyImplementation: evalAttr(passkeyImplementation),
 			bugBountyProgram: evalAttr(bugBountyProgram),
@@ -487,6 +494,7 @@ export function evaluateAttributes(
 			transactionBatching: evalAttr(transactionBatching),
 			hardwareWalletInteroperability: evalAttr(hardwareWalletInteroperability),
 			interoperability: evalAttr(interoperability),
+			appConnectionSupport: evalAttr(appConnectionSupport),
 		},
 		maintenance: {
 			maintenance: evalAttr(maintenance),
@@ -521,7 +529,7 @@ export function aggregateAttributes(perVariant: AtLeastOneVariant<EvaluationTree
 			securityAudits: attr(tree => tree.security.securityAudits),
 			scamPrevention: attr(tree => tree.security.scamPrevention),
 			chainVerification: attr(tree => tree.security.chainVerification),
-			hardwareWalletAppSigning: attr(tree => tree.security.hardwareWalletAppSigning),
+			transactionLegibility: attr(tree => tree.security.transactionLegibility),
 			hardwareWalletSupport: attr(tree => tree.security.hardwareWalletSupport),
 			passkeyImplementation: attr(tree => tree.security.passkeyImplementation),
 			bugBountyProgram: attr(tree => tree.security.bugBountyProgram),
@@ -559,6 +567,7 @@ export function aggregateAttributes(perVariant: AtLeastOneVariant<EvaluationTree
 			transactionBatching: attr(tree => tree.ecosystem.transactionBatching),
 			hardwareWalletInteroperability: attr(tree => tree.ecosystem.hardwareWalletInteroperability),
 			interoperability: attr(tree => tree.ecosystem.interoperability),
+			appConnectionSupport: attr(tree => tree.ecosystem.appConnectionSupport),
 		},
 		maintenance: {
 			maintenance: attr(tree => tree.maintenance.maintenance),

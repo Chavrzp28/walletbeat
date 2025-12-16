@@ -173,6 +173,7 @@ export const nufi: SoftwareWallet = {
 			passkeyVerification: null,
 			publicSecurityAudits: null,
 			scamAlerts: null,
+			transactionLegibility: null,
 		},
 		selfSovereignty: {
 			transactionSubmission: {

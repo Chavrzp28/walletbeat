@@ -4,6 +4,7 @@ import { isNonNull, type Nullable, type NullableObject } from '@/types/utils/nul
 import type { AccountSupport } from './features/account-support'
 import type { ChainAbstraction } from './features/ecosystem/chain-abstraction'
 import type { DelegationHandling } from './features/ecosystem/delegation-handling'
+import type { AppConnectionSupport } from './features/ecosystem/hw-app-connection-support'
 import {
 	notApplicableWalletIntegration,
 	type ResolvedWalletIntegration,
@@ -19,7 +20,6 @@ import type { WalletProfile } from './features/profile'
 import type { AccountRecovery } from './features/security/account-recovery'
 import type { BugBountyProgramImplementation } from './features/security/bug-bounty-program'
 import type { FirmwareSupport } from './features/security/firmware'
-import type { HardwareWalletAppSigningImplementation } from './features/security/hardware-wallet-app-signing'
 import type { HardwareWalletSupport } from './features/security/hardware-wallet-support'
 import type { KeysHandlingSupport } from './features/security/keys-handling'
 import type { EthereumL1LightClientSupport } from './features/security/light-client'
@@ -29,6 +29,10 @@ import type { SecureElementSupport } from './features/security/secure-element'
 import type { SecurityAudit } from './features/security/security-audits'
 import type { SupplyChainDIYSupport } from './features/security/supply-chain-diy'
 import type { SupplyChainFactorySupport } from './features/security/supply-chain-factory'
+import type {
+	HardwareTransactionLegibilityImplementation,
+	SoftwareTransactionLegibilityImplementation,
+} from './features/security/transaction-legibility'
 import type { UserSafetySupport } from './features/security/user-safety'
 import type { ChainConfigurability } from './features/self-sovereignty/chain-configurability'
 import type { InteroperabilitySupport } from './features/self-sovereignty/interoperability'
@@ -82,6 +86,11 @@ export interface WalletBaseFeatures {
 
 		/** Bug bounty program implementation */
 		bugBountyProgram: VariantFeature<Support<BugBountyProgramImplementation>>
+
+		/** Transaction legibility features. */
+		transactionLegibility: VariantFeature<
+			HardwareTransactionLegibilityImplementation | SoftwareTransactionLegibilityImplementation
+		>
 
 		/** Light clients. */
 		lightClient: {
@@ -156,6 +165,8 @@ export type WalletSoftwareFeatures = WalletBaseFeatures & {
 
 		/** Passkey verification implementation */
 		passkeyVerification: VariantFeature<PasskeyVerificationImplementation>
+		transactionLegibility: WalletBaseFeatures['security']['transactionLegibility'] &
+			VariantFeature<SoftwareTransactionLegibilityImplementation>
 	}
 
 	/** Privacy features. */
@@ -207,15 +218,14 @@ export function isWalletSoftwareFeatures(
  */
 export type WalletHardwareFeatures = WalletBaseFeatures & {
 	security: WalletBaseFeatures['security'] & {
-		/** Hardware wallet app signing support */
-		hardwareWalletAppSigning: VariantFeature<HardwareWalletAppSigningImplementation>
-
 		firmware: VariantFeature<FirmwareSupport>
 		supplyChainDIY: VariantFeature<SupplyChainDIYSupport>
 		supplyChainFactory: VariantFeature<SupplyChainFactorySupport>
 		userSafety: VariantFeature<UserSafetySupport>
 		/** Secure element support */
 		secureElement: VariantFeature<Support<SecureElementSupport>>
+		transactionLegibility: WalletBaseFeatures['security']['transactionLegibility'] &
+			VariantFeature<HardwareTransactionLegibilityImplementation>
 	}
 	privacy: WalletBaseFeatures['privacy'] & {
 		hardwarePrivacy: VariantFeature<HardwarePrivacySupport>
@@ -227,6 +237,7 @@ export type WalletHardwareFeatures = WalletBaseFeatures & {
 		reputation: VariantFeature<ReputationSupport>
 		maintenance: VariantFeature<MaintenanceSupport>
 	}
+	appConnectionSupport: VariantFeature<AppConnectionSupport>
 }
 
 /**
@@ -274,7 +285,9 @@ export interface ResolvedFeatures {
 			ethereumL1: ResolvedFeature<Support<WithRef<EthereumL1LightClientSupport>>>
 		}
 		hardwareWalletSupport: ResolvedFeature<HardwareWalletSupport>
-		hardwareWalletAppSigning: ResolvedFeature<HardwareWalletAppSigningImplementation>
+		transactionLegibility: ResolvedFeature<
+			HardwareTransactionLegibilityImplementation | SoftwareTransactionLegibilityImplementation
+		>
 		passkeyVerification: ResolvedFeature<PasskeyVerificationImplementation>
 		bugBountyProgram: ResolvedFeature<Support<BugBountyProgramImplementation>>
 		firmware: ResolvedFeature<FirmwareSupport>
@@ -308,6 +321,7 @@ export interface ResolvedFeatures {
 	addressResolution: ResolvedFeature<WithRef<AddressResolution>>
 	licensing: ResolvedWalletLicensing
 	monetization: ResolvedFeature<Monetization>
+	appConnectionSupport: ResolvedFeature<AppConnectionSupport>
 }
 
 /** Resolve a set of features according to the given variant. */
@@ -385,9 +399,9 @@ export function resolveFeatures(
 				'security.hardwareWalletSupport',
 				features => features.security.hardwareWalletSupport,
 			),
-			hardwareWalletAppSigning: hardwareFeat(
-				'hardwareWalletAppSigning',
-				features => features.security.hardwareWalletAppSigning,
+			transactionLegibility: baseFeat(
+				'security.transactionLegibility',
+				features => features.security.transactionLegibility,
 			),
 			passkeyVerification: baseFeat(
 				'passkeyVerification',
@@ -474,5 +488,9 @@ export function resolveFeatures(
 		),
 		licensing: resolveWalletLicense(features.licensing, expectedVariants, variant),
 		monetization: baseFeat('monetization', features => features.monetization),
+		appConnectionSupport: hardwareFeat(
+			'appConnectionSupport',
+			features => features.appConnectionSupport,
+		),
 	}
 }

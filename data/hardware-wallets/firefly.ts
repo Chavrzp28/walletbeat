@@ -1,6 +1,10 @@
 import { mattmatt } from '@/data/contributors/0xmattmatt'
 import { nconsigny } from '@/data/contributors/nconsigny'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
+import {
+	noCalldataDecoding,
+	noDataExtraction,
+} from '@/schema/features/security/transaction-legibility'
 import { notSupported } from '@/schema/features/support'
 import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
@@ -34,6 +38,7 @@ export const fireflyWallet: HardwareWallet = {
 	},
 	features: {
 		accountSupport: null,
+		appConnectionSupport: null,
 		licensing: null,
 		monetization: {
 			ref: refTodo,
@@ -62,22 +67,6 @@ export const fireflyWallet: HardwareWallet = {
 			accountRecovery: null,
 			bugBountyProgram: notSupported,
 			firmware: null,
-			hardwareWalletAppSigning: {
-				ref: refTodo,
-				messageSigning: {
-					calldataDecoding: null,
-					details:
-						'Firefly currently does not provide message signing support as it is still in development.',
-					messageExtraction: null,
-				},
-				transactionSigning: {
-					calldataDecoding: null,
-					calldataExtraction: null,
-					details:
-						'Firefly currently does not provide clear transaction signing support as it is still in development.',
-					displayedTransactionDetails: null,
-				},
-			},
 			keysHandling: null,
 			lightClient: {
 				ethereumL1: null,
@@ -87,6 +76,12 @@ export const fireflyWallet: HardwareWallet = {
 			secureElement: null,
 			supplyChainDIY: null,
 			supplyChainFactory: null,
+			transactionLegibility: {
+				ref: refTodo,
+				dataExtraction: noDataExtraction,
+				detailsDisplayed: null,
+				legibility: noCalldataDecoding,
+			},
 			userSafety: null,
 		},
 		selfSovereignty: {

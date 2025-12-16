@@ -16,6 +16,7 @@ import {
 } from '@/schema/features/security/keys-handling'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
 import type { ScamUrlWarning } from '@/schema/features/security/scam-alerts'
+import { displaysFullCallData } from '@/schema/features/security/transaction-legibility'
 import {
 	type ChainConfigurability,
 	RpcEndpointConfiguration,
@@ -423,6 +424,11 @@ export const metamask: SoftwareWallet = {
 					newRecipientWarning: true,
 					userWhitelist: true,
 				}),
+			},
+			transactionLegibility: {
+				ref: refTodo,
+				calldataDisplay: displaysFullCallData,
+				transactionDetailsDisplay: null,
 			},
 		},
 		selfSovereignty: {

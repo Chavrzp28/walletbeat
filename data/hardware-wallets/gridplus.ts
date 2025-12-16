@@ -1,6 +1,11 @@
 import { mattmatt } from '@/data/contributors/0xmattmatt'
 import { nconsigny } from '@/data/contributors/nconsigny'
 import { patrickalphac } from '@/data/contributors/patrickalphac'
+import {
+	AppConnectionMethod,
+	type AppConnectionMethodDetails,
+	SoftwareWalletType,
+} from '@/schema/features/ecosystem/hw-app-connection-support'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
 import {
 	BugBountyPlatform,
@@ -8,14 +13,16 @@ import {
 	type BugBountyProgramImplementation,
 	LegalProtectionType,
 } from '@/schema/features/security/bug-bounty-program'
+import { SecureElementType } from '@/schema/features/security/secure-element'
 import {
+	CalldataDecoded,
 	CalldataDecoding,
+	type CalldataDecodingSupport,
 	DataExtraction,
 	displaysFullTransactionDetails,
-} from '@/schema/features/security/hardware-wallet-app-signing'
-import { SecureElementType } from '@/schema/features/security/secure-element'
+} from '@/schema/features/security/transaction-legibility'
 import { notSupported, supported } from '@/schema/features/support'
-import { refTodo } from '@/schema/reference'
+import { refNotNecessary, refTodo, type WithRef } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -55,6 +62,17 @@ export const gridplusWallet: HardwareWallet = {
 	},
 	features: {
 		accountSupport: null,
+		appConnectionSupport: supported<WithRef<AppConnectionMethodDetails>>({
+			ref: 'https://docs.gridplus.io/apps-and-integrations/lattice-manager',
+			supportedConnections: {
+				[AppConnectionMethod.VENDOR_OPEN_SOURCE_APP]: true,
+				[SoftwareWalletType.METAMASK]: true,
+				[SoftwareWalletType.RABBY]: true,
+				[SoftwareWalletType.AMBIRE]: true,
+				[SoftwareWalletType.FRAME]: true,
+				[SoftwareWalletType.OTHER]: true,
+			},
+		}),
 		licensing: null,
 		monetization: {
 			ref: [
@@ -107,53 +125,6 @@ export const gridplusWallet: HardwareWallet = {
 				upgradePathAvailable: true,
 			}),
 			firmware: null,
-			hardwareWalletAppSigning: {
-				ref: [
-					{
-						explanation:
-							"Independent video demonstration of GridPlus's clear signing implementation on Safe.",
-						url: 'https://youtu.be/9YmPWxAvKYY?t=2079',
-					},
-					{
-						explanation:
-							"Independent video demonstration of GridPlus's transaction implementation on Safe.",
-						url: 'https://youtube.com/shorts/_s5PjZhgBig',
-					},
-				],
-				messageSigning: {
-					calldataDecoding: {
-						[CalldataDecoding.ETH_USDC_TRANSFER]: true,
-						[CalldataDecoding.ZKSYNC_USDC_TRANSFER]: true,
-						[CalldataDecoding.AAVE_SUPPLY]: true,
-						[CalldataDecoding.SAFEWALLET_AAVE_SUPPLY_NESTED]: true,
-						[CalldataDecoding.SAFEWALLET_AAVE_USDC_APPROVE_SUPPLY_BATCH_NESTED_MULTISEND]: false,
-					},
-					details:
-						'GridPlus Lattice1 provides message signing support, but does not show EIP-712 digests or hashes.',
-					messageExtraction: {
-						[DataExtraction.EYES]: true,
-						[DataExtraction.HASHES]: false,
-						[DataExtraction.QRCODE]: false,
-					},
-				},
-				transactionSigning: {
-					calldataDecoding: {
-						[CalldataDecoding.ETH_USDC_TRANSFER]: true,
-						[CalldataDecoding.ZKSYNC_USDC_TRANSFER]: true,
-						[CalldataDecoding.AAVE_SUPPLY]: true,
-						[CalldataDecoding.SAFEWALLET_AAVE_SUPPLY_NESTED]: true,
-						[CalldataDecoding.SAFEWALLET_AAVE_USDC_APPROVE_SUPPLY_BATCH_NESTED_MULTISEND]: false,
-					},
-					calldataExtraction: {
-						[DataExtraction.EYES]: true,
-						[DataExtraction.HASHES]: false,
-						[DataExtraction.QRCODE]: false,
-					},
-					details:
-						'GridPlus Lattice1 provides clear transaction support, showing all transaction data, and even doing nested calldata decoding in some cases.',
-					displayedTransactionDetails: displaysFullTransactionDetails,
-				},
-			},
 			keysHandling: null,
 			lightClient: {
 				ethereumL1: null,
@@ -172,6 +143,47 @@ export const gridplusWallet: HardwareWallet = {
 			}),
 			supplyChainDIY: null,
 			supplyChainFactory: null,
+			transactionLegibility: {
+				ref: [
+					{
+						explanation:
+							"Independent video demonstration of GridPlus's clear signing implementation on Safe.",
+						url: 'https://youtu.be/9YmPWxAvKYY?t=2079',
+					},
+					{
+						explanation:
+							"Independent video demonstration of GridPlus's transaction implementation on Safe.",
+						url: 'https://youtube.com/shorts/_s5PjZhgBig',
+					},
+				],
+				dataExtraction: {
+					[DataExtraction.EYES]: true,
+					[DataExtraction.HASHES]: false,
+					[DataExtraction.QRCODE]: false,
+				},
+				detailsDisplayed: displaysFullTransactionDetails,
+				legibility: {
+					[CalldataDecoding.ETH_USDC_TRANSFER]: supported<WithRef<CalldataDecodingSupport>>({
+						ref: refNotNecessary,
+						decoded: CalldataDecoded.ON_DEVICE,
+					}),
+					[CalldataDecoding.ZKSYNC_USDC_TRANSFER]: supported({
+						ref: refNotNecessary,
+						decoded: CalldataDecoded.ON_DEVICE,
+					}),
+					[CalldataDecoding.USDC_APPROVAL]: notSupported,
+					[CalldataDecoding.AAVE_SUPPLY]: supported({
+						ref: refNotNecessary,
+						decoded: CalldataDecoded.ON_DEVICE,
+					}),
+					[CalldataDecoding.SAFEWALLET_AAVE_SUPPLY_NESTED]: supported({
+						ref: refNotNecessary,
+						decoded: CalldataDecoded.ON_DEVICE,
+					}),
+					[CalldataDecoding.SAFEWALLET_AAVE_USDC_APPROVE_SUPPLY_BATCH_NESTED_MULTISEND]:
+						notSupported,
+				},
+			},
 			userSafety: null,
 		},
 		selfSovereignty: {

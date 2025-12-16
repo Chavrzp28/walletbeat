@@ -508,6 +508,7 @@ export const ambire: SoftwareWallet = {
 				}),
 				sendTransactionWarning: notSupported,
 			},
+			transactionLegibility: null,
 		},
 		selfSovereignty: {
 			transactionSubmission: {

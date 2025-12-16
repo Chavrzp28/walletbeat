@@ -123,6 +123,7 @@ export const elytro: SoftwareWallet = {
 			},
 			publicSecurityAudits: null,
 			scamAlerts: null,
+			transactionLegibility: null,
 		},
 		selfSovereignty: {
 			transactionSubmission: {

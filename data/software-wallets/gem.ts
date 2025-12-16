@@ -165,6 +165,7 @@ export const gemwallet: SoftwareWallet = {
 					userWhitelist: false,
 				}),
 			},
+			transactionLegibility: null,
 		},
 		selfSovereignty: {
 			transactionSubmission: {

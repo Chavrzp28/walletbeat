@@ -1,6 +1,10 @@
 import { mattmatt } from '@/data/contributors/0xmattmatt'
 import { nconsigny } from '@/data/contributors/nconsigny'
 import { patrickalphac } from '@/data/contributors/patrickalphac'
+import {
+	type AppConnectionMethodDetails,
+	SoftwareWalletType,
+} from '@/schema/features/ecosystem/hw-app-connection-support'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
 import {
 	BugBountyPlatform,
@@ -9,14 +13,16 @@ import {
 	LegalProtectionType,
 } from '@/schema/features/security/bug-bounty-program'
 import { FirmwareType } from '@/schema/features/security/firmware'
+import { SecureElementType } from '@/schema/features/security/secure-element'
 import {
+	CalldataDecoded,
 	CalldataDecoding,
 	DataExtraction,
 	displaysFullTransactionDetails,
-} from '@/schema/features/security/hardware-wallet-app-signing'
-import { SecureElementType } from '@/schema/features/security/secure-element'
+	TransactionDisplayOptions,
+} from '@/schema/features/security/transaction-legibility'
 import { notSupported, supported } from '@/schema/features/support'
-import { refTodo } from '@/schema/reference'
+import { refTodo, type WithRef } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -62,6 +68,14 @@ export const keystoneWallet: HardwareWallet = {
 	},
 	features: {
 		accountSupport: null,
+		appConnectionSupport: supported<WithRef<AppConnectionMethodDetails>>({
+			ref: 'https://guide.keyst.one/docs/keystone',
+			supportedConnections: {
+				[SoftwareWalletType.METAMASK]: true,
+				[SoftwareWalletType.RABBY]: true,
+				[SoftwareWalletType.OTHER]: true,
+			},
+		}),
 		licensing: null,
 		monetization: {
 			ref: refTodo,
@@ -115,53 +129,6 @@ export const keystoneWallet: HardwareWallet = {
 				reproducibleBuilds: FirmwareType.PASS,
 				silentUpdateProtection: FirmwareType.PASS,
 			},
-			hardwareWalletAppSigning: {
-				ref: [
-					{
-						explanation:
-							"Independent video demonstration of Keystone's signing implementation on a Safe.",
-						url: 'https://youtu.be/9YmPWxAvKYY?t=759',
-					},
-					{
-						explanation:
-							"Independent video demonstration of Keystone's transaction implementation on a Safe.",
-						url: 'https://youtube.com/shorts/Ly9lo4g5NpA',
-					},
-				],
-				messageSigning: {
-					calldataDecoding: {
-						[CalldataDecoding.ETH_USDC_TRANSFER]: true,
-						[CalldataDecoding.ZKSYNC_USDC_TRANSFER]: true,
-						[CalldataDecoding.AAVE_SUPPLY]: true,
-						[CalldataDecoding.SAFEWALLET_AAVE_SUPPLY_NESTED]: false,
-						[CalldataDecoding.SAFEWALLET_AAVE_USDC_APPROVE_SUPPLY_BATCH_NESTED_MULTISEND]: false,
-					},
-					details:
-						'Keystone provides full message signing support for many transactions, however, it is buggy on many transactions like with a Safe{Wallet}, making it unreliable in some cases. In some cases, it shows no data. This is mitigated by the fact that the wallet supports QR code transaction extraction.',
-					messageExtraction: {
-						[DataExtraction.EYES]: true,
-						[DataExtraction.HASHES]: false,
-						[DataExtraction.QRCODE]: true,
-					},
-				},
-				transactionSigning: {
-					calldataDecoding: {
-						[CalldataDecoding.ETH_USDC_TRANSFER]: true,
-						[CalldataDecoding.ZKSYNC_USDC_TRANSFER]: true,
-						[CalldataDecoding.AAVE_SUPPLY]: true,
-						[CalldataDecoding.SAFEWALLET_AAVE_SUPPLY_NESTED]: false,
-						[CalldataDecoding.SAFEWALLET_AAVE_USDC_APPROVE_SUPPLY_BATCH_NESTED_MULTISEND]: false,
-					},
-					calldataExtraction: {
-						[DataExtraction.EYES]: false,
-						[DataExtraction.HASHES]: false,
-						[DataExtraction.QRCODE]: true,
-					},
-					details:
-						'Keystone provides almost full clear signing support, it breaks down for more complex transactions.',
-					displayedTransactionDetails: { ...displaysFullTransactionDetails, nonce: false },
-				},
-			},
 			keysHandling: null,
 			lightClient: {
 				ethereumL1: null,
@@ -207,6 +174,47 @@ export const keystoneWallet: HardwareWallet = {
 			}),
 			supplyChainDIY: null,
 			supplyChainFactory: null,
+			transactionLegibility: {
+				ref: [
+					{
+						explanation:
+							"Independent video demonstration of Keystone's signing implementation on a Safe.",
+						url: 'https://youtu.be/9YmPWxAvKYY?t=759',
+					},
+					{
+						explanation:
+							"Independent video demonstration of Keystone's transaction implementation on a Safe.",
+						url: 'https://youtube.com/shorts/Ly9lo4g5NpA',
+					},
+				],
+				dataExtraction: {
+					[DataExtraction.EYES]: true,
+					[DataExtraction.HASHES]: false,
+					[DataExtraction.QRCODE]: true,
+				},
+				detailsDisplayed: {
+					...displaysFullTransactionDetails,
+					nonce: TransactionDisplayOptions.NOT_IN_UI,
+				},
+				legibility: {
+					[CalldataDecoding.ETH_USDC_TRANSFER]: supported({
+						ref: refTodo,
+						decoded: CalldataDecoded.ON_DEVICE,
+					}),
+					[CalldataDecoding.ZKSYNC_USDC_TRANSFER]: supported({
+						ref: refTodo,
+						decoded: CalldataDecoded.ON_DEVICE,
+					}),
+					[CalldataDecoding.USDC_APPROVAL]: notSupported,
+					[CalldataDecoding.AAVE_SUPPLY]: supported({
+						ref: refTodo,
+						decoded: CalldataDecoded.ON_DEVICE,
+					}),
+					[CalldataDecoding.SAFEWALLET_AAVE_SUPPLY_NESTED]: notSupported,
+					[CalldataDecoding.SAFEWALLET_AAVE_USDC_APPROVE_SUPPLY_BATCH_NESTED_MULTISEND]:
+						notSupported,
+				},
+			},
 			userSafety: null,
 		},
 		selfSovereignty: {

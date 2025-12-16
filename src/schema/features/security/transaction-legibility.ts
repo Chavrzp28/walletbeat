@@ -1,39 +1,50 @@
 import type { WithRef } from '@/schema/reference'
 
+import { isSupported, notSupported, type Support } from '../support'
+
+export enum TransactionDisplayOptions {
+	/** Shown by default on the transaction approval screen */
+	SHOWN_BY_DEFAULT = 'SHOWN_BY_DEFAULT',
+	/** Available on the transaction approval screen but requires user action (e.g., clicking a button) or enabling in settings */
+	SHOWN_OPTIONALLY = 'SHOWN_OPTIONALLY',
+	/** Not displayed in the wallet UI */
+	NOT_IN_UI = 'NOT_IN_UI',
+}
+
 /**
- * What essential transaction data does the hardware wallet show? (Or can show via options)
+ * How are the essential transaction data displayed by the hardware wallet?
  */
 export interface DisplayedTransactionDetails {
-	gas: boolean
-	nonce: boolean
-	from: boolean
-	to: boolean
-	chain: boolean
-	value: boolean
+	gas: TransactionDisplayOptions
+	nonce: TransactionDisplayOptions
+	from: TransactionDisplayOptions
+	to: TransactionDisplayOptions
+	chain: TransactionDisplayOptions
+	value: TransactionDisplayOptions
 }
 
 /**
  * The wallet displays no transaction details.
  */
 export const displaysNoTransactionDetails: DisplayedTransactionDetails = {
-	gas: false,
-	nonce: false,
-	from: false,
-	to: false,
-	chain: false,
-	value: false,
+	gas: TransactionDisplayOptions.NOT_IN_UI,
+	nonce: TransactionDisplayOptions.NOT_IN_UI,
+	from: TransactionDisplayOptions.NOT_IN_UI,
+	to: TransactionDisplayOptions.NOT_IN_UI,
+	chain: TransactionDisplayOptions.NOT_IN_UI,
+	value: TransactionDisplayOptions.NOT_IN_UI,
 }
 
 /**
  * The wallet displays all the possible transaction details.
  */
 export const displaysFullTransactionDetails: DisplayedTransactionDetails = {
-	gas: true,
-	nonce: true,
-	from: true,
-	to: true,
-	chain: true,
-	value: true,
+	gas: TransactionDisplayOptions.SHOWN_BY_DEFAULT,
+	nonce: TransactionDisplayOptions.SHOWN_BY_DEFAULT,
+	from: TransactionDisplayOptions.SHOWN_BY_DEFAULT,
+	to: TransactionDisplayOptions.SHOWN_BY_DEFAULT,
+	chain: TransactionDisplayOptions.SHOWN_BY_DEFAULT,
+	value: TransactionDisplayOptions.SHOWN_BY_DEFAULT,
 }
 
 /**
@@ -45,6 +56,7 @@ export const displaysFullTransactionDetails: DisplayedTransactionDetails = {
  */
 export enum CalldataDecoding {
 	/**
+	 * USDC transfer transaction
 	 * cast calldata "transfer(address,uint256)" 0x06496E706bB260Bef1656297A7eaDDF5D3E7788A 1000000000000000000
 	 * https://tools.cyfrin.io/abi-encoding?data=0xa9059cbb00000000000000000000000006496e706bb260bef1656297a7eaddf5d3e7788a0000000000000000000000000000000000000000000000000de0b6b3a7640000
 	 *
@@ -56,38 +68,41 @@ export enum CalldataDecoding {
 	ETH_USDC_TRANSFER = 'ETH_USDC_TRANSFER',
 
 	/**
-	 * Same as above, but on a non-mainnet chain (ZKsync)
+	 * USDC approval transaction
+	 * cast calldata "approve(address,uint256)" 0x06496E706bB260Bef1656297A7eaDDF5D3E7788A 1000000
+	 * https://tools.cyfrin.io/abi-encoding?data=0x095ea7b300000000000000000000000087870bca3f3fd6335c3f4ce8392d69350b4fa4e200000000000000000000000000000000000000000000000000000000000f4240
+	 *
+	 *	📞 Function: approve(address,uint256)
+	 *	📋 Parameters:
+	 *     param0: 0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2 - AAVE Address
+	 *     param1: 1000000
+	 *
+	 *     To: 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+	 */
+	USDC_APPROVAL = 'USDC_APPROVAL',
+
+	/**
+	 * ZKSync USDC transfer transaction
+	 * Same as above, but on a non-mainnet chain
 	 */
 	ZKSYNC_USDC_TRANSFER = 'ZKSYNC_USDC_TRANSFER',
 
 	/**
+	 * Aave supply transaction
 	 * cast calldata "supply(address,uint256,address,uint16)" 0x5A7d6b2F92C77FAD6CCaBd7EE0624E64907Eaf3E 50000000000000000000 0x9467919138E36f0252886519f34a0f8016dDb3a3 0
 	 * https://tools.cyfrin.io/abi-encoding?data=0x617ba0370000000000000000000000005a7d6b2f92c77fad6ccabd7ee0624e64907eaf3e000000000000000000000000000000000000000000000002b5e3af16b18800000000000000000000000000009467919138e36f0252886519f34a0f8016ddb3a30000000000000000000000000000000000000000000000000000000000000000
 	 *
-	 *   📞 Function: execTransaction(address,uint256,bytes,uint8,uint256,uint256,uint256,address,address,bytes)
-	 *   📋 Parameters:
-	 *     param0: 0x78e30497a3c7527d953c6B1E3541b021A98Ac43c
-	 *     param1: 0
-	 *     param2:
-	 *       📞 Function: supply(address,uint256,address,uint16)
-	 *       🔍 Selector: 0x617ba037
-	 *       📋 Parameters:
-	 *         param0: 0x5A7d6b2F92C77FAD6CCaBd7EE0624E64907Eaf3E
-	 *         param1: 50000000000000000000
-	 *         param2: 0x9467919138E36f0252886519f34a0f8016dDb3a3
-	 *         param3: 0
-	 *       🔤 Raw Data: 0x617ba0370000000000000000000000005a7d6b2f92c77fad6ccabd7ee0624e64907eaf3e000000000000000000000000000000000000000000000002b5e3af16b18800000000000000000000000000009467919138e36f0252886519f34a0f8016ddb3a30000000000000000000000000000000000000000000000000000000000000000
+	 * 📞 Function: supply(address,uint256,address,uint16)
+	 * 📋 Parameters:
+	 *     param0: 0x5A7d6b2F92C77FAD6CCaBd7EE0624E64907Eaf3E
+	 *     param1: 50000000000000000000
+	 *     param2: 0x9467919138E36f0252886519f34a0f8016dDb3a3
 	 *     param3: 0
-	 *     param4: 0
-	 *     param5: 0
-	 *     param6: 0
-	 *     param7: 0x0000000000000000000000000000000000000000
-	 *     param8: 0x0000000000000000000000000000000000000000
-	 *     param9: 0x000000000000000000000000f8cade19b26a2b970f2def5ea9eccf1bda3d1186000000000000000000000000000000000000000000000000000000000000000001
 	 */
 	AAVE_SUPPLY = 'AAVE_SUPPLY',
 
 	/**
+	 * SafeWallet Aave supply transaction
 	 * https://tools.cyfrin.io/abi-encoding?data=0x6a76120200000000000000000000000078e30497a3c7527d953c6b1e3541b021a98ac43c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000014000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000084617ba0370000000000000000000000005a7d6b2f92c77fad6ccabd7ee0624e64907eaf3e000000000000000000000000000000000000000000000002b5e3af16b18800000000000000000000000000009467919138e36f0252886519f34a0f8016ddb3a30000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000041000000000000000000000000F8Cade19b26a2B970F2dEF5eA9ECcF1bda3d118600000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000
 	 *
 	 *   📞 Function: execTransaction(address,uint256,bytes,uint8,uint256,uint256,uint256,address,address,bytes)
@@ -114,6 +129,7 @@ export enum CalldataDecoding {
 	SAFEWALLET_AAVE_SUPPLY_NESTED = 'SAFEWALLET_AAVE_SUPPLY_NESTED',
 
 	/**
+	 * SafeWallet Aave USDC approve supply batch nested multi-send transaction
 	 * https://tools.cyfrin.io/abi-encoding?data=0x6a761202000000000000000000000000f220d3b4dfb23c4ade8c88e526c1353abacbc38f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000034000000000000000000000000000000000000000000000000000000000000001c48d80ff0a00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000172005a7d6b2f92c77fad6ccabd7ee0624e64907eaf3e00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000044095ea7b300000000000000000000000078e30497a3c7527d953c6b1e3541b021a98ac43c000000000000000000000000000000000000000000000002b5e3af16b18800000078e30497a3c7527d953c6b1e3541b021a98ac43c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000084617ba0370000000000000000000000005a7d6b2f92c77fad6ccabd7ee0624e64907eaf3e000000000000000000000000000000000000000000000002b5e3af16b18800000000000000000000000000009467919138e36f0252886519f34a0f8016ddb3a300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000041000000000000000000000000F8Cade19b26a2B970F2dEF5eA9ECcF1bda3d118600000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000
 	 *
 	 *   📞 Function: execTransaction(address,uint256,bytes,uint8,uint256,uint256,uint256,address,address,bytes)
@@ -169,17 +185,32 @@ export enum CalldataDecoding {
 /**
  * Types of transactions that a wallet can decode the calldata of.
  */
-export type CalldataDecodingTypes = Record<CalldataDecoding, boolean>
+export type CalldataDecodingTypes = Record<
+	CalldataDecoding,
+	Support<WithRef<CalldataDecodingSupport>>
+>
 
+/** If a wallet can decode the calldata for a specific transaction, what does that look like? */
+export interface CalldataDecodingSupport {
+	/** Where does the calldata decoding actually happen? */
+	decoded: CalldataDecoded
+}
+
+/** Where does the calldata decoding actually happen? */
+export enum CalldataDecoded {
+	ON_DEVICE = 'ON_DEVICE',
+	OFF_DEVICE = 'OFF_DEVICE',
+}
 /**
  * Shorthand for a wallet that cannot do any calldata decoding.
  */
 export const noCalldataDecoding: CalldataDecodingTypes = {
-	[CalldataDecoding.ETH_USDC_TRANSFER]: false,
-	[CalldataDecoding.ZKSYNC_USDC_TRANSFER]: false,
-	[CalldataDecoding.AAVE_SUPPLY]: false,
-	[CalldataDecoding.SAFEWALLET_AAVE_SUPPLY_NESTED]: false,
-	[CalldataDecoding.SAFEWALLET_AAVE_USDC_APPROVE_SUPPLY_BATCH_NESTED_MULTISEND]: false,
+	[CalldataDecoding.ETH_USDC_TRANSFER]: notSupported,
+	[CalldataDecoding.ZKSYNC_USDC_TRANSFER]: notSupported,
+	[CalldataDecoding.USDC_APPROVAL]: notSupported,
+	[CalldataDecoding.AAVE_SUPPLY]: notSupported,
+	[CalldataDecoding.SAFEWALLET_AAVE_SUPPLY_NESTED]: notSupported,
+	[CalldataDecoding.SAFEWALLET_AAVE_USDC_APPROVE_SUPPLY_BATCH_NESTED_MULTISEND]: notSupported,
 }
 
 /**
@@ -187,7 +218,7 @@ export const noCalldataDecoding: CalldataDecodingTypes = {
  * extraction method at all.
  */
 export function supportsAnyCalldataDecoding(calldataDecodingTypes: CalldataDecodingTypes): boolean {
-	return Object.values(calldataDecodingTypes).includes(true)
+	return Object.values(calldataDecodingTypes).some(isSupported)
 }
 
 /**
@@ -220,7 +251,7 @@ export enum DataExtraction {
 /**
  * Set of data extraction methods that a wallet supports.
  */
-export type DataExtractionMethods = Record<DataExtraction, boolean>
+export type DataExtractionMethods = Record<DataExtraction, boolean | null>
 
 /**
  * Shorthand for a wallet that cannot do any data extraction.
@@ -240,65 +271,84 @@ export function supportsAnyDataExtraction(dataExtractionMethods: DataExtractionM
 }
 
 /**
- * A record of hardware wallet message signing support
+ * A record of transaction legibility support (both message and transaction)
  */
-export interface MessageSigningSupport {
+export interface HardwareTransactionLegibilitySupport {
 	/**
-	 * How is a user able to verify the message they are about to sign?
-	 * A wallet may support multiple data extraction methods.
-	 * This maps data extraction methods to whether the wallet supports it.
+	 * Does a wallet display transaction details clearly?
 	 */
-	messageExtraction: DataExtractionMethods | null
+	legibility: CalldataDecodingTypes | null
+	/**
+	 * Does a wallet display transaction details clearly?
+	 */
+	detailsDisplayed: DisplayedTransactionDetails | null
 
 	/**
-	 * Does a wallet decode calldata natively within EIP-712 messages?
-	 * This maps some transaction types to whether or not the wallet is able to
-	 * extract the data they need to verify its meaning.
+	 * Does a wallet allow for data extraction?
 	 */
-	calldataDecoding: CalldataDecodingTypes | null
-
-	/**
-	 * Additional details about the message signing implementation
-	 */
-	details?: string
+	dataExtraction: DataExtractionMethods | null
 }
 
 /**
- * A record of hardware wallet transaction signing support
+ * What can the user do with the calldata?
  */
-export interface TransactionSigningSupport {
-	/**
-	 * Basic transaction details displayed
-	 */
-	displayedTransactionDetails: DisplayedTransactionDetails | null
-	/**
-	 * Does a wallet decode calldata natively?
-	 */
-	calldataDecoding: CalldataDecodingTypes | null
-	/**
-	 * How is a user able to extract calldata from a hardware wallet?
-	 */
-	calldataExtraction: DataExtractionMethods | null
-	/**
-	 * Additional details about the transaction signing implementation
-	 */
-	details?: string
+export interface CallDataDisplay {
+	/* Can display the calldata in raw hex format */
+	rawHex: boolean
+
+	/* Can the user copy the raw hex code to the clipboard? */
+	copyHexToClipboard: boolean
+
+	/* Can display the calldata in some formatted output (e.g. JSON) */
+	formatted: boolean
+}
+
+export const displaysFullCallData: CallDataDisplay = {
+	rawHex: true,
+	copyHexToClipboard: true,
+	formatted: true,
 }
 
 /**
- * A record of hardware wallet app signing support (both message and transaction)
+ * A record of transaction legibility support (both message and transaction)
  */
-export interface HardwareWalletAppSigningSupport {
+export interface SoftwareTransactionLegibilitySupport {
 	/**
-	 * Message signing support
+	 * Does the software wallet support displaying the calldata in different formats?
 	 */
-	messageSigning: MessageSigningSupport
+	calldataDisplay: CallDataDisplay | null
 	/**
-	 * Transaction signing support
+	 * Does the software wallet support displaying the transaction details?
 	 */
-	transactionSigning: TransactionSigningSupport
+	transactionDetailsDisplay: DisplayedTransactionDetails | null
 }
 
-export type MessageSigningImplementation = WithRef<MessageSigningSupport>
-export type TransactionSigningImplementation = WithRef<TransactionSigningSupport>
-export type HardwareWalletAppSigningImplementation = WithRef<HardwareWalletAppSigningSupport>
+export const isFullTransactionDetails = (details: DisplayedTransactionDetails): boolean => {
+	return (
+		details.gas === TransactionDisplayOptions.SHOWN_BY_DEFAULT &&
+		details.nonce === TransactionDisplayOptions.SHOWN_BY_DEFAULT &&
+		details.from === TransactionDisplayOptions.SHOWN_BY_DEFAULT &&
+		details.to === TransactionDisplayOptions.SHOWN_BY_DEFAULT &&
+		details.chain === TransactionDisplayOptions.SHOWN_BY_DEFAULT &&
+		details.value === TransactionDisplayOptions.SHOWN_BY_DEFAULT
+	)
+}
+
+/**
+ * Type predicate for `HardwareTransactionLegibilityImplementation`.
+ */
+export function isHardwareTransactionLegibility(
+	transactionLegibility:
+		| HardwareTransactionLegibilityImplementation
+		| SoftwareTransactionLegibilityImplementation,
+): transactionLegibility is HardwareTransactionLegibilityImplementation {
+	// The `dataExtraction` field exists only on `HardwareTransactionLegibilityImplementation`,
+	// not on `SoftwareTransactionLegibilityImplementation`, so it is a good way to distinguish
+	// between the two types:
+	return Object.hasOwn(transactionLegibility, 'dataExtraction')
+}
+
+export type HardwareTransactionLegibilityImplementation =
+	WithRef<HardwareTransactionLegibilitySupport>
+export type SoftwareTransactionLegibilityImplementation =
+	WithRef<SoftwareTransactionLegibilitySupport>

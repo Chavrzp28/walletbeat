@@ -1,6 +1,11 @@
 import { mattmatt } from '@/data/contributors/0xmattmatt'
 import { nconsigny } from '@/data/contributors/nconsigny'
 import { patrickalphac } from '@/data/contributors/patrickalphac'
+import {
+	AppConnectionMethod,
+	type AppConnectionMethodDetails,
+	SoftwareWalletType,
+} from '@/schema/features/ecosystem/hw-app-connection-support'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
 import {
 	BugBountyPlatform,
@@ -8,15 +13,16 @@ import {
 	type BugBountyProgramImplementation,
 	LegalProtectionType,
 } from '@/schema/features/security/bug-bounty-program'
+import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
+import { SecureElementType } from '@/schema/features/security/secure-element'
 import {
 	DataExtraction,
 	displaysFullTransactionDetails,
 	noCalldataDecoding,
-} from '@/schema/features/security/hardware-wallet-app-signing'
-import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
-import { SecureElementType } from '@/schema/features/security/secure-element'
+	TransactionDisplayOptions,
+} from '@/schema/features/security/transaction-legibility'
 import { notSupported, supported } from '@/schema/features/support'
-import { refNotNecessary, refTodo } from '@/schema/reference'
+import { refNotNecessary, refTodo, type WithRef } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -77,6 +83,17 @@ export const trezorWallet: HardwareWallet = {
 	},
 	features: {
 		accountSupport: null,
+		appConnectionSupport: supported<WithRef<AppConnectionMethodDetails>>({
+			ref: 'https://trezor.io/guides/third-party-wallet-apps/third-party-wallet-apps-dapps',
+			supportedConnections: {
+				[AppConnectionMethod.VENDOR_OPEN_SOURCE_APP]: true,
+				[SoftwareWalletType.METAMASK]: true,
+				[SoftwareWalletType.RABBY]: true,
+				[SoftwareWalletType.AMBIRE]: true,
+				[SoftwareWalletType.FRAME]: true,
+				[SoftwareWalletType.OTHER]: true,
+			},
+		}),
 		licensing: null,
 		monetization: {
 			ref: refTodo,
@@ -127,44 +144,6 @@ export const trezorWallet: HardwareWallet = {
 				upgradePathAvailable: true,
 			}),
 			firmware: null,
-			hardwareWalletAppSigning: {
-				ref: [
-					{
-						explanation:
-							"Independent video demonstration of Trezor's signing implementation on Safe.",
-						url: 'https://youtu.be/9YmPWxAvKYY?t=1108',
-					},
-					{
-						explanation: 'Independent video showing transaction details on Trezor Safe 5',
-						url: 'https://youtube.com/shorts/4LayLrSuHNg',
-					},
-				],
-				messageSigning: {
-					calldataDecoding: noCalldataDecoding,
-					details:
-						'Trezor provides basic message signing details when using hardware wallets, but some complex interactions may be difficult to verify off device.',
-					messageExtraction: {
-						[DataExtraction.EYES]: true,
-						[DataExtraction.HASHES]: false,
-						[DataExtraction.QRCODE]: false,
-					},
-				},
-				transactionSigning: {
-					calldataDecoding: noCalldataDecoding,
-					calldataExtraction: {
-						[DataExtraction.EYES]: true,
-						[DataExtraction.HASHES]: false,
-						[DataExtraction.QRCODE]: false,
-					},
-					details:
-						'Trezor provides basic transaction details when using hardware wallets, but some complex interactions may not display complete information on the hardware device.',
-					displayedTransactionDetails: {
-						...displaysFullTransactionDetails,
-						chain: false,
-						nonce: false,
-					},
-				},
-			},
 			keysHandling: null,
 			lightClient: {
 				ethereumL1: null,
@@ -186,6 +165,30 @@ export const trezorWallet: HardwareWallet = {
 			}),
 			supplyChainDIY: null,
 			supplyChainFactory: null,
+			transactionLegibility: {
+				ref: [
+					{
+						explanation:
+							"Independent video demonstration of Trezor's signing implementation on Safe.",
+						url: 'https://youtu.be/9YmPWxAvKYY?t=1108',
+					},
+					{
+						explanation: 'Independent video showing transaction details on Trezor Safe 5',
+						url: 'https://youtube.com/shorts/4LayLrSuHNg',
+					},
+				],
+				dataExtraction: {
+					[DataExtraction.EYES]: true,
+					[DataExtraction.HASHES]: false,
+					[DataExtraction.QRCODE]: false,
+				},
+				detailsDisplayed: {
+					...displaysFullTransactionDetails,
+					chain: TransactionDisplayOptions.NOT_IN_UI,
+					nonce: TransactionDisplayOptions.NOT_IN_UI,
+				},
+				legibility: noCalldataDecoding,
+			},
 			userSafety: null,
 		},
 		selfSovereignty: {

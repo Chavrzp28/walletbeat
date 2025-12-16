@@ -11,6 +11,10 @@ import {
 } from '@/schema/features/security/hardware-wallet-support'
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
 import { type ScamUrlWarning } from '@/schema/features/security/scam-alerts'
+import {
+	displaysFullCallData,
+	displaysFullTransactionDetails,
+} from '@/schema/features/security/transaction-legibility'
 import { RpcEndpointConfiguration } from '@/schema/features/self-sovereignty/chain-configurability'
 import {
 	TransactionSubmissionL2Support,
@@ -257,6 +261,11 @@ export const safe: SoftwareWallet = {
 					newRecipientWarning: true, //blockaid
 					userWhitelist: true,
 				}),
+			},
+			transactionLegibility: {
+				ref: refTodo,
+				calldataDisplay: displaysFullCallData,
+				transactionDetailsDisplay: displaysFullTransactionDetails,
 			},
 		},
 		selfSovereignty: {

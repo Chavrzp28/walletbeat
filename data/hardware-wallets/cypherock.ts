@@ -1,5 +1,9 @@
 import { mattmatt } from '@/data/contributors/0xmattmatt'
 import { patrickalphac } from '@/data/contributors/patrickalphac'
+import {
+	AppConnectionMethod,
+	type AppConnectionMethodDetails,
+} from '@/schema/features/ecosystem/hw-app-connection-support'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
 import {
 	BugBountyPlatform,
@@ -8,14 +12,15 @@ import {
 	LegalProtectionType,
 } from '@/schema/features/security/bug-bounty-program'
 import { FirmwareType } from '@/schema/features/security/firmware'
+import { SecureElementType } from '@/schema/features/security/secure-element'
 import {
 	DataExtraction,
 	noCalldataDecoding,
-	noDataExtraction,
-} from '@/schema/features/security/hardware-wallet-app-signing'
-import { SecureElementType } from '@/schema/features/security/secure-element'
+	TransactionDisplayOptions,
+} from '@/schema/features/security/transaction-legibility'
 import { notSupported, supported } from '@/schema/features/support'
 import { FOSSLicense, LicensingType } from '@/schema/features/transparency/license'
+import { type WithRef } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -58,6 +63,12 @@ export const cypherockWallet: HardwareWallet = {
 	},
 	features: {
 		accountSupport: null,
+		appConnectionSupport: supported<WithRef<AppConnectionMethodDetails>>({
+			ref: 'https://www.youtube.com/watch?v=R0g35dKjRtI',
+			supportedConnections: {
+				[AppConnectionMethod.VENDOR_OPEN_SOURCE_APP]: true,
+			},
+		}),
 		licensing: {
 			type: LicensingType.SINGLE_WALLET_REPO_AND_LICENSE,
 			walletAppLicense: {
@@ -135,43 +146,6 @@ export const cypherockWallet: HardwareWallet = {
 				reproducibleBuilds: FirmwareType.PASS,
 				silentUpdateProtection: FirmwareType.PASS,
 			},
-			hardwareWalletAppSigning: {
-				ref: [
-					{
-						explanation: "Independent video demonstration of Cypherock's signing implementation.",
-						url: 'https://youtu.be/9YmPWxAvKYY?t=534',
-					},
-					{
-						explanation:
-							"Independent video demonstration of Cypherock's transaction implementation.",
-						url: 'https://youtube.com/shorts/YG6lzwTUojE',
-					},
-				],
-				messageSigning: {
-					calldataDecoding: noCalldataDecoding,
-					details:
-						'Shows EIP-712 signature data only in the companion application, not on the hardware wallet itself.',
-					messageExtraction: {
-						[DataExtraction.EYES]: true,
-						[DataExtraction.HASHES]: false,
-						[DataExtraction.QRCODE]: false,
-					},
-				},
-				transactionSigning: {
-					calldataDecoding: noCalldataDecoding,
-					calldataExtraction: noDataExtraction,
-					details:
-						'Completely fails to display calldata for transactions on either the application or the hardware wallet itself.',
-					displayedTransactionDetails: {
-						chain: false,
-						from: true, // derivation path counts
-						gas: true, // tx fee
-						nonce: false,
-						to: true, // contract address
-						value: true,
-					},
-				},
-			},
 			keysHandling: null,
 			lightClient: {
 				ethereumL1: null,
@@ -210,6 +184,34 @@ export const cypherockWallet: HardwareWallet = {
 			}),
 			supplyChainDIY: null,
 			supplyChainFactory: null,
+			transactionLegibility: {
+				ref: [
+					{
+						explanation: "Independent video demonstration of Cypherock's signing implementation.",
+						url: 'https://youtu.be/9YmPWxAvKYY?t=534',
+					},
+					{
+						explanation:
+							"Independent video demonstration of Cypherock's transaction implementation.",
+						url: 'https://youtube.com/shorts/YG6lzwTUojE',
+					},
+				],
+
+				dataExtraction: {
+					[DataExtraction.EYES]: true,
+					[DataExtraction.HASHES]: false,
+					[DataExtraction.QRCODE]: false,
+				},
+				detailsDisplayed: {
+					chain: TransactionDisplayOptions.NOT_IN_UI,
+					from: TransactionDisplayOptions.SHOWN_BY_DEFAULT, // derivation path counts
+					gas: TransactionDisplayOptions.SHOWN_BY_DEFAULT, // tx fee
+					nonce: TransactionDisplayOptions.NOT_IN_UI,
+					to: TransactionDisplayOptions.SHOWN_BY_DEFAULT, // contract address
+					value: TransactionDisplayOptions.SHOWN_BY_DEFAULT,
+				},
+				legibility: noCalldataDecoding,
+			},
 			userSafety: null,
 		},
 		selfSovereignty: {

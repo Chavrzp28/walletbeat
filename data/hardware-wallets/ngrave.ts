@@ -1,5 +1,9 @@
 import { mattmatt } from '@/data/contributors/0xmattmatt'
 import { patrickalphac } from '@/data/contributors/patrickalphac'
+import {
+	type AppConnectionMethodDetails,
+	SoftwareWalletType,
+} from '@/schema/features/ecosystem/hw-app-connection-support'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
 import {
 	BugBountyPlatform,
@@ -7,15 +11,15 @@ import {
 	type BugBountyProgramImplementation,
 	LegalProtectionType,
 } from '@/schema/features/security/bug-bounty-program'
+import { SecureElementType } from '@/schema/features/security/secure-element'
 import {
-	DataExtraction,
 	noCalldataDecoding,
 	noDataExtraction,
-} from '@/schema/features/security/hardware-wallet-app-signing'
-import { SecureElementType } from '@/schema/features/security/secure-element'
+	TransactionDisplayOptions,
+} from '@/schema/features/security/transaction-legibility'
 import { notSupported, supported } from '@/schema/features/support'
 import { LicensingType, SourceNotAvailableLicense } from '@/schema/features/transparency/license'
-import { refTodo } from '@/schema/reference'
+import { refTodo, type WithRef } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -54,6 +58,13 @@ export const ngrave: HardwareWallet = {
 	},
 	features: {
 		accountSupport: null,
+		appConnectionSupport: supported<WithRef<AppConnectionMethodDetails>>({
+			ref: 'https://support.ngrave.io/hc/en-us/articles/20045312764701-How-to-stay-safe-on-web3',
+			supportedConnections: {
+				[SoftwareWalletType.METAMASK]: true,
+				[SoftwareWalletType.RABBY]: true,
+			},
+		}),
 		licensing: {
 			type: LicensingType.SINGLE_WALLET_REPO_AND_LICENSE,
 			walletAppLicense: {
@@ -117,38 +128,6 @@ export const ngrave: HardwareWallet = {
 				upgradePathAvailable: false,
 			}),
 			firmware: null,
-			hardwareWalletAppSigning: {
-				ref: [
-					{
-						explanation: 'Independent video demonstration of NGRAVE Zero signing issues',
-						url: 'https://youtu.be/-m1jcBFS0dc?t=701',
-					},
-				],
-				messageSigning: {
-					calldataDecoding: noCalldataDecoding,
-					details:
-						'NGRAVE Zero does not display EIP-712 data properly. It shows an unrecognizable binary format instead of the actual struct data.',
-					messageExtraction: {
-						[DataExtraction.EYES]: false,
-						[DataExtraction.HASHES]: false,
-						[DataExtraction.QRCODE]: false,
-					},
-				},
-				transactionSigning: {
-					calldataDecoding: noCalldataDecoding,
-					calldataExtraction: noDataExtraction,
-					details:
-						'NGRAVE Zero fails to display calldata properly. It shows calldata in an unrecognizable binary format that cannot be verified.',
-					displayedTransactionDetails: {
-						chain: false,
-						from: true,
-						gas: true,
-						nonce: false,
-						to: true,
-						value: true,
-					},
-				},
-			},
 			keysHandling: null,
 			lightClient: {
 				ethereumL1: null,
@@ -166,6 +145,24 @@ export const ngrave: HardwareWallet = {
 			}),
 			supplyChainDIY: null,
 			supplyChainFactory: null,
+			transactionLegibility: {
+				ref: [
+					{
+						explanation: 'Independent video demonstration of NGRAVE Zero signing issues',
+						url: 'https://youtu.be/-m1jcBFS0dc?t=701',
+					},
+				],
+				dataExtraction: noDataExtraction,
+				detailsDisplayed: {
+					chain: TransactionDisplayOptions.NOT_IN_UI,
+					from: TransactionDisplayOptions.SHOWN_BY_DEFAULT,
+					gas: TransactionDisplayOptions.SHOWN_BY_DEFAULT,
+					nonce: TransactionDisplayOptions.NOT_IN_UI,
+					to: TransactionDisplayOptions.SHOWN_BY_DEFAULT,
+					value: TransactionDisplayOptions.SHOWN_BY_DEFAULT,
+				},
+				legibility: noCalldataDecoding,
+			},
 			userSafety: null,
 		},
 		selfSovereignty: {

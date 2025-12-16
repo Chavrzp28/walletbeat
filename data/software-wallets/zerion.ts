@@ -134,6 +134,7 @@ export const zerion: SoftwareWallet = {
 			},
 			publicSecurityAudits: null,
 			scamAlerts: null,
+			transactionLegibility: null,
 		},
 		selfSovereignty: {
 			transactionSubmission: {

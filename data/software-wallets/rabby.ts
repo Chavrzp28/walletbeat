@@ -25,6 +25,7 @@ import {
 import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
 import type { ScamUrlWarning } from '@/schema/features/security/scam-alerts'
 import { SecurityFlawSeverity } from '@/schema/features/security/security-audits'
+import { displaysFullTransactionDetails } from '@/schema/features/security/transaction-legibility'
 import {
 	type ChainConfigurability,
 	RpcEndpointConfiguration,
@@ -619,6 +620,11 @@ export const rabby: SoftwareWallet = {
 					newRecipientWarning: false,
 					userWhitelist: true,
 				}),
+			},
+			transactionLegibility: {
+				ref: refTodo,
+				calldataDisplay: null,
+				transactionDetailsDisplay: displaysFullTransactionDetails,
 			},
 		},
 		selfSovereignty: {

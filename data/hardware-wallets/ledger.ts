@@ -1,6 +1,11 @@
 import { mattmatt } from '@/data/contributors/0xmattmatt'
 import { nconsigny } from '@/data/contributors/nconsigny'
 import { patrickalphac } from '@/data/contributors/patrickalphac'
+import {
+	AppConnectionMethod,
+	type AppConnectionMethodDetails,
+	SoftwareWalletType,
+} from '@/schema/features/ecosystem/hw-app-connection-support'
 import { HardwareWalletManufactureType, WalletProfile } from '@/schema/features/profile'
 import {
 	BugBountyPlatform,
@@ -8,15 +13,15 @@ import {
 	type BugBountyProgramImplementation,
 	LegalProtectionType,
 } from '@/schema/features/security/bug-bounty-program'
+import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
+import { SecureElementType } from '@/schema/features/security/secure-element'
 import {
 	DataExtraction,
 	displaysFullTransactionDetails,
 	noCalldataDecoding,
-} from '@/schema/features/security/hardware-wallet-app-signing'
-import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
-import { SecureElementType } from '@/schema/features/security/secure-element'
+} from '@/schema/features/security/transaction-legibility'
 import { notSupported, supported } from '@/schema/features/support'
-import { refNotNecessary, refTodo } from '@/schema/reference'
+import { refNotNecessary, refTodo, type WithRef } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { HardwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -83,6 +88,16 @@ export const ledgerWallet: HardwareWallet = {
 	},
 	features: {
 		accountSupport: null,
+		appConnectionSupport: supported<WithRef<AppConnectionMethodDetails>>({
+			ref: 'https://support.ledger.com/article/360018444599-zd',
+			supportedConnections: {
+				[SoftwareWalletType.METAMASK]: true,
+				[SoftwareWalletType.RABBY]: true,
+				[SoftwareWalletType.FRAME]: true,
+				[SoftwareWalletType.OTHER]: true,
+				[AppConnectionMethod.VENDOR_OPEN_SOURCE_APP]: true,
+			},
+		}),
 		licensing: null,
 		monetization: {
 			ref: [
@@ -138,36 +153,6 @@ export const ledgerWallet: HardwareWallet = {
 				upgradePathAvailable: true,
 			}),
 			firmware: null,
-			hardwareWalletAppSigning: {
-				ref: [
-					{
-						explanation:
-							"Independent video demonstration of Ledger's signing implementation on a Safe.",
-						url: 'https://youtu.be/9YmPWxAvKYY?t=1722',
-					},
-				],
-				messageSigning: {
-					calldataDecoding: noCalldataDecoding,
-					details:
-						'Ledger provides basic message signing details when using hardware wallets, and complex signatures can be verified by comparing the EIP-712 hashes to their expected outcomes.',
-					messageExtraction: {
-						[DataExtraction.EYES]: true,
-						[DataExtraction.HASHES]: true, // Fantastic
-						[DataExtraction.QRCODE]: false,
-					},
-				},
-				transactionSigning: {
-					calldataDecoding: noCalldataDecoding,
-					calldataExtraction: {
-						[DataExtraction.EYES]: true, // VERY hard to verify, very weird format
-						[DataExtraction.HASHES]: false,
-						[DataExtraction.QRCODE]: false,
-					},
-					details:
-						'Ledger provides basic message signing details when using hardware wallets, but complex interactions are very difficult to verify on the device.',
-					displayedTransactionDetails: displaysFullTransactionDetails,
-				},
-			},
 			keysHandling: null,
 			lightClient: {
 				ethereumL1: null,
@@ -189,6 +174,22 @@ export const ledgerWallet: HardwareWallet = {
 			}),
 			supplyChainDIY: null,
 			supplyChainFactory: null,
+			transactionLegibility: {
+				ref: [
+					{
+						explanation:
+							"Independent video demonstration of Ledger's signing implementation on a Safe.",
+						url: 'https://youtu.be/9YmPWxAvKYY?t=1722',
+					},
+				],
+				dataExtraction: {
+					[DataExtraction.EYES]: true,
+					[DataExtraction.HASHES]: false,
+					[DataExtraction.QRCODE]: false,
+				},
+				detailsDisplayed: displaysFullTransactionDetails,
+				legibility: noCalldataDecoding,
+			},
 			userSafety: null,
 		},
 		selfSovereignty: {

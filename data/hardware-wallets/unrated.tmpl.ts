@@ -48,6 +48,7 @@ export const unratedHardwareTemplate: HardwareWallet = {
 	},
 	features: {
 		accountSupport: null,
+		appConnectionSupport: null,
 		licensing: null,
 		monetization: {
 			ref: refTodo,
@@ -96,7 +97,6 @@ export const unratedHardwareTemplate: HardwareWallet = {
 				upgradePathAvailable: true,
 			}),
 			firmware: null,
-			hardwareWalletAppSigning: null,
 			keysHandling: null,
 			lightClient: {
 				ethereumL1: null,
@@ -106,6 +106,7 @@ export const unratedHardwareTemplate: HardwareWallet = {
 			secureElement: null,
 			supplyChainDIY: null,
 			supplyChainFactory: null,
+			transactionLegibility: null,
 			userSafety: null,
 		},
 		selfSovereignty: {
