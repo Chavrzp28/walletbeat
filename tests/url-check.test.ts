@@ -589,11 +589,20 @@ const knownValidUrls: KnownValidUrl[] = [
 		urlHash: '1f6bf49de87f6fcdbce0d353fc7ef8681c212685',
 		retrieved: '2025-12-09',
 	},
-
 	{
 		url: 'https://support.ngrave.io/hc/en-us/articles/20045312764701-How-to-stay-safe-on-web3',
 		urlHash: '826047213cd41016cbcd483f67ee42961129f5a1',
 		retrieved: '2025-12-09',
+	},
+	{
+		url: 'https://pillarx.app',
+		urlHash: 'b24441fce1ec129e0c6385e34abdfe8d7b871818',
+		retrieved: '2025-12-17',
+	},
+	{
+		url: 'https://pillarx.app/login',
+		urlHash: 'e1c183c8cb53133e9544eca41f8893500a686961',
+		retrieved: '2025-12-17',
 	},
 ]
 
