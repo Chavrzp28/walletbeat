@@ -19,7 +19,7 @@ export const pillar: CorporateEntity & WalletDeveloper = {
 	icon: 'NO_ICON',
 	jurisdiction: 'London',
 	linkedin: 'https://www.linkedin.com/company/pillarproject',
-	privacyPolicy: 'https://example.com/privacy',
+	privacyPolicy: 'https://pillarx.app/privacy-policy',
 	repoUrl: 'https://github.com/pillarwallet/x',
 	twitter: 'https://x.com/PX_Web3',
 	url: 'http://pillarx.app',
