@@ -9,14 +9,9 @@ import {
 	HardwareWalletType,
 	type SupportedHardwareWallet,
 } from '@/schema/features/security/hardware-wallet-support'
-import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
-import {
-	type ChainConfigurability,
-	RpcEndpointConfiguration,
-} from '@/schema/features/self-sovereignty/chain-configurability'
 import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
-import { featureSupported, notSupported, supported } from '@/schema/features/support'
-import { refNotNecessary, refTodo, type WithRef } from '@/schema/reference'
+import { notSupported, supported } from '@/schema/features/support'
+import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -31,6 +26,12 @@ export const frame: SoftwareWallet = {
 		iconExtension: 'svg',
 		lastUpdated: '2025-03-13',
 		urls: {
+			docs: ['https://docs.frame.sh/'],
+			repositories: ['https://github.com/floating/frame'],
+			socials: {
+				discord: 'https://discord.com/invite/rr4Yr3JkPq',
+				x: 'https://x.com/0xFrame',
+			},
 			websites: ['https://frame.sh'],
 		},
 	},
@@ -61,26 +62,7 @@ export const frame: SoftwareWallet = {
 			nonChainSpecificEnsResolution: null,
 		},
 		chainAbstraction: null,
-		chainConfigurability: supported<WithRef<ChainConfigurability>>({
-			ref: [
-				{
-					explanation: 'Frame allows connecting to your own Ethereum node',
-					urls: [
-						{
-							label: 'Frame node connection documentation',
-							url: 'https://docs.frame.sh/docs/Getting%20Started/Basics/Configuring%20Chains',
-						},
-					],
-				},
-			],
-			customChainRpcEndpoint: featureSupported,
-			l1: supported({
-				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_AFTER_OTHER_SENSITIVE_REQUESTS,
-			}),
-			nonL1: supported({
-				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_AFTER_OTHER_SENSITIVE_REQUESTS,
-			}),
-		}),
+		chainConfigurability: null,
 		ecosystem: {
 			delegation: null,
 		},
@@ -149,10 +131,7 @@ export const frame: SoftwareWallet = {
 			lightClient: {
 				ethereumL1: null,
 			},
-			passkeyVerification: {
-				ref: refNotNecessary,
-				library: PasskeyVerificationLibrary.NONE,
-			},
+			passkeyVerification: notSupported,
 			publicSecurityAudits: null,
 			scamAlerts: null,
 			transactionLegibility: null,

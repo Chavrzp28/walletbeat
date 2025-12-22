@@ -7,7 +7,6 @@ import {
 	HardwareWalletType,
 	type SupportedHardwareWallet,
 } from '@/schema/features/security/hardware-wallet-support'
-import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
 import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
 import { notSupported, supported } from '@/schema/features/support'
 import { LicensingType, SourceNotAvailableLicense } from '@/schema/features/transparency/license'
@@ -30,6 +29,14 @@ export const phantom: SoftwareWallet = {
 		iconExtension: 'svg',
 		lastUpdated: '2025-02-08',
 		urls: {
+			docs: ['https://docs.phantom.com/'],
+			socials: {
+				instagram: 'https://www.instagram.com/phantom/',
+				linkedin: 'https://www.linkedin.com/company/phantomwallet/',
+				reddit: 'https://www.reddit.com/r/Phantom/',
+				x: 'https://x.com/phantom',
+				youtube: 'https://www.youtube.com/@phantom-wallet',
+			},
 			websites: ['https://phantom.com'],
 		},
 	},
@@ -123,10 +130,7 @@ export const phantom: SoftwareWallet = {
 			lightClient: {
 				ethereumL1: null,
 			},
-			passkeyVerification: {
-				ref: refNotNecessary,
-				library: PasskeyVerificationLibrary.NONE,
-			},
+			passkeyVerification: notSupported,
 			publicSecurityAudits: null,
 			scamAlerts: null,
 			transactionLegibility: null,

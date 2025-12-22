@@ -7,11 +7,10 @@ import {
 	HardwareWalletType,
 	type SupportedHardwareWallet,
 } from '@/schema/features/security/hardware-wallet-support'
-import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
 import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
 import { notSupported, supported } from '@/schema/features/support'
 import { FOSSLicense, LicensingType } from '@/schema/features/transparency/license'
-import { refNotNecessary, refTodo } from '@/schema/reference'
+import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -28,7 +27,12 @@ export const rainbow: SoftwareWallet = {
 		iconExtension: 'svg',
 		lastUpdated: '2025-02-08',
 		urls: {
+			docs: ['https://rainbowkit.com/'],
 			repositories: ['https://github.com/rainbow-me/rainbow'],
+			socials: {
+				farcaster: 'https://farcaster.xyz/rainbow',
+				x: 'https://x.com/rainbowdotme',
+			},
 			websites: ['https://rainbow.me'],
 		},
 	},
@@ -131,10 +135,7 @@ export const rainbow: SoftwareWallet = {
 			lightClient: {
 				ethereumL1: null,
 			},
-			passkeyVerification: {
-				ref: refNotNecessary,
-				library: PasskeyVerificationLibrary.NONE,
-			},
+			passkeyVerification: notSupported,
 			publicSecurityAudits: null,
 			scamAlerts: null,
 			transactionLegibility: null,

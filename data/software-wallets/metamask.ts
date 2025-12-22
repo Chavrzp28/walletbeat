@@ -14,7 +14,6 @@ import {
 	KeyGenerationLocation,
 	MultiPartyKeyReconstruction,
 } from '@/schema/features/security/keys-handling'
-import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
 import type { ScamUrlWarning } from '@/schema/features/security/scam-alerts'
 import { displaysFullCallData } from '@/schema/features/security/transaction-legibility'
 import {
@@ -59,7 +58,18 @@ export const metamask: SoftwareWallet = {
 		iconExtension: 'svg',
 		lastUpdated: '2025-10-13',
 		urls: {
+			docs: ['https://docs.metamask.io/'],
+			extensions: [
+				'https://chromewebstore.google.com/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn',
+			],
 			repositories: ['https://github.com/MetaMask/metamask-extension'],
+			socials: {
+				farcaster: 'https://farcaster.xyz/metamask',
+				linkedin: 'https://www.linkedin.com/company/metamask/',
+				reddit: 'https://www.reddit.com/r/Metamask/',
+				tiktok: 'https://www.tiktok.com/@metamask',
+				x: 'https://x.com/MetaMask',
+			},
 			websites: ['https://metamask.io'],
 		},
 	},
@@ -153,6 +163,13 @@ export const metamask: SoftwareWallet = {
 			customChainRpcEndpoint: featureSupported,
 			l1: supported({
 				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_BEFORE_ANY_SENSITIVE_REQUEST,
+				withNoConnectivityExceptL1RPCEndpoint: {
+					accountCreation: featureSupported,
+					accountImport: featureSupported,
+					erc20BalanceLookup: notSupported, // Token import dialog is broken in this case
+					erc20TokenSend: notSupported, // Can't add token.
+					etherBalanceLookup: featureSupported,
+				},
 			}),
 			nonL1: supported({
 				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_BEFORE_ANY_SENSITIVE_REQUEST,
@@ -321,20 +338,7 @@ export const metamask: SoftwareWallet = {
 			lightClient: {
 				ethereumL1: notSupported,
 			},
-			passkeyVerification: {
-				[Variant.BROWSER]: {
-					ref: refTodo,
-					details:
-						'MetaMask browser extension does not currently implement passkey verification. Phase 2 seedless onboarding has passkey scheduled for extension.',
-					library: PasskeyVerificationLibrary.NONE,
-				},
-				[Variant.MOBILE]: {
-					ref: refTodo,
-					details:
-						'MetaMask mobile uses biometrics that leverage the hardware enclave similar to passkeys. Standard passkey verification is not yet implemented.',
-					library: PasskeyVerificationLibrary.NONE,
-				},
-			},
+			passkeyVerification: notSupported,
 			publicSecurityAudits: [
 				{
 					ref: 'https://assets.ctfassets.net/clixtyxoaeas/21m4LE3WLYbgWjc33aDcp2/8252073e115688b1dc1500a9c2d33fe4/metamask-delegator-framework-audit-2024-10.pdf',

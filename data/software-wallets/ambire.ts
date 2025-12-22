@@ -29,7 +29,6 @@ import {
 	KeyGenerationLocation,
 	MultiPartyKeyReconstruction,
 } from '@/schema/features/security/keys-handling'
-import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
 import type { ScamUrlWarning } from '@/schema/features/security/scam-alerts'
 import type { SecurityAudit } from '@/schema/features/security/security-audits'
 import {
@@ -40,7 +39,7 @@ import { TransactionSubmissionL2Support } from '@/schema/features/self-sovereign
 import { featureSupported, notSupported, supported } from '@/schema/features/support'
 import { comprehensiveFeesShownByDefault } from '@/schema/features/transparency/fee-display'
 import { FOSSLicense, LicensingType } from '@/schema/features/transparency/license'
-import { type References, refNotNecessary, refTodo, type WithRef } from '@/schema/reference'
+import { type References, refTodo, type WithRef } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -160,7 +159,18 @@ export const ambire: SoftwareWallet = {
 		iconExtension: 'svg',
 		lastUpdated: '2025-03-20',
 		urls: {
+			docs: ['https://help.ambire.com/hc/en-us'],
+			extensions: [
+				'https://chromewebstore.google.com/detail/ambire-web3-wallet/ehgjhhccekdedpbkifaojjaefeohnoea',
+			],
 			repositories: ['https://github.com/AmbireTech/extension'],
+			socials: {
+				discord: 'https://discord.com/invite/ambire',
+				reddit: 'https://www.reddit.com/r/Ambire_Wallet/',
+				telegram: 'https://t.me/AmbireOfficial',
+				x: 'https://x.com/ambire',
+				youtube: 'https://www.youtube.com/@AmbireTech',
+			},
 			websites: ['https://www.ambire.com'],
 		},
 	},
@@ -266,6 +276,13 @@ export const ambire: SoftwareWallet = {
 			customChainRpcEndpoint: featureSupported,
 			l1: supported({
 				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_AFTER_OTHER_SENSITIVE_REQUESTS,
+				withNoConnectivityExceptL1RPCEndpoint: {
+					accountCreation: featureSupported,
+					accountImport: featureSupported,
+					erc20BalanceLookup: featureSupported,
+					erc20TokenSend: featureSupported,
+					etherBalanceLookup: featureSupported,
+				},
 			}),
 			nonL1: supported({
 				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_AFTER_OTHER_SENSITIVE_REQUESTS,
@@ -483,10 +500,7 @@ export const ambire: SoftwareWallet = {
 			lightClient: {
 				ethereumL1: notSupported,
 			},
-			passkeyVerification: {
-				ref: refNotNecessary,
-				library: PasskeyVerificationLibrary.NONE,
-			},
+			passkeyVerification: notSupported,
 			publicSecurityAudits: v2Audits,
 			scamAlerts: {
 				contractTransactionWarning: notSupported,

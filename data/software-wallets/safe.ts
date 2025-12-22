@@ -97,6 +97,13 @@ export const safe: SoftwareWallet = {
 			customChainRpcEndpoint: notSupported,
 			l1: supported({
 				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_BEFORE_ANY_SENSITIVE_REQUEST,
+				withNoConnectivityExceptL1RPCEndpoint: {
+					accountCreation: featureSupported,
+					accountImport: featureSupported,
+					erc20BalanceLookup: featureSupported,
+					erc20TokenSend: featureSupported,
+					etherBalanceLookup: featureSupported,
+				},
 			}),
 			nonL1: supported({
 				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_BEFORE_ANY_SENSITIVE_REQUEST,
@@ -206,7 +213,7 @@ export const safe: SoftwareWallet = {
 			lightClient: {
 				ethereumL1: null,
 			},
-			passkeyVerification: {
+			passkeyVerification: supported({
 				ref: [
 					{
 						url: 'https://github.com/safe-fndn/safe-modules/tree/main/modules/passkey/contracts/vendor/FCL',
@@ -220,7 +227,7 @@ export const safe: SoftwareWallet = {
 				library: PasskeyVerificationLibrary.FRESH_CRYPTO_LIB,
 				libraryUrl:
 					'https://github.com/safe-fndn/safe-modules/tree/main/modules/passkey/contracts/vendor/FCL',
-			},
+			}),
 			publicSecurityAudits: [
 				{
 					ref: 'https://github.com/safe-fndn/safe-smart-account/blob/main/docs/Safe_Audit_Report_1_5_0_Certora.pdf',

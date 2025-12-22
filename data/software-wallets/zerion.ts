@@ -7,10 +7,9 @@ import {
 	HardwareWalletType,
 	type SupportedHardwareWallet,
 } from '@/schema/features/security/hardware-wallet-support'
-import { PasskeyVerificationLibrary } from '@/schema/features/security/passkey-verification'
 import { TransactionSubmissionL2Type } from '@/schema/features/self-sovereignty/transaction-submission'
 import { notSupported, supported } from '@/schema/features/support'
-import { refNotNecessary, refTodo } from '@/schema/reference'
+import { refTodo } from '@/schema/reference'
 import { Variant } from '@/schema/variants'
 import type { SoftwareWallet } from '@/schema/wallet'
 import { paragraph } from '@/types/content'
@@ -25,6 +24,13 @@ export const zerion: SoftwareWallet = {
 		iconExtension: 'svg',
 		lastUpdated: '2025-04-22',
 		urls: {
+			docs: ['https://developers.zerion.io/'],
+			repositories: ['https://github.com/zeriontech/zerion-wallet-extension'],
+			socials: {
+				farcaster: 'https://farcaster.xyz/zerion.eth',
+				linkedin: 'https://www.linkedin.com/company/zeriontech/',
+				x: 'https://x.com/zerion',
+			},
 			websites: ['https://zerion.io'],
 		},
 	},
@@ -128,10 +134,7 @@ export const zerion: SoftwareWallet = {
 			lightClient: {
 				ethereumL1: null,
 			},
-			passkeyVerification: {
-				ref: refNotNecessary,
-				library: PasskeyVerificationLibrary.NONE,
-			},
+			passkeyVerification: notSupported,
 			publicSecurityAudits: null,
 			scamAlerts: null,
 			transactionLegibility: null,
