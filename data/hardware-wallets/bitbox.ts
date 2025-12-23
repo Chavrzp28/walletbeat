@@ -79,6 +79,7 @@ export const bitboxWallet: HardwareWallet = {
 					url: 'https://blog.bitbox.swiss/en/using-walletconnect-to-securely-connect-to-your-favorite-dapp/',
 				},
 			],
+			requiresManufacturerConsent: null,
 			supportedConnections: {
 				[AppConnectionMethod.VENDOR_OPEN_SOURCE_APP]: true,
 				[SoftwareWalletType.RABBY]: true,
