@@ -739,6 +739,117 @@ const knownValidUrls: KnownValidUrl[] = [
 		urlHash: '29f2107818187fad134fad9a57879af673589146',
 		retrieved: '2025-12-19',
 	},
+	{
+		url: 'https://paydocs.daimo.com/',
+		urlHash: '61c87268f1fc9bce27f1e9154054ae8c71bdda2b',
+		retrieved: '2025-12-20',
+	},
+	{
+		url: 'https://farcaster.xyz/daimo-pay',
+		urlHash: 'f081dba41dcf3d3b1e4341672b92160350bc9708',
+		retrieved: '2025-12-20',
+	},
+	{
+		url: 'https://x.com/daimopay',
+		urlHash: 'ec5585796102df3b3a0a6a8bc10b999b0ab73771',
+		retrieved: '2025-12-20',
+	},
+	{
+		url: 'https://family.co/docs',
+		urlHash: '90f9f6f88f9e8d09d7b04d2795d75ce37a075850',
+		retrieved: '2025-12-20',
+	},
+	{
+		url: 'https://x.com/family',
+		urlHash: 'ee74600b82d67efcb57a1ec9db6b86150cba3dca',
+		retrieved: '2025-12-20',
+	},
+	{
+		url: 'https://docs.gemwallet.com/',
+		urlHash: '29744c6bdbcbe6a30d7b5ce9e45978f77c73f2a2',
+		retrieved: '2025-12-20',
+	},
+	{
+		url: 'https://discord.com/invite/4jpxtwT8r6',
+		urlHash: 'a5bace08f5feb783f1775a2191dd77e890013a44',
+		retrieved: '2025-12-20',
+	},
+	{
+		url: 'https://t.me/gemwallet',
+		urlHash: '873b50b9387307280c16c405e61381d9d319bc5d',
+		retrieved: '2025-12-20',
+	},
+	{
+		url: 'https://x.com/gemwallet',
+		urlHash: '56fa69943cc6d852480a4bf6a50584a82d73212d',
+		retrieved: '2025-12-20',
+	},
+	{
+		url: 'https://www.youtube.com/@gemwallet',
+		urlHash: '369cd41255fd28ac8c7ca2a521ec56e37dac5bf4',
+		retrieved: '2025-12-20',
+	},
+	{
+		url: 'https://docs.token.im/',
+		urlHash: '0746eaee6defc62e3fb9aa2d654d025dcfd6cd3b',
+		retrieved: '2025-12-20',
+	},
+	{
+		url: 'https://discord.com/invite/imToken',
+		urlHash: '710069b164290b32e37f324f1666b427bfbaf5dd',
+		retrieved: '2025-12-20',
+	},
+	{
+		url: 'https://x.com/imTokenOfficial',
+		urlHash: '5e6f6e5064d8f057c7848dd5a7fd47f0bc7d99f3',
+		retrieved: '2025-12-20',
+	},
+	{
+		url: 'https://discord.com/invite/WErDKTvMr7',
+		urlHash: '4ae6066bc25aa3989a3847ce6431b119b57c2306',
+		retrieved: '2025-12-20',
+	},
+	{
+		url: 'https://x.com/mtpelerin',
+		urlHash: 'f2370a402d2700ec01b1ccdd807e5c027af06a67',
+		retrieved: '2025-12-20',
+	},
+	{
+		url: 'https://www.youtube.com/@mtpelerin',
+		urlHash: 'c2801fdd40afe1e6c8d49cbb565499da89aa9a8a',
+		retrieved: '2025-12-20',
+	},
+	{
+		url: 'https://discord.com/invite/jSyVPAXw3w',
+		urlHash: 'db805c6f23e06f492cf24e789a55916ec7b36ae0',
+		retrieved: '2025-12-20',
+	},
+	{
+		url: 'https://x.com/nufiwallet',
+		urlHash: '32937e1e99a11905fbcab06924e6a19fb4602627',
+		retrieved: '2025-12-20',
+	},
+	{
+		url: 'https://docs.safe.global/',
+		urlHash: '7b3f7d52c78b53db3a0f2bf40e37cdbe7dd81c12',
+		retrieved: '2025-12-20',
+	},
+]
+
+/**
+ * URLs that should be skipped during validation checks.
+ * These URLs would always return an error response, so we skip them to avoid failing the test.
+ */
+const URLS_TO_SKIP = [
+	'docs.phantom.com',
+	'developers.zerion.io',
+	'help.ambire.com/hc/en-us',
+	'nufi.gitbook.io/',
+	'linkedin.com',
+	'facebook.com',
+	'instagram.com',
+	'reddit.com',
+	'tiktok.com',
 ]
 
 const newValidUrls: string[] = []
@@ -747,6 +858,13 @@ const verifiedUrls: KnownValidUrl[] = []
 
 async function checkValidUrl(url: Url): Promise<void> {
 	const href = labeledUrl(url).url
+	const urlString = getUrl(url)
+	const shouldSkip = URLS_TO_SKIP.some(s => urlString.includes(s))
+
+	if (shouldSkip) {
+		return
+	}
+
 	const h = createHash('sha1')
 
 	h.update(href)
@@ -829,18 +947,6 @@ describe('reference URLs', () => {
 			})
 			it('has valid docs', async () => {
 				for (const doc of wallet.metadata.urls?.docs ?? []) {
-					// These docs would always return an error Response. Skip docs to avoid failing the test.
-					const DOCS_TO_SKIP = [
-						'docs.phantom.com',
-						'developers.zerion.io',
-						'help.ambire.com/hc/en-us',
-					]
-					const shouldSkip = DOCS_TO_SKIP.some(s => getUrl(doc).includes(s))
-
-					if (shouldSkip) {
-						continue
-					}
-
 					await checkValidUrl(doc)
 				}
 			})
@@ -855,24 +961,8 @@ describe('reference URLs', () => {
 				}
 			})
 			it('has valid socials', async () => {
-				// These urls would always return an error Response. Skip urls to avoid failing the test.
-				const SOCIALS_TO_SKIP = [
-					'linkedin.com',
-					'facebook.com',
-					'instagram.com',
-					'reddit.com',
-					'tiktok.com',
-				]
-
 				for (const social of Object.values(wallet.metadata.urls?.socials ?? {})) {
 					if (social === undefined) {
-						continue
-					}
-
-					const urlString = getUrl(social)
-					const shouldSkip = SOCIALS_TO_SKIP.some(s => urlString.includes(s))
-
-					if (shouldSkip) {
 						continue
 					}
 

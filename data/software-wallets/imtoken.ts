@@ -55,7 +55,12 @@ export const imtoken: SoftwareWallet = {
 		iconExtension: 'svg',
 		lastUpdated: '2025-10-28',
 		urls: {
+			docs: ['https://docs.token.im/'],
 			repositories: ['https://github.com/consenlabs/token-core-monorepo'],
+			socials: {
+				discord: 'https://discord.com/invite/imToken',
+				x: 'https://x.com/imTokenOfficial',
+			},
 			websites: ['https://token.im'],
 		},
 	},
