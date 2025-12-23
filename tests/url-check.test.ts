@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 
 import { allWallets } from '@/data/wallets'
 import { hasRefs, toFullyQualified, type WithRef } from '@/schema/reference'
-import { labeledUrl, type Url } from '@/schema/url'
+import { getUrl, labeledUrl, type Url } from '@/schema/url'
 import { type CalendarDate, today } from '@/types/date'
 
 interface KnownValidUrl {
@@ -835,7 +835,8 @@ describe('reference URLs', () => {
 						'developers.zerion.io',
 						'help.ambire.com/hc/en-us',
 					]
-					const shouldSkip = DOCS_TO_SKIP.some(s => doc.toString().includes(s))
+					const shouldSkip = DOCS_TO_SKIP.some(s => getUrl(doc).includes(s))
+
 					if (shouldSkip) {
 						continue
 					}
@@ -868,7 +869,7 @@ describe('reference URLs', () => {
 						continue
 					}
 
-					const urlString = labeledUrl(social).url
+					const urlString = getUrl(social)
 					const shouldSkip = SOCIALS_TO_SKIP.some(s => urlString.includes(s))
 
 					if (shouldSkip) {
