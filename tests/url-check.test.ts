@@ -603,6 +603,8 @@ const knownValidUrls: KnownValidUrl[] = [
 		url: 'https://pillarx.app/login',
 		urlHash: 'e1c183c8cb53133e9544eca41f8893500a686961',
 		retrieved: '2025-12-17',
+	},
+	{
 		url: 'https://chromewebstore.google.com/detail/ambire-web3-wallet/ehgjhhccekdedpbkifaojjaefeohnoea',
 		urlHash: 'fcb8ae1a4993828173beb661943cc2d18378f8df',
 		retrieved: '2025-12-19',
