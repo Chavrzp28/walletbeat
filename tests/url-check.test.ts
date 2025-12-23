@@ -739,6 +739,36 @@ const knownValidUrls: KnownValidUrl[] = [
 		urlHash: '29f2107818187fad134fad9a57879af673589146',
 		retrieved: '2025-12-19',
 	},
+	{
+		url: 'https://keycard.tech/',
+		urlHash: '32dc30e035528956c74636e1d5d3f8fb0b361257',
+		retrieved: '2025-12-23',
+	},
+	{
+		url: 'https://shell.keycard.tech/',
+		urlHash: '038c9089c6734df2c266b69a545e2340aaff9679',
+		retrieved: '2025-12-23',
+	},
+	{
+		url: 'https://keycard.tech/start/shell',
+		urlHash: '8c781c8f948d32fcc0a24bfc54ea7729b2265d8c',
+		retrieved: '2025-12-23',
+	},
+	{
+		url: 'https://github.com/keycard-tech/keycard-shell',
+		urlHash: 'd210d4cdc0bd75611c2d8f1da33d4fcff8628c80',
+		retrieved: '2025-12-23',
+	},
+	{
+		url: 'https://github.com/keycard-tech/status-keycard',
+		urlHash: '6adbdbcc11f3049cc70df872ee50fac0b5035a07',
+		retrieved: '2025-12-23',
+	},
+	{
+		url: 'https://x.com/Keycard_',
+		urlHash: '7038cc6b902e6bf7c713e07414e344857aa1b8bd',
+		retrieved: '2025-12-23',
+	},
 ]
 
 const newValidUrls: string[] = []
