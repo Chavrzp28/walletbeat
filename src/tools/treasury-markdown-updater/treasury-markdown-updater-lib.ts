@@ -179,10 +179,10 @@ export function treasuryMarkdownUpdate(config: TreasuryMarkdownUpdaterConfig): v
 	const operationsRaw = readFile(config.operationsPath)
 	const addresses = parseTSV<AddressRow>(addressesRaw)
 	const operations = parseTSV<OperationRow>(operationsRaw)
-	const timestamp = new Date().toISOString().split('T')[0]
+	const timestamp = operations[operations.length - 1].Date
 	const markdownContent = `# Walletbeat Treasury Transparency Report
 
-_Last Updated: ${timestamp}_
+_Latest operation: ${timestamp}_
 
 This document tracks known treasury addresses and their operational history.
 
@@ -228,6 +228,6 @@ _Generated automatically from source TSV files._
 		}
 
 		fs.writeFileSync(config.outputPath, markdownContent)
-		logger.info('\nTreasury transparency report updated.')
+		logger.info('Treasury transparency report updated.')
 	}
 }

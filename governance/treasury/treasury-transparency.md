@@ -1,6 +1,6 @@
 # Walletbeat Treasury Transparency Report
 
-_Last Updated: 2025-12-23_
+_Latest operation: 2025-12-19_
 
 This document tracks known treasury addresses and their operational history.
 
