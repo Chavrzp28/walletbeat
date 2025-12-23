@@ -769,6 +769,7 @@ const knownValidUrls: KnownValidUrl[] = [
 		urlHash: '7038cc6b902e6bf7c713e07414e344857aa1b8bd',
 		retrieved: '2025-12-23',
 	},
+	{
 		url: 'https://paydocs.daimo.com/',
 		urlHash: '61c87268f1fc9bce27f1e9154054ae8c71bdda2b',
 		retrieved: '2025-12-20',
