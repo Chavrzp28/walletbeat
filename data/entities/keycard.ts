@@ -23,7 +23,7 @@ export const keycard: CorporateEntity & WalletDeveloper = {
 		transactionBroadcastProvider: false,
 		walletDeveloper: true,
 	},
-	crunchbase: { type: 'NO_CRUNCHBASE_URL' },
+	crunchbase: 'https://www.crunchbase.com/organization/status-31aa',
 	farcaster: { type: 'NO_FARCASTER_PROFILE' },
 	icon: { extension: 'svg' },
 	jurisdiction: 'Germany',
