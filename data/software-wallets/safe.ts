@@ -41,6 +41,7 @@ export const safe: SoftwareWallet = {
 		iconExtension: 'svg',
 		lastUpdated: '2025-03-12',
 		urls: {
+			docs: ['https://docs.safe.global/'],
 			repositories: ['https://github.com/safe-fndn'],
 			websites: ['https://safe.global'],
 		},
