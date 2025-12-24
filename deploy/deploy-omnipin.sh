@@ -8,5 +8,4 @@ if [[ -z "${DEPLOY_DIRECTORY:-}" ]]; then
 	exit 1
 fi
 
-DIRECTORY_CID="$(pnpm --silent ipfs add -Qr --only-hash --cid-version 1 "$DEPLOY_DIRECTORY")"
-pnpm omnipin pin --strict "${DIRECTORY_CID}"
+pnpm omnipin deploy --strict "${DEPLOY_DIRECTORY}"
