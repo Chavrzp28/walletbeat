@@ -45,8 +45,8 @@ jobs:
           ORBITER_ACCESS_TOKEN: ${{ secrets.ORBITER_ACCESS_TOKEN }}
           ORBITER_ACCESS_TOKEN_CREATION_DATE: ${{ secrets.ORBITER_ACCESS_TOKEN_CREATION_DATE }}
           DEPLOY_DIRECTORY: dist
-      - name: Deploy to 4everland
-        run: ./deploy/deploy-omnipin.sh
+      - name: Pin on 4everland
+        run: ./deploy/pin-omnipin.sh
         env:
           DEPLOY_DIRECTORY: dist
           OMNIPIN_4EVERLAND_TOKEN: ${{ secrets.BETA_WALLETBEAT_ETH_4EVERLAND_ACCESS_TOKEN }}
