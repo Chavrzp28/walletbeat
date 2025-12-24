@@ -162,7 +162,7 @@ export const metamask: SoftwareWallet = {
 			],
 			customChainRpcEndpoint: featureSupported,
 			l1: supported({
-				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_BEFORE_ANY_SENSITIVE_REQUEST,
+				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_AFTER_OTHER_REQUESTS,
 				withNoConnectivityExceptL1RPCEndpoint: {
 					accountCreation: featureSupported,
 					accountImport: featureSupported,
@@ -172,7 +172,7 @@ export const metamask: SoftwareWallet = {
 				},
 			}),
 			nonL1: supported({
-				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_BEFORE_ANY_SENSITIVE_REQUEST,
+				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_AFTER_OTHER_REQUESTS,
 			}),
 		}),
 		ecosystem: {
