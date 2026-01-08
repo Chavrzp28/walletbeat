@@ -429,6 +429,45 @@
 			</section>
 		</header>
 
+		{#if wallet.news && wallet.news.length > 0}
+			<hr />
+
+			<section id="news" class="attribute">
+				<header
+					data-sticky="block"
+					data-row
+					data-scroll-item="inline-detached"
+				>
+					<a data-link="camouflaged" href="#news">
+						<h2>Security News</h2>
+					</a>
+				</header>
+
+				<div data-scroll-item="inline-detached padding-match-end" data-column>
+					<div class="attribute-accordions" data-column>
+						{#each wallet.news as newsItem}
+							<details data-card="secondary padding-0 radius-4" data-column="gap-0">
+								<summary>
+									<h4>{newsItem.title}</h4>
+									<div data-row="gap-2 wrap">
+										<span data-badge="small">{newsItem.type}</span>
+										<span data-badge="small">{newsItem.severity}</span>
+										<span data-badge="small">{newsItem.status}</span>
+									</div>
+								</summary>
+
+								<section>
+									<p>{newsItem.summary}</p>
+									<small>Published: {newsItem.publishedAt}</small>
+									<ReferenceLinks references={toFullyQualified(newsItem.ref)} />
+								</section>
+							</details>
+						{/each}
+					</div>
+				</div>
+			</section>
+		{/if}
+
 		{#if showStage}
 			{@const { stage, ladderEvaluation } = getWalletStageAndLadder(wallet)}
 
@@ -1352,6 +1391,12 @@
 
 	.platforms-label {
 		color: var(--accent);
+	}
+
+	#news {
+		> header {
+			padding-block: 1.2rem;
+		}
 	}
 
 	#stages {
