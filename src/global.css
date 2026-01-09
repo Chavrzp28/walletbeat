@@ -250,6 +250,20 @@ details {
 			transform: perspective(100px) rotateX(0deg);
 			transition-property: transform;
 		}
+
+		@container (inline-size < 42ch) {
+			&:has(> :only-child[data-row~="wrap"]){
+				justify-content: end;
+
+				> :only-child[data-row~="wrap"] {
+					display: contents;
+				}
+
+				&::after {
+					align-self: end;
+				}
+			}
+		}
 	}
 
 	&[open] > summary {
