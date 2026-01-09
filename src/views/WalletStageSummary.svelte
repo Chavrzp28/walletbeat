@@ -196,9 +196,9 @@
 					{@const attributeName = attribute?.displayName ?? attributeId}
 					{@const attributeLink = attributeId ? `/${wallet.metadata.id}/#${slugifyCamelCase(attributeId)}` : null}
 
-					<li data-row="start gap-2">
+					<li data-row="start gap-2 wrap">
 						<span style="color: {getRatingColor(evaluation.rating)}">{getRatingIcon(evaluation.rating)}</span>
-						<span>
+						<span data-row-item="flexible">
 							{#if attribute}
 								<span>{@html attribute.icon}</span>
 							{/if}

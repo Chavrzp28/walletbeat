@@ -317,7 +317,10 @@
 
 				</div>
 
-				<div data-row="gap-2">
+				<div
+					data-row-item="wrap-end"
+					data-row="gap-2"
+				>
 					{#if showStage}
 						{@const { stage, ladderEvaluation } = getWalletStageAndLadder(wallet)}
 						{#if stage !== null && ladderEvaluation !== null}
@@ -346,7 +349,7 @@
 				data-column="gap-6"
 			>
 				<div data-row="wrap">
-					<p>
+					<p data-row-item="flexible basis-3">
 						<Typography
 							content={wallet.metadata.blurb}
 							strings={{ WALLET_NAME: wallet.metadata.displayName }}
@@ -517,8 +520,15 @@
 				{/if}
 
 				<div class="attributes-overview-container">
-					<section class="attributes-overview" data-card="radius-8">
-						<div class="attributes-pie">
+					<section
+						class="attributes-overview"
+						data-card="radius-8"
+						data-row="wrap"
+					>
+						<div
+							class="attributes-pie"
+							data-row-item="wrap-center"
+						>
 							<Pie
 								layout={PieLayout.FullTop}
 								radius={120}
@@ -564,7 +574,11 @@
 							</Pie>
 						</div>
 
-						<div class="attributes-list" data-column="gap-3">
+						<div
+							class="attributes-list"
+							data-row-item="flexible"
+							data-column="gap-3"
+						>
 							<h3>Attribute Details:</h3>
 
 							<ul data-column="gap-2">
@@ -576,6 +590,7 @@
 											href={attributeUrl}
 											style:--accent={ratingToColor(evalAttr.evaluation.value.rating)}
 											data-card="secondary padding-3"
+											data-row="gap-2"
 											data-highlighted={highlightedAttributeId === attribute.id ? '' : undefined}
 											onmouseenter={() => {
 												highlightedAttributeId = attribute.id
@@ -584,7 +599,7 @@
 												highlightedAttributeId = null
 											}}
 										>
-											<span>{attribute.displayName}</span>
+											<span data-row-item="flexible">{attribute.displayName}</span>
 											<data
 												data-badge="small"
 												value={evalAttr.evaluation.value.rating}
@@ -653,84 +668,84 @@
 			data-column="gap-0"
 			open
 		>
-		<summary data-row>
-			<header data-row>
-				<div>
-					<div data-row="start gap-2">
-						<a data-link="camouflaged" href={`#${slugifyCamelCase(attribute.id)}`}>
-							<h3 data-icon={attribute.icon}>
-								{attribute.displayName}
-							</h3>
-						</a>
+			<summary data-row>
+				<header data-row="wrap">
+					<div data-row-item="flexible basis-2">
+						<div data-row="start gap-2 wrap">
+							<a data-link="camouflaged" href={`#${slugifyCamelCase(attribute.id)}`}>
+								<h3 data-icon={attribute.icon}>
+									{attribute.displayName}
+								</h3>
+							</a>
 
-						{#if true}
-							{@const attributeStages = getAttributeStages(attribute)}
-							{@const { ladderEvaluation } = getWalletStageAndLadder(wallet)}
-							{@const relevantStages = (() => {
-								if (!ladderEvaluation) {
-									return []
-								}
-								const ladderType = (() => {
-									for (const [type, evaluation] of Object.entries(wallet.ladders)) {
-										if (evaluation === ladderEvaluation) {
-											return type as WalletLadderType
-										}
+							{#if true}
+								{@const attributeStages = getAttributeStages(attribute)}
+								{@const { ladderEvaluation } = getWalletStageAndLadder(wallet)}
+								{@const relevantStages = (() => {
+									if (!ladderEvaluation) {
+										return []
 									}
-									return null
-								})()
-								if (!ladderType) {
-									return []
-								}
-								const stagesForLadder = attributeStages.find(s => s.ladderType === ladderType)
-								return stagesForLadder?.stageNumbers ?? []
-							})()}
-							{#if relevantStages.length > 0}
-								{@const stageNumber = relevantStages[0]}
-								{@const stage = ladderEvaluation?.ladder.stages[stageNumber]}
-								{#if stage && ladderEvaluation}
-									<Tooltip
-										buttonTriggerPlacement="behind"
-										hoverTriggerPlacement="around"
-									>
-										{#snippet children()}
-											<a
-												href={`#stage-${stageNumber}`}
-												data-link="camouflaged"
-												title={`This attribute is required for stage${relevantStages.length > 1 ? 's' : ''} ${relevantStages.join(', ')}`}
-											>
-												<div
-													data-badge="small"
-													style:--accent="var(--accent-color)"
-												>
-													<small>Stage {relevantStages.join(', ')}</small>
-												</div>
-											</a>
-										{/snippet}
-										{#snippet TooltipContent()}
-											<WalletStageSummary 
-												{wallet} 
-												stage={stage} 
-												{ladderEvaluation}
-												showNextStageCriteria={false}
-											/>
-										{/snippet}
-									</Tooltip>
-								{:else}
-									<a
-										href={`#stage-${stageNumber}`}
-										data-link="camouflaged"
-										title={`This attribute is required for stage${relevantStages.length > 1 ? 's' : ''} ${relevantStages.join(', ')}`}
-									>
-										<div
-											data-badge="small"
-											style:--accent="var(--accent-color)"
+									const ladderType = (() => {
+										for (const [type, evaluation] of Object.entries(wallet.ladders)) {
+											if (evaluation === ladderEvaluation) {
+												return type as WalletLadderType
+											}
+										}
+										return null
+									})()
+									if (!ladderType) {
+										return []
+									}
+									const stagesForLadder = attributeStages.find(s => s.ladderType === ladderType)
+									return stagesForLadder?.stageNumbers ?? []
+								})()}
+								{#if relevantStages.length > 0}
+									{@const stageNumber = relevantStages[0]}
+									{@const stage = ladderEvaluation?.ladder.stages[stageNumber]}
+									{#if stage && ladderEvaluation}
+										<Tooltip
+											buttonTriggerPlacement="behind"
+											hoverTriggerPlacement="around"
 										>
-											<small>Stage {relevantStages.join(', ')}</small>
-										</div>
-									</a>
+											{#snippet children()}
+												<a
+													href={`#stage-${stageNumber}`}
+													data-link="camouflaged"
+													title={`This attribute is required for stage${relevantStages.length > 1 ? 's' : ''} ${relevantStages.join(', ')}`}
+												>
+													<div
+														data-badge="small"
+														style:--accent="var(--accent-color)"
+													>
+														<small>Stage {relevantStages.join(', ')}</small>
+													</div>
+												</a>
+											{/snippet}
+											{#snippet TooltipContent()}
+												<WalletStageSummary 
+													{wallet} 
+													stage={stage} 
+													{ladderEvaluation}
+													showNextStageCriteria={false}
+												/>
+											{/snippet}
+										</Tooltip>
+									{:else}
+										<a
+											href={`#stage-${stageNumber}`}
+											data-link="camouflaged"
+											title={`This attribute is required for stage${relevantStages.length > 1 ? 's' : ''} ${relevantStages.join(', ')}`}
+										>
+											<div
+												data-badge="small"
+												style:--accent="var(--accent-color)"
+											>
+												<small>Stage {relevantStages.join(', ')}</small>
+											</div>
+										</a>
+									{/if}
 								{/if}
 							{/if}
-						{/if}
 
 							{#if 0 < relevantVariants.length && relevantVariants.length < Object.keys(wallet.variants).length}
 								<div
@@ -764,6 +779,7 @@
 					</div>
 
 					<data
+						data-row-item="wrap-end"
 						data-badge="medium"
 						value={evalAttr.evaluation.value.rating}
 					>{evalAttr.evaluation.value.rating}</data>
@@ -774,11 +790,15 @@
 				class="rating-display"
 				data-rating={evalAttr.evaluation.value.rating.toLowerCase()}
 				data-card
+				data-row="align-start"
 			>
 				<div class="rating-icon" data-row="center">
 					{ratingIcons[evalAttr.evaluation.value.rating as Rating]}
 				</div>
-				<div class="rating-content">
+				<div
+					class="rating-content"
+					data-row-item="flexible"
+				>
 					{#if isTypographicContent(evalAttr.evaluation.details)}
 						<Typography
 							content={evalAttr.evaluation.details}
@@ -1302,10 +1322,6 @@
 
 	.wallet-overview {
 		font-size: 0.9rem;
-
-		p {
-			flex: 1 1 0;
-		}
 	}
 
 	.platforms-label {
@@ -1425,26 +1441,13 @@
 	.attributes-overview {
 		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
-		display: grid;
-		grid-template-columns: auto 1fr;
-		gap: 1rem;
-		align-items: center;
-
 		transition-property: background-color;
 
 		@container not scroll-state(stuck: none) {
 			background-color: transparent;
 		}
 
-		@container (max-width: 600px) {
-			grid-template-columns: 1fr;
-			justify-items: center;
-		}
-
 		> .attributes-pie {
-			display: flex;
-			align-items: center;
-
 			font-size: 2.5em;
 		}
 
@@ -1474,10 +1477,6 @@
 				}
 
 				a {
-					display: grid;
-					grid-template-columns: auto 1fr auto;
-					gap: 0.5rem;
-					align-items: center;
 					padding: 0.5rem;
 					font-size: 0.875rem;
 
@@ -1724,8 +1723,6 @@
 			}
 
 			.rating-display {
-				grid-template-columns: auto 1fr;
-				gap: 1rem;
 				font-weight: 500;
 				background-color: color-mix(in srgb, var(--accent) 5%, var(--background-secondary));
 				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);

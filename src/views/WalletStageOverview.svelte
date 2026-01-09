@@ -109,31 +109,36 @@
 					style:--stage-background={isCurrent ? 'color-mix(in srgb, var(--accent) 10%, var(--background-primary))' : 'color-mix(in srgb, var(--accent) 5%, var(--background-primary))'}
 				>
 					<summary>
-						<div data-row>
-							<div data-row>
-								<a data-link="camouflaged" href={`#stage-${stageIndex}`}>
-									<data
-										data-badge="medium"
-										value={`STAGE_${stageIndex}`}
-										style:--accent={stageToColor(stageIndex, ladderDefinition?.stages.length ?? 3)}
-									>
-										<strong>
-											Stage {stageIndex}
-										</strong>
-									</data>
-								</a>
-
-								<span>
+						<div data-row="wrap wrap-first-last">
+							<a
+								data-link="camouflaged"
+								href={`#stage-${stageIndex}`}
+							>
+								<data
+									data-badge="medium"
+									value={`STAGE_${stageIndex}`}
+									style:--accent={stageToColor(stageIndex, ladderDefinition?.stages.length ?? 3)}
+								>
 									<strong>
-										{#if isTypographicContent(s.description)}
-											<Typography content={s.description} />
-										{:else}
-											{s.id}
-										{/if}
+										Stage {stageIndex}
 									</strong>
-								</span>
-							</div>
-							<div data-row="gap-2">
+								</data>
+							</a>
+
+							<span data-row-item="flexible basis-3">
+								<strong>
+									{#if isTypographicContent(s.description)}
+										<Typography content={s.description} />
+									{:else}
+										{s.id}
+									{/if}
+								</strong>
+							</span>
+
+							<div
+								data-row-item="wrap-end"
+								data-row="gap-2"
+							>
 								<span>{passedCount}/{totalCount}</span>
 								<span>{allPassed ? '✅' : passedCount > 0 ? '⚠️' : '❌'}</span>
 							</div>
@@ -151,15 +156,18 @@
 
 									<details data-card="padding-5 secondary radius-4">
 										<summary>
-											<div data-row="gap-2">
-												{#if isTypographicContent(criteriaGroup.description)}
-													<h4>
+											<div data-row="gap-2 wrap">
+												<h4 data-row-item="flexible basis-2">
+													{#if isTypographicContent(criteriaGroup.description)}
 														<Typography content={criteriaGroup.description} />
-													</h4>
-												{:else}
-													<h4>{criteriaGroup.id}</h4>
-												{/if}
-												<div data-row="gap-2">
+													{:else}
+														{criteriaGroup.id}
+													{/if}
+												</h4>
+												<div
+													data-row-item="wrap-end"
+													data-row="gap-2"
+												>
 													<span>{groupPassedCount}/{groupTotalCount}</span>
 													<span>{groupPassedCount === groupTotalCount ? '✅' : groupPassedCount > 0 ? '⚠️' : '❌'}</span>
 												</div>
@@ -199,7 +207,7 @@
 
 														<li data-row="gap-2 start">
 															<span style="color: {ratingColor}">{ratingIcon}</span>
-															<span>
+															<span data-row-item="flexible">
 																{#if attribute}
 																	<span>{@html attribute.icon}</span>
 																{/if}
