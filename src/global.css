@@ -269,7 +269,7 @@ details {
 			padding: var(--card-padding);
 		}
 
-		> summary ~ * {
+		> summary + :last-child {
 			padding: var(--card-padding);
 			padding-top: 0;
 		}
