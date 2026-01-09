@@ -493,6 +493,16 @@ span svg {
 		justify-content: end;
 	}
 
+	&[data-row~='align-start'] {
+		align-items: start;
+	}
+	&[data-row~='align-center'] {
+		align-items: center;
+	}
+	&[data-row~='align-end'] {
+		align-items: end;
+	}
+
 	&[data-row~='gap-0'] {
 		gap: 0em;
 	}
