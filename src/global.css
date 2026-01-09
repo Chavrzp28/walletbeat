@@ -1031,10 +1031,6 @@ summary {
 					padding-block-end: min(var(--scrollItem-paddingInlineMatch), var(--scrollItem-inlineDetached-maxPaddingMatchEnd));
 				}
 
-				> :only-child {
-					width: max-content;
-				}
-
 				[data-scroll-item~='inline-detached'] {
 					inline-size: auto;
 					max-inline-size: calc(100% + var(--scrollItem-paddingInlineStart) + var(--scrollItem-paddingInlineEnd));
@@ -1077,6 +1073,14 @@ summary {
 			}
 			&[data-scroll-item~='snap-block-end'] {
 				scroll-snap-align: end;
+			}
+
+			&[data-scroll-item~='block-size-max'] {
+				block-size: max-content;
+			}
+
+			&[data-scroll-item~='inline-size-max'] {
+				inline-size: max-content;
 			}
 		}
 	}
