@@ -284,7 +284,10 @@
 			data-scroll-item="inline-detached"
 			data-scroll-container="inline"
 		>
-			<div data-row>
+			<div
+				data-scroll-item="inline-size-max"
+				data-row
+			>
 				<Filters
 					items={wallets}
 					filterGroups={
