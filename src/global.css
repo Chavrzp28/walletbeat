@@ -225,13 +225,12 @@ details {
 		transform: perspective(1000px) rotateX(-1deg);
 	}
 
-	> summary {
+	> :where(summary) {
 		cursor: zoom-in;
 
-		display: grid;
-		grid-template-columns: 1fr auto;
-		align-items: center;
-		gap: 0.5rem;
+		> :only-child {
+			flex: 1;
+		}
 
 		&::-webkit-details-marker {
 			display: none;
@@ -242,10 +241,10 @@ details {
 
 			flex-shrink: 0;
 			width: 0.75em;
-			height: 0.75em;
+			height: 1lh;
 
 			background-color: currentColor;
-			mask: var(--icon-chevron) no-repeat;
+			mask: var(--icon-chevron) no-repeat center;
 			opacity: 0.66;
 
 			transform: perspective(100px) rotateX(0deg);
@@ -465,7 +464,8 @@ span svg {
 }
 
 [data-row],
-[data-badge] {
+[data-badge],
+summary {
 	display: inline flex;
 	justify-content: space-between;
 	align-items: center;
