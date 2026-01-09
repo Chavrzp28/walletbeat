@@ -471,16 +471,9 @@ span svg {
 	align-items: center;
 	gap: 1em;
 
-	&[data-row~='wrap'] {
+	&[data-row~='wrap'],
+	&:where(summary) {
 		flex-wrap: wrap;
-
-		&:not(
-			[data-row~='start'],
-			[data-row~='center'],
-			[data-row~='end']
-		) > :nth-child(2):last-child {
-			margin-inline-start: auto;
-		}
 	}
 
 	&[data-row~='start'] {
@@ -548,13 +541,15 @@ span svg {
 		flex-basis: 40ch;
 	}
 
-	> [data-row-item~="wrap-start"] {
+	> [data-row-item~="wrap-start"],
+	&[data-row~="wrap-first-last"] > :first-child {
 		margin-inline-end: auto;
 	}
 	> [data-row-item~="wrap-center"] {
 		margin-inline: auto;
 	}
-	> [data-row-item~="wrap-end"] {
+	> [data-row-item~="wrap-end"],
+	&[data-row~="wrap-first-last"] > :last-child {
 		margin-inline-start: auto;
 	}
 }
