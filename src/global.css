@@ -527,6 +527,36 @@ span svg {
 	&[data-row~='gap-8'] {
 		gap: 2em;
 	}
+
+	> [data-row-item~="flexible"] {
+		flex: 1;
+	}
+
+	> [data-row-item~="basis-1"] {
+		flex-basis: 16ch;
+	}
+	> [data-row-item~="basis-2"] {
+		flex-basis: 22ch;
+	}
+	> [data-row-item~="basis-3"] {
+		flex-basis: 28ch;
+	}
+	> [data-row-item~="basis-4"] {
+		flex-basis: 34ch;
+	}
+	> [data-row-item~="basis-5"] {
+		flex-basis: 40ch;
+	}
+
+	> [data-row-item~="wrap-start"] {
+		margin-inline-end: auto;
+	}
+	> [data-row-item~="wrap-center"] {
+		margin-inline: auto;
+	}
+	> [data-row-item~="wrap-end"] {
+		margin-inline-start: auto;
+	}
 }
 
 [data-card] {
