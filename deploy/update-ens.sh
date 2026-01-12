@@ -3,6 +3,10 @@
 set -euo pipefail
 set +x
 
+if [[ -n "${DEBUG:-}" ]]; then
+	set -x
+fi
+
 if [[ -z "$ENS_DOMAIN" ]]; then
 	echo 'Missing ENS_DOMAIN' >&2
 	exit 1
@@ -17,4 +21,9 @@ if [[ -z "${OMNIPIN_PK:-}" ]]; then
 fi
 
 DIRECTORY_CID="$(pnpm --silent ipfs add -Qr --only-hash --cid-version 1 "$DEPLOY_DIRECTORY")"
-pnpm helios:wrap pnpm omnipin ens --rpc-url='$HELIOS_RPC_ENDPOINT' "$DIRECTORY_CID" "$ENS_DOMAIN"
+SUBCOMMAND="${BLUMEN_OR_OMNIPIN:-blumen}"
+if [[ "${SKIP_HELIOS:-false}" == true ]]; then
+	exec pnpm "$SUBCOMMAND" ens "$DIRECTORY_CID" "$ENS_DOMAIN"
+else
+	exec pnpm helios:wrap pnpm "$SUBCOMMAND" ens --rpc-url='$HELIOS_RPC_ENDPOINT' "$DIRECTORY_CID" "$ENS_DOMAIN"
+fi

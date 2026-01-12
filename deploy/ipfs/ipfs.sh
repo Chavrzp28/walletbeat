@@ -5,6 +5,10 @@
 set -euo pipefail
 set +x
 
+if [[ -n "${DEBUG:-}" ]]; then
+	set -x
+fi
+
 if ! hash wget; then
 	echo 'wget not installed.' >&2
 	exit 1
