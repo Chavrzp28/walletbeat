@@ -20,7 +20,7 @@ if [[ -z "${OMNIPIN_PK:-}" ]]; then
 	exit 1
 fi
 
-DIRECTORY_CID="$(pnpm --silent ipfs add -Qr --only-hash --cid-version 1 "$DEPLOY_DIRECTORY")"
+DIRECTORY_CID="$(pnpm omnipin pack --only-hash "$DEPLOY_DIRECTORY")"
 SUBCOMMAND="${BLUMEN_OR_OMNIPIN:-blumen}"
 if [[ "${SKIP_HELIOS:-false}" == true ]]; then
 	exec pnpm "$SUBCOMMAND" ens "$DIRECTORY_CID" "$ENS_DOMAIN"

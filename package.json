@@ -24,7 +24,6 @@
 		"lint": "pnpm run check:syntax --write && pnpm run check:lint --fix && pnpm run check:spelling:reorder && pnpm run check:treasury:markdown && cspell lint .",
 		"preview": "pnpm run astro preview",
 		"fix": "pnpm run lint",
-		"ipfs": "deploy/ipfs/ipfs.sh",
 		"helios": "deploy/helios/helios.sh",
 		"helios:wrap": "deploy/helios/helios-wrap.sh"
 	},
