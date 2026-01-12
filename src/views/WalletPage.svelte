@@ -6,6 +6,7 @@
 		type AttributeGroup,
 		type EvaluatedAttribute,
 		type EvaluatedGroup,
+		type ExampleRating,
 		Rating,
 		ratingIcons,
 		ratingToColor,
@@ -786,18 +787,14 @@
 				</header>
 			</summary>
 
-			<div
-				class="rating-display"
+			<ul
+				class="attribute-rating-details"
 				data-rating={evalAttr.evaluation.value.rating.toLowerCase()}
-				data-card
-				data-row="align-start"
+				data-card="padding-5"
 			>
-				<div class="rating-icon" data-row="center">
-					{ratingIcons[evalAttr.evaluation.value.rating as Rating]}
-				</div>
-				<div
-					class="rating-content"
-					data-row-item="flexible"
+				<li
+					data-list-item="gap-3"
+					data-list-item-marker={ratingIcons[evalAttr.evaluation.value.rating as Rating]}
 				>
 					{#if isTypographicContent(evalAttr.evaluation.details)}
 						<Typography
@@ -809,25 +806,25 @@
 						{@const componentName = evalAttr.evaluation.details.component.component}
 						{@const componentProps = evalAttr.evaluation.details.component.componentProps}
 						{@const value = evalAttr.evaluation.value}
-						{@const references = toFullyQualified(evalAttr.evaluation.references || [])}
+						{@const references = evalAttr.evaluation.references && toFullyQualified(evalAttr.evaluation.references)}
 
 						<div data-column>
 							{#if componentName === 'AddressCorrelationDetails'}
-								<AddressCorrelationDetails {...componentProps} {wallet} {value} {references} />
+								<AddressCorrelationDetails {...componentProps} {wallet} {value} />
 							{:else if componentName === 'ChainVerificationDetails'}
-								<ChainVerificationDetails {...componentProps} {wallet} {value} {references} />
+								<ChainVerificationDetails {...componentProps} {wallet} {value} refs={references} />
 							{:else if componentName === 'ScamAlertDetails'}
-								<ScamAlertDetails {...componentProps} {wallet} {value} {references} />
+								<ScamAlertDetails {...componentProps} {wallet} {value} />
 							{:else if componentName === 'SecurityAuditsDetails'}
-								<SecurityAuditsDetails {...componentProps} {wallet} {value} {references} />
+								<SecurityAuditsDetails {...componentProps} {wallet} {value} />
 							{:else if componentName === 'TransactionInclusionDetails'}
-								<TransactionInclusionDetails {...componentProps} {wallet} {value} {references} />
+								<TransactionInclusionDetails {...componentProps} {wallet} {value} />
 							{:else if componentName === 'FundingDetails'}
-								<FundingDetails {...componentProps} {wallet} {value} {references} />
+								<FundingDetails {...componentProps} {wallet} {value} />
 							{:else if componentName === 'AccountRecoveryDetails'}
-								<AccountRecoveryDetails {...componentProps} {wallet} {value} {references} />
+								<AccountRecoveryDetails {...componentProps} {wallet} {value} />
 							{:else if componentName === 'UnratedAttribute'}
-								<UnratedAttribute {...componentProps} {wallet} {value} {references} />
+								<UnratedAttribute {...componentProps} {wallet} {value} />
 							{/if}
 						</div>
 
@@ -841,8 +838,8 @@
 							/>
 						</div>
 					{/if}
-				</div>
-			</div>
+				</li>
+			</ul>
 
 			{#if variantSpecificCaption}
 				<div class="variant-caption">
@@ -851,7 +848,10 @@
 			{/if}
 
 			{#if evalAttr.evaluation.impact}
-				<div class="impact">
+				<div
+					class="impact"
+					data-column="gap-6"
+				>
 					<Typography
 						content={evalAttr.evaluation.impact}
 						strings={{ WALLET_NAME: wallet.metadata.displayName }}
@@ -859,7 +859,25 @@
 				</div>
 			{/if}
 
-			<ReferenceLinks references={toFullyQualified(evalAttr.evaluation.references || [])} />
+			{#if (
+				!isTypographicContent(evalAttr.evaluation.details)
+				&& evalAttr.evaluation.references?.length
+				&& !(
+					// Custom components that render their own reference links
+					[
+						'ChainVerificationDetails',
+						'FundingDetails',
+						'ScamAlertDetails',
+						'SecurityAuditsDetails',
+					]
+						.includes(evalAttr.evaluation.details.component.component)
+				)
+			)}
+				<ReferenceLinks
+					references={toFullyQualified(evalAttr.evaluation.references)}
+					cardBackground="secondary"
+				/>
+			{/if}
 
 			{#if attribute.id === 'hardwareWalletSupport' && evalAttr.evaluation.value && typeof evalAttr.evaluation.value === 'object' && 'supportedHardwareWallets' in evalAttr.evaluation.value && Array.isArray(evalAttr.evaluation.value.supportedHardwareWallets) && evalAttr.evaluation.value.supportedHardwareWallets.length > 0}
 				{@const supportedBrands = evalAttr.evaluation.value.supportedHardwareWallets}
@@ -894,7 +912,7 @@
 						</h4>
 					</summary>
 
-					<section>
+					<section data-column="gap-6">
 						{#if attribute.why}
 							<Typography
 								content={attribute.why}
@@ -912,7 +930,10 @@
 						</h4>
 					</summary>
 
-					<section class="methodology" data-column="gap-6">
+					<section
+						class="attribute-rating-methodology"
+						data-column="gap-6"
+					>
 						{#if attribute.methodology}
 							<Typography content={attribute.methodology} />
 						{:else}
@@ -920,80 +941,73 @@
 						{/if}
 
 						{#if attribute.ratingScale}
-							<hr />
-
 							{#if attribute.ratingScale.display === 'simple'}
-								<div class="simple-scale" data-card="radius-4">
-									<Typography content={attribute.ratingScale.content} />
-								</div>
+								<aside
+									data-card="radius-4"
+								>
+									<Typography
+										content={attribute.ratingScale.content}
+									/>
+								</aside>
 							{:else}
-								<div class="example-scale" data-card="radius-4">
+								<aside
+									data-card="radius-4"
+									data-column="gap-5"
+								>
 									{#if attribute.ratingScale.exhaustive}
 										<h5>A few examples:</h5>
 									{/if}
 
-									<ul data-column>
-										{#if attribute.ratingScale.pass}
-											<li data-icon={ratingIcons[Rating.PASS]}>
-												<Typography
-													content={{
-														contentType: ContentType.MARKDOWN,
-														markdown: [
-															'A wallet would get a **passing** rating if...',
-															[attribute.ratingScale.pass]
-																.flat()
-																.map(
-																	example =>
-																		`* ${(example.description.contentType === ContentType.MARKDOWN ? example.description.markdown : example.description.text).trim()}`,
-																)
-																.join('\n'),
-														].join('\n\n'),
-													}}
-												/>
-											</li>
-										{/if}
+									<ul data-list="gap-4">
+										{#each (
+											[
+												{
+													rating: Rating.PASS,
+													label: 'passing',
+													exampleRatings: attribute.ratingScale.pass,
+												},
+												{
+													rating: Rating.PARTIAL,
+													label: 'partial',
+													exampleRatings: attribute.ratingScale.partial,
+												},
+												{
+													rating: Rating.FAIL,
+													label: 'failing',
+													exampleRatings: attribute.ratingScale.fail,
+												},
+											]
+												.filter(({ exampleRatings }) => !!exampleRatings)
+												.map(({ rating, label, exampleRatings }) => ({
+													rating,
+													label,
+													exampleRatings: [exampleRatings].flat() as ExampleRating<any>[],
+												}))
+												.filter(({ exampleRatings }) => exampleRatings.length > 0)
+										) as { rating, label, exampleRatings }}
+											<li
+												data-list-item="gap-3"
+												data-list-item-marker={ratingIcons[rating]}
+											>
+												<p>A wallet would get a <strong>{label}</strong> rating if...</p>
 
-										{#if attribute.ratingScale.partial}
-											<li data-icon={ratingIcons[Rating.PARTIAL]}>
-												<Typography
-													content={{
-														contentType: ContentType.MARKDOWN,
-														markdown: [
-															'A wallet would get a **partial** rating if...',
-															[attribute.ratingScale.partial]
-																.flat()
-																.map(
-																	example =>
-																		`* ${(example.description.contentType === ContentType.MARKDOWN ? example.description.markdown : example.description.text).trim()}`,
-																)
-																.join('\n'),
-														].join('\n\n'),
-													}}
-												/>
+												<ul>
+													{#each exampleRatings as exampleRating}
+														<li>
+															{#if exampleRating.description.contentType === ContentType.MARKDOWN}
+																<Typography
+																	content={exampleRating.description}
+																/>
+															{:else}
+																{exampleRating.description.text}
+															{/if}
+														</li>
+													{/each}
+												</ul>
 											</li>
-										{/if}
-
-										{#if attribute.ratingScale.fail}
-											<li data-icon={ratingIcons[Rating.FAIL]}>
-												<Typography
-													content={{
-														contentType: ContentType.MARKDOWN,
-														markdown: [
-															'A wallet would get a **failing** rating if...',
-															[attribute.ratingScale.fail]
-																.flat()
-																.map(
-																	example =>
-																		`* ${(example.description.contentType === ContentType.MARKDOWN ? example.description.markdown : example.description.text).trim()}`,
-																)
-																.join('\n'),
-														].join('\n\n'),
-													}}
-												/>
-											</li>
-										{/if}
+										{/each}
 									</ul>
-								</div>
+								</aside>
 							{/if}
 						{/if}
 					</section>
@@ -1722,24 +1736,19 @@
 				color: var(--text-secondary);
 			}
 
-			.rating-display {
-				font-weight: 500;
+			.attribute-rating-details {
+				&:is(ul) {
+					--list-markerGap: 1em;
+				}
+
 				background-color: color-mix(in srgb, var(--accent) 5%, var(--background-secondary));
 				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
+				color: var(--text-secondary);
+				font-weight: 500;
+
 				&[data-rating='exempt'] {
 					opacity: 0.7;
-				}
-
-				.rating-icon {
-					width: 1.5rem;
-					height: 1.5rem;
-					font-size: 1.2rem;
-					color: var(--accent);
-				}
-
-				.rating-content > div {
-					color: var(--text-secondary);
 				}
 			}
 
@@ -1752,8 +1761,6 @@
 
 			.impact {
 				color: var(--text-secondary);
-				font-style: italic;
-				opacity: 0.7;
 			}
 		}
 	}
@@ -1785,22 +1792,10 @@
 		opacity: 0.7;
 	}
 
-	.methodology {
+	.attribute-rating-methodology {
 		h5 {
 			font-size: 1rem;
 			font-weight: 600;
-		}
-
-		ul {
-			padding-inline-start: 1rem;
-
-			> li {
-				padding-inline-start: 0.5rem;
-
-				&::marker {
-					content: attr(data-icon);
-				}
-			}
 		}
 	}
 
