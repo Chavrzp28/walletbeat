@@ -193,7 +193,7 @@ type PrivacyValues = Dict<{
 /** Privacy attributes. */
 export const privacyAttributeGroup: AttributeGroup<PrivacyValues> = {
 	id: 'privacy',
-	icon: '\u{1f575}', // Detective
+	icon: '\u{1f60e}', // Face with sunglasses
 	displayName: 'Privacy',
 	perWalletQuestion: sentence<{ WALLET_NAME: string }>(
 		'How well does {{WALLET_NAME}} protect your privacy?',
@@ -256,7 +256,7 @@ type TransparencyValues = Dict<{
 /** Transparency attributes. */
 export const transparencyAttributeGroup: AttributeGroup<TransparencyValues> = {
 	id: 'transparency',
-	icon: '\u{1f50d}', // Looking glass
+	icon: '\u{1f575}', // Detective
 	displayName: 'Transparency',
 	perWalletQuestion: sentence<{ WALLET_NAME: string }>(
 		"How transparent and sustainable is {{WALLET_NAME}}'s development model?",
@@ -292,7 +292,7 @@ type EcosystemValues = Dict<{
 /** Ecosystem attributes. */
 export const ecosystemAttributeGroup: AttributeGroup<EcosystemValues> = {
 	id: 'ecosystem',
-	icon: '🌐',
+	icon: '🌳',
 	displayName: 'Ecosystem',
 	perWalletQuestion: sentence<{ WALLET_NAME: string }>(
 		'How well does {{WALLET_NAME}} align with the ecosystem?',

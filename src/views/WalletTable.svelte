@@ -407,7 +407,7 @@
 									},
 									{
 										id: 'accountType-safe',
-										label: '# Safe',
+										label: 'Safe',
 										icon: KeyIcon,
 										filterFunction: wallet => {
 											const accountTypes = walletSupportedAccountTypes(wallet, 'ALL_VARIANTS')
@@ -733,7 +733,7 @@
 															eipTooltipContent: eip7702,
 														},
 														AccountType.safe in accountTypes && {
-															label: '# Safe',
+															label: 'Safe',
 															filterId: 'accountType-safe',
 															type: 'safe',
 														},
@@ -1018,10 +1018,10 @@
 													{stage.label}
 												</text>
 											{:else}
-												<text>❓</text>
+												<text>❔</text>
 											{/if}
 										{:else}
-											<text>❓</text>
+											<text>❔</text>
 										{/if}
 									{:else if summaryVisualization === SummaryVisualization.Score}
 										<text>
@@ -1041,7 +1041,7 @@
 															''
 													}`
 												:
-													'❓'
+													'❔'
 											}
 										</text>
 									{:else if summaryVisualization === SummaryVisualization.ScoreDot}
@@ -1252,7 +1252,7 @@
 															(groupScore.score * 100).toFixed(0)
 													}${groupScore.hasUnratedComponent ? '*' : ''}`
 												:
-													'❓'
+													'❔'
 											}
 										</text>
 									{:else if summaryVisualization === SummaryVisualization.ScoreDot}
