@@ -49,10 +49,7 @@ export const zeus: SoftwareWallet = {
 	features: {
 		accountSupport: {
 			defaultAccountType: AccountType.eoa,
-			eip7702: supported({
-				ref: refTodo,
-				contract: 'UNKNOWN',
-			}),
+			eip7702: notSupported,
 			eoa: supported({
 				ref: [
 					{
@@ -120,7 +117,7 @@ export const zeus: SoftwareWallet = {
 			ref: [
 				{
 					explanation:
-						'Zeus uses public RPC endpoints by default but allows users to provide custom endpoints and disable or delete what they dont want.',
+						"Zeus uses public RPC endpoints by default but allows users to provide custom endpoints and disable or delete what they don't want.",
 					url: 'https://github.com/greekfetacheese/zeus#features',
 				},
 			],
