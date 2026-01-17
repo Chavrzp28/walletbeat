@@ -18,7 +18,12 @@ import {
 	TransactionSubmissionL2Support,
 	TransactionSubmissionL2Type,
 } from '@/schema/features/self-sovereignty/transaction-submission'
-import { featureSupported, notSupported, supported } from '@/schema/features/support'
+import {
+	featureSupported,
+	notSupported,
+	notSupportedWithRef,
+	supported,
+} from '@/schema/features/support'
 import {
 	comprehensiveFeesShownByDefault,
 	FeeDisplayLevel,
@@ -235,7 +240,7 @@ export const zeus: SoftwareWallet = {
 			passkeyVerification: notSupported,
 			publicSecurityAudits: null,
 			scamAlerts: {
-				contractTransactionWarning: supported({
+				contractTransactionWarning: notSupportedWithRef({
 					ref: [
 						{
 							explanation:
@@ -244,12 +249,6 @@ export const zeus: SoftwareWallet = {
 							url: 'https://github.com/greekfetacheese/zeus/blob/master/src/gui/ui/tx_window.rs#L246C1-L247C1',
 						},
 					],
-					contractRegistry: false,
-					leaksContractAddress: false,
-					leaksUserAddress: false,
-					leaksUserIp: false,
-					previousContractInteractionWarning: false,
-					recentContractWarning: false,
 				}),
 				scamUrlWarning: notSupported,
 				sendTransactionWarning: supported({
