@@ -85,6 +85,16 @@ const knownValidUrls: KnownValidUrl[] = [
 		retrieved: '2025-10-31',
 	},
 	{
+		url: 'https://github.com/Elytro-eth/Elytro-wallet-contract/blob/develop/audits/SlowMist%20Audit%20Report%20-%20Elytro%20Iterative%20Audit%20-%20v1.1.1.pdf',
+		urlHash: '92f16f81bc2d4c021645ed2374ea7e962bdf120f',
+		retrieved: '2026-01-21',
+	},
+	{
+		url: 'https://github.com/Elytro-eth/Elytro-wallet-contract/blob/develop/audits/SlowMist%20Audit%20Report%20-%20SoulWallet.pdf',
+		urlHash: '1baad6225085b74a18803b2b810fcaa4c9834bb1',
+		retrieved: '2026-01-21',
+	},
+	{
 		url: 'https://family.co',
 		urlHash: '312d2833bbee6edd4987c61dd266d324c38cbf33',
 		retrieved: '2025-10-31',
