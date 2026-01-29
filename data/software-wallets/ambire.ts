@@ -29,7 +29,11 @@ import {
 	KeyGenerationLocation,
 	MultiPartyKeyReconstruction,
 } from '@/schema/features/security/keys-handling'
-import type { ScamUrlWarning } from '@/schema/features/security/scam-alerts'
+import type {
+	ContractTransactionWarning,
+	ScamUrlWarning,
+	SendTransactionWarning,
+} from '@/schema/features/security/scam-alerts'
 import type { SecurityAudit } from '@/schema/features/security/security-audits'
 import {
 	DataDisplayOptions,
@@ -149,6 +153,29 @@ const dataLeakReferences: Record<string, References> = {
 		},
 	],
 }
+
+const scamAlertsAndSendTxWarningRefs: WithRef<{}>['ref'] = [
+	{
+		explanation:
+			'When interacting with new address, the extension fetches info about that address from an external Ambire API.',
+		lastRetrieved: '2026-01-29',
+		urls: [
+			{
+				label: 'Implementation',
+				url: 'https://github.com/AmbireTech/ambire-common/blob/main/src/controllers/phishing/phishing.ts',
+			},
+		],
+	},
+	{
+		explanation:
+			'When attempting to send tokens via the built-in interface, we display warning based on the time since last transfer.',
+		lastRetrieved: '2026-01-29',
+		url: {
+			label: 'implementation',
+			url: 'https://github.com/AmbireTech/ambire-common/blob/389365fa505b4a32ac378bdf64d59752160ae8eb/src/services/validations/validate.ts#L122-L133',
+		},
+	},
+]
 
 export const ambire: SoftwareWallet = {
 	metadata: {
@@ -507,7 +534,15 @@ export const ambire: SoftwareWallet = {
 			passkeyVerification: notSupported,
 			publicSecurityAudits: v2Audits,
 			scamAlerts: {
-				contractTransactionWarning: notSupported,
+				contractTransactionWarning: supported<WithRef<ContractTransactionWarning>>({
+					ref: scamAlertsAndSendTxWarningRefs,
+					previousContractInteractionWarning: true,
+					recentContractWarning: false,
+					contractRegistry: true,
+					leaksContractAddress: true,
+					leaksUserAddress: false,
+					leaksUserIp: true,
+				}),
 				scamUrlWarning: supported<ScamUrlWarning>({
 					ref: {
 						explanation:
@@ -524,7 +559,14 @@ export const ambire: SoftwareWallet = {
 					leaksUserAddress: false,
 					leaksVisitedUrl: 'NO',
 				}),
-				sendTransactionWarning: notSupported,
+				sendTransactionWarning: supported<SendTransactionWarning>({
+					ref: scamAlertsAndSendTxWarningRefs,
+					userWhitelist: false, // address book is no sufficient in functionality for this flag
+					newRecipientWarning: true,
+					leaksRecipient: true,
+					leaksUserAddress: false,
+					leaksUserIp: true,
+				}),
 			},
 			transactionLegibility: {
 				ref: refTodo,
