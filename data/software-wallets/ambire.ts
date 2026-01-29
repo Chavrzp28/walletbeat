@@ -296,17 +296,12 @@ export const ambire: SoftwareWallet = {
 		},
 		chainConfigurability: supported<WithRef<ChainConfigurability>>({
 			ref: {
-				explanation: "Ambire executes generic RPC requests to get user's balance and ENS.",
-				label: 'List of RPCs Ambire uses for default chains',
-				url: [
-					'https://github.com/AmbireTech/ambire-common/blob/main/src/consts/networks.ts',
-					'https://github.com/AmbireTech/ambire-common/blob/main/src/services/ensDomains/ensDomains.ts',
-					'https://github.com/AmbireTech/ambire-common/blob/main/src/libs/portfolio/getOnchainBalances.ts',
-				],
+				explanation: 'Ambire allows the user to chose an RPC before any RPC requests are made.',
+				url: 'https://github.com/AmbireTech/extension/blob/3c6dd32a9e425c9efe89ed1cc7ff33ef422b40d8/src/web/modules/auth/screens/GetStartedScreen/GetStartedScreen.tsx#L115-L126',
 			},
 			customChainRpcEndpoint: featureSupported,
 			l1: supported({
-				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_AFTER_OTHER_REQUESTS,
+				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
 				withNoConnectivityExceptL1RPCEndpoint: {
 					accountCreation: featureSupported,
 					accountImport: featureSupported,
@@ -316,7 +311,7 @@ export const ambire: SoftwareWallet = {
 				},
 			}),
 			nonL1: supported({
-				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_AFTER_OTHER_REQUESTS,
+				rpcEndpointConfiguration: RpcEndpointConfiguration.YES_BEFORE_ANY_REQUEST,
 			}),
 		}),
 		ecosystem: {
