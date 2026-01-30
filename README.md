@@ -1,4 +1,3 @@
-
 # World ID Verification Platform
 
 A bilingual (English/Spanish) platform that helps users verify their humanity with World ID and access Worldcoin benefits.
