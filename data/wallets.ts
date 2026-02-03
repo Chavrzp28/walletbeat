@@ -1,4 +1,4 @@
-import { type BaseWallet, type RatedWallet, rateWallet } from '@/schema/wallet'
+import { type BaseWallet, type RatedWallet, rateWallet, type WalletMetadata } from '@/schema/wallet'
 import { WalletType } from '@/schema/wallet-types'
 
 import { unratedEmbeddedWallet } from './embedded-wallets'
@@ -53,4 +53,13 @@ export function representativeWalletForType(walletType: WalletType): RatedWallet
 		case WalletType.EMBEDDED:
 			return unratedEmbeddedWallet
 	}
+}
+
+/**
+ * Get wallet metadata by ID, or undefined if not found.
+ */
+export function getWalletMetadataById(id: string): WalletMetadata | undefined {
+	const wallet = Object.values(allWallets).find(w => w.metadata.id === id)
+
+	return wallet?.metadata
 }
