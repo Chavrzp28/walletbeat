@@ -564,10 +564,16 @@ export const ambire: SoftwareWallet = {
 				}),
 			},
 			transactionLegibility: {
-				ref: refTodo,
+				ref: {
+					url: 'https://github.com/AmbireTech/extension/blob/main/src/web/modules/sign-account-op/components/TransactionSummary/TransactionSummary.tsx',
+					label: 'Implementation',
+					explanation:
+						'Ambire displays the calldata in a dropdown under the transactioin visualisation as a selectable text that can be copied to the clicpboard.',
+					lastRetrieved: '2026-02-06',
+				},
 				calldataDisplay: {
-					copyHexToClipboard: false,
-					formatted: false,
+					copyHexToClipboard: true,
+					formatted: true,
 					rawHex: true,
 				},
 				messageSigningLegibility: {
