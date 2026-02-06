@@ -546,8 +546,8 @@ export const ambire: SoftwareWallet = {
 				contractTransactionWarning: supported<WithRef<ContractTransactionWarning>>({
 					ref: scamAlertsAndSendTxWarningRefs,
 					previousContractInteractionWarning: true,
-					recentContractWarning: false,
 					contractRegistry: true,
+					recentContractWarning: false,
 					leaksContractAddress: true,
 					leaksUserAddress: false,
 					leaksUserIp: true,
@@ -570,19 +570,19 @@ export const ambire: SoftwareWallet = {
 				}),
 				sendTransactionWarning: supported<SendTransactionWarning>({
 					ref: scamAlertsAndSendTxWarningRefs,
-					userWhitelist: false, // address book is no sufficient in functionality for this flag
-					newRecipientWarning: true,
 					leaksRecipient: true,
+					newRecipientWarning: true,
+					userWhitelist: false, // address book is no sufficient in functionality for this flag
 					leaksUserAddress: false,
 					leaksUserIp: true,
 				}),
 			},
 			transactionLegibility: {
 				ref: {
-					url: 'https://github.com/AmbireTech/extension/blob/main/src/web/modules/sign-account-op/components/TransactionSummary/TransactionSummary.tsx',
-					label: 'Implementation',
 					explanation:
 						'Ambire displays the calldata in a dropdown under the transactioin visualisation as a selectable text that can be copied to the clicpboard.',
+					label: 'Implementation',
+					url: 'https://github.com/AmbireTech/extension/blob/main/src/web/modules/sign-account-op/components/TransactionSummary/TransactionSummary.tsx',
 					lastRetrieved: '2026-02-06',
 				},
 				calldataDisplay: {
