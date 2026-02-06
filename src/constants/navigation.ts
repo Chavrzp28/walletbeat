@@ -15,6 +15,7 @@ import ChartBarIcon from 'lucide-static/icons/chart-bar.svg?raw'
 import ChartPieIcon from 'lucide-static/icons/chart-pie.svg?raw'
 import HelpCircleIcon from 'lucide-static/icons/circle-help.svg?raw'
 import CpuIcon from 'lucide-static/icons/cpu.svg?raw'
+import FlaskConical from 'lucide-static/icons/flask-conical.svg?raw'
 import GithubIcon from 'lucide-static/icons/github.svg?raw'
 import KeyIcon from 'lucide-static/icons/key.svg?raw'
 import MessageCircleIcon from 'lucide-static/icons/message-circle-heart.svg?raw'
@@ -64,6 +65,12 @@ export const navigationRepository = {
 	href: 'https://github.com/walletbeat/walletbeat',
 } as const satisfies NavigationItem
 
+export const navigationTesting = {
+	id: 'testing-page',
+	icon: FlaskConical,
+	title: 'Test your wallet',
+	href: '/test',
+} as const satisfies NavigationItem
 export const navigationFarcasterChannel = {
 	id: 'farcaster-channel',
 	icon: MessageCircleIcon,
@@ -186,5 +193,6 @@ export const defaultNavigationItems = [
 	navigationAbout,
 	navigationFaq,
 	navigationRepository,
+	navigationTesting,
 	navigationFarcasterChannel,
 ] as const satisfies NavigationItem[]
