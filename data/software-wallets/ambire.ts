@@ -158,7 +158,7 @@ const dataLeakReferences: Record<string, References> = {
 const scamAlertsAndSendTxWarningRefs: WithRef<{}>['ref'] = [
 	{
 		explanation:
-			'When interacting with new address, the extension fetches info about that address from an external Ambire API.',
+			'When interacting with a new address, the extension fetches info about that address from an external Ambire API.',
 		lastRetrieved: '2026-01-29',
 		urls: [
 			{
@@ -169,7 +169,7 @@ const scamAlertsAndSendTxWarningRefs: WithRef<{}>['ref'] = [
 	},
 	{
 		explanation:
-			'When attempting to send tokens via the built-in interface, we display warning based on the time since last transfer.',
+			'When attempting to send tokens via the built-in interface, Ambire displays warning based on the time since last transfer.',
 		lastRetrieved: '2026-01-29',
 		url: {
 			label: 'implementation',
