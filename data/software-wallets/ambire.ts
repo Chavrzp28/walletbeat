@@ -545,12 +545,12 @@ export const ambire: SoftwareWallet = {
 			scamAlerts: {
 				contractTransactionWarning: supported<WithRef<ContractTransactionWarning>>({
 					ref: scamAlertsAndSendTxWarningRefs,
-					previousContractInteractionWarning: true,
 					contractRegistry: true,
-					recentContractWarning: false,
 					leaksContractAddress: true,
 					leaksUserAddress: false,
 					leaksUserIp: true,
+					previousContractInteractionWarning: true,
+					recentContractWarning: false,
 				}),
 				scamUrlWarning: supported<ScamUrlWarning>({
 					ref: {
@@ -571,10 +571,10 @@ export const ambire: SoftwareWallet = {
 				sendTransactionWarning: supported<SendTransactionWarning>({
 					ref: scamAlertsAndSendTxWarningRefs,
 					leaksRecipient: true,
-					newRecipientWarning: true,
-					userWhitelist: false, // address book is no sufficient in functionality for this flag
 					leaksUserAddress: false,
 					leaksUserIp: true,
+					newRecipientWarning: true,
+					userWhitelist: false, // address book is no sufficient in functionality for this flag
 				}),
 			},
 			transactionLegibility: {
