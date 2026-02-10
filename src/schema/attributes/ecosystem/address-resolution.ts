@@ -155,15 +155,17 @@ function evaluateAddressResolution(
 	if (addressResolution.nonChainSpecificEnsResolution.medium === 'CHAIN_CLIENT') {
 		return {
 			value: {
-				id: 'support_basic_resolution_onchain',
-				rating: Rating.PASS,
-				displayName: 'Supports ENS addresses',
+				id: 'support_plain_ens_onchain',
+				rating: Rating.PARTIAL,
+				displayName: 'Supports plain ENS addresses only',
 				addressResolution,
-				shortExplanation: sentence('{{WALLET_NAME}} supports sending to ENS addresses.'),
+				shortExplanation: sentence(
+					'{{WALLET_NAME}} supports sending to plain ENS addresses but not chain-specific human-readable addresses.',
+				),
 				__brand: brand,
 			},
 			details: markdown(`
-				{{WALLET_NAME}} supports sending funds to human-readable ENS addresses such as \`username.eth\`.
+				{{WALLET_NAME}} supports sending funds to human-readable ENS addresses such as \`username.eth\`, but does not support chain-specific address formats that specify the destination chain.
 
 				It does so using onchain data sources using the same code as when interacting with the chain in general, inheriting its privacy and verifiability properties.
 			`),
@@ -254,15 +256,18 @@ export const addressResolution: Attribute<AddressResolutionValue> = {
 		Wallets are rated based on the types of addresses they support sending
 		funds to.
 
-		Specifically, Walletbeat recognizes the following destination address
-		formats. Wallets must be able to resolve **at least one** of them to
-		fulfill this attribute:
+		Walletbeat recognizes the following destination address formats:
 
 		* Plain ENS addresses (\`username.eth\`) without destination chain information
 		* ${eipMarkdownLinkAndTitle(erc7828)}: \`user@l2chain.eth\`
 		* ${eipMarkdownLinkAndTitle(erc7831)}: \`user.eth:l2chain\`
 
-		Additionally, the mechanism used to perform the resolution must either:
+		Wallets receive a **pass** only if they support ${eipMarkdownLink(erc7828)} or
+		${eipMarkdownLink(erc7831)} (chain-specific human-readable addresses).
+		Wallets that support only plain ENS, with or without onchain resolution,
+		receive a **partial** rating.
+
+		For a pass, the mechanism used to perform the resolution must either:
 
 		* Be done using onchain data and reusing the wallet's common chain
 		  interaction client, inheriting its verifiability (e.g. via light
@@ -289,28 +294,6 @@ export const addressResolution: Attribute<AddressResolutionValue> = {
 		display: 'fail-pass',
 		exhaustive: false,
 		pass: [
-			exampleRating(
-				mdSentence(
-					'The wallet resolves plain ENS addresses (`username.eth`) when sending tokens, using onchain data for resolution.',
-				),
-				evaluateAddressResolution(
-					{
-						chainSpecificAddressing: {
-							erc7828: {
-								support: 'NOT_SUPPORTED',
-							},
-							erc7831: {
-								support: 'NOT_SUPPORTED',
-							},
-						},
-						nonChainSpecificEnsResolution: {
-							support: 'SUPPORTED',
-							medium: 'CHAIN_CLIENT',
-						},
-					},
-					[],
-				),
-			),
 			exampleRating(
 				mdSentence(
 					`The wallet resolves ${eipMarkdownLink(erc7828)} or ${eipMarkdownLink(erc7831)} addresses, using onchain data for resolution.`,
@@ -360,6 +343,28 @@ export const addressResolution: Attribute<AddressResolutionValue> = {
 			),
 		],
 		partial: [
+			exampleRating(
+				mdSentence(
+					'The wallet resolves plain ENS addresses (`username.eth`) when sending tokens, using onchain data for resolution.',
+				),
+				evaluateAddressResolution(
+					{
+						chainSpecificAddressing: {
+							erc7828: {
+								support: 'NOT_SUPPORTED',
+							},
+							erc7831: {
+								support: 'NOT_SUPPORTED',
+							},
+						},
+						nonChainSpecificEnsResolution: {
+							support: 'SUPPORTED',
+							medium: 'CHAIN_CLIENT',
+						},
+					},
+					[],
+				),
+			),
 			exampleRating(
 				mdSentence(
 					`The wallet resolves ${eipMarkdownLink(erc7828)} or ${eipMarkdownLink(erc7831)} addresses using an offchain external provider, without verifying the address.`,
