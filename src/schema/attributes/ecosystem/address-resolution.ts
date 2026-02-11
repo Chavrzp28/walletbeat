@@ -157,7 +157,7 @@ function evaluateAddressResolution(
 			value: {
 				id: 'support_plain_ens_onchain',
 				rating: Rating.PARTIAL,
-				displayName: 'Supports plain ENS addresses only',
+				displayName: 'Supports non-chain-specific ENS addresses',
 				addressResolution,
 				shortExplanation: sentence(
 					'{{WALLET_NAME}} supports sending to plain ENS addresses but not chain-specific human-readable addresses.',
@@ -345,7 +345,7 @@ export const addressResolution: Attribute<AddressResolutionValue> = {
 		partial: [
 			exampleRating(
 				mdSentence(
-					'The wallet resolves plain ENS addresses (`username.eth`) when sending tokens, using onchain data for resolution.',
+					'The wallet resolves non-chain-specific ENS addresses (`username.eth`) when sending tokens, using onchain data for resolution.',
 				),
 				evaluateAddressResolution(
 					{
