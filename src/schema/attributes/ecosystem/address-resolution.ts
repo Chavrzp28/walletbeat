@@ -20,11 +20,8 @@ import type {
 } from '../../features/privacy/address-resolution'
 import { pickWorstRating, unrated } from '../common'
 
-const brand = 'attributes.ecosystem.address_resolution'
-
 export type AddressResolutionValue = Value & {
 	addressResolution?: AddressResolution<Support<AddressResolutionData>>
-	__brand: 'attributes.ecosystem.address_resolution'
 }
 
 function getOffchainProviderInfo(
@@ -95,7 +92,6 @@ function evaluateAddressResolution(
 					shortExplanation: sentence(
 						`{{WALLET_NAME}} supports chain-specific human-readable addresses in ${eipShortLabel(erc)} format.`,
 					),
-					__brand: brand,
 				},
 				details: mdParagraph(
 					`{{WALLET_NAME}} supports chain-specific human-readable addresses in ${eipShortLabel(erc)} format, such as \`${exampleAddress}\`. It does so using onchain data sources using the same code as when interacting with the chain in general, inheriting its privacy and verifiability properties. For more information on ${eipShortLabel(erc)} addresses, see ${eipMarkdownLinkAndTitle(erc)}.`,
@@ -115,7 +111,6 @@ function evaluateAddressResolution(
 				shortExplanation: sentence(
 					`{{WALLET_NAME}} supports chain-specific human-readable addresses in ${eipShortLabel(erc)} format using an offchain provider.`,
 				),
-				__brand: brand,
 			},
 			details: mdParagraph(
 				`{{WALLET_NAME}} supports chain-specific human-readable addresses in ${eipShortLabel(erc)} format, such as \`${exampleAddress}\`. ${offchainInfo} For more information on ${eipShortLabel(erc)} addresses, see ${eipMarkdownLinkAndTitle(erc)}.`,
@@ -140,7 +135,6 @@ function evaluateAddressResolution(
 				shortExplanation: sentence(
 					'{{WALLET_NAME}} does not resolve human-readable addresses such as ENS names.',
 				),
-				__brand: brand,
 			},
 			details: paragraph(
 				'{{WALLET_NAME}} does not support resolving human-readable addresses, such as ENS (.eth) names.',
@@ -162,7 +156,6 @@ function evaluateAddressResolution(
 				shortExplanation: sentence(
 					'{{WALLET_NAME}} supports sending to plain ENS addresses but not chain-specific human-readable addresses.',
 				),
-				__brand: brand,
 			},
 			details: markdown(`
 				{{WALLET_NAME}} supports sending funds to human-readable ENS addresses such as \`username.eth\`, but does not support chain-specific address formats that specify the destination chain.
@@ -192,7 +185,6 @@ function evaluateAddressResolution(
 			shortExplanation: sentence(
 				'{{WALLET_NAME}} supports sending to ENS addresses but uses an offchain service for resolution.',
 			),
-			__brand: brand,
 		},
 		details: markdown(`
 			{{WALLET_NAME}} supports sending funds to human-readable ENS addresses such as \`username.eth\`.
@@ -436,7 +428,7 @@ export const addressResolution: Attribute<AddressResolutionValue> = {
 	},
 	evaluate: (features: ResolvedFeatures): Evaluation<AddressResolutionValue> => {
 		if (features.addressResolution === null) {
-			return unrated(addressResolution, brand, {})
+			return unrated(addressResolution, {})
 		}
 
 		if (
@@ -444,7 +436,7 @@ export const addressResolution: Attribute<AddressResolutionValue> = {
 			features.addressResolution.chainSpecificAddressing.erc7828 === null ||
 			features.addressResolution.chainSpecificAddressing.erc7831 === null
 		) {
-			return unrated(addressResolution, brand, {})
+			return unrated(addressResolution, {})
 		}
 
 		// We've checked all the nulls, so recreate the object without nulls in
