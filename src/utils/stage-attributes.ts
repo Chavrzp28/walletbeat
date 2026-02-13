@@ -13,7 +13,7 @@ import type { RatedWallet } from '@/schema/wallet'
  * Get all stages across all ladders with their ladder type and index.
  */
 const allStages = Object.entries(ladders).flatMap(([ladderType, ladder]) =>
-	ladder.stages.map((stage, stageIndex) => ({ ladderType, stage, stageIndex })),
+	ladder.stages.map((stage, stageIndex) => ({ ladderType, ladder, stage, stageIndex })),
 )
 
 /**
@@ -105,12 +105,15 @@ export const getCriterionAttributeId = (criterion: WalletStageCriterion): string
 /**
  * Get all criteria that reference a specific attribute across all ladders.
  * @param attribute The attribute to find criteria for
+ * @param wallet The wallet to find criteria for
  * @returns An array of objects containing ladder type, stage number, and criterion
  */
-export function getAttributeCriteria(
+export function getAttributeCriteriaForWallet(
 	attribute: Attribute,
+	wallet: StageEvaluatableWallet,
 ): Array<{ ladderType: WalletLadderType; stageNumber: number; criterion: WalletStageCriterion }> {
 	return allStages
+		.filter(({ ladder }) => ladder.applicableTo(wallet))
 		.filter(({ stage }) => isAttributeUsedInStageObject(attribute, stage))
 		.flatMap(({ ladderType, stage, stageIndex }) =>
 			allCriteriaInStage(stage)
@@ -139,7 +142,7 @@ export function getAttributeStagesForWallet(
 	wallet: RatedWallet,
 ): Array<{ ladderType: WalletLadderType; stageNumbers: number[] }> {
 	const stageEvaluatable = toStageEvaluatable(wallet)
-	const criteria = getAttributeCriteria(attribute)
+	const criteria = getAttributeCriteriaForWallet(attribute, wallet)
 	const stagesPassed = criteria
 		.filter(
 			({ criterion }) => criterion.evaluate(stageEvaluatable).rating === StageCriterionRating.PASS,
