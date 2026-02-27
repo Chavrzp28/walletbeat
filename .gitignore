@@ -1,51 +1,27 @@
-# Build output
-dist/
-src/generated/
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Generated types
-.astro/
+# dependencies
+/node_modules
 
-# Cache for Vitest or whatever else
-.cache/
+# next.js
+/.next/
+/out/
 
-# Dependencies
-node_modules/
+# production
+/build
 
-# ESLint cache
-.eslintcache
-
-# Logs
+# debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
+.pnpm-debug.log*
 
-# Environment variables
-.env
-.env.production
+# env files
+.env*
 
-# MacOS-specific files
-.DS_Store
+# vercel
+.vercel
 
-# JetBrains setting folder
-.idea/
-
-# For playing with claude code
-scrap.md
-
-# Python cache
-__pycache__
-
-
-# Compiler files
-resources/contracts/cache/
-resources/contracts/out/
-resources/contracts/lib/
-
-# Ignores development broadcast logs
-resources/contracts/!/broadcast
-resources/contracts/broadcast/*/31337/
-resources/contracts/broadcast/**/dry-run/
-
-# Docs
-resources/contracts/docs/
+# typescript
+*.tsbuildinfo
+next-env.d.ts
